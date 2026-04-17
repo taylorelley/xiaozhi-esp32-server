@@ -1,38 +1,38 @@
-# 声纹识别启用指南
+# Voiceprint Recognition Guide
 
-本教程包含3个部分
-- 1、如何部署声纹识别这个服务
-- 2、全模块部署时，怎么配置声纹识别接口
-- 3、最简化部署时，怎么配置声纹识别
+This tutorial has three parts:
+- 1. How to deploy the voiceprint recognition service
+- 2. How to configure the voiceprint recognition API for a full-module deployment
+- 3. How to configure voiceprint recognition for a minimal deployment
 
-# 1、如何部署声纹识别这个服务
+# 1. How to deploy the voiceprint recognition service
 
-## 第一步，下载声纹识别项目源码
+## Step 1: Download the voiceprint recognition project source code
 
-浏览器打开[声纹识别项目地址](https://github.com/xinnan-tech/voiceprint-api)
+Open the [voiceprint recognition project page](https://github.com/xinnan-tech/voiceprint-api) in your browser.
 
-打开完，找到页面中一个绿色的按钮，写着`Code`的按钮，点开它，然后你就看到`Download ZIP`的按钮。
+On the page, find the green button labeled `Code`. Click it and you'll see a `Download ZIP` button.
 
-点击它，下载本项目源码压缩包。下载到你电脑后，解压它，此时它的名字可能叫`voiceprint-api-main`
-你需要把它重命名成`voiceprint-api`。
+Click to download the project source code zip. After extracting, the folder may be named `voiceprint-api-main`.
+Rename it to `voiceprint-api`.
 
-## 第二步， 创建数据库和表
+## Step 2: Create the database and table
 
-声纹识别需要依赖`mysql`数据库。如果你之前已经部署`智控台`，说明你已经安装了`mysql`。你可以共用它。
+Voiceprint recognition depends on a `mysql` database. If you previously deployed the `control console`, you already have `mysql` installed and can share it.
 
-你可以你试一下在宿主机使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
+You can try using the `telnet` command on the host to see whether you can reach port `3306` of `mysql`:
 ```
 telnet 127.0.0.1 3306
 ```
-如果能访问到3306端口，请忽略以下的内容，直接进入第三步。
+If you can access port 3306, skip the rest of this step and go directly to Step 3.
 
-如果不能访问，你需要回忆一下，你的`mysql`是怎么安装的。
+If you can't access it, think about how your `mysql` was installed.
 
-如果你的mysql是通过自己使用安装包安装的，说明你的`mysql`做了网络隔离。你可能先解决访问`mysql`的`3306`端口这个问题。
+If you installed mysql yourself with an installer, your `mysql` is network-isolated. You may need to resolve the issue of accessing port `3306` first.
 
-如果你`mysql`是通过本项目的`docker-compose_all.yml`安装的。你需要找一下你当时创建数据库的`docker-compose_all.yml`文件，修改以下的内容
+If your `mysql` was installed via this project's `docker-compose_all.yml`, you need to find the `docker-compose_all.yml` file you used to create the database and modify:
 
-修改前
+Before:
 ```
   xiaozhi-esp32-server-db:
     ...
@@ -42,7 +42,7 @@ telnet 127.0.0.1 3306
       - "3306:3306"
 ```
 
-修改后
+After:
 ```
   xiaozhi-esp32-server-db:
     ...
@@ -52,23 +52,23 @@ telnet 127.0.0.1 3306
       - "3306:3306"
 ```
 
-注意是将`xiaozhi-esp32-server-db`下面的`expose`改成`ports`。改完后，需要重新启动。以下是重启mysql的命令：
+Note: change the `expose` under `xiaozhi-esp32-server-db` to `ports`. After changing, restart. Here are the commands to restart mysql:
 
 ```
-# 进入你docker-compose_all.yml所在的文件夹，例如我的是xiaozhi-server
+# Enter the folder containing your docker-compose_all.yml. For example, mine is xiaozhi-server.
 cd xiaozhi-server
 docker compose -f docker-compose_all.yml down
 docker compose -f docker-compose.yml up -d
 ```
 
-启动完后，在宿主机再使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
+After restarting, use `telnet` on the host again to check port `3306` of `mysql`:
 ```
 telnet 127.0.0.1 3306
 ```
-正常来说这样就可以访问的了。
+Normally this will now be accessible.
 
-## 第三步， 创建数据库和表
-如果你的宿主机，能正常访问mysql数据库，那就在mysql上创建一个名字为`voiceprint_db`的数据库和`voiceprints`表。
+## Step 3: Create the database and table
+If your host can access the mysql database normally, then create a database named `voiceprint_db` and a `voiceprints` table:
 
 ```
 CREATE DATABASE voiceprint_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -85,13 +85,13 @@ CREATE TABLE voiceprints (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
-## 第四步， 配置数据库连接
+## Step 4: Configure the database connection
 
-进入`voiceprint-api`文件夹，创建名字为`data`的文件夹。
+Enter the `voiceprint-api` folder and create a folder named `data`.
 
-把`voiceprint-api`根目录里的`voiceprint.yaml`，复制到`data`的文件夹，将它重命名为`.voiceprint.yaml`
+Copy `voiceprint.yaml` from the `voiceprint-api` root directory into the `data` folder and rename it to `.voiceprint.yaml`.
 
-接下来，你需要重点配置一下`.voiceprint.yaml`里的数据库连接。
+Next, you need to configure the database connection in `.voiceprint.yaml`:
 
 ```
 mysql:
@@ -102,123 +102,124 @@ mysql:
   database: "voiceprint_db"
 ```
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
+Note! Since your voiceprint recognition service is deployed via docker, `host` should be the `LAN IP of the machine where mysql runs`.
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
+Note! Since your voiceprint recognition service is deployed via docker, `host` should be the `LAN IP of the machine where mysql runs`.
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
+Note! Since your voiceprint recognition service is deployed via docker, `host` should be the `LAN IP of the machine where mysql runs`.
 
-## 第五步，启动程序
-这个项目是一个很简单的项目，建议使用docker运行。不过如果你不想使用docker运行，你可以参考[这个页面](https://github.com/xinnan-tech/voiceprint-api/blob/main/README.md)使用源码运行。以下是docker运行的方法
+## Step 5: Start the program
+This project is very simple and is recommended to run via docker. If you don't want to use docker, see [this page](https://github.com/xinnan-tech/voiceprint-api/blob/main/README.md) to run from source. The docker method is:
 
 ```
-# 进入本项目源码根目录
+# Enter the project source code root directory
 cd voiceprint-api
 
-# 清除缓存
+# Clean up caches
 docker compose -f docker-compose.yml down
 docker stop voiceprint-api
 docker rm voiceprint-api
 docker rmi ghcr.nju.edu.cn/xinnan-tech/voiceprint-api:latest
 
-# 启动docker容器
+# Start the docker container
 docker compose -f docker-compose.yml up -d
-# 查看日志
+# View the logs
 docker logs -f voiceprint-api
 ```
 
-此时，日志里会输出类似以下的日志
+The logs will output something like:
 ```
-250711 INFO-🚀 开始: 生产环境服务启动（Uvicorn），监听地址: 0.0.0.0:8005
+250711 INFO-🚀 Starting: production service (Uvicorn), listening on: 0.0.0.0:8005
 250711 INFO-============================================================
-250711 INFO-声纹接口地址: http://127.0.0.1:8005/voiceprint/health?key=abcd
+250711 INFO-Voiceprint API address: http://127.0.0.1:8005/voiceprint/health?key=abcd
 250711 INFO-============================================================
 ```
 
-请你把声纹接口地址复制出来：
+Please copy the voiceprint API address:
 
-由于你是docker部署，切不可直接使用上面的地址！
+Since you're using a docker deployment, do NOT use the above address directly!
 
-由于你是docker部署，切不可直接使用上面的地址！
+Since you're using a docker deployment, do NOT use the above address directly!
 
-由于你是docker部署，切不可直接使用上面的地址！
+Since you're using a docker deployment, do NOT use the above address directly!
 
-你先把地址复制出来，放在一个草稿里，你要知道你的电脑的局域网ip是什么，例如我的电脑局域网ip是`192.168.1.25`，那么
-原来我的接口地址
+First copy the address to a draft, find out your computer's LAN IP. For example, my computer's LAN IP is `192.168.1.25`, so
+my original address
 ```
 http://127.0.0.1:8005/voiceprint/health?key=abcd
 
 ```
-就要改成
+needs to be changed to
 ```
 http://192.168.1.25:8005/voiceprint/health?key=abcd
 ```
 
-改好后，请使用浏览器直接访问`声纹接口地址`。当浏览器出现类似这样的代码，说明是成功了。
+After changing, visit the `Voiceprint API address` directly in your browser. If the browser displays something like:
 ```
 {"total_voiceprints":0,"status":"healthy"}
 ```
+it's working.
 
-请你保留好修改后的`声纹接口地址`，下一步要用到。
+Keep the updated `Voiceprint API address`; you'll need it in the next step.
 
-# 2、全模块部署时，怎么配置声纹识别
+# 2. How to configure voiceprint recognition for a full-module deployment
 
-## 第一步 配置接口
-首先，你要开启声纹识别功能。在智控台，点击顶部`参数字典`，在下拉菜单中，点击`系统功能配置`页面。在页面上勾选`声纹识别`，点击`保存配置`。即可在新建智能体的卡片上看到`声纹识别`按钮。
+## Step 1: Configure the API
+First, enable the voiceprint recognition feature. In the control console, click `Parameter Dictionary` at the top, then click `System Feature Configuration` in the dropdown. On the page, check `Voiceprint Recognition`, then click `Save Configuration`. You'll then see a `Voiceprint Recognition` button on the agent card when creating agents.
 
-如果你是全模块部署，使用管理员账号，登录智控台，点击顶部`参数字典`，选择`参数管理`功能。
+If you're using a full-module deployment, log in to the control console with an admin account, click `Parameter Dictionary` at the top, and select `Parameter Management`.
 
-然后搜索参数`server.voice_print`，此时，它的值应该是`null`值。
-点击修改按钮，把上一步得来的`声纹接口地址`粘贴到`参数值`里。然后保存。
+Search for the parameter `server.voice_print`. Its value should be `null`.
+Click Edit, paste the `Voiceprint API address` from the previous step into the `Parameter Value` field, and save.
 
-如果能保存成功，说明一切顺利，你可以去智能体查看效果了。如果不成功，说明智控台无法访问声纹识别，很大概率是网络防火墙，或者没有填写正确的局域网ip。
+If the save succeeds, everything is fine; you can go to the agent to verify. If it fails, it means the control console cannot reach the voiceprint recognition service, most likely due to a network firewall or an incorrect LAN IP.
 
-## 第二步 设置智能体记忆模式
+## Step 2: Set the agent's memory mode
 
-进入你的智能体的角色配置里，将记忆设置成`本地短期记忆`，一定要开启`上报文字+语音`。
+Go to your agent's role configuration. Set memory to `local short-term memory` and make sure `Report text + voice` is enabled.
 
-## 第三步 和你的智能体聊天
+## Step 3: Chat with your agent
 
-将你的设备通电，然后和他用正常的语速和音调聊天。
+Power on your device and chat with it at a normal speed and tone.
 
-## 第四步 设置声纹
+## Step 4: Register the voiceprint
 
-在智控台，`智能体管理`页面，在智能体的面板里，有一个`声纹识别`按钮，点击它。在底部有一个`新增按钮`。就可以对某个人说的话进行声纹注册。
-在弹出的框里，`描述`这个属性建议填写上，可以是这个人的职业、性格、爱好。方便智能体对说话人进行分析和了解。
+In the control console, on the `Agent Management` page, each agent card has a `Voiceprint Recognition` button. Click it. At the bottom there's an `Add` button to register a speaker's voiceprint.
+In the popup, it's recommended to fill in the `Description` with the person's occupation, personality, or hobbies, so the agent can better analyze and understand the speaker.
 
-## 第三步 和你的智能体聊天
+## Step 3: Chat with your agent
 
-将你的设备通电，问它，你知道我是谁吗？如果他能回答得出，说明声纹识别功能正常。
+Power on the device and ask: "Do you know who I am?" If it can answer, voiceprint recognition is working.
 
-# 3、最简化部署时，怎么配置声纹识别
+# 3. How to configure voiceprint recognition for a minimal deployment
 
-## 第一步 配置接口
-打开 `xiaozhi-server/data/.config.yaml` 文件（如果没有需要创建），然后添加/修改以下内容：
+## Step 1: Configure the API
+Open `xiaozhi-server/data/.config.yaml` (create it if it doesn't exist), then add/modify:
 
 ```
-# 声纹识别配置
+# Voiceprint recognition config
 voiceprint:
-  # 声纹接口地址
-  url: 你的声纹接口地址
-  # 说话人配置：speaker_id,名称,描述
+  # Voiceprint API address
+  url: your voiceprint API address
+  # Speaker config: speaker_id,name,description
   speakers:
-    - "test1,张三,张三是一个程序员"
-    - "test2,李四,李四是一个产品经理"
-    - "test3,王五,王五是一个设计师"
+    - "test1,Zhang San,Zhang San is a programmer"
+    - "test2,Li Si,Li Si is a product manager"
+    - "test3,Wang Wu,Wang Wu is a designer"
 ```
 
-把上一步得来的 `声纹接口地址` 粘贴到 `url` 里。然后保存。
+Paste the `Voiceprint API address` from the previous step into `url`, then save.
 
-`speakers` 参数依据需求添加。这里需要注意这个 `speaker_id` 参数，后面注册声纹会用到。
+Add `speakers` as needed. Note that the `speaker_id` parameter will be used when registering voiceprints.
 
-## 第二步 注册声纹
-如果你已经启动了声纹服务，本地浏览器里访问 `http://localhost:8005/voiceprint/docs` 即可查看 API 文档，这里只说明注册声纹的 API 如何使用。
+## Step 2: Register a voiceprint
+If you've already started the voiceprint service, visit `http://localhost:8005/voiceprint/docs` in your local browser to see the API docs. Here we only describe how to use the register-voiceprint API.
 
-注册声纹的 API 地址为 `http://localhost:8005/voiceprint/register`，请求方式为 POST。
+The voiceprint registration API is at `http://localhost:8005/voiceprint/register`, method POST.
 
-请求头需要包含 Bearer Token 认证，token 为 `声纹接口地址` 中 `?key=` 后的部分，比如如果我的声纹注册地址为 `http://127.0.0.1:8005/voiceprint/health?key=abcd`，那么我的 token 就是`abcd`。
+The request header needs a Bearer Token. The token is the part after `?key=` in your `Voiceprint API address`. For example, if my voiceprint registration address is `http://127.0.0.1:8005/voiceprint/health?key=abcd`, my token is `abcd`.
 
-请求体包含说话人 ID（speaker_id），和 WAV 音频文件（file），请求示例如下：
+The request body contains the speaker ID (speaker_id) and a WAV audio file (file). Example request:
 
 ```
 curl -X POST \
@@ -228,8 +229,8 @@ curl -X POST \
   http://localhost:8005/voiceprint/register
 ```
 
- 这里的 `file` 是要注册的说话人说话的音频文件， `speaker_id` 需要和第一步配置接口的 `speaker_id` 保持一致。比如说我需要注册张三的声纹，在 `.config.yaml` 中填的张三的 `speaker_id` 为 `test1`，那么我注册张三声纹的时候，请求体里填的 `speaker_id` 就是 `test1`， `file` 填的就是张三说一段话的音频文件。
+ Here, `file` is the audio file of the speaker to be registered, and `speaker_id` must match the `speaker_id` configured in Step 1. For example, if I need to register Zhang San's voiceprint and Zhang San's `speaker_id` is `test1` in `.config.yaml`, then when registering, the request body's `speaker_id` must be `test1`, and `file` is the audio file of Zhang San speaking.
 
- ## 第三步 启动服务
+ ## Step 3: Start the services
 
-启动小智服务器和声纹服务，即可正常使用。
+Start the LittleWise server and the voiceprint service, and you're good to go.
