@@ -25,4 +25,4 @@ declare global {
   }
 }
 
-export {} // 防止模块污染
+export {} // Prevent module pollution

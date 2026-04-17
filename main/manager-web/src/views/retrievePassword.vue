@@ -40,7 +40,7 @@
                   <img loading="lazy" alt="" class="input-icon" src="@/assets/login/shield.png" />
                   <el-input v-model="form.captcha" :placeholder="$t('retrievePassword.captchaPlaceholder')" style="flex: 1;" />
                 </div>
-                <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="验证码"
+                <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="Captcha"
                   style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
               </div>
 
@@ -277,7 +277,7 @@ export default {
         goToPage('/login');
       }, (err) => {
         showDanger(err.data.msg || this.$t('message.error'));
-        if (err.data != null && err.data.msg != null && (err.data.msg.indexOf('图形验证码') > -1 || err.data.msg.indexOf('Captcha') > -1)) {
+        if (err.data != null && err.data.msg != null && (err.data.msg.indexOf('graphic captcha') > -1 || err.data.msg.indexOf('Captcha') > -1)) {
           this.fetchCaptcha()
         }
       });

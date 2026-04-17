@@ -15,7 +15,7 @@ export interface ChatSessionsResponse {
 // chatMessage
 export interface ChatMessage {
   createdAt: string
-  chatType: 1 | 2 | 3 // 1是用户，2是AI，3是参数说明
+  chatType: 1 | 2 | 3 // 1 = user, 2 = AI, 3 = parameter description
   content: string
   audioId: string | null
   macAddress: string
@@ -35,5 +35,5 @@ export interface GetSessionsParams {
 
 // AudioPlay
 export interface AudioResponse {
-  data: string // 音频下载ID
+  data: string // Audio download ID
 }

@@ -107,7 +107,7 @@ export default {
             isFirstLoad: true,
             playingAudioId: null,
             audioElement: null,
-            expandedToolResults: {} // 跟踪工具结果的展开状态
+            expandedToolResults: {} // Track expanded state of tool results
         };
     },
     watch: {
@@ -133,7 +133,7 @@ export default {
             if (!this.messages || this.messages.length === 0) return [];
 
             const result = [];
-            const TIME_INTERVAL = 60 * 1000; // 1分钟的时间间隔（毫秒）
+            const TIME_INTERVAL = 60 * 1000; // 1-minute interval in milliseconds
  // AdditemsMessage of when
             if (this.messages[0]) {
                 result.push({

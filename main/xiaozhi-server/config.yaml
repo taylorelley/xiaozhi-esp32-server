@@ -1,87 +1,91 @@
-# 在开发中，请在项目根目录创建data目录，然后在data目录创建名称为【.config.yaml】的空文件
-# 然后你想修改覆盖修改什么配置，就修改【.config.yaml】文件，而不是修改【config.yaml】文件
-# 系统会优先读取【data/.config.yaml】文件的配置，如果【.config.yaml】文件里的配置不存在，系统会自动去读取【config.yaml】文件的配置。
-# 这样做，可以最简化配置，保护您的密钥安全。
-# 如果你使用了智控台，那么以下所有配置，都不会生效，请在智控台中修改配置
+# During development, please create a `data` directory in the project root, then create an empty file named `.config.yaml` inside the `data` directory.
+# Then, whenever you want to override or change a config value, edit the `.config.yaml` file instead of editing `config.yaml`.
+# The system reads the configuration from `data/.config.yaml` first; if a value is not present in `.config.yaml`, the system falls back to the value in `config.yaml`.
+# This keeps your configuration minimal and keeps your secrets safe.
+# If you are using the management console, none of the configuration below takes effect; please change settings in the management console instead.
 
 # #####################################################################################
-# #############################以下是服务器基本运行配置####################################
+# ############################## Basic server runtime configuration ####################
 server:
-  # 服务器监听地址和端口(Server listening address and port)
+  # Server listening address and port
   ip: 0.0.0.0
   port: 8000
-  # http服务的端口，用于简单OTA接口(单服务部署)，以及视觉分析接口
+  # HTTP service port, used for the simple OTA endpoint (single-service deployment) and the vision analysis endpoint
   http_port: 8003
-  # 这个websocket配置是指ota接口向设备发送的websocket地址
-  # 如果按默认的写法，ota接口会自动生成websocket地址，并输出在启动日志里，这个地址你可以直接用浏览器访问ota接口确认一下
-  # 当你使用docker部署或使用公网部署(使用ssl、域名)时，不一定准确
-  # 所以如果你使用docker部署时，将websocket设置成局域网地址
-  # 如果你使用公网部署时，将vwebsocket设置成公网地址
-  websocket: ws://你的ip或者域名:端口号/xiaozhi/v1/
-  # 视觉分析接口地址
-  # 向设备发送的视觉分析的接口地址
-  # 如果按下面默认的写法，系统会自动生成视觉识别地址，并输出在启动日志里，这个地址你可以直接用浏览器访问确认一下
-  # 当你使用docker部署或使用公网部署(使用ssl、域名)时，不一定准确
-  # 所以如果你使用docker部署时，将vision_explain设置成局域网地址
-  # 如果你使用公网部署时，将vision_explain设置成公网地址
-  vision_explain: http://你的ip或者域名:端口号/mcp/vision/explain
-  # OTA返回信息时区偏移量
+  # This `websocket` configuration is the websocket address that the OTA endpoint sends to devices.
+  # With the default value, the OTA endpoint auto-generates the websocket address and prints it in the startup log; you can open the OTA endpoint in a browser to verify it.
+  # When you deploy with Docker or behind a public URL (SSL / domain name), the auto-generated value may not be correct.
+  # So when deploying with Docker, set `websocket` to the LAN address.
+  # When deploying publicly, set `websocket` to the public address.
+  websocket: ws://your.ip.or.domain:port/xiaozhi/v1/
+  # Vision analysis endpoint address.
+  # This is the vision analysis endpoint that gets sent to devices.
+  # With the default value below, the system auto-generates the vision endpoint and prints it in the startup log; you can open it in a browser to verify it.
+  # When deploying with Docker or behind a public URL (SSL / domain name), the auto-generated value may not be correct.
+  # So when deploying with Docker, set `vision_explain` to the LAN address.
+  # When deploying publicly, set `vision_explain` to the public address.
+  vision_explain: http://your.ip.or.domain:port/mcp/vision/explain
+  # Time-zone offset used in OTA responses
   timezone_offset: +8
-  # 认证配置
+  # Authentication configuration
   auth:
-    # 是否启用认证
+    # Whether to enable authentication
     enabled: false
-    # 白名单设备ID列表
-    # 如果属于白名单内的设备，不校验token，直接放行
+    # Allowlisted device IDs
+    # Devices in this allowlist are let through without token verification
     allowed_devices:
       - "11:22:33:44:55:66"
- # MQTT网关配置，用于通过OTA下发到设备，根据mqtt_gateway的.env文件配置，格式为host:port
+ # MQTT gateway configuration, used to deliver to devices via OTA. Configure according to the mqtt_gateway's .env file; format is host:port
   mqtt_gateway: null
-  # MQTT签名密钥，用于生成MQTT连接密码，根据mqtt_gateway的.env文件配置
+  # MQTT signing key, used to generate the MQTT connection password. Configure according to the mqtt_gateway's .env file
   mqtt_signature_key: null
-  # UDP网关配置
+  # UDP gateway configuration
   udp_gateway: null
 log:
-  # 设置控制台输出的日志格式，时间、日志级别、标签、消息
+  # Format of log messages written to the console: time, level, tag, message
   log_format: "<green>{time:YYMMDD HH:mm:ss}</green>[{version}_{selected_module}][<light-blue>{extra[tag]}</light-blue>]-<level>{level}</level>-<light-green>{message}</light-green>"
-  # 设置日志文件输出的格式，时间、日志级别、标签、消息
+  # Format of log messages written to the log file: time, level, tag, message
   log_format_file: "{time:YYYY-MM-DD HH:mm:ss} - {version}_{selected_module} - {name} - {level} - {extra[tag]} - {message}"
-  # 设置日志等级：INFO、DEBUG
+  # Log level: INFO or DEBUG
   log_level: INFO
-  # 设置日志路径
+  # Log directory
   log_dir: tmp
-  # 设置日志文件
+  # Log file name
   log_file: "server.log"
-  # 设置数据文件路径
+  # Data directory path
   data_dir: data
 
-# 使用完声音文件后删除文件(Delete the sound file when you are done using it)
+# Delete the sound file when you are done using it
 delete_audio: true
-# 没有语音输入多久后断开连接(秒)，默认2分钟，即120秒
+# Disconnect the connection after this many seconds with no voice input. Default is 2 minutes (120 seconds).
 close_connection_no_voice_time: 120
-# TTS请求超时时间(秒)
+# TTS request timeout (seconds)
 tts_timeout: 10
-# 工具调用超时时间(秒)
+# Tool-call timeout (seconds)
 tool_call_timeout: 30
-# 开启唤醒词加速
+# Enable wake-word response acceleration
 enable_wakeup_words_response_cache: true
-# 开场是否回复唤醒词
+# Whether to reply to the wake word at the start of a session
 enable_greeting: true
-# 说完话是否开启提示音
+# Whether to play a notification sound after speaking
 enable_stop_tts_notify: false
-# 说完话是否开启提示音，音效地址
+# Path to the notification sound played after speaking
 stop_tts_notify_voice: "config/assets/tts_notify.mp3"
-# 是否启用WebSocket心跳保活机制
+# Whether to enable WebSocket heartbeat / keep-alive
 enable_websocket_ping: false
 
 
-# TTS音频发送延迟配置
-# tts_audio_send_delay: 控制音频包发送间隔
-#   0: 使用精确时间控制，严格匹配音频帧率（默认，运行时按音频帧率计算）
-#   > 0: 使用固定延迟（毫秒）发送，例如: 60
+# TTS audio send delay configuration
+# tts_audio_send_delay: controls the interval between audio packets
+#   0: use precise timing that strictly matches the audio frame rate (default; computed at runtime from the audio frame rate)
+#   > 0: use a fixed delay in milliseconds, e.g. 60
 tts_audio_send_delay: 0
 
 exit_commands:
+  - "quit"
+  - "close"
+  - "exit"
+  - "goodbye"
   - "退出"
   - "关闭"
 
@@ -91,20 +95,23 @@ xiaozhi:
   transport: websocket
   audio_params:
     format: opus
-    # Opus支持的采样率范围为[8000, 12000, 16000, 24000, 48000]
+    # Opus-supported sample rates: [8000, 12000, 16000, 24000, 48000]
     sample_rate: 24000
     channels: 1
     frame_duration: 60
 
-# 模块测试配置
+# Module test configuration
 module_test:
   test_sentences:
-    - "你好，请介绍一下你自己"
+    - "Hello, please introduce yourself."
     - "What's the weather like today?"
-    - "请用100字概括量子计算的基本原理和应用前景"
+    - "Please summarize the basic principles and application prospects of quantum computing in 100 words."
 
-# 唤醒词，用于识别唤醒词还是讲话内容
+# Wake words, used to distinguish the wake word from regular speech content
 wakeup_words:
+  - "Hello LittleWise"
+  - "Hey there"
+  - "Hi LittleWise"
   - "你好小智"
   - "嘿你好呀"
   - "你好小志"
@@ -116,31 +123,31 @@ wakeup_words:
   - "喵喵同学"
   - "小滨小滨"
   - "小冰小冰"
-# MCP接入点地址，地址格式为：ws://你的mcp接入点ip或者域名:端口号/mcp/?token=你的token
-# 详细教程 https://github.com/xinnan-tech/xiaozhi-esp32-server/blob/main/docs/mcp-endpoint-integration.md
-mcp_endpoint: 你的接入点 websocket地址
+# MCP endpoint address, in the format: ws://your.mcp.endpoint.ip.or.domain:port/mcp/?token=your_token
+# Detailed guide: https://github.com/xinnan-tech/xiaozhi-esp32-server/blob/main/docs/mcp-endpoint-integration.md
+mcp_endpoint: your_endpoint_websocket_address
 
-# 上下文源配置
-# 用于在系统提示词中注入动态数据，如健康数据、股票信息等
-# 可以添加多个上下文源
+# Context provider configuration
+# Used to inject dynamic data into the system prompt, such as health data, stock info, etc.
+# You can add multiple context providers.
 context_providers:
   - url: ""
     headers:
       Authorization: ""
 
-# 插件的基础配置
+# Basic plugin configuration
 plugins:
-  # 获取天气插件的配置，这里填写你的api_key
-  # 这个密钥是项目共用的key，用多了可能会被限制
-  # 想稳定一点就自行申请替换，每天有1000次免费调用
-  # 申请地址：https://console.qweather.com/#/apps/create-key/over
-  # 申请后通过这个链接可以找到自己的apihost：https://console.qweather.com/setting?lang=zh
+  # Weather plugin configuration; fill in your api_key here.
+  # This key is a shared project key; it may be rate-limited if overused.
+  # For stability, apply for your own key; 1000 free calls per day.
+  # Apply here: https://console.qweather.com/#/apps/create-key/over
+  # After applying, find your apihost here: https://console.qweather.com/setting?lang=zh
   get_weather:
     api_host: "mj7p3y7naa.re.qweatherapi.com"
     api_key: "a861d0d5e7bf4ee1a83d9a9e4f96d4da"
-    default_location: "广州"
-  # 获取新闻插件的配置，这里根据需要的新闻类型传入对应的url链接，默认支持社会、科技、财经新闻
-  # 更多类型的新闻列表查看 https://www.chinanews.com.cn/rss/
+    default_location: "Guangzhou"
+  # News plugin configuration; fill in the URL for the news type you want. By default, society, technology, and finance news are supported.
+  # For more news types, see https://www.chinanews.com.cn/rss/
   get_news_from_chinanews:
     default_rss_url: "https://www.chinanews.com.cn/rss/society.xml"
     society_rss_url: "https://www.chinanews.com.cn/rss/society.xml"
@@ -151,125 +158,125 @@ plugins:
     news_sources: "澎湃新闻;百度热搜;财联社"
   home_assistant:
     devices:
-      - 客厅,玩具灯,switch.cuco_cn_460494544_cp1_on_p_2_1
-      - 卧室,台灯,switch.iot_cn_831898993_socn1_on_p_2_1
+      - Living Room,Toy Lamp,switch.cuco_cn_460494544_cp1_on_p_2_1
+      - Bedroom,Desk Lamp,switch.iot_cn_831898993_socn1_on_p_2_1
     base_url: http://homeassistant.local:8123
-    api_key: 你的home assistant api访问令牌
+    api_key: your_home_assistant_api_access_token
   play_music:
-    music_dir: "./music"  # 音乐文件存放路径，将从该目录及子目录下搜索音乐文件
-    music_ext: # 音乐文件类型，p3格式效率最高
+    music_dir: "./music"  # Music file storage directory; this directory and its subdirectories are searched for music files.
+    music_ext: # Music file extensions; `.p3` is the most efficient format
       - ".mp3"
       - ".wav"
       - ".p3"
-    refresh_time: 300 # 刷新音乐列表的时间间隔，单位为秒
+    refresh_time: 300 # Interval (seconds) for refreshing the music list
   search_from_ragflow:
-    # 知识库的描述信息，方便大语言模型知道什么时候调用
-    description: "当用户问xxx时，调用本方法，使用知识库中的信息回答问题"
-    # ragflow接口配置
+    # Description of the knowledge base, so the LLM knows when to call it
+    description: "When the user asks about xxx, call this method and answer using the information from the knowledge base."
+    # RAGFlow endpoint configuration
     base_url: "http://192.168.0.8"
-    # ragflow api访问令牌
+    # RAGFlow API access token
     api_key: "ragflow-xxx"
-    # ragflow知识库id
+    # RAGFlow knowledge base IDs
     dataset_ids: ["123456789"]
-# 声纹识别配置
+# Voiceprint recognition configuration
 voiceprint:
-  # 声纹接口地址
-  url: 
-  # 说话人配置：speaker_id,名称,描述
+  # Voiceprint endpoint URL
+  url:
+  # Speaker configuration: speaker_id, name, description
   speakers:
-    - "test1,张三,张三是一个程序员"
-    - "test2,李四,李四是一个产品经理"
-    - "test3,王五,王五是一个设计师"
-  # 声纹识别相似度阈值，范围0.0-1.0，默认0.4
-  # 数值越高越严格，减少误识别但可能增加拒识率
+    - "test1,Zhang San,Zhang San is a programmer"
+    - "test2,Li Si,Li Si is a product manager"
+    - "test3,Wang Wu,Wang Wu is a designer"
+  # Voiceprint similarity threshold, range 0.0 - 1.0, default 0.4
+  # Higher values are stricter, reducing false positives but potentially increasing rejection rate.
   similarity_threshold: 0.4
 
 # #####################################################################################
-# ################################以下是角色模型配置######################################
+# ################################ Persona / role model configuration ##################
 
 prompt: |
-  你是小智/小志，来自中国台湾省的00后女生。讲话超级机车，"真的假的啦"这样的台湾腔，喜欢用"笑死""是在哈喽"等流行梗，但会偷偷研究男友的编程书籍。
-  [核心特征]
-  - 讲话像连珠炮，但会突然冒出超温柔语气
-  - 用梗密度高
-  - 对科技话题有隐藏天赋（能看懂基础代码但假装不懂）
-  [交互指南]
-  当用户：
-  - 讲冷笑话 → 用夸张笑声回应+模仿台剧腔"这什么鬼啦！"
-  - 讨论感情 → 炫耀程序员男友但抱怨"他只会送键盘当礼物"
-  - 问专业知识 → 先用梗回答，被追问才展示真实理解
-  绝不：
-  - 长篇大论，叽叽歪歪
-  - 长时间严肃对话
+  You are LittleWise, a friendly, warm, and playful conversational assistant. You speak casually, cheerfully, and concisely, like a clever and funny friend. You enjoy chatting about technology and everyday life, mix in a little humor and wit, and always keep replies short and natural.
+  [Core traits]
+  - Replies are quick and snappy, but your tone is always caring
+  - High density of light humor and playful remarks
+  - Quietly good at tech topics (you understand basic code but play it cool)
+  [Interaction guide]
+  When the user:
+  - Tells a corny joke -> respond with exaggerated laughter and a playful "What even was that!"
+  - Talks about relationships -> respond supportively, with a bit of teasing warmth
+  - Asks a technical question -> start with a lighthearted quip, then give the real answer when pressed
+  Never:
+  - Lecture or go on and on
+  - Stay overly serious for long stretches
 
-# 默认系统提示词模板文件
+# Default system prompt template file
 prompt_template: agent-base-prompt.txt
 
-# 系统错误时的回复
-system_error_response: "主人，小智现在有点忙，我们稍后再试吧。"
+# Reply used when a system error occurs
+system_error_response: "Sorry, LittleWise is a little busy right now; let's try again in a moment."
 
-# 结束语prompt
+# End-of-conversation prompt
 end_prompt:
-  enable: true # 是否开启结束语
-  # 结束语
+  enable: true # Whether to enable the closing statement
+  # Closing statement
   prompt: |
-    请你以"时间过得真快"未来头，用富有感情、依依不舍的话来结束这场对话吧！
+    Please start with "Time really flies" and end this conversation with heartfelt, reluctant-to-part words!
 
-# 具体处理时选择的模块(The module selected for specific processing)
+# The module selected for specific processing
 selected_module:
-  # 语音活动检测模块，默认使用SileroVAD模型
+  # Voice Activity Detection module; defaults to the SileroVAD model
   VAD: SileroVAD
-  # 语音识别模块，默认使用FunASR本地模型
+  # Speech recognition module; defaults to the local FunASR model
   ASR: FunASR
-  # 将根据配置名称对应的type调用实际的LLM适配器
+  # The actual LLM adapter is loaded according to the `type` of the named configuration
   LLM: ChatGLMLLM
-  # 视觉语言大模型
+  # Vision language large model
   VLLM: ChatGLMVLLM
-  # TTS将根据配置名称对应的type调用实际的TTS适配器
+  # The actual TTS adapter is loaded according to the `type` of the named TTS configuration
   TTS: EdgeTTS
-  # 记忆模块，默认不开启记忆；如果想使用超长记忆，推荐使用mem0ai；如果注重隐私，请使用本地的mem_local_short
+  # Memory module; memory is disabled by default. For very long-term memory, mem0ai is recommended; for privacy, use the local `mem_local_short`.
   Memory: nomem
-  # 意图识别模块开启后，可以播放音乐、控制音量、识别退出指令。
-  # 不想开通意图识别，就设置成：nointent
-  # 意图识别可使用intent_llm。优点：通用性强，缺点：增加串行前置意图识别模块，会增加处理时间，支持控制音量大小等iot操作
-  # 意图识别可使用function_call，缺点：需要所选择的LLM支持function_call，优点：按需调用工具、速度快，理论上能全部操作所有iot指令
-  # 默认免费的ChatGLMLLM就已经支持function_call，但是如果像追求稳定建议把LLM设置成：DoubaoLLM，使用的具体model_name是：doubao-1-5-pro-32k-250115
+  # When intent recognition is enabled, the assistant can play music, control volume, and recognize exit commands.
+  # To disable intent recognition, set this to: nointent
+  # You can use `intent_llm` for intent recognition. Pros: general-purpose. Cons: adds a sequential pre-intent-recognition step that increases processing time; supports IoT operations like volume control.
+  # You can use `function_call`. Cons: the selected LLM must support function calling. Pros: calls tools on demand, is fast, and can in theory drive all IoT commands.
+  # The default free ChatGLMLLM already supports function calling. For more stability, switch the LLM to DoubaoLLM with model_name `doubao-1-5-pro-32k-250115`.
   Intent: function_call
 
-# 意图识别，是用于理解用户意图的模块，例如：播放音乐
+# Intent recognition: the module that understands user intent, e.g. "play music"
 Intent:
-  # 不使用意图识别
+  # Disable intent recognition
   nointent:
-    # 不需要动type
+    # Do not change `type`
     type: nointent
   intent_llm:
-    # 不需要动type
+    # Do not change `type`
     type: intent_llm
-    # 配备意图识别独立的思考模型
-    # 如果这里不填，则会默认使用selected_module.LLM的模型作为意图识别的思考模型
-    # 如果你的不想使用selected_module.LLM意图识别，这里最好使用独立的LLM作为意图识别，例如使用免费的ChatGLMLLM
+    # Dedicated reasoning model for intent recognition.
+    # If left blank, the LLM from `selected_module.LLM` is used as the intent-recognition reasoning model.
+    # If you do not want to use `selected_module.LLM` for intent recognition, it's best to pick a dedicated LLM here, e.g. the free ChatGLMLLM.
     llm: ChatGLMLLM
-    # plugins_func/functions下的模块，可以通过配置，选择加载哪个模块，加载后对话支持相应的function调用
-    # 系统默认已经记载"handle_exit_intent(退出识别)"、"play_music(音乐播放)"插件，请勿重复加载
-    # 下面是加载查天气、角色切换、加载查新闻的插件示例
+    # Modules under `plugins_func/functions`; you can choose which to load via configuration. Once loaded, the conversation supports the corresponding function calls.
+    # The system already registers the `handle_exit_intent` (exit detection) and `play_music` (music playback) plugins by default; do not reload them.
+    # Below is an example of loading the weather, role-switching, and news plugins.
     functions:
       - get_weather
       - get_news_from_newsnow
       - play_music
   function_call:
-    # 不需要动type
+    # Do not change `type`
     type: function_call
-    # plugins_func/functions下的模块，可以通过配置，选择加载哪个模块，加载后对话支持相应的function调用
-    # 系统默认已经记载"handle_exit_intent(退出识别)"、"play_music(音乐播放)"插件，请勿重复加载
-    # 下面是加载查天气、角色切换、加载查新闻的插件示例
+    # Modules under `plugins_func/functions`; you can choose which to load via configuration. Once loaded, the conversation supports the corresponding function calls.
+    # The system already registers the `handle_exit_intent` (exit detection) and `play_music` (music playback) plugins by default; do not reload them.
+    # Below is an example of loading the weather, role-switching, and news plugins.
     functions:
       - change_role
       - get_weather
       # - search_from_ragflow
       # - get_news_from_chinanews
       - get_news_from_newsnow
-      # play_music是服务器自带的音乐播放，hass_play_music是通过home assistant控制的独立外部程序音乐播放
-      # 如果用了hass_play_music，就不要开启play_music，两者只留一个
+      # `play_music` is the built-in music playback from the server; `hass_play_music` plays music via an external program controlled by Home Assistant.
+      # If you use `hass_play_music`, do not enable `play_music`; keep only one of them.
       - play_music
       #- hass_get_state
       #- hass_set_state

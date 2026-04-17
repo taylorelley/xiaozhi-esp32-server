@@ -154,7 +154,7 @@ export default {
       loading: false,
       userApi: null,
       firmwareTypes: [],
-      mqttServiceAvailable: false, // MQTT服务是否可用
+      mqttServiceAvailable: false, // Whether the MQTT service is available
     };
   },
   computed: {
@@ -312,7 +312,7 @@ export default {
       row.isEdit = false;
       setTimeout(() => {
         this.submitRemark(row);
-      }, 100); // 延迟 100ms，避开 enter+blur 同时触发的窗口
+      }, 100); // 100ms delay to avoid simultaneous enter+blur triggering
     },
  // Remarkinput：whenSubmit
     onRemarkEnter(row) {

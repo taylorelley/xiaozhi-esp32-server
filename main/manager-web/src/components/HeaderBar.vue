@@ -168,7 +168,7 @@
 
         <img loading="lazy" alt="" src="@/assets/home/avatar.png" class="avatar-img" @click="handleAvatarClick" />
         <span class="el-user-dropdown" @click="handleAvatarClick">
-          {{ userInfo.username || "加载中..." }}
+          {{ userInfo.username || "Loading..." }}
           <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': userMenuVisible }"></i>
         </span>
         <el-cascader :options="userMenuOptions" trigger="click" :props="cascaderProps"
@@ -190,23 +190,23 @@
 import userApi from "@/apis/module/user";
 import i18n, { changeLanguage } from "@/i18n";
 import { mapActions, mapState } from "vuex";
-import ChangePasswordDialog from "./ChangePasswordDialog.vue"; // 引入修改密码弹窗组件
-import featureManager from "@/utils/featureManager"; // 引入功能管理工具类
+import ChangePasswordDialog from "./ChangePasswordDialog.vue"; // Import the change-password dialog component
+import featureManager from "@/utils/featureManager"; // Import the feature manager utility
 
 export default {
   name: "HeaderBar",
   components: {
     ChangePasswordDialog,
   },
-  props: ["devices"], // 接收父组件设备列表
+  props: ["devices"], // Receive device list from parent component
   data() {
     return {
       search: "",
-      isChangePasswordDialogVisible: false, // 控制修改密码弹窗的显示
+      isChangePasswordDialogVisible: false, // Control visibility of the change-password dialog
       paramDropdownVisible: false,
       voiceCloneDropdownVisible: false,
-      userMenuVisible: false, // 添加用户菜单可见状态
-      menuVisibleTimer: null, // 菜单显示定时器，防止够快触发
+      userMenuVisible: false, // User menu visibility state
+      menuVisibleTimer: null, // Menu show timer to prevent rapid triggering
       isSmallScreen: false,
  // SearchHistory
       searchHistory: [],
@@ -225,8 +225,8 @@ export default {
   computed: {
     ...mapState({
       featureStatus: (state) => ({
-        voiceClone: state.pubConfig.systemWebMenu?.features?.voiceClone?.enabled, // 音色克隆功能状态
-        knowledgeBase: state.pubConfig.systemWebMenu?.features?.knowledgeBase?.enabled, // 知识库功能状态
+        voiceClone: state.pubConfig.systemWebMenu?.features?.voiceClone?.enabled, // Voice-clone feature state
+        knowledgeBase: state.pubConfig.systemWebMenu?.features?.knowledgeBase?.enabled, // Knowledge base feature state
       }),
       userInfo: (state) => state.userInfo,
     }),

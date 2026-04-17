@@ -141,7 +141,7 @@ export default {
       selectAll: false,
       selectedRows: [],
       loading: false,
-      showReferenceColumns: false, // 控制是否显示参考列
+      showReferenceColumns: false, // Controls whether to show reference columns
     };
   },
   watch: {
@@ -149,8 +149,8 @@ export default {
       this.localVisible = newVal;
       if (newVal) {
         this.currentPage = 1;
-        this.updateShowReferenceColumns(); // 更新显示状态
-        this.loadData(); // 对话框显示时加载数据
+        this.updateShowReferenceColumns(); // Update visibility state
+        this.loadData(); // Load data when the dialog opens
         this.$nextTick(() => {
           this.updateScrollbar();
         });
@@ -420,7 +420,7 @@ export default {
         });
         row.editing = false;
         delete row.originalData;
-        this.loadData(); // 刷新数据
+        this.loadData(); // Refresh data
       } else {
  // Failed to savewhenData
         if (row.originalData) {
@@ -463,7 +463,7 @@ export default {
         referenceText: '',
         selected: false,
         editing: true,
-        sort: 0 // 新增数据默认排序在顶部
+        sort: 0 // New data is sorted to the top by default
       };
 
       this.ttsModels.unshift(newRow);
@@ -498,7 +498,7 @@ export default {
               message: this.$t('ttsModel.deleteVoiceSuccess', {count: voiceCount}),
               showClose: true
             });
-            this.loadData(); // 刷新参数列表
+            this.loadData(); // Refresh parameter list
           } else {
             this.$message.error({
               message: data.msg || this.$t('ttsModel.deleteFailed'),

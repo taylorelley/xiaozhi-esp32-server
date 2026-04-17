@@ -153,8 +153,8 @@ export default {
                 userId: null
             },
  // AudioPlay
-            currentAudio: null, // 当前正在播放的音频对象
-            playingRowId: null  // 当前正在播放的行 ID
+            currentAudio: null, // Currently playing audio object
+            playingRowId: null  // Currently playing row ID
         };
     },
     created() {
@@ -184,19 +184,19 @@ export default {
     methods: {
         getTooltipContent(row) {
             if (!row.hasVoice) {
-                return '待上传';
+                return 'Pending upload';
             }
             switch (row.trainStatus) {
                 case 0:
-                    return '待复刻';
+                    return 'Pending clone';
                 case 2:
-                    return '训练成功';
+                    return 'Training succeeded';
                 case 3:
  // failedwhen，Based onErrorInfo
                     if (row.trainError) {
-                        return `训练失败：${row.trainError}`;
+                        return `Training failed: ${row.trainError}`;
                     }
-                    return '训练失败';
+                    return 'Training failed';
                 default:
                     return '';
             }
@@ -366,7 +366,7 @@ export default {
  // Tablere-
                 this.$forceUpdate();
             }
-            console.log('UpdateStatus:', row.id, '状态:', status, '状态码:', statusCode);
+            console.log('UpdateStatus:', row.id, 'status:', status, 'status code:', statusCode);
         },
  // successfulafter of callback
         handleCloneSuccess() {
@@ -407,9 +407,9 @@ export default {
             Api.voiceClone.updateName(params, (res) => {
                 res = res.data;
                 if (res.code === 0) {
-                    this.$message.success(this.$t('voiceClone.updateNameSuccess') || '名称更新成功');
+                    this.$message.success(this.$t('voiceClone.updateNameSuccess') || 'Name updated successfully');
                 } else {
-                    this.$message.error(res.msg || this.$t('voiceClone.updateNameFailed') || '名称更新失败');
+                    this.$message.error(res.msg || this.$t('voiceClone.updateNameFailed') || 'Failed to update name');
  // failedwhenvalue
                     this.fetchVoiceCloneList();
                 }
@@ -421,7 +421,7 @@ export default {
             row.isEdit = false;
             setTimeout(() => {
                 this.submitName(row);
-            }, 100); // 延迟 100ms，避开 enter+blur 同时触发的窗口
+            }, 100); // 100ms delay to avoid simultaneous enter+blur triggering
         },
  // Nameinput:whenSubmit
         onNameEnter(row) {
@@ -461,12 +461,12 @@ export default {
 
                     audio.play().catch(err => {
                         console.error('Playfailed:', err);
-                        this.$message.error(this.$t('voiceClone.playFailed') || '播放失败');
+                        this.$message.error(this.$t('voiceClone.playFailed') || 'Playback failed');
                         this.playingRowId = null;
                         this.currentAudio = null;
                     });
                 } else {
-                    this.$message.error(res.msg || this.$t('voiceClone.audioNotExist') || '音频不存在');
+                    this.$message.error(res.msg || this.$t('voiceClone.audioNotExist') || 'Audio does not exist');
                 }
             });
         },

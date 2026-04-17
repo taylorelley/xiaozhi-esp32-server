@@ -187,14 +187,14 @@ export default {
         },
         (res) => {
           this.loading = false;
-          console.log('getKnowledgeBaseList response:', res); // 添加调试日志
+          console.log('getKnowledgeBaseList response:', res); // Add debug log
  // ：from res.data GetPaginationData，is res.data.data
  // is knowledgeBase.js directlyResponseObject
           if (res.data && res.data.code === 0) {
             const pageData = res.data.data || {};
             this.knowledgeBaseList = pageData.list || [];
             this.total = pageData.total || 0;
-            console.log('Updated knowledgeBaseList:', this.knowledgeBaseList); // 添加调试日志
+            console.log('Updated knowledgeBaseList:', this.knowledgeBaseList); // Add debug log
           } else {
             this.$message.error({
               message: res.data?.msg || this.$t('knowledgeBaseManagement.getKnowledgeBaseListFailed'),
@@ -405,9 +405,9 @@ export default {
         description: row.description,
         status: row.status
       };
-      console.log('Updating knowledge base status:', updateForm); // 添加调试日志
+      console.log('Updating knowledge base status:', updateForm); // Add debug log
       Api.knowledgeBase.updateKnowledgeBase(row.datasetId, updateForm, (res) => {
-        console.log('Status update response:', res); // 添加调试日志
+        console.log('Status update response:', res); // Add debug log
         if (res.data && res.data.code !== 0) {
  // of Status
           this.fetchKnowledgeBaseList();

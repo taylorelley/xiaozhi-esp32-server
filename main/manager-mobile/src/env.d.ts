@@ -18,7 +18,7 @@ interface ImportMetaEnv {
   /** H5Whether toneeds */
   readonly VITE_APP_PROXY: 'true' | 'false'
   /** H5Whether toneeds，needs of has */
-  readonly VITE_APP_PROXY_PREFIX: string // 一般是/api
+  readonly VITE_APP_PROXY_PREFIX: string // Usually /api
   /** UploadImageAddress */
   readonly VITE_UPLOAD_BASEURL: string
   /** Whether toClearconsole */

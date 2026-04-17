@@ -279,7 +279,7 @@ export default {
     copyUrl() {
       const textarea = document.createElement('textarea');
       textarea.value = this.mcpUrl;
-      textarea.style.position = 'fixed';  // 防止页面滚动
+      textarea.style.position = 'fixed';  // Prevent page scrolling
       document.body.appendChild(textarea);
       textarea.select();
 

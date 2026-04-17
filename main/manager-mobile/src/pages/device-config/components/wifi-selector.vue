@@ -13,7 +13,7 @@ interface WiFiNetwork {
 
 // Props
 interface Props {
-  autoConnect?: boolean // 是否自动检测ESP32连接
+  autoConnect?: boolean // Whether to auto-detect the ESP32 connection
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -103,7 +103,7 @@ async function scanWifi() {
         }))
       }
       else {
-        throw new TypeError('扫描接口返回格式异常')
+        throw new TypeError('Unexpected format returned by scan API')
       }
     }
     else {

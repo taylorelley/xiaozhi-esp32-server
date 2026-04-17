@@ -112,7 +112,7 @@ export interface PluginDefinition {
   modelType: string
   providerCode: string
   name: string
-  fields: PluginField[] // 注意：原始是字符串，需要先 JSON.parse
+  fields: PluginField[] // Note: the original is a string and must be JSON.parsed first
   sort: number
   updater: string
   updateDate: string

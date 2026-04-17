@@ -119,7 +119,7 @@ export default {
             pageSizeOptions: [10, 20, 50, 100],
             total: 0,
             dialogVisible: false,
-            dialogTitle: "新增参数",
+            dialogTitle: "Add Parameter",
             isAllSelected: false,
             sensitive_keys: ["api_key", "personal_access_token", "access_token", "token", "secret", "access_key_secret", "secret_key", "password", "mqtt_signature_key", "private_key"],
             paramForm: {
@@ -205,7 +205,7 @@ export default {
                 id: null,
                 paramCode: "",
                 paramValue: "",
-                valueType: "string", // 默认值
+                valueType: "string", // Default value
                 remark: ""
             };
             this.dialogVisible = true;
@@ -216,7 +216,7 @@ export default {
                 id: row.id,
                 paramCode: row.paramCode,
                 paramValue: row.paramValue,
-                valueType: row.valueType || "string", // 确保有值
+                valueType: row.valueType || "string", // Ensure a value is set
                 remark: row.remark
             };
             this.dialogVisible = true;

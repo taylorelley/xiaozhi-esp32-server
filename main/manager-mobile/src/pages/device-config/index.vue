@@ -148,7 +148,7 @@ onMounted(() => {
 <route lang="jsonc" type="page">
 {
   "style": {
-    "navigationBarTitleText": "设备配置",
+    "navigationBarTitleText": "Device Configuration",
     "navigationStyle": "custom"
   }
 }

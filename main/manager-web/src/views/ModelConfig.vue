@@ -395,8 +395,8 @@ export default {
     },
     handleMenuSelect(index) {
       this.activeTab = index;
-      this.currentPage = 1; // 重置到第一页
-      this.pageSize = 10; // 可选：重置每页条数
+      this.currentPage = 1; // Reset to page 1
+      this.pageSize = 10; // Optional: reset per-page count
       this.loadData();
     },
     handleSearch() {
@@ -499,7 +499,7 @@ export default {
           } else {
             this.$message.error(data.msg || this.$t("modelConfig.duplicateFailed"));
           }
-          done && done(); // 调用done回调关闭加载状态
+          done && done(); // Invoke done callback to close the loading state
         });
       } else {
         Api.model.updateModel({ modelType, provideCode, id, formData }, ({ data }) => {
@@ -510,7 +510,7 @@ export default {
           } else {
             this.$message.error(data.msg || this.$t("modelConfig.saveFailed"));
           }
-          done && done(); // 调用done回调关闭加载状态
+          done && done(); // Invoke done callback to close the loading state
         });
       }
     },
@@ -581,7 +581,7 @@ export default {
 
     // GetModel configurationlist
     loadData() {
-      this.loading = true; // 开始加载
+      this.loading = true; // Start loading
       const params = {
         modelType: this.activeTab,
         modelName: this.search,
@@ -590,7 +590,7 @@ export default {
       };
 
       Api.model.getModelList(params, ({ data }) => {
-        this.loading = false; // 结束加载
+        this.loading = false; // End loading
         if (data.code === 0) {
           this.modelList = data.data.list;
           this.total = data.data.total;

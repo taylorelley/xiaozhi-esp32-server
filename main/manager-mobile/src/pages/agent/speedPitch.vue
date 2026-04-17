@@ -2,7 +2,7 @@
 {
   "layout": "default",
   "style": {
-    "navigationBarTitleText": "语音设置",
+    "navigationBarTitleText": "Voice Settings",
     "navigationStyle": "custom"
   }
 }

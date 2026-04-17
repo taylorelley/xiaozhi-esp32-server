@@ -147,13 +147,13 @@ export default {
       this.isUploading = true
  // UsesetTimeout of 0-50%
       const timer = setTimeout(() => {
-        if (this.uploadProgress < 50) {  // 只有当进度小于50%时才设置
+        if (this.uploadProgress < 50) {  // Only set when progress is less than 50%
           this.uploadProgress = 50
         }
       }, 1000)
 
       Api.ota.uploadFirmware(file, (res) => {
-        clearTimeout(timer)  // 清除定时器
+        clearTimeout(timer)  // Clear timer
         res = res.data
         if (res.code === 0) {
           this.form.firmwarePath = res.data
@@ -197,7 +197,7 @@ export default {
       this.uploadStatus = ''
       this.isUploading = false
  // ResetFormin of FileField
-      if (!this.form.id) {  // 只在新增时重置
+      if (!this.form.id) {  // Only reset when adding a new one
         this.form.firmwarePath = ''
         this.form.size = 0
       }

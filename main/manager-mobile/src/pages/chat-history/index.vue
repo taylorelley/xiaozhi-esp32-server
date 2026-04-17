@@ -120,11 +120,11 @@ function formatTime(timeStr: string) {
   if (!timeStr)
     return t('chatHistory.unknownTime')
  // ProcesswhenString，EnsureFormat
-  const date = new Date(timeStr.replace(' ', 'T')) // 转换为ISO格式
+  const date = new Date(timeStr.replace(' ', 'T')) // Convert to ISO format
   const now = new Date()
  // CheckWhether tohas
   if (Number.isNaN(date.getTime())) {
-    return timeStr // 如果解析失败，直接返回原字符串
+    return timeStr // If parsing fails, return the original string
   }
 
   const diff = now.getTime() - date.getTime()

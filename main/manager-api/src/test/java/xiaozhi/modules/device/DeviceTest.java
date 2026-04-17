@@ -18,7 +18,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("dev")
-@DisplayName("set备测try")
+@DisplayName("Device test")
 public class DeviceTest {
 
     @Autowired
@@ -35,18 +35,18 @@ public class DeviceTest {
     }
 
     @Test
-    @DisplayName("测trywriteinset备info息")
+    @DisplayName("Test writing device information")
     public void testWriteDeviceInfo() {
-        log.info("start测trywriteinset备info息...");
-        // 模拟set备MAC址
+        log.info("Start testing writing device information...");
+        // Simulate device MAC address
         String macAddress = "00:11:22:33:44:66";
-        // 模拟set备verificationcode
+        // Simulate device verification code
         String deviceCode = "123456";
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("mac_address", macAddress);
         map.put("activation_code", deviceCode);
-        map.put("board", "harditemtypenumber");
+        map.put("board", "hardware model number");
         map.put("app_version", "0.3.13");
 
         String safeDeviceId = macAddress.replace(":", "_").toLowerCase();
@@ -56,18 +56,18 @@ public class DeviceTest {
         String redisKey = "ota:activation:code:" + deviceCode;
         log.info("Redis Key: {}", redisKey);
 
-        // willset备info息writeinRedis
+        // Write device information into Redis
         redisUtils.set(redisKey, macAddress, 300);
-        log.info("set备info息alreadywriteinRedis");
+        log.info("Device information has been written into Redis");
 
-        // verificationYesNowriteinsuccess
+        // Verify that the write was successful
         String savedMacAddress = (String) redisUtils.get(redisKey);
-        log.info("fromRedisreadget MAC址: {}", savedMacAddress);
+        log.info("MAC address read from Redis: {}", savedMacAddress);
 
-        // usebreak言verification
-        Assertions.assertNotNull(savedMacAddress, "fromRedisreadget MAC址not shouldasempty");
-        Assertions.assertEquals(macAddress, savedMacAddress, "保store MAC址andoriginalMAC址not match");
+        // Assertion-based verification
+        Assertions.assertNotNull(savedMacAddress, "MAC address read from Redis should not be empty");
+        Assertions.assertEquals(macAddress, savedMacAddress, "Saved MAC address does not match the original MAC address");
 
-        log.info("测trycomplete");
+        log.info("Test completed");
     }
 }

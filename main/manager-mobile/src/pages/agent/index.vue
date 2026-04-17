@@ -2,7 +2,7 @@
 {
   "layout": "default",
   "style": {
-    "navigationBarTitleText": "智能体",
+    "navigationBarTitleText": "Agent",
     "navigationStyle": "custom"
   }
 }

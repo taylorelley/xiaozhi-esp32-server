@@ -3,7 +3,7 @@
   "layout": "default",
   "style": {
     "navigationStyle": "custom",
-    "navigationBarTitleText": "注册"
+    "navigationBarTitleText": "Register"
   }
 }
 </route>
@@ -80,7 +80,7 @@ const configStore = useConfigStore()
 // Country codeSelect
 const showAreaCodeSheet = ref(false)
 const selectedAreaCode = ref('+86')
-const selectedAreaName = ref('中国大陆')
+const selectedAreaName = ref('Mainland China')
 
 // calculateProperty：Whether toEnableMobile numberRegister
 const enableMobileRegister = computed(() => {
@@ -89,7 +89,7 @@ const enableMobileRegister = computed(() => {
 
 // calculateProperty：Country codelist
 const areaCodeList = computed(() => {
-  return configStore.config.mobileAreaList || [{ name: '中国大陆', key: '+86' }]
+  return configStore.config.mobileAreaList || [{ name: 'Mainland China', key: '+86' }]
 })
 
 // SM2Public key

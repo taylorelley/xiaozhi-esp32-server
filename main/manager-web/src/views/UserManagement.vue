@@ -157,7 +157,7 @@ export default {
           mobile: this.searchPhone,
         },
         ({ data }) => {
-          this.loading = false; // 结束加载
+          this.loading = false; // End loading
           if (data.code === 0) {
             this.userList = data.data.list.map(item => ({
               ...item,
@@ -334,7 +334,7 @@ export default {
               message: this.$t('user.statusChangeSuccess', { action: actionText, count: userCount }),
               showClose: true
             });
-            this.fetchUsers(); // 刷新用户列表
+            this.fetchUsers(); // Refresh user list
           } else {
             this.$message.error({
               message: this.$t('user.operationFailed'),

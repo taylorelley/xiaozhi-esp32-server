@@ -12,17 +12,17 @@ $uni-color-warning: #f0ad4e;
 $uni-color-error: #dd524d;
 
 /* */
-$uni-text-color: #333; // 基本色
-$uni-text-color-inverse: #fff; // 反色
-$uni-text-color-grey: #999; // 辅助灰色，如加载更多的提示信息
+$uni-text-color: #333; // Base color
+$uni-text-color-inverse: #fff; // Inverse color
+$uni-text-color-grey: #999; // Auxiliary gray, e.g. the hint message for loading more
 $uni-text-color-placeholder: #808080;
 $uni-text-color-disable: #c0c0c0;
 
 /* */
 $uni-bg-color: #fff;
 $uni-bg-color-grey: #f8f8f8;
-$uni-bg-color-hover: #f1f1f1; // 点击状态颜色
-$uni-bg-color-mask: rgb(0 0 0 / 40%); // 遮罩颜色
+$uni-bg-color-hover: #f1f1f1; // Tap state color
+$uni-bg-color-mask: rgb(0 0 0 / 40%); // Mask color
 
 /* */
 $uni-border-color: #c8c7cc;
@@ -56,12 +56,12 @@ $uni-spacing-col-base: 8px;
 $uni-spacing-col-lg: 12px;
 
 /* */
-$uni-opacity-disabled: 0.3; // 组件禁用态的透明度
+$uni-opacity-disabled: 0.3; // Disabled-state opacity for components
 
 /* */
-$uni-color-title: #2c405a; // 文章标题颜色
+$uni-color-title: #2c405a; // Article title color
 $uni-font-size-title: 20px;
-$uni-color-subtitle: #555; // 二级标题颜色
+$uni-color-subtitle: #555; // Secondary title color
 $uni-font-size-subtitle: 18px;
-$uni-color-paragraph: #3f536e; // 文章段落颜色
+$uni-color-paragraph: #3f536e; // Article paragraph color
 $uni-font-size-paragraph: 15px;

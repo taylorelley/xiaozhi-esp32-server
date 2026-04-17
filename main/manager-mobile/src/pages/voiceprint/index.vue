@@ -193,7 +193,7 @@ function getSelectedAudioContent(audioId: string) {
   if (!audioId)
     return t('voiceprint.clickToSelectVector')
   const chatItem = chatHistoryList.value.find(item => item.audioId === audioId)
-  return chatItem ? chatItem.content : `已选择: ${audioId.substring(0, 8)}...`
+  return chatItem ? chatItem.content : `Selected: ${audioId.substring(0, 8)}...`
 }
 
 // SelectVoiceprint
@@ -286,7 +286,7 @@ async function handleDelete(id: string) {
 
 // PlayAudio
 async function playAudio(audioId: string, event: Event) {
-  event.stopPropagation() // 阻止事件冒泡，防止关闭下拉框
+  event.stopPropagation() // Stop event bubbling to prevent the dropdown from closing
 
   if (!audioId) {
     toast.warning(t('voiceprint.audioNotExist'))
@@ -395,7 +395,7 @@ defineExpose({
                   {{ item.sourceName }}
                 </text>
                 <text class="mb-[12rpx] block text-[28rpx] text-[#65686f] leading-[1.4]">
-                  {{ item.introduce || '暂无描述' }}
+                  {{ item.introduce || 'No description' }}
                 </text>
                 <text class="block text-[24rpx] text-[#9d9ea3]">
                   {{ item.createDate }}

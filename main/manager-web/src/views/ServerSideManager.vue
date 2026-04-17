@@ -141,8 +141,8 @@ export default {
       }
  // 
       this.$confirm(actionItem.message, actionItem.title, {
-        confirmButtonText: actionItem.confirmText, // 确认按钮文本
-        cancelButtonText: this.$t('common.cancel') // 取消按钮文本
+        confirmButtonText: actionItem.confirmText, // Confirm button text
+        cancelButtonText: this.$t('common.cancel') // Cancel button text
       }).then(() => {
  // UserConfirmButton
         Api.admin.sendWsServerAction({

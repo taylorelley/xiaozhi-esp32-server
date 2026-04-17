@@ -147,7 +147,7 @@ export default {
 
     // SearchUpdateAgent list
     handleSearchResult(filteredList) {
-      this.devices = filteredList; // 更新设备列表
+      this.devices = filteredList; // Update device list
     },
     // GetAgent list
     fetchAgentList() {
@@ -160,8 +160,8 @@ export default {
           }));
  // Settings（）
           this.skeletonCount = Math.min(
-            Math.max(this.originalDevices.length, 3), // 最少3个
-            10 // 最多10个
+            Math.max(this.originalDevices.length, 3), // At least 3
+            10 // At most 10
           );
 
           this.handleSearchReset();
@@ -174,7 +174,7 @@ export default {
     },
     // DeleteAgent
     handleDeleteAgent(agentId) {
-      this.$confirm(this.$t('home.confirmDeleteAgent'), '提示', {
+      this.$confirm(this.$t('home.confirmDeleteAgent'), 'Notice', {
         confirmButtonText: this.$t('button.ok'),
         cancelButtonText: this.$t('button.cancel'),
         type: 'warning'
@@ -185,7 +185,7 @@ export default {
               message: this.$t('home.deleteSuccess'),
               showClose: true
             });
-            this.fetchAgentList(); // 刷新列表
+            this.fetchAgentList(); // Refresh list
           } else {
             this.$message.error({
               message: res.data.msg || this.$t('home.deleteFailed'),

@@ -113,7 +113,7 @@ export default {
       pendingChanges: false,
       featureManagementFeatures: [],
       voiceManagementFeatures: [],
-      isSaving: false // 添加保存状态锁定
+      isSaving: false // Add save state lock
     }
   },
   computed: {

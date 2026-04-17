@@ -141,7 +141,7 @@
         <el-button type="primary" @click="handleBatchUploadSubmit" :loading="uploading"
           :disabled="selectedFilesList.length === 0">
           {{ $t('knowledgeFileUpload.confirm') }} {{ selectedFilesList.length > 0 ?
-            `(${selectedFilesList.length}${$t('knowledgeFileUpload.itemsPerPage').replace('条/页', '个文件')})` : '' }}
+            `(${selectedFilesList.length}${$t('knowledgeFileUpload.itemsPerPage').replace('items/page', 'files')})` : '' }}
         </el-button>
       </div>
     </el-dialog>
@@ -288,7 +288,7 @@ export default {
       },
       uploadUrl: '',
       isAllSelected: false,
-      selectedFilesList: [], // 批量上传选择的文件列表
+      selectedFilesList: [], // List of files selected for batch upload
  // slicemanagementData
       sliceDialogVisible: false,
       currentDocumentId: '',
@@ -307,8 +307,8 @@ export default {
       retrievalTestLoading: false,
  // StatuspollingData
       statusPollingTimer: null,
-      statusPollingInterval: 5000, // 5秒轮询一次
-      maxStatusPollingTime: 300000, // 最大轮询时间5分钟
+      statusPollingInterval: 5000, // Poll every 5 seconds
+      maxStatusPollingTime: 300000, // Maximum polling time is 5 minutes
       statusPollingStartTime: null
     };
   },
@@ -529,7 +529,7 @@ export default {
 
       const params = {
         page: 1,
-        page_size: 1  // 只需要获取总数，所以每页1条记录即可
+        page_size: 1  // Only need the total count, so 1 record per page is enough
       };
 
       KnowledgeBaseAPI.listChunks(this.datasetId, documentId, params,
@@ -577,7 +577,7 @@ export default {
         name: '',
         file: null
       };
-      this.selectedFilesList = []; // 清空已选择文件列表
+      this.selectedFilesList = []; // Clear the list of selected files
       this.uploadDialogVisible = true;
     },
     handleFileChange: function (file, fileList) {
@@ -604,7 +604,7 @@ export default {
       }
  // SaveFiletouploadForm
       this.uploadForm.file = file;
-      return false; // 阻止自动上传，使用自定义上传逻辑
+      return false; // Prevent auto upload; use custom upload logic
     },
  // RemovealreadySelect of File
     removeSelectedFile: function (index) {
@@ -728,7 +728,7 @@ export default {
  // UpdateDocumentStatusisProcessing
               const document = this.fileList.find(doc => doc.id === row.id);
               if (document) {
-                document.parseStatusCode = 1; // 处理中状态
+                document.parseStatusCode = 1; // Processing state
                 this.$forceUpdate();
               }
  // StartStatuspolling
@@ -856,17 +856,17 @@ export default {
     getParseStatusType: function (parseStatusCode) {
       switch (parseStatusCode) {
         case 0:
-          return 'info'; // 灰色 - 未开始
+          return 'info'; // Gray - not started
         case 1:
-          return 'primary'; // 蓝色 - 处理中
+          return 'primary'; // Blue - processing
         case 2:
-          return 'warning'; // 黄色 - 已取消
+          return 'warning'; // Yellow - cancelled
         case 3:
-          return 'success'; // 绿色 - 完成
+          return 'success'; // Green - completed
         case 4:
-          return 'danger'; // 红色 - 失败
+          return 'danger'; // Red - failed
         default:
-          return 'info'; // 默认灰色
+          return 'info'; // Default gray
       }
     },
     getParseStatusText: function (parseStatusCode) {
@@ -934,7 +934,7 @@ export default {
  // ParseslicelistData
             this.parseSliceData(data.data);
           } else {
-            this.$message.error(data?.msg || '获取切片列表失败');
+            this.$message.error(data?.msg || 'Failed to get chunk list');
             this.sliceList = [];
             this.sliceTotal = 0;
           }
@@ -943,7 +943,7 @@ export default {
           this.sliceLoading = false;
  // Errorcallback handling backendBack of ErrorInfo
           if (err && err.data) {
-            this.$message.error(err.data.msg || err.msg || '获取切片列表失败');
+            this.$message.error(err.data.msg || err.msg || 'Failed to get chunk list');
           } else {
             this.$message.error('Getslicelistfailed');
           }
@@ -1051,14 +1051,14 @@ export default {
             this.retrievalTestResult = data.data || data;
             this.$message.success('recallTestDone');
           } else {
-            this.$message.error(data?.msg || '召回测试失败');
+            this.$message.error(data?.msg || 'Recall test failed');
           }
         },
         (err) => {
           this.retrievalTestLoading = false;
  // Errorcallback handling backendBack of ErrorInfo
           if (err && err.data) {
-            this.$message.error(err.data.msg || err.msg || '召回测试失败');
+            this.$message.error(err.data.msg || err.msg || 'Recall test failed');
           } else {
             this.$message.error('recallTest failed');
           }

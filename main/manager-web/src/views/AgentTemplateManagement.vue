@@ -160,7 +160,7 @@ export default {
       templateList: [],
       templateLoading: false,
       selectedTemplates: [],
-      isAllSelected: false, // 添加全选状态
+      isAllSelected: false, // Add select-all state
 
       search: "",
  // PaginationData

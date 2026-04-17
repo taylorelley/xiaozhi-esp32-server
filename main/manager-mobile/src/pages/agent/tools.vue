@@ -2,7 +2,7 @@
 {
   "layout": "default",
   "style": {
-    "navigationBarTitleText": "编辑功能",
+    "navigationBarTitleText": "Edit Tools",
     "navigationStyle": "custom"
   }
 }

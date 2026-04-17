@@ -66,7 +66,7 @@ const userStore = useUserStore()
 // Country codeSelect
 const showAreaCodeSheet = ref(false)
 const selectedAreaCode = ref('+86')
-const selectedAreaName = ref('中国大陆')
+const selectedAreaName = ref('Mainland China')
 
 // calculateProperty：Whether toEnableMobile numberLog in
 const enableMobileLogin = computed(() => {
@@ -75,7 +75,7 @@ const enableMobileLogin = computed(() => {
 
 // calculateProperty：Country codelist
 const areaCodeList = computed(() => {
-  return configStore.config.mobileAreaList || [{ name: '中国大陆', key: '+86' }]
+  return configStore.config.mobileAreaList || [{ name: 'Mainland China', key: '+86' }]
 })
 
 // SwitchLog inmode

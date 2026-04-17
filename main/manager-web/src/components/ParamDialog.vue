@@ -72,7 +72,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '新增参数'
+      default: 'Add Parameter'
     },
     visible: {
       type: Boolean,
@@ -144,13 +144,13 @@ export default {
             }
           }
 
-          this.saving = true; // 开始加载
+          this.saving = true; // Start loading
           this.$emit('submit', submitData);
         }
       });
     },
     cancel() {
-      this.saving = false; // 取消时重置状态
+      this.saving = false; // Reset state on cancel
       this.dialogKey = Date.now();
       this.$emit('cancel');
     },

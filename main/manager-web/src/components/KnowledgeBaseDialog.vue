@@ -143,7 +143,7 @@ export default {
     },
     loadRAGModels() {
       if (this.ragModels.length > 0) {
-        return; // 已经加载过，避免重复加载
+        return; // Already loaded; avoid reloading
       }
 
       console.log('StartLoadRAGModel list');
@@ -151,7 +151,7 @@ export default {
         console.log('RAGModel listResponse:', res);
         if (res.data && res.data.code === 0) {
           this.ragModels = res.data.data || [];
-          console.log('RAGModel listLoaded successfully，Total', this.ragModels.length, '个模型');
+          console.log('RAGModel list loaded successfully, total', this.ragModels.length, 'models');
  // If it isAddKnowledge basehasSettingsragModelId，thenDefaultSelectRAGModel
           if (!this.form.id && !this.form.ragModelId && this.ragModels.length > 0) {
             this.$set(this.form, 'ragModelId', this.ragModels[0].id);

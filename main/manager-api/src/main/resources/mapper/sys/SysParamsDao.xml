@@ -3,12 +3,12 @@
 
 <mapper namespace="xiaozhi.modules.sys.dao.SysParamsDao">
 
-    <!-- according toparameternumbereditcode，query询value -->
+    <!-- Query value by parameter code -->
 	<select id="getValueByCode" resultType="String">
         select param_value from sys_params where param_code = #{paramCode}
     </select>
 
-    <!-- getparameternumbereditcodecolumntable -->
+    <!-- Get parameter code list -->
     <select id="getParamCodeList" resultType="String">
         select param_code from sys_params where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">

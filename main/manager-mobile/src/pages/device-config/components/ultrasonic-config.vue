@@ -31,12 +31,12 @@ const audioFilePath = ref('')
 const audioContext = ref<any>(null)
 
 // AFSKParameter - referenceHTMLFile
-const MARK = 1800 // 二进制1的频率 (Hz)
-const SPACE = 1500 // 二进制0的频率 (Hz)
-const SAMPLE_RATE = 44100 // 采样率
-const BIT_RATE = 100 // 比特率 (bps)
-const START_BYTES = [0x01, 0x02] // 起始标记
-const END_BYTES = [0x03, 0x04] // 结束标记
+const MARK = 1800 // Frequency for binary 1 (Hz)
+const SPACE = 1500 // Frequency for binary 0 (Hz)
+const SAMPLE_RATE = 44100 // Sample rate
+const BIT_RATE = 100 // Bit rate (bps)
+const START_BYTES = [0x01, 0x02] // Start marker
+const END_BYTES = [0x03, 0x04] // End marker
 
 // calculateProperty
 const canGenerate = computed(() => {
@@ -49,7 +49,7 @@ const canGenerate = computed(() => {
 
 const audioLengthText = computed(() => {
   if (!props.selectedNetwork)
-    return '0秒'
+    return '0s'
   const dataStr = `${props.selectedNetwork.ssid}\n${props.password}`
   const textBytes = stringToBytes(dataStr)
   const totalBits = (START_BYTES.length + textBytes.length + 1 + END_BYTES.length) * 8
@@ -242,7 +242,7 @@ async function generateAndPlay() {
 
     console.log(t('deviceConfig.bitStreamLength') + ':', bits.length)
  // AFSK - Filesize
-    const reducedSampleRate = 22050 // 降低采样率
+    const reducedSampleRate = 22050 // Reduce sample rate
     const samplesPerBit = reducedSampleRate / BIT_RATE
     const totalSamples = Math.floor(bits.length * samplesPerBit)
     const floatBuf = new Float32Array(totalSamples)
@@ -251,7 +251,7 @@ async function generateAndPlay() {
       const freq = bits[i] ? MARK : SPACE
       for (let j = 0; j < samplesPerBit; j++) {
         const t = (i * samplesPerBit + j) / reducedSampleRate
-        floatBuf[i * samplesPerBit + j] = Math.sin(2 * Math.PI * freq * t) * 0.5 // 降低音量
+        floatBuf[i * samplesPerBit + j] = Math.sin(2 * Math.PI * freq * t) * 0.5 // Reduce volume
       }
     }
 
@@ -263,20 +263,20 @@ async function generateAndPlay() {
 
     console.log(t('deviceConfig.base64Length') + ':', base64.length, t('deviceConfig.about'), Math.round(base64.length / 1024), 'KB')
  // CheckDatasize
-    if (base64.length > 1024 * 1024) { // 超过1MB
+    if (base64.length > 1024 * 1024) { // Exceeds 1MB
       throw new Error(t('deviceConfig.audioFileTooLarge'))
     }
 
     audioFilePath.value = dataUri
     audioGenerated.value = true
 
-    console.log(t('deviceConfig.audioGenerationSuccess') + '，比特流长度:', bits.length, t('deviceConfig.samplePoints') + ':', floatBuf.length)
+    console.log(t('deviceConfig.audioGenerationSuccess') + ', bit stream length:', bits.length, t('deviceConfig.samplePoints') + ':', floatBuf.length)
 
     toast.success(t('deviceConfig.soundWaveGenerationSuccess'))
  // Play
     setTimeout(async () => {
       await playAudio()
-    }, 800) // 增加延迟时间
+    }, 800) // Increase delay time
   }
   catch (error) {
     console.error(t('deviceConfig.audioGenerationFailed') + ':', error)
@@ -318,7 +318,7 @@ function buildWavOptimized(pcm: Uint8Array, sampleRate: number): ArrayBuffer {
   write32(16, 16)
   write16(20, 1)
   write16(22, 1)
-  write32(24, sampleRate) // 使用传入的采样率
+  write32(24, sampleRate) // Use the passed-in sample rate
   write32(28, sampleRate * 2)
   write16(32, 2)
   write16(34, 16)

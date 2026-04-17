@@ -24,7 +24,7 @@
             <if test="modelName != null">and model_name = #{modelName}</if>
     </select>
 
-    <!-- getmatchingitemsitem TTSplatformcolumntable -->
+    <!-- Get matching TTS platform list -->
     <select id="getTtsPlatformList" resultType="map">
         select id, model_name as modelName from ai_model_config
         where model_type = 'TTS'

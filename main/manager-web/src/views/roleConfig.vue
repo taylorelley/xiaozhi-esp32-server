@@ -526,7 +526,7 @@ export default {
       templates: [],
       loadingTemplate: false,
       voiceOptions: [],
-      voiceDetails: {}, // 保存完整的音色信息
+      voiceDetails: {}, // Keep complete voice info
       showFunctionDialog: false,
       currentFunctions: [],
       currentContextProviders: [],
@@ -537,12 +537,12 @@ export default {
       currentAudio: null,
       currentPlayingVoiceId: null,
  // Status
-      languageOptions: [], // 语言选项列表
-      selectedLanguage: '', // 当前选中的语言
+      languageOptions: [], // Language options list
+      selectedLanguage: '', // Currently selected language
  // Status
       featureStatus: {
-        vad: false, // 语言检测活动功能状态
-        asr: false, // 语音识别功能状态
+        vad: false, // Voice activity detection feature state
+        asr: false, // ASR feature state
       },
       dynamicTags: [],
       inputVisible: false,
@@ -745,7 +745,7 @@ export default {
                 name: meta.name,
  // backendIfhas paramInfo Field mapping.paramInfo，then meta.params Defaultvalue
                 params: mapping.paramInfo || { ...meta.params },
-                fieldsMeta: meta.fieldsMeta, // 保留以便对话框渲染 tooltip
+                fieldsMeta: meta.fieldsMeta, // Kept so the dialog can render the tooltip
               };
             });
  // ，Cancelwhen
@@ -794,7 +794,7 @@ export default {
               });
               this.$set(this.modelOptions, model.type, LLMdata);
             } else {
-              this.$message.error(data.msg || "获取LLM模型列表失败");
+              this.$message.error(data.msg || "Failed to get LLM model list");
             }
           });
         }
@@ -1085,7 +1085,7 @@ export default {
           console.log(
             "cloneAudioCheckResult:",
             isCloneAudio,
-            "训练状态:",
+            "Training status:",
             voiceDetail.train_status
           );
 
@@ -1137,7 +1137,7 @@ export default {
                 this.$message.warning(this.$t('roleConfig.audioLoadTimeout'));
                 this.playingVoice = false;
               }
-            }, 10000); // 10秒超时
+            }, 10000); // 10-second timeout
  // Listen to playbackError
             this.currentAudio.onerror = () => {
               clearTimeout(timeoutId);
@@ -1218,7 +1218,7 @@ export default {
               this.$message.warning(this.$t('roleConfig.audioLoadTimeout'));
               this.playingVoice = false;
             }
-          }, 10000); // 10秒超时
+          }, 10000); // 10-second timeout
  // Listen to playbackError
           this.currentAudio.onerror = () => {
             clearTimeout(timeoutId);

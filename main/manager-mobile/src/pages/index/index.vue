@@ -5,7 +5,7 @@
   "style": {
  // 'custom' EnablecustomNavigationbar，Default 'default'
     "navigationStyle": "custom",
-    "navigationBarTitleText": "首页"
+    "navigationBarTitleText": "Home"
   }
 }
 </route>

@@ -28,7 +28,7 @@
         <div class="content-area">
           <el-card class="provider-card" shadow="never">
             <el-table ref="providersTable" :data="filteredProvidersList" class="transparent-table" v-loading="loading"
-              element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+              element-loading-text="Loading..." element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(255, 255, 255, 0.7)" :header-cell-class-name="headerCellClassName">
               <el-table-column :label="$t('modelConfig.select')" align="center" width="120">
                 <template slot-scope="scope">
@@ -156,7 +156,7 @@ export default {
       pageSizeOptions: [10, 20, 50, 100],
       total: 0,
       dialogVisible: false,
-      dialogTitle: "新增供应器",
+      dialogTitle: "Add Provider",
       isAllSelected: false,
       isDropdownOpen: false,
       sensitive_keys: ["api_key", "personal_access_token", "access_token", "token", "secret", "access_key_secret", "secret_key"],
@@ -243,7 +243,7 @@ export default {
             this.total = data.data.total;
           } else {
             this.$message.error({
-              message: data.msg || '获取参数列表失败'
+              message: data.msg || 'Failed to get parameter list'
             });
           }
         }
@@ -291,7 +291,7 @@ export default {
         Api.model.updateModelProvider(form, ({ data }) => {
 
           if (data.code === 0) {
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Refresh table
             this.$message.success({
             message: this.$t('common.updateSuccess'),
             showClose: true
@@ -302,7 +302,7 @@ export default {
         // Add
         Api.model.addModelProvider(form, ({ data }) => {
           if (data.code === 0) {
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Refresh table
             this.$message.success({
             message: this.$t('common.addSuccess'),
             showClose: true
@@ -340,7 +340,7 @@ export default {
           if (data.code === 0) {
 
             this.isAllSelected = false;
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Refresh table
 
             this.$message.success({
               message: this.$t('common.deleteSuccess'),

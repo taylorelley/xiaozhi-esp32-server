@@ -28,7 +28,7 @@
                         </el-button>
                     </div>
                     <el-table ref="dictTypeTable" :data="dictTypeList" style="width: 100%" v-loading="dictTypeLoading"
-                        element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+                        element-loading-text="Loading..." element-loading-spinner="el-icon-loading"
                         element-loading-background="rgba(255, 255, 255, 0.7)" @row-click="handleDictTypeRowClick"
                         @selection-change="handleDictTypeSelectionChange" :row-class-name="tableRowClassName"
                         class="dict-type-table" :header-cell-class-name="headerCellClassName">
@@ -46,7 +46,7 @@
                 <div class="content-area">
                     <el-card class="dict-data-card" shadow="never">
                         <el-table ref="dictDataTable" :data="dictDataList" style="width: 100%"
-                            v-loading="dictDataLoading" element-loading-text="拼命加载中"
+                            v-loading="dictDataLoading" element-loading-text="Loading..."
                             element-loading-spinner="el-icon-loading"
                             element-loading-background="rgba(255, 255, 255, 0.7)" class="transparent-table"
                             header-row-class-name="table-header">
@@ -144,9 +144,9 @@ export default {
             dictTypeList: [],
             dictTypeLoading: false,
             selectedDictType: null,
-            selectedDictTypes: [],  // 恢复多选数组
+            selectedDictTypes: [],  // Restore the multi-select array
             dictTypeDialogVisible: false,
-            dictTypeDialogTitle: '新增字典类型',
+            dictTypeDialogTitle: 'Add Dictionary Type',
             dictTypeForm: {
                 id: null,
                 dictName: '',
@@ -157,7 +157,7 @@ export default {
             dictDataLoading: false,
             isAllDictDataSelected: false,
             dictDataDialogVisible: false,
-            dictDataDialogTitle: '新增字典数据',
+            dictDataDialogTitle: 'Add Dictionary Data',
             dictDataForm: {
                 id: null,
                 dictTypeId: null,

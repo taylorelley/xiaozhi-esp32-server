@@ -126,25 +126,25 @@ const providerStore = useProvider()
 // tabs
 const tabList = [
   {
-    label: '角色配置',
+    label: 'Role Config',
     value: 'home',
     icon: '/static/tabbar/robot.png',
     activeIcon: '/static/tabbar/robot_activate.png',
   },
   {
-    label: '设备管理',
+    label: 'Device Management',
     value: 'category',
     icon: '/static/tabbar/device.png',
     activeIcon: '/static/tabbar/device_activate.png',
   },
   {
-    label: '聊天记录',
+    label: 'Chat History',
     value: 'settings',
     icon: '/static/tabbar/chat.png',
     activeIcon: '/static/tabbar/chat_activate.png',
   },
   {
-    label: '声纹管理',
+    label: 'Voiceprint Management',
     value: 'profile',
     icon: '/static/tabbar/voiceprint.png',
     activeIcon: '/static/tabbar/voiceprint_activate.png',
@@ -223,7 +223,7 @@ async function loadAgentDetail() {
 // GetVoiceShowName
 function getVoiceDisplayName(ttsVoiceId: string) {
   if (!ttsVoiceId)
-    return '请选择'
+    return 'Please select'
 
   console.log('=== Voice ===')
   console.log('currentVoiceID:', ttsVoiceId)
@@ -471,12 +471,12 @@ async function onPickerConfirm(type: string, value: any, name: string) {
       break
     case 'intent':
       formData.value.intentModelId = value
-      displayNames.value.intent = name // 确保显示名称正确更新
+      displayNames.value.intent = name // Ensure display name is updated correctly
       break
     case 'memory':
       formData.value.memModelId = value
       formData.value.chatHistoryConf = value === 'Memory_nomem' ? 0 : 2
-      displayNames.value.memory = name // 确保显示名称正确更新
+      displayNames.value.memory = name // Ensure display name is updated correctly
       displayNames.value.report = reportOptions[1].name
       isVisibleReport.value = value !== 'Memory_nomem'
       if (value === 'Memory_nomem' || value === 'Memory_mem_report_only') {
@@ -498,7 +498,7 @@ async function onPickerConfirm(type: string, value: any, name: string) {
       break
     case 'voiceprint':
       formData.value.ttsVoiceId = value
-      displayNames.value.voiceprint = name // 确保显示名称正确更新
+      displayNames.value.voiceprint = name // Ensure display name is updated correctly
       break
     case 'report':
       formData.value.chatHistoryConf = value
@@ -519,7 +519,7 @@ function onPickerCancel(type: string) {
 
 // PlayAudio
 function playAudio(voiceDemo: string, voiceId: string, event: Event) {
-  event.stopPropagation() // 阻止事件冒泡，防止关闭下拉框
+  event.stopPropagation() // Stop event bubbling to prevent the dropdown from closing
 
   if (!voiceDemo) {
     return
@@ -541,7 +541,7 @@ function playAudio(voiceDemo: string, voiceId: string, event: Event) {
   })
  // Listen to playbackError
   audioRef.value.onError(() => {
-    toast.error('音频播放失败')
+    toast.error('Audio playback failed')
     playingVoiceId.value = ''
   })
  // PlayAudio
@@ -561,7 +561,7 @@ function stopAudio() {
 // GetModelShowName
 function getModelDisplayName(modelType: string, modelId: string) {
   if (!modelId)
-    return '请选择'
+    return 'Please select'
  // directlyfromAPIConfigurationDatain of ID
   const options = modelOptions.value[modelType]
 

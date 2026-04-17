@@ -22,8 +22,8 @@ class loginControllerTest {
     @Test
     public void testRegister() {
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setUsername("手machinenumbercode");
-        loginDTO.setPassword("密code");
+        loginDTO.setUsername("mobile phone number");
+        loginDTO.setPassword("password");
         loginController.register(loginDTO);
     }
 
@@ -31,7 +31,7 @@ class loginControllerTest {
     public void testSmsVerification() {
         try {
             SmsVerificationDTO smsVerificationDTO = new SmsVerificationDTO();
-            smsVerificationDTO.setPhone("手machinenumbercode");
+            smsVerificationDTO.setPhone("mobile phone number");
             smsVerificationDTO.setCaptchaId("123456");
             smsVerificationDTO.setCaptcha("123456");
             loginController.smsVerification(smsVerificationDTO);
@@ -45,8 +45,8 @@ class loginControllerTest {
         try {
             RetrievePasswordDTO retrievePasswordDTO = new RetrievePasswordDTO();
             retrievePasswordDTO.setCode("123456");
-            retrievePasswordDTO.setPhone("手machinenumbercode");
-            retrievePasswordDTO.setPassword("密code");
+            retrievePasswordDTO.setPhone("mobile phone number");
+            retrievePasswordDTO.setPassword("password");
             loginController.retrievePassword(retrievePasswordDTO);
         } catch (Exception e) {
             System.out.println(e.getMessage());

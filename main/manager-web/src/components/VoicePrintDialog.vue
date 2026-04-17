@@ -53,7 +53,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '添加说话人'
+      default: 'Add Speaker'
     },
     visible: {
       type: Boolean,
@@ -83,13 +83,13 @@ export default {
       ],
       rules: {
         introduce: [
-          { required: true, message: '请输入描述', trigger: "blur" }
+          { required: true, message: 'Please enter a description', trigger: "blur" }
         ],
         sourceName: [
-          { required: true, message: '请输入名称', trigger: "blur" }
+          { required: true, message: 'Please enter a name', trigger: "blur" }
         ],
         audioId: [
-          { required: true, message: '请选择音频向量', trigger: "change" }
+          { required: true, message: 'Please select an audio vector', trigger: "change" }
         ]
       }
     };
@@ -135,11 +135,11 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.saving = true; // 开始加载
+          this.saving = true; // Start loading
           this.$emit('submit', {
             form: this.form,
             done: () => {
-              this.saving = false; // 加载完成
+              this.saving = false; // Loading complete
             }
           });
 
@@ -150,7 +150,7 @@ export default {
       });
     },
     cancel() {
-      this.saving = false; // 取消时重置状态
+      this.saving = false; // Reset state on cancel
       this.dialogKey = Date.now();
       this.$emit('cancel');
     }
