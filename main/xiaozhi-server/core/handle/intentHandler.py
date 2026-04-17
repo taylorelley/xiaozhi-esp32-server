@@ -18,49 +18,49 @@ TAG = __name__
 
 
 async def handle_user_intent(conn: "ConnectionHandler", text):
-    # 预处理输入文本，处理可能的JSON格式
+    # Pre-process input text, handling possible JSON format
     try:
         if text.strip().startswith("{") and text.strip().endswith("}"):
             parsed_data = json.loads(text)
             if isinstance(parsed_data, dict) and "content" in parsed_data:
-                text = parsed_data["content"]  # 提取content用于意图分析
-                conn.current_speaker = parsed_data.get("speaker")  # 保留说话人信息
+                text = parsed_data["content"]  # Extract content for intent analysis
+                conn.current_speaker = parsed_data.get("speaker")  # Preserve speaker info
     except (json.JSONDecodeError, TypeError):
         pass
 
-    # 检查是否有明确的退出命令
+    # Check for an explicit exit command
     _, filtered_text = remove_punctuation_and_length(text)
     if await check_direct_exit(conn, filtered_text):
         return True
 
-    # 明确再见不被打断
+    # Ensure goodbye is not interrupted
     if conn.is_exiting:
         return True
 
-    # 检查是否是唤醒词
+    # Check whether it is a wakeup word
     if await checkWakeupWords(conn, filtered_text):
         return True
 
     if conn.intent_type == "function_call":
-        # 使用支持function calling的聊天方法,不再进行意图分析
+        # Use the chat method that supports function calling; skip intent analysis
         return False
-    # 使用LLM进行意图分析
+    # Use LLM for intent analysis
     intent_result = await analyze_intent_with_llm(conn, text)
     if not intent_result:
         return False
-    # 会话开始时生成sentence_id
+    # Generate sentence_id at the start of the session
     conn.sentence_id = str(uuid.uuid4().hex)
-    # 处理各种意图
+    # Handle various intents
     return await process_intent_result(conn, intent_result, text)
 
 
 async def check_direct_exit(conn: "ConnectionHandler", text):
-    """检查是否有明确的退出命令"""
+    """Check for an explicit exit command."""
     _, text = remove_punctuation_and_length(text)
     cmd_exit = conn.cmd_exit
     for cmd in cmd_exit:
         if text == cmd:
-            conn.logger.bind(tag=TAG).info(f"识别到明确的退出命令: {text}")
+            conn.logger.bind(tag=TAG).info(f"Recognized explicit exit command: {text}")
             await send_stt_message(conn, text)
             conn.is_exiting = True
             await conn.close()
@@ -69,18 +69,18 @@ async def check_direct_exit(conn: "ConnectionHandler", text):
 
 
 async def analyze_intent_with_llm(conn: "ConnectionHandler", text):
-    """使用LLM分析用户意图"""
+    """Use LLM to analyze user intent."""
     if not hasattr(conn, "intent") or not conn.intent:
-        conn.logger.bind(tag=TAG).warning("意图识别服务未初始化")
+        conn.logger.bind(tag=TAG).warning("Intent recognition service is not initialized")
         return None
 
-    # 对话历史记录
+    # Dialogue history
     dialogue = conn.dialogue
     try:
         intent_result = await conn.intent.detect_intent(conn, dialogue.dialogue, text)
         return intent_result
     except Exception as e:
-        conn.logger.bind(tag=TAG).error(f"意图识别失败: {str(e)}")
+        conn.logger.bind(tag=TAG).error(f"Intent recognition failed: {str(e)}")
 
     return None
 
@@ -88,16 +88,16 @@ async def analyze_intent_with_llm(conn: "ConnectionHandler", text):
 async def process_intent_result(
     conn: "ConnectionHandler", intent_result, original_text
 ):
-    """处理意图识别结果"""
+    """Process intent recognition result."""
     try:
-        # 尝试将结果解析为JSON
+        # Try to parse the result as JSON
         intent_data = json.loads(intent_result)
 
-        # 检查是否有function_call
+        # Check whether function_call is present
         if "function_call" in intent_data:
-            # 直接从意图识别获取了function_call
+            # function_call was obtained directly from intent recognition
             conn.logger.bind(tag=TAG).debug(
-                f"检测到function_call格式的意图结果: {intent_data['function_call']['name']}"
+                f"Detected function_call-format intent result: {intent_data['function_call']['name']}"
             )
             function_name = intent_data["function_call"]["name"]
             if function_name == "continue_chat":
@@ -116,12 +116,12 @@ async def process_intent_result(
                         get_current_time_info()
                     )
 
-                    # 构建带上下文的基础提示
-                    context_prompt = f"""当前时间：{current_time}
-                                        今天日期：{today_date} ({today_weekday})
-                                        今天农历：{lunar_date}
+                    # Build the base prompt with context
+                    context_prompt = f"""Current time: {current_time}
+                                        Today's date: {today_date} ({today_weekday})
+                                        Today's lunar date: {lunar_date}
 
-                                        请根据以上信息回答用户的问题：{original_text}"""
+                                        Please answer the user's question based on the above information: {original_text}"""
 
                     response = conn.intent.replyResult(context_prompt, original_text)
                     speak_txt(conn, response)
