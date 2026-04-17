@@ -357,7 +357,7 @@ class XunfeiStreamASRTester(BaseASRTester):
                     close_timeout=30,
                 ) as ws:
 
-                    # 第一帧：移除 punc 字段，避免未知参数错误
+                    # First frame: the punc field is removed to avoid an unknown-parameter error
                     await ws.send(json.dumps({
                         "common": {"app_id": self.asr_config["app_id"]},
                         "business": {
@@ -366,7 +366,7 @@ class XunfeiStreamASRTester(BaseASRTester):
                             "accent": "mandarin",
                             "dwa": "wpgs",
                             "vad_eos": 5000
-                            # 已移除 "punc": True
+                            # "punc": True has been removed
                         },
                         "data": {
                             "status": 0,
@@ -376,7 +376,7 @@ class XunfeiStreamASRTester(BaseASRTester):
                         }
                     }, ensure_ascii=False))
 
-                    # 后续所有帧
+                    # All subsequent frames
                     pos = frame_size
                     while pos < len(audio_raw):
                         chunk = audio_raw[pos:pos + frame_size]
@@ -393,12 +393,12 @@ class XunfeiStreamASRTester(BaseASRTester):
                             break
                         pos += frame_size
 
-                    # 接收首词
+                    # Receive the first word
                     first_token = True
                     async for message in ws:
                         data = json.loads(message)
                         if data.get("code") != 0:
-                            raise Exception(f"讯飞错误: {data.get('message')}")
+                            raise Exception(f"Xunfei error: {data.get('message')}")
 
                         ws_result = data.get("data", {}).get("result", {}).get("ws")
                         if ws_result:
@@ -406,15 +406,15 @@ class XunfeiStreamASRTester(BaseASRTester):
                             if text.strip() and first_token:
                                 latency = time.time() - start_time
                                 latencies.append(latency)
-                                print(f"[讯飞ASR] 第{i+1}次 首词延迟: {latency:.3f}s")
+                                print(f"[Xunfei ASR] Run {i+1} first-word latency: {latency:.3f}s")
                                 first_token = False
                                 break
 
             except Exception as e:
-                print(f"[讯飞ASR] 第{i+1}次测试失败: {str(e)}")
+                print(f"[Xunfei ASR] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
 
-        return self._calculate_result("讯飞流式ASR", latencies, test_count)
+        return self._calculate_result("Xunfei streaming ASR", latencies, test_count)
 class ASRPerformanceSuite:
     def __init__(self):
         self.testers = []

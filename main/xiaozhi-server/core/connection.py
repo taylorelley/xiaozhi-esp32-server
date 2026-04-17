@@ -1097,33 +1097,33 @@ class ConnectionHandler:
 
             if not bHasError and len(tool_calls_list) > 0:
                 self.logger.bind(tag=TAG).debug(
-                    f"检测到 {len(tool_calls_list)} 个工具调用"
+                    f"Detected {len(tool_calls_list)} tool calls"
                 )
 
-                # 更新工具调用统计
+                # Update tool call statistics
                 if depth == 0:
                     current_turn = len(self.dialogue.dialogue) // 2
                     self.tool_call_stats['last_call_turn'] = current_turn
                     self.tool_call_stats['consecutive_no_call'] = 0
                     self.logger.bind(tag=TAG).debug(
-                        f"工具调用统计更新: 当前轮次={current_turn}"
+                        f"Tool call statistics updated: current turn={current_turn}"
                     )
 
-                # 如需要大模型先处理一轮，添加相关处理后的日志情况
+                # If the LLM needs to process a round first, add log entries for the related processing
                 if len(response_message) > 0:
                     text_buff = "".join(response_message)
                     self.tts.store_tts_text(current_sentence_id, text_buff)
                     self.dialogue.put(Message(role="assistant", content=text_buff))
                 response_message.clear()
 
-                # 收集所有工具调用的 Future
+                # Collect Futures for all tool calls
                 futures_with_data = []
                 for tool_call_data in tool_calls_list:
                     self.logger.bind(tag=TAG).debug(
                         f"function_name={tool_call_data['name']}, function_id={tool_call_data['id']}, function_arguments={tool_call_data['arguments']}"
                     )
 
-                    # 使用公共方法上报工具调用
+                    # Report the tool call using the common method
                     tool_input = json.loads(tool_call_data.get("arguments") or "{}")
                     enqueue_tool_report(self, tool_call_data['name'], tool_input)
 
@@ -1135,41 +1135,41 @@ class ConnectionHandler:
                     )
                     futures_with_data.append((future, tool_call_data, tool_input))
 
-                # 工具调用超时时间，可配置，默认30秒
+                # Tool call timeout, configurable, defaults to 30 seconds
                 tool_call_timeout = int(self.config.get("tool_call_timeout", 30))
-                # 等待协程结束（实际等待时长为最慢的那个）
+                # Wait for the coroutines to finish (the actual wait time is the slowest one)
                 tool_results = []
 
                 for future, tool_call_data, tool_input in futures_with_data:
                     try:
                         result = future.result(timeout=tool_call_timeout)
                         tool_results.append((result, tool_call_data))
-                        # 使用公共方法上报工具调用结果
+                        # Report the tool call result using the common method
                         enqueue_tool_report(self, tool_call_data['name'], tool_input, str(result.result) if result.result else None, report_tool_call=False)
 
                     except Exception as e:
                         self.logger.bind(tag=TAG).error(
-                            f"工具调用超时或异常: {tool_call_data['name']}, 错误: {e}"
+                            f"Tool call timed out or failed: {tool_call_data['name']}, error: {e}"
                         )
-                        # 超时时返回错误响应，避免整个流程卡死
+                        # On timeout, return an error response to avoid the whole flow getting stuck
                         tool_results.append((
-                            ActionResponse(action=Action.ERROR, result="哎呀，网络遇到点问题，请稍后再试下！"),
+                            ActionResponse(action=Action.ERROR, result="Oops, there is a network issue. Please try again later!"),
                             tool_call_data
                         ))
-                        # 上报工具调用错误
+                        # Report the tool call error
                         enqueue_tool_report(self, tool_call_data['name'], tool_input, str(e), report_tool_call=False)
 
-                # 统一处理工具调用结果
+                # Uniformly handle tool call results
                 if tool_results:
                     self._handle_function_result(tool_results, depth=depth)
 
-        # 存储对话内容
+        # Store dialogue content
         if len(response_message) > 0:
             text_buff = "".join(response_message)
             self.tts.store_tts_text(current_sentence_id, text_buff)
             self.dialogue.put(Message(role="assistant", content=text_buff))
 
-            # 更新工具调用统计：如果没有调用工具，增加计数
+            # Update tool call statistics: if no tool was called, increment the counter
             if depth == 0 and not tool_call_flag:
                 self.tool_call_stats['consecutive_no_call'] += 1
 
@@ -1181,14 +1181,14 @@ class ConnectionHandler:
                     content_type=ContentType.ACTION,
                 )
             )
-            # 使用lambda延迟计算，只有在DEBUG级别时才执行get_llm_dialogue()
+            # Use a lambda for lazy evaluation; only execute get_llm_dialogue() at DEBUG level
             self.logger.bind(tag=TAG).debug(
                 lambda: json.dumps(
                     self.dialogue.get_llm_dialogue(), indent=4, ensure_ascii=False
                 )
             )
 
-            # 清理临时插入的工具调用提醒消息（使用标记清理）
+            # Clean up temporarily inserted tool call reminder messages (clean up by marker)
             if tool_call_reminder and len(self.dialogue.dialogue) > 0:
                 original_length = len(self.dialogue.dialogue)
                 self.dialogue.dialogue = [
@@ -1196,19 +1196,19 @@ class ConnectionHandler:
                     if not getattr(msg, 'is_temporary', False)
                 ]
                 if len(self.dialogue.dialogue) < original_length:
-                    self.logger.bind(tag=TAG).debug("已清理临时的工具调用提醒消息")
+                    self.logger.bind(tag=TAG).debug("Cleaned up temporary tool call reminder messages")
 
         return True
 
     def _get_tool_summary(self, functions: list) -> str:
         """
-        从工具定义中提取摘要，用于规则强化注入
+        Extract a summary from the tool definitions, used for rule reinforcement injection
 
         Args:
-            functions: 工具列表
+            functions: list of tools
 
         Returns:
-            str: 工具名称字符串
+            str: string of tool names
         """
         if not functions:
             return ""
@@ -1218,7 +1218,7 @@ class ConnectionHandler:
             func_info = func.get("function", {})
             name = func_info.get("name", "")
             datas.append(name)
-        result = "、".join(datas)
+        result = ", ".join(datas)
         return result
 
     def _handle_function_result(self, tool_results, depth):

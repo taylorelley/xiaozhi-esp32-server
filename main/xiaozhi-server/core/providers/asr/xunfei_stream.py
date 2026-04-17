@@ -101,36 +101,36 @@ class ASRProvider(ASRProviderBase):
         await super().open_audio_channels(conn)
 
     async def receive_audio(self, conn: "ConnectionHandler", audio, audio_have_voice):
-        # 先调用父类方法处理基础逻辑
+        # First call the parent method to handle basic logic
         await super().receive_audio(conn, audio, audio_have_voice)
 
-        # 如果本次有声音，且之前没有建立连接
+        # If there is voice this time and no connection was established previously
         if audio_have_voice and self.asr_ws is None and not self.is_processing:
             try:
                 await self._start_recognition(conn)
             except Exception as e:
-                logger.bind(tag=TAG).error(f"建立ASR连接失败: {str(e)}")
+                logger.bind(tag=TAG).error(f"Failed to establish ASR connection: {str(e)}")
                 await self._cleanup()
                 return
 
-        # 发送当前音频数据
+        # Send current audio data
         if self.asr_ws and self.is_processing and self.server_ready:
             try:
                 pcm_frame = self.decoder.decode(audio, 960)
                 await self._send_audio_frame(pcm_frame, STATUS_CONTINUE_FRAME)
             except Exception as e:
-                logger.bind(tag=TAG).warning(f"发送音频数据时发生错误: {e}")
+                logger.bind(tag=TAG).warning(f"Error sending audio data: {e}")
                 await self._cleanup()
 
     async def _start_recognition(self, conn: "ConnectionHandler"):
-        """开始识别会话"""
+        """Start recognition session"""
         try:
             self.is_processing = True
-            # 建立WebSocket连接
+            # Establish WebSocket connection
             ws_url = self.create_url()
-            logger.bind(tag=TAG).info(f"正在连接ASR服务: {ws_url[:50]}...")
+            logger.bind(tag=TAG).info(f"Connecting to ASR service: {ws_url[:50]}...")
 
-            # 如果为手动模式,设置超时时长为一分钟
+            # In manual mode, set timeout to one minute
             if conn.client_listen_mode == "manual":
                 self.iat_params["eos"] = 60000
 
@@ -142,11 +142,11 @@ class ASRProvider(ASRProviderBase):
                 close_timeout=10,
             )
 
-            logger.bind(tag=TAG).info("ASR WebSocket连接已建立")
+            logger.bind(tag=TAG).info("ASR WebSocket connection established")
             self.server_ready = False
             self.forward_task = asyncio.create_task(self._forward_results(conn))
 
-            # 发送首帧音频
+            # Send first audio frame
             if conn.asr_audio and len(conn.asr_audio) > 0:
                 first_audio = conn.asr_audio[-1] if conn.asr_audio else b""
                 pcm_frame = (
@@ -154,21 +154,21 @@ class ASRProvider(ASRProviderBase):
                 )
                 await self._send_audio_frame(pcm_frame, STATUS_FIRST_FRAME)
                 self.server_ready = True
-                logger.bind(tag=TAG).info("已发送首帧，开始识别")
+                logger.bind(tag=TAG).info("First frame sent, recognition started")
 
-                # 发送缓存的音频数据
+                # Send cached audio data
                 for cached_audio in conn.asr_audio[-10:]:
                     try:
                         pcm_frame = self.decoder.decode(cached_audio, 960)
                         await self._send_audio_frame(pcm_frame, STATUS_CONTINUE_FRAME)
                     except Exception as e:
-                        logger.bind(tag=TAG).info(f"发送缓存音频数据时发生错误: {e}")
+                        logger.bind(tag=TAG).info(f"Error sending cached audio data: {e}")
                         break
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"建立ASR连接失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to establish ASR connection: {str(e)}")
             if hasattr(e, "__cause__") and e.__cause__:
-                logger.bind(tag=TAG).error(f"错误原因: {str(e.__cause__)}")
+                logger.bind(tag=TAG).error(f"Error cause: {str(e.__cause__)}")
             if self.asr_ws:
                 await self.asr_ws.close()
                 self.asr_ws = None
@@ -176,7 +176,7 @@ class ASRProvider(ASRProviderBase):
             raise
 
     async def _send_audio_frame(self, audio_data: bytes, status: int):
-        """发送音频帧"""
+        """Send audio frame"""
         if not self.asr_ws:
             return
 
