@@ -16,20 +16,22 @@ GET_WEATHER_FUNCTION_DESC = {
     "function": {
         "name": "get_weather",
         "description": (
-            "获取某个地点的天气，用户应提供一个位置，比如用户说杭州天气，参数为：杭州。"
-            "如果用户说的是省份，默认用省会城市。如果用户说的不是省份或城市而是一个地名，默认用该地所在省份的省会城市。"
-            "如果用户没有指明地点，说“天气怎么样”，”今天天气如何“，location参数为空"
+            "Get the weather for a given location. The user should provide a location; "
+            "for example, if the user says 'Hangzhou weather', the parameter is: Hangzhou. "
+            "If the user names a province, default to its provincial capital. "
+            "If the user names a place that is neither a province nor a city, default to the provincial capital of the province that place belongs to. "
+            "If the user does not specify a location and says things like 'how's the weather' or 'what's the weather like today', leave the location parameter empty."
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "location": {
                     "type": "string",
-                    "description": "地点名，例如杭州。可选参数，如果不提供则不传",
+                    "description": "Location name, for example Hangzhou. Optional; if not provided, do not pass it.",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "返回用户使用的语言code，例如zh_CN/zh_HK/en_US/ja_JP等，默认zh_CN",
+                    "description": "Language code used by the user for the response, e.g. zh_CN/zh_HK/en_US/ja_JP, defaults to zh_CN.",
                 },
             },
             "required": ["lang"],
@@ -44,7 +46,9 @@ HEADERS = {
     )
 }
 
-# 天气代码 https://dev.qweather.com/docs/resource/icons/#weather-icons
+# Weather codes https://dev.qweather.com/docs/resource/icons/#weather-icons
+# Values are kept in Chinese because they are the user-facing weather phrase
+# rendered in the final report (which is often spoken in Chinese).
 WEATHER_CODE_MAP = {
     "100": "晴",
     "101": "多云",
@@ -112,11 +116,12 @@ WEATHER_CODE_MAP = {
 
 
 def fetch_city_info(location, api_key, api_host):
+    # lang=zh is preserved as an API parameter for the QWeather geo lookup API.
     url = f"https://{api_host}/geo/v2/city/lookup?key={api_key}&location={location}&lang=zh"
     response = requests.get(url, headers=HEADERS).json()
     if response.get("error") is not None:
         logger.bind(tag=TAG).error(
-            f"获取天气失败，原因：{response.get('error', {}).get('detail')}"
+            f"Failed to fetch weather, reason: {response.get('error', {}).get('detail')}"
         )
         return None
     return response.get("location", [])[0] if response.get("location") else None
@@ -145,7 +150,7 @@ def parse_weather_info(soup):
             current_basic[key] = value
 
     temps_list = []
-    for row in soup.select(".city-forecast-tabs__row")[:7]:  # 取前7天的数据
+    for row in soup.select(".city-forecast-tabs__row")[:7]:  # Take the first 7 days of data
         date = row.select_one(".date-bg .date").get_text(strip=True)
         weather_code = (
             row.select_one(".date-bg .icon")["src"].split("/")[-1].split(".")[0]
@@ -168,16 +173,16 @@ def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh
     default_location = weather_config.get("default_location", "广州")
     client_ip = conn.client_ip
 
-    # 优先使用用户提供的location参数
+    # Prefer the location parameter provided by the user
     if not location:
-        # 通过客户端IP解析城市
+        # Resolve the city from the client IP
         if client_ip:
-            # 先从缓存获取IP对应的城市信息
+            # First try the cache for the city info corresponding to the IP
             cached_ip_info = cache_manager.get(CacheType.IP_INFO, client_ip)
             if cached_ip_info:
                 location = cached_ip_info.get("city")
             else:
-                # 缓存未命中，调用API获取
+                # Cache miss: call the API to fetch it
                 ip_info = get_ip_info(client_ip, logger)
                 if ip_info:
                     cache_manager.set(CacheType.IP_INFO, client_ip, ip_info)
@@ -186,43 +191,43 @@ def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh
             if not location:
                 location = default_location
         else:
-            # 若无IP，使用默认位置
+            # If there is no IP, use the default location
             location = default_location
-    # 尝试从缓存获取完整天气报告
+    # Try to get the full weather report from the cache
     weather_cache_key = f"full_weather_{location}_{lang}"
     cached_weather_report = cache_manager.get(CacheType.WEATHER, weather_cache_key)
     if cached_weather_report:
         return ActionResponse(Action.REQLLM, cached_weather_report, None)
 
-    # 缓存未命中，获取实时天气数据
+    # Cache miss: fetch real-time weather data
     city_info = fetch_city_info(location, api_key, api_host)
     if not city_info:
         return ActionResponse(
-            Action.REQLLM, f"未找到相关的城市: {location}，请确认地点是否正确", None
+            Action.REQLLM, f"City not found: {location}. Please check that the location is correct.", None
         )
     soup = fetch_weather_page(city_info["fxLink"])
     if not soup:
-        return ActionResponse(Action.REQLLM, None, "请求失败")
+        return ActionResponse(Action.REQLLM, None, "Request failed")
     city_name, current_abstract, current_basic, temps_list = parse_weather_info(soup)
 
-    weather_report = f"您查询的位置是：{city_name}\n\n当前天气: {current_abstract}\n"
+    weather_report = f"The location you queried is: {city_name}\n\nCurrent weather: {current_abstract}\n"
 
-    # 添加有效的当前天气参数
+    # Add valid current weather parameters
     if current_basic:
-        weather_report += "详细参数：\n"
+        weather_report += "Detailed parameters:\n"
         for key, value in current_basic.items():
-            if value != "0":  # 过滤无效值
-                weather_report += f"  · {key}: {value}\n"
+            if value != "0":  # Filter out invalid values
+                weather_report += f"  - {key}: {value}\n"
 
-    # 添加7天预报
-    weather_report += "\n未来7天预报：\n"
+    # Add the 7-day forecast
+    weather_report += "\n7-day forecast:\n"
     for date, weather, high, low in temps_list:
-        weather_report += f"{date}: {weather}，气温 {low}~{high}\n"
+        weather_report += f"{date}: {weather}, temperature {low}~{high}\n"
 
-    # 提示语
-    weather_report += "\n（如需某一天的具体天气，请告诉我日期）"
+    # Hint message
+    weather_report += "\n(If you want the weather for a specific day, please tell me the date.)"
 
-    # 缓存完整的天气报告
+    # Cache the full weather report
     cache_manager.set(CacheType.WEATHER, weather_cache_key, weather_report)
 
     return ActionResponse(Action.REQLLM, weather_report, None)

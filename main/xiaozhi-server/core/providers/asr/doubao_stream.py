@@ -309,12 +309,12 @@ class ASRProvider(ASRProviderBase):
             },
         }
 
-        # language参数仅在多语种模式下添加
+        # The language parameter is only added in multilingual mode
         if self.enable_multilingual and self.language:
             req["audio"]["language"] = self.language
 
         logger.bind(tag=TAG).debug(
-            f"构造请求参数: {json.dumps(req, ensure_ascii=False)}"
+            f"Constructed request parameters: {json.dumps(req, ensure_ascii=False)}"
         )
         return req
 
@@ -365,16 +365,16 @@ class ASRProvider(ASRProviderBase):
 
     def parse_response(self, res: bytes) -> dict:
         try:
-            # 检查响应长度
+            # Check response length
             if len(res) < 4:
-                logger.bind(tag=TAG).error(f"响应数据长度不足: {len(res)}")
-                return {"error": "响应数据长度不足"}
+                logger.bind(tag=TAG).error(f"Response data too short: {len(res)}")
+                return {"error": "Response data too short"}
 
-            # 获取消息头
+            # Get the message header
             header = res[:4]
             message_type = header[1] >> 4
 
-            # 如果是错误响应
+            # If this is an error response
             if message_type == 0x0F:  # SERVER_ERROR_RESPONSE
                 code = int.from_bytes(res[4:8], "big", signed=False)
                 msg_length = int.from_bytes(res[8:12], "big", signed=False)
@@ -385,29 +385,29 @@ class ASRProvider(ASRProviderBase):
                     "payload_msg": error_msg,
                 }
 
-            # 获取JSON数据（跳过12字节头部）
+            # Get the JSON data (skip the 12-byte header)
             try:
                 json_data = res[12:].decode("utf-8")
                 result = json.loads(json_data)
-                logger.bind(tag=TAG).debug(f"成功解析JSON响应: {result}")
+                logger.bind(tag=TAG).debug(f"Successfully parsed JSON response: {result}")
                 return {"payload_msg": result}
             except (UnicodeDecodeError, json.JSONDecodeError) as e:
-                logger.bind(tag=TAG).error(f"JSON解析失败: {str(e)}")
-                logger.bind(tag=TAG).error(f"原始数据: {res}")
+                logger.bind(tag=TAG).error(f"JSON parse failed: {str(e)}")
+                logger.bind(tag=TAG).error(f"Raw data: {res}")
                 raise
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"解析响应失败: {str(e)}")
-            logger.bind(tag=TAG).error(f"原始响应数据: {res.hex()}")
+            logger.bind(tag=TAG).error(f"Failed to parse response: {str(e)}")
+            logger.bind(tag=TAG).error(f"Raw response data: {res.hex()}")
             raise
 
     async def speech_to_text(self, opus_data, session_id, audio_format, artifacts=None):
         result = self.text
-        self.text = ""  # 清空text
+        self.text = ""  # Clear text
         return result, None
 
     async def close(self):
-        """资源清理方法"""
+        """Resource cleanup method"""
         if self.asr_ws:
             await self.asr_ws.close()
             self.asr_ws = None
@@ -420,11 +420,11 @@ class ASRProvider(ASRProviderBase):
             self.forward_task = None
         self.is_processing = False
 
-        # 显式释放decoder资源
+        # Explicitly release decoder resources
         if hasattr(self, "decoder") and self.decoder is not None:
             try:
                 del self.decoder
                 self.decoder = None
                 logger.bind(tag=TAG).debug("Doubao decoder resources released")
             except Exception as e:
-                logger.bind(tag=TAG).debug(f"释放Doubao decoder资源时出错: {e}")
+                logger.bind(tag=TAG).debug(f"Error releasing Doubao decoder resources: {e}")

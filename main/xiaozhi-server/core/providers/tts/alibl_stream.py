@@ -29,26 +29,26 @@ class TTSProvider(TTSProviderBase):
         super().__init__(config, delete_audio_file)
 
         self.interface_type = InterfaceType.DUAL_STREAM
-        # 基础配置
+        # Basic configuration
         self.api_key = config.get("api_key")
         if not self.api_key:
             raise ValueError("api_key is required for CosyVoice TTS")
         self.report_on_last = True
 
-        # WebSocket配置
+        # WebSocket configuration
         self.ws_url = "wss://dashscope.aliyuncs.com/api-ws/v1/inference/"
         self.ws = None
         self._monitor_task = None
         self.activate_session = False
         self.last_active_time = None
 
-        # 模型和音色配置
+        # Model and voice configuration
         self.model = config.get("model", "cosyvoice-v2")
-        self.voice = config.get("voice", "longxiaochun_v2")  # 默认音色
+        self.voice = config.get("voice", "longxiaochun_v2")  # Default voice
         if config.get("private_voice"):
             self.voice = config.get("private_voice")
 
-        # 音频参数配置
+        # Audio parameter configuration
         self.format = config.get("format", "pcm")
 
         volume = config.get("volume", "50")
@@ -60,25 +60,25 @@ class TTSProvider(TTSProviderBase):
         pitch = config.get("pitch", "1.0")
         self.pitch = float(pitch) if pitch else 1.0
 
-        # 应用百分比调整（如果存在），否则使用公有化配置
+        # Apply percentage adjustments (if present), otherwise use public configuration
         self._apply_percentage_params(config)
 
         self.header = {
             "Authorization": f"Bearer {self.api_key}",
-            # "user-agent": "your_platform_info", // 可选
-            # "X-DashScope-WorkSpace": workspace, // 可选，阿里云百炼业务空间ID
+            # "user-agent": "your_platform_info", // Optional
+            # "X-DashScope-WorkSpace": workspace, // Optional, Alibaba Cloud Bailian workspace ID
             "X-DashScope-DataInspection": "enable",
         }
 
     async def _ensure_connection(self):
-        """确保WebSocket连接可用，支持60秒内连接复用"""
+        """Ensure the WebSocket connection is available, supporting connection reuse within 60 seconds"""
         try:
             current_time = time.time()
             if self.ws and current_time - self.last_active_time < 60:
-                # 一分钟内才可以复用链接进行连续对话
-                logger.bind(tag=TAG).debug(f"使用已有链接...")
+                # Only reuse the connection for consecutive dialogue within one minute
+                logger.bind(tag=TAG).debug(f"Using existing connection...")
                 return self.ws
-            logger.bind(tag=TAG).debug("开始建立新连接...")
+            logger.bind(tag=TAG).debug("Starting to establish a new connection...")
 
             self.ws = await websockets.connect(
                 self.ws_url,

@@ -25,19 +25,19 @@ logger = setup_logging()
 class XunfeiWSAuth:
     @staticmethod
     def create_auth_url(api_key, api_secret, api_url):
-        """生成讯飞WebSocket认证URL"""
+        """Generate the iFlyTek WebSocket authentication URL."""
         parsed_url = urlparse(api_url)
         host = parsed_url.netloc
         path = parsed_url.path
 
-        # 获取UTC时间，讯飞要求使用RFC1123格式
+        # Get UTC time; iFlyTek requires RFC1123 format
         now = time.gmtime()
         date = time.strftime('%a, %d %b %Y %H:%M:%S GMT', now)
 
-        # 构造签名字符串
+        # Build signature string
         signature_origin = f"host: {host}\ndate: {date}\nGET {path} HTTP/1.1"
 
-        # 计算签名
+        # Compute signature
         signature_sha = hmac.new(
             api_secret.encode('utf-8'),
             signature_origin.encode('utf-8'),
@@ -45,11 +45,11 @@ class XunfeiWSAuth:
         ).digest()
         signature_sha_base64 = base64.b64encode(signature_sha).decode(encoding='utf-8')
 
-        # 构造authorization
+        # Build authorization
         authorization_origin = f'api_key="{api_key}", algorithm="hmac-sha256", headers="host date request-line", signature="{signature_sha_base64}"'
         authorization = base64.b64encode(authorization_origin.encode('utf-8')).decode(encoding='utf-8')
 
-        # 构造最终的WebSocket URL
+        # Build the final WebSocket URL
         v = {
             "authorization": authorization,
             "date": date,
@@ -69,24 +69,24 @@ class TTSProvider(TTSProviderBase):
     def __init__(self, config, delete_audio_file):
         super().__init__(config, delete_audio_file)
 
-        # 设置为流式接口类型
+        # Set as streaming interface type
         self.interface_type = InterfaceType.DUAL_STREAM
 
-        # 基础配置
+        # Basic configuration
         self.app_id = config.get("app_id")
         self.api_key = config.get("api_key")
         self.api_secret = config.get("api_secret")
         self.report_on_last = True
 
-        # 接口地址
+        # Interface URL
         self.api_url = config.get("api_url", "wss://cbm01.cn-huabei-1.xf-yun.com/v1/private/mcd9m97e6")
 
-        # 音色配置
+        # Voice configuration
         self.voice = config.get("voice", "x5_lingxiaoxuan_flow")
         if config.get("private_voice"):
             self.voice = config.get("private_voice")
 
-        # 音频参数配置
+        # Audio parameter configuration
         speed = config.get("speed", "50")
         self.speed = int(speed) if speed else 50
 
@@ -96,13 +96,13 @@ class TTSProvider(TTSProviderBase):
         pitch = config.get("pitch", "50")
         self.pitch = int(pitch) if pitch else 50
 
-        # 应用百分比调整（如果存在），否则使用公有化配置
+        # Apply percentage adjustments if present, otherwise use publicized config
         self._apply_percentage_params(config)
 
-        # 音频编码配置
+        # Audio encoding configuration
         self.format = config.get("format", "raw")
 
-        # 口语化配置
+        # Oralization configuration
         self.oral_level = config.get("oral_level", "mid")
 
         spark_assist = config.get("spark_assist", "1")
@@ -114,24 +114,24 @@ class TTSProvider(TTSProviderBase):
         remain = config.get("remain", "0")
         self.remain = int(remain) if remain else 0
 
-        # WebSocket配置
+        # WebSocket configuration
         self.ws = None
         self._monitor_task = None
         self.activate_session = False
 
-        # 序列号管理
+        # Sequence number management
         self.text_seq = 0
 
-        # 验证必需参数
+        # Validate required parameters
         if not all([self.app_id, self.api_key, self.api_secret]):
-            raise ValueError("讯飞TTS需要配置app_id、api_key和api_secret")
+            raise ValueError("iFlyTek TTS requires app_id, api_key and api_secret to be configured")
 
     async def _ensure_connection(self):
-        """确保WebSocket连接可用"""
+        """Ensure the WebSocket connection is available."""
         try:
-            logger.bind(tag=TAG).debug("开始建立新连接...")
+            logger.bind(tag=TAG).debug("Starting to establish new connection...")
 
-            # 生成认证URL
+            # Generate authentication URL
             auth_url = XunfeiWSAuth.create_auth_url(
                 self.api_key, self.api_secret, self.api_url
             )
@@ -142,63 +142,63 @@ class TTSProvider(TTSProviderBase):
                 ping_timeout=10,
                 close_timeout=10,
             )
-            logger.bind(tag=TAG).debug("WebSocket连接建立成功")
+            logger.bind(tag=TAG).debug("WebSocket connection established successfully")
             return self.ws
         except Exception as e:
-            logger.bind(tag=TAG).error(f"建立连接失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to establish connection: {str(e)}")
             self.ws = None
             raise
 
     def tts_text_priority_thread(self):
-        """流式文本处理线程"""
+        """Streaming text processing thread."""
         while not self.conn.stop_event.is_set():
             try:
                 message = self.tts_text_queue.get(timeout=1)
 
                 if self.conn.client_abort:
-                    logger.bind(tag=TAG).info("收到打断信息，终止TTS文本处理线程")
+                    logger.bind(tag=TAG).info("Received interrupt, terminating TTS text processing thread")
                     continue
 
-                # 过滤旧消息：检查sentence_id是否匹配
+                # Filter out old messages: check if sentence_id matches
                 if message.sentence_id != self.conn.sentence_id:
                     continue
 
                 logger.bind(tag=TAG).debug(
-                    f"收到TTS任务｜{message.sentence_type.name} ｜ {message.content_type.name} | 会话ID: {message.sentence_id}"
+                    f"Received TTS task | {message.sentence_type.name} | {message.content_type.name} | Session ID: {message.sentence_id}"
                 )
 
                 if message.sentence_type == SentenceType.FIRST:
-                    # 重置序列号
+                    # Reset sequence number
                     self.text_seq = 0
-                # 增加序列号
+                # Increment sequence number
                 self.text_seq += 1
 
                 if message.sentence_type == SentenceType.FIRST:
-                    # 初始化参数
+                    # Initialize parameters
                     try:
                         if not getattr(self.conn, "sentence_id", None):
                             self.conn.sentence_id = uuid.uuid4().hex
-                            logger.bind(tag=TAG).debug(f"自动生成新的 会话ID: {self.conn.sentence_id}")
+                            logger.bind(tag=TAG).debug(f"Automatically generated new Session ID: {self.conn.sentence_id}")
 
-                        logger.bind(tag=TAG).debug("开始启动TTS会话...")
+                        logger.bind(tag=TAG).debug("Starting TTS session...")
                         future = asyncio.run_coroutine_threadsafe(
                             self.start_session(self.conn.sentence_id),
                             loop=self.conn.loop,
                         )
                         future.result(timeout=self.tts_timeout)
                         self.before_stop_play_files.clear()
-                        logger.bind(tag=TAG).debug("TTS会话启动成功")
+                        logger.bind(tag=TAG).debug("TTS session started successfully")
 
                     except Exception as e:
-                        logger.bind(tag=TAG).error(f"启动TTS会话失败: {str(e)}")
+                        logger.bind(tag=TAG).error(f"Failed to start TTS session: {str(e)}")
                         continue
 
-                # 处理文本内容
+                # Handle text content
                 if ContentType.TEXT == message.content_type:
                     if message.content_detail:
                         try:
                             logger.bind(tag=TAG).debug(
-                                f"开始发送TTS文本: {message.content_detail}"
+                                f"Starting to send TTS text: {message.content_detail}"
                             )
                             future = asyncio.run_coroutine_threadsafe(
                                 self.text_to_speak(message.content_detail, None),
@@ -206,53 +206,53 @@ class TTSProvider(TTSProviderBase):
                             )
                             future.result(timeout=self.tts_timeout)
                         except Exception as e:
-                            logger.bind(tag=TAG).error(f"发送TTS文本失败: {str(e)}")
-                            # 不使用continue，确保后续处理不被中断
+                            logger.bind(tag=TAG).error(f"Failed to send TTS text: {str(e)}")
+                            # Do not use continue so that subsequent processing is not interrupted
 
-                # 处理文件内容
+                # Handle file content
                 if ContentType.FILE == message.content_type:
                     logger.bind(tag=TAG).info(
-                        f"添加音频文件到待播放列表: {message.content_file}"
+                        f"Adding audio file to pending playback list: {message.content_file}"
                     )
                     if message.content_file and os.path.exists(message.content_file):
-                        # 先处理文件音频数据
+                        # Process file audio data first
                         self._process_audio_file_stream(message.content_file, callback=lambda audio_data: self.handle_audio_file(audio_data, message.content_detail))
 
-                # 处理会话结束
+                # Handle session end
                 if message.sentence_type == SentenceType.LAST:
                     try:
-                        logger.bind(tag=TAG).debug("开始结束TTS会话...")
+                        logger.bind(tag=TAG).debug("Starting to end TTS session...")
                         asyncio.run_coroutine_threadsafe(
                             self.finish_session(self.conn.sentence_id),
                             loop=self.conn.loop,
                         )
                     except Exception as e:
-                        logger.bind(tag=TAG).error(f"结束TTS会话失败: {str(e)}")
+                        logger.bind(tag=TAG).error(f"Failed to end TTS session: {str(e)}")
                         continue
 
             except queue.Empty:
                 continue
             except Exception as e:
                 logger.bind(tag=TAG).error(
-                    f"处理TTS文本失败: {str(e)}, 类型: {type(e).__name__}, 堆栈: {traceback.format_exc()}"
+                    f"Failed to process TTS text: {str(e)}, type: {type(e).__name__}, stack: {traceback.format_exc()}"
                 )
 
     async def text_to_speak(self, text, _):
-        """发送文本到TTS服务进行合成"""
+        """Send text to the TTS service for synthesis."""
         try:
             if self.ws is None:
-                logger.bind(tag=TAG).warning(f"WebSocket连接不存在，终止发送文本")
+                logger.bind(tag=TAG).warning(f"WebSocket connection does not exist, aborting text send")
                 return
 
             filtered_text = MarkdownCleaner.clean_markdown(text)
             if filtered_text:
-                # 发送文本合成请求
+                # Send text synthesis request
                 run_request = self._build_base_request(status=1,text=filtered_text)
                 await self.ws.send(json.dumps(run_request))
             return
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"发送TTS文本失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to send TTS text: {str(e)}")
             if self.ws:
                 try:
                     await self.ws.close()

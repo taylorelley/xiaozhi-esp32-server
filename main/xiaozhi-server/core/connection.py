@@ -303,12 +303,12 @@ class ConnectionHandler:
 
                 threading.Thread(target=generate_title_task, daemon=True).start()
 
-            # 守护线程2：走老流程记忆保存（仅记忆，不含标题）
+            # Daemon thread 2: use the legacy flow to save memory (memory only, no title)
             if self.memory:
-                # 使用线程池异步保存记忆
+                # Use a thread pool to save memory asynchronously
                 def save_memory_task():
                     try:
-                        # 创建新事件循环（避免与主循环冲突）
+                        # Create a new event loop (to avoid conflict with the main loop)
                         loop = asyncio.new_event_loop()
                         asyncio.set_event_loop(loop)
                         loop.run_until_complete(
@@ -317,60 +317,60 @@ class ConnectionHandler:
                             )
                         )
                     except Exception as e:
-                        self.logger.bind(tag=TAG).error(f"保存记忆失败: {e}")
+                        self.logger.bind(tag=TAG).error(f"Failed to save memory: {e}")
                     finally:
                         try:
                             loop.close()
                         except Exception:
                             pass
 
-                # 启动线程保存记忆，不等待完成
+                # Start the thread to save memory, without waiting for completion
                 threading.Thread(target=save_memory_task, daemon=True).start()
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"保存记忆失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Failed to save memory: {e}")
         finally:
-            # 立即关闭连接，不等待记忆保存完成
+            # Close the connection immediately without waiting for memory saving to complete
             try:
                 await self.close(ws)
             except Exception as close_error:
                 self.logger.bind(tag=TAG).error(
-                    f"保存记忆后关闭连接失败: {close_error}"
+                    f"Failed to close connection after saving memory: {close_error}"
                 )
 
     async def _discard_message_with_bind_prompt(self):
-        """丢弃消息并检查是否需要播放绑定提示"""
+        """Discard the message and check whether the binding prompt needs to be played"""
         current_time = time.time()
-        # 检查是否需要播放绑定提示
+        # Check whether the binding prompt needs to be played
         if current_time - self.last_bind_prompt_time >= self.bind_prompt_interval:
             self.last_bind_prompt_time = current_time
-            # 复用现有的绑定提示逻辑
+            # Reuse existing binding prompt logic
             from core.handle.receiveAudioHandle import check_bind_device
 
             asyncio.create_task(check_bind_device(self))
 
     async def _route_message(self, message):
-        """消息路由"""
-        # 退出状态丢弃所有消息
+        """Message routing"""
+        # Discard all messages in the exiting state
         if self.is_exiting:
            return
 
-        # 检查是否已经获取到真实的绑定状态
+        # Check whether the real bind status has already been obtained
         if not self.bind_completed_event.is_set():
-            # 还没有获取到真实状态，等待直到获取到真实状态或超时
+            # Real status not yet obtained, wait until real status is obtained or timeout
             try:
                 await asyncio.wait_for(self.bind_completed_event.wait(), timeout=1)
             except asyncio.TimeoutError:
-                # 超时仍未获取到真实状态，丢弃消息
+                # Timed out and still no real status, discard the message
                 await self._discard_message_with_bind_prompt()
                 return
 
-        # 已经获取到真实状态，检查是否需要绑定
+        # Real status obtained, check whether binding is required
         if self.need_bind:
-            # 需要绑定，丢弃消息
+            # Binding required, discard the message
             await self._discard_message_with_bind_prompt()
             return
 
-        # 不需要绑定，继续处理消息
+        # Binding not required, continue processing the message
 
         if isinstance(message, str):
             await handleTextMessage(self, message)
@@ -378,62 +378,62 @@ class ConnectionHandler:
             if self.vad is None or self.asr is None:
                 return
 
-            # 处理来自MQTT网关的音频包
+            # Handle audio packets from the MQTT gateway
             if self.conn_from_mqtt_gateway and len(message) >= 16:
                 handled = await self._process_mqtt_audio_message(message)
                 if handled:
                     return
 
-            # 不需要头部处理或没有头部时，直接处理原始消息
+            # When header handling is not needed or there is no header, process the raw message directly
             self.asr_audio_queue.put(message)
 
     async def _process_mqtt_audio_message(self, message):
         """
-        处理来自MQTT网关的音频消息，解析16字节头部并提取音频数据
+        Process audio messages from the MQTT gateway, parse the 16-byte header and extract audio data
 
         Args:
-            message: 包含头部的音频消息
+            message: audio message containing the header
 
         Returns:
-            bool: 是否成功处理了消息
+            bool: whether the message was processed successfully
         """
         try:
-            # 提取头部信息
+            # Extract header information
             timestamp = int.from_bytes(message[8:12], "big")
             audio_length = int.from_bytes(message[12:16], "big")
 
-            # 提取音频数据
+            # Extract audio data
             if audio_length > 0 and len(message) >= 16 + audio_length:
-                # 有指定长度，提取精确的音频数据
+                # A specified length is present, extract the exact audio data
                 audio_data = message[16 : 16 + audio_length]
-                # 基于时间戳进行排序处理
+                # Process in order based on the timestamp
                 self._process_websocket_audio(audio_data, timestamp)
                 return True
             elif len(message) > 16:
-                # 没有指定长度或长度无效，去掉头部后处理剩余数据
+                # No specified length or invalid length, strip the header and process the remaining data
                 audio_data = message[16:]
                 self.asr_audio_queue.put(audio_data)
                 return True
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"解析WebSocket音频包失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Failed to parse WebSocket audio packet: {e}")
 
-        # 处理失败，返回False表示需要继续处理
+        # Processing failed, return False to indicate further processing is required
         return False
 
     def _process_websocket_audio(self, audio_data, timestamp):
-        """处理WebSocket格式的音频包"""
-        # 初始化时间戳序列管理
+        """Process audio packets in WebSocket format"""
+        # Initialize timestamp sequence management
         if not hasattr(self, "audio_timestamp_buffer"):
             self.audio_timestamp_buffer = {}
             self.last_processed_timestamp = 0
             self.max_timestamp_buffer_size = 20
 
-        # 如果时间戳是递增的，直接处理
+        # If the timestamp is increasing, process directly
         if timestamp >= self.last_processed_timestamp:
             self.asr_audio_queue.put(audio_data)
             self.last_processed_timestamp = timestamp
 
-            # 处理缓冲区中的后续包
+            # Process subsequent packets in the buffer
             processed_any = True
             while processed_any:
                 processed_any = False
@@ -445,35 +445,35 @@ class ConnectionHandler:
                         processed_any = True
                         break
         else:
-            # 乱序包，暂存
+            # Out-of-order packet, buffer it
             if len(self.audio_timestamp_buffer) < self.max_timestamp_buffer_size:
                 self.audio_timestamp_buffer[timestamp] = audio_data
             else:
                 self.asr_audio_queue.put(audio_data)
 
     async def handle_restart(self, message):
-        """处理服务器重启请求"""
+        """Handle server restart request"""
         try:
 
-            self.logger.bind(tag=TAG).info("收到服务器重启指令，准备执行...")
+            self.logger.bind(tag=TAG).info("Received server restart command, preparing to execute...")
 
-            # 发送确认响应
+            # Send confirmation response
             await self.websocket.send(
                 json.dumps(
                     {
                         "type": "server",
                         "status": "success",
-                        "message": "服务器重启中...",
+                        "message": "Server is restarting...",
                         "content": {"action": "restart"},
                     }
                 )
             )
 
-            # 异步执行重启操作
+            # Perform restart asynchronously
             def restart_server():
-                """实际执行重启的方法"""
+                """The method that actually performs the restart"""
                 time.sleep(1)
-                self.logger.bind(tag=TAG).info("执行服务器重启...")
+                self.logger.bind(tag=TAG).info("Executing server restart...")
                 subprocess.Popen(
                     [sys.executable, "app.py"],
                     stdin=sys.stdin,
@@ -483,11 +483,11 @@ class ConnectionHandler:
                 )
                 os._exit(0)
 
-            # 使用线程执行重启避免阻塞事件循环
+            # Use a thread to perform the restart to avoid blocking the event loop
             threading.Thread(target=restart_server, daemon=True).start()
 
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"重启失败: {str(e)}")
+            self.logger.bind(tag=TAG).error(f"Restart failed: {str(e)}")
             await self.websocket.send(
                 json.dumps(
                     {
@@ -503,7 +503,7 @@ class ConnectionHandler:
         try:
             if self.tts is None:
                 self.tts = self._initialize_tts()
-            # 打开语音合成通道
+            # Open the text-to-speech channel
             asyncio.run_coroutine_threadsafe(
                 self.tts.open_audio_channels(self), self.loop
             )
@@ -515,54 +515,54 @@ class ConnectionHandler:
             )
             self.logger = create_connection_logger(self.selected_module_str)
 
-            """初始化组件"""
+            """Initialize components"""
             if self.config.get("prompt") is not None:
                 user_prompt = self.config["prompt"]
-                # 使用快速提示词进行初始化
+                # Initialize using the quick prompt
                 prompt = self.prompt_manager.get_quick_prompt(user_prompt)
                 self.change_system_prompt(prompt)
                 self.logger.bind(tag=TAG).info(
-                    f"快速初始化组件: prompt成功 {prompt[:50]}..."
+                    f"Quick component initialization: prompt succeeded {prompt[:50]}..."
                 )
 
-            """初始化本地组件"""
+            """Initialize local components"""
             if self.vad is None:
                 self.vad = self._vad
             if self.asr is None:
                 self.asr = self._initialize_asr()
 
-            # 初始化声纹识别
+            # Initialize voiceprint recognition
             self._initialize_voiceprint()
-            # 打开语音识别通道
+            # Open the speech recognition channel
             asyncio.run_coroutine_threadsafe(
                 self.asr.open_audio_channels(self), self.loop
             )
 
-            """加载记忆"""
+            """Load memory"""
             self._initialize_memory()
-            """加载意图识别"""
+            """Load intent recognition"""
             self._initialize_intent()
-            """初始化上报线程"""
+            """Initialize the reporting thread"""
             self._init_report_threads()
-            """更新系统提示词"""
+            """Update the system prompt"""
             self._init_prompt_enhancement()
 
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"实例化组件失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Failed to instantiate components: {e}")
 
     def _init_prompt_enhancement(self):
 
-        # 更新上下文信息
+        # Update context information
         self.prompt_manager.update_context_info(self, self.client_ip)
         enhanced_prompt = self.prompt_manager.build_enhanced_prompt(
             self.config["prompt"], self.device_id, self.client_ip
         )
         if enhanced_prompt:
             self.change_system_prompt(enhanced_prompt)
-            self.logger.bind(tag=TAG).debug("系统提示词已增强更新")
+            self.logger.bind(tag=TAG).debug("System prompt has been enhanced and updated")
 
     def _init_report_threads(self):
-        """初始化ASR和TTS上报线程"""
+        """Initialize the ASR and TTS reporting threads"""
         if not self.read_config_from_api or self.need_bind:
             return
         if self.chat_history_conf == 0:
@@ -572,10 +572,10 @@ class ConnectionHandler:
                 target=self._report_worker, daemon=True
             )
             self.report_thread.start()
-            self.logger.bind(tag=TAG).info("TTS上报线程已启动")
+            self.logger.bind(tag=TAG).info("TTS reporting thread started")
 
     def _initialize_tts(self):
-        """初始化TTS"""
+        """Initialize TTS"""
         tts = None
         if not self.need_bind:
             tts = initialize_tts(self.config)
@@ -586,50 +586,50 @@ class ConnectionHandler:
         return tts
 
     def _initialize_asr(self):
-        """初始化ASR"""
+        """Initialize ASR"""
         if (
                 self._asr is not None
                 and hasattr(self._asr, "interface_type")
                 and self._asr.interface_type == InterfaceType.LOCAL
         ):
-            # 如果公共ASR是本地服务，则直接返回
-            # 因为本地一个实例ASR，可以被多个连接共享
+            # If the public ASR is a local service, return it directly
+            # Because a single local ASR instance can be shared by multiple connections
             asr = self._asr
         else:
-            # 如果公共ASR是远程服务，则初始化一个新实例
-            # 因为远程ASR，涉及到websocket连接和接收线程，需要每个连接一个实例
+            # If the public ASR is a remote service, initialize a new instance
+            # Because a remote ASR involves a websocket connection and a receive thread, each connection needs its own instance
             asr = initialize_asr(self.config)
 
         return asr
 
     def _initialize_voiceprint(self):
-        """为当前连接初始化声纹识别"""
+        """Initialize voiceprint recognition for the current connection"""
         try:
             voiceprint_config = self.config.get("voiceprint", {})
             if voiceprint_config:
                 voiceprint_provider = VoiceprintProvider(voiceprint_config)
                 if voiceprint_provider is not None and voiceprint_provider.enabled:
                     self.voiceprint_provider = voiceprint_provider
-                    self.logger.bind(tag=TAG).info("声纹识别功能已在连接时动态启用")
+                    self.logger.bind(tag=TAG).info("Voiceprint recognition has been dynamically enabled at connection time")
                 else:
-                    self.logger.bind(tag=TAG).warning("声纹识别功能启用但配置不完整")
+                    self.logger.bind(tag=TAG).warning("Voiceprint recognition is enabled but the configuration is incomplete")
             else:
-                self.logger.bind(tag=TAG).info("声纹识别功能未启用")
+                self.logger.bind(tag=TAG).info("Voiceprint recognition is not enabled")
         except Exception as e:
-            self.logger.bind(tag=TAG).warning(f"声纹识别初始化失败: {str(e)}")
+            self.logger.bind(tag=TAG).warning(f"Failed to initialize voiceprint recognition: {str(e)}")
 
     async def _background_initialize(self):
-        """在后台初始化配置和组件（完全不阻塞主循环）"""
+        """Initialize configuration and components in the background (completely non-blocking to the main loop)"""
         try:
-            # 异步获取差异化配置
+            # Asynchronously fetch differentiated configuration
             await self._initialize_private_config_async()
-            # 在线程池中初始化组件
+            # Initialize components in the thread pool
             self.executor.submit(self._initialize_components)
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"后台初始化失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Background initialization failed: {e}")
 
     async def _initialize_private_config_async(self):
-        """从接口异步获取差异化配置（异步版本，不阻塞主循环）"""
+        """Asynchronously obtain differentiated configuration from the API (async version, non-blocking to the main loop)"""
         if not self.read_config_from_api:
             self.need_bind = False
             self.bind_completed_event.set()
@@ -643,7 +643,7 @@ class ConnectionHandler:
             )
             private_config["delete_audio"] = bool(self.config.get("delete_audio", True))
             self.logger.bind(tag=TAG).info(
-                f"{time.time() - begin_time} 秒，异步获取差异化配置成功: {json.dumps(filter_sensitive_info(private_config), ensure_ascii=False)}"
+                f"{time.time() - begin_time} seconds, asynchronously obtained differentiated configuration successfully: {json.dumps(filter_sensitive_info(private_config), ensure_ascii=False)}"
             )
             self.need_bind = False
             self.bind_completed_event.set()
@@ -656,7 +656,7 @@ class ConnectionHandler:
             private_config = {}
         except Exception as e:
             self.need_bind = True
-            self.logger.bind(tag=TAG).error(f"异步获取差异化配置失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Failed to asynchronously obtain differentiated configuration: {e}")
             private_config = {}
 
         init_llm, init_tts, init_memory, init_intent = (
@@ -707,7 +707,7 @@ class ConnectionHandler:
             self.config["Intent"] = private_config["Intent"]
             model_intent = private_config.get("selected_module", {}).get("Intent", {})
             self.config["selected_module"]["Intent"] = model_intent
-            # 加载插件配置
+            # Load plugin configuration
             if model_intent != "Intent_nointent":
                 plugin_from_server = private_config.get("plugins", {})
                 for plugin, config_str in plugin_from_server.items():
@@ -718,7 +718,7 @@ class ConnectionHandler:
                 ] = plugin_from_server.keys()
         if private_config.get("prompt", None) is not None:
             self.config["prompt"] = private_config["prompt"]
-        # 获取声纹信息
+        # Obtain voiceprint information
         if private_config.get("voiceprint", None) is not None:
             self.config["voiceprint"] = private_config["voiceprint"]
         if private_config.get("summaryMemory", None) is not None:

@@ -38,7 +38,7 @@ class VADProvider(VADProviderBase):
         self.frame_window_threshold = 3
 
     def _init_connection_state(self, conn):
-        """为连接初始化独立的 VAD 状态"""
+        """Initialize independent VAD state for the connection"""
         if not hasattr(conn, "_vad_opus_decoder"):
             conn._vad_opus_decoder = opuslib_next.Decoder(16000, 1)
         if not hasattr(conn, "_vad_state"):
@@ -47,7 +47,7 @@ class VADProvider(VADProviderBase):
             conn._vad_context = np.zeros((1, 64), dtype=np.float32)
 
     def release_conn_resources(self, conn):
-        """释放连接的 VAD 资源（连接关闭时调用）"""
+        """Release the connection's VAD resources (called when the connection is closed)"""
         for attr in ("_vad_opus_decoder", "_vad_state", "_vad_context"):
             if hasattr(conn, attr):
                 try:
@@ -56,7 +56,7 @@ class VADProvider(VADProviderBase):
                     pass
 
     def is_vad(self, conn, opus_packet):
-        # 手动模式：直接返回True，不进行实时VAD检测，所有音频都缓存
+        # Manual mode: return True directly without performing real-time VAD detection; cache all audio
         if conn.client_listen_mode == "manual":
             return True
 

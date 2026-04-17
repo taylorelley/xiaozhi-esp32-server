@@ -709,10 +709,10 @@ class TTSProvider(TTSProviderBase):
     def audio_to_opus_data_stream(
         self, audio_file_path, callback: Callable[[Any], Any] = None
     ):
-        """重写父类方法：使用独立的临时编码器处理音频文件，避免与TTS流式编码器并发冲突。
-        双流式TTS中，monitor任务在event loop线程接收TTS音频并使用self.opus_encoder编码，
-        同时tts_text_priority_thread处理音乐文件也使用self.opus_encoder，
-        共享的encoder.buffer非线程安全，并发访问会导致SILK resampler断言失败。
+        """Override parent method: use an independent temporary encoder to process audio files, avoiding concurrency conflicts with the TTS streaming encoder.
+        In dual-stream TTS, the monitor task on the event loop thread receives TTS audio and uses self.opus_encoder to encode,
+        while tts_text_priority_thread also uses self.opus_encoder to handle music files.
+        The shared encoder.buffer is not thread-safe, and concurrent access would cause SILK resampler assertion failures.
         """
         from core.utils.util import audio_to_data_stream
         return audio_to_data_stream(
@@ -724,25 +724,25 @@ class TTSProvider(TTSProviderBase):
         return self.opus_encoder.encode_pcm_to_opus_stream(raw_data_var, is_end, callback=callback)
 
     def to_tts(self, text: str) -> list:
-        """非流式生成音频数据，用于生成音频及测试场景
+        """Non-streaming audio data generation, used for audio generation and testing scenarios.
         Args:
-            text: 要转换的文本
+            text: Text to convert
         Returns:
-            list: 音频数据列表
+            list: List of audio data
         """
         try:
-            # 创建事件循环
+            # Create event loop
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
-            # 生成会话ID
+            # Generate session ID
             session_id = uuid.uuid4().__str__().replace("-", "")
 
-            # 存储音频数据
+            # Store audio data
             audio_data = []
 
             async def _generate_audio():
-                # 创建新的WebSocket连接
+                # Create new WebSocket connection
                 ws_header = {
                     "X-Api-App-Key": self.appId,
                     "X-Api-Access-Key": self.access_token,
@@ -754,7 +754,7 @@ class TTSProvider(TTSProviderBase):
                 )
 
                 try:
-                    # 启动会话
+                    # Start session
                     header = Header(
                         message_type=FULL_CLIENT_REQUEST,
                         message_type_specific_flags=MsgTypeFlagWithEvent,
@@ -768,7 +768,7 @@ class TTSProvider(TTSProviderBase):
                     )
                     await self.send_event(ws, header, optional, payload)
 
-                    # 发送文本
+                    # Send text
                     header = Header(
                         message_type=FULL_CLIENT_REQUEST,
                         message_type_specific_flags=MsgTypeFlagWithEvent,
@@ -782,7 +782,7 @@ class TTSProvider(TTSProviderBase):
                     )
                     await self.send_event(ws, header, optional, payload)
 
-                    # 发送结束会话请求
+                    # Send finish-session request
                     header = Header(
                         message_type=FULL_CLIENT_REQUEST,
                         message_type_specific_flags=MsgTypeFlagWithEvent,
@@ -794,7 +794,7 @@ class TTSProvider(TTSProviderBase):
                     payload = str.encode("{}")
                     await self.send_event(ws, header, optional, payload)
 
-                    # 接收音频数据
+                    # Receive audio data
                     while True:
                         msg = await ws.recv()
                         res = self.parser_response(msg)
@@ -808,18 +808,18 @@ class TTSProvider(TTSProviderBase):
                             break
 
                 finally:
-                    # 清理资源
+                    # Clean up resources
                     try:
                         await ws.close()
                     except:
                         pass
 
-            # 运行异步任务
+            # Run async task
             loop.run_until_complete(_generate_audio())
             loop.close()
 
             return audio_data
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"生成音频数据失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to generate audio data: {str(e)}")
             return []
