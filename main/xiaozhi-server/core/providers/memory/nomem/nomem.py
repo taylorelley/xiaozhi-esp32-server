@@ -1,5 +1,5 @@
 """
-不使用记忆，可以选择此模块
+If you do not want to use memory, you can choose this module
 """
 
 from ..base import MemoryProviderBase, logger

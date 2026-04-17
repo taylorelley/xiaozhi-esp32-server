@@ -1444,7 +1444,7 @@ class ConnectionHandler:
 
     def reset_audio_states(self):
         """
-        重置所有音频相关状态(VAD + ASR)
+        Reset all audio-related states (VAD + ASR)
         """
         # Reset VAD states
         self.client_audio_buffer.clear()
