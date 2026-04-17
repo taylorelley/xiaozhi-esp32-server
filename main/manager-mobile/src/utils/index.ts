@@ -65,7 +65,7 @@ export function getUrlObj(url: string) {
   queryStr.split('&').forEach((item) => {
     const [key, value] = item.split('=')
     // console.log(key, value)
-    query[key] = ensureDecodeURIComponent(value) // 这里需要统一 decodeURIComponent 一下，可以兼容h5和微信y
+    query[key] = ensureDecodeURIComponent(value) // Need to normalize with decodeURIComponent so it works for both H5 and WeChat
   })
   return { path, query }
 }
@@ -177,19 +177,19 @@ export function generateSm2KeyPairHex() {
   return {
     publicKey: keypair.publicKey,
     privateKey: keypair.privateKey,
-    clientPublicKey: keypair.publicKey, // 客户端公钥
-    clientPrivateKey: keypair.privateKey, // 客户端私钥
+    clientPublicKey: keypair.publicKey, // Client public key
+    clientPrivateKey: keypair.privateKey, // Client private key
   }
 }
 
 /** * SM2Public keyEncrypt * @param {string} publicKey Public key（hex format） * @param {string} plainText * @returns {string} Encryptafter of （hex format） */
 export function sm2Encrypt(publicKey: string, plainText: string): string {
   if (!publicKey) {
-    throw new Error('公钥不能为null或undefined')
+    throw new Error('Public key cannot be null or undefined')
   }
 
   if (!plainText) {
-    throw new Error('明文不能为空')
+    throw new Error('Plaintext cannot be empty')
   }
 
   const sm2 = smCrypto.sm2

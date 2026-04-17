@@ -38,7 +38,7 @@ export default {
                 RequestService.clearRequestTime();
                 callback(res);
             })
-            .networkFail((err) => {  // 添加错误参数
+            .networkFail((err) => {  // Add error parameter
 
             }).send()
     },

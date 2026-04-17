@@ -101,11 +101,11 @@ if (isCDNEnabled) {
       cacheName: 'cdn-stylesheets',
       plugins: [
         new workbox.expiration.ExpirationPlugin({
-          maxAgeSeconds: 365 * 24 * 60 * 60, // 增加到1年缓存
-          maxEntries: 10, // 最多缓存10个CSS文件
+          maxAgeSeconds: 365 * 24 * 60 * 60, // Increase to 1-year cache
+          maxEntries: 10, // Cache at most 10 CSS files
         }),
         new workbox.cacheableResponse.CacheableResponsePlugin({
-          statuses: [0, 200], // 缓存成功响应
+          statuses: [0, 200], // Cache successful responses
         }),
       ],
     })
@@ -117,11 +117,11 @@ if (isCDNEnabled) {
       cacheName: 'cdn-scripts',
       plugins: [
         new workbox.expiration.ExpirationPlugin({
-          maxAgeSeconds: 365 * 24 * 60 * 60, // 增加到1年缓存
-          maxEntries: 20, // 最多缓存20个JS文件
+          maxAgeSeconds: 365 * 24 * 60 * 60, // Increase to 1-year cache
+          maxEntries: 20, // Cache at most 20 JS files
         }),
         new workbox.cacheableResponse.CacheableResponsePlugin({
-          statuses: [0, 200], // 缓存成功响应
+          statuses: [0, 200], // Cache successful responses
         }),
       ],
     })
@@ -135,8 +135,8 @@ workbox.routing.registerRoute(
     cacheName: 'static-resources',
     plugins: [
       new workbox.expiration.ExpirationPlugin({
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7天缓存
-        maxEntries: 50, // 最多缓存50个文件
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7-day cache
+        maxEntries: 50, // Cache at most 50 files
       }),
     ],
   })
@@ -149,8 +149,8 @@ workbox.routing.registerRoute(
     cacheName: 'html-cache',
     plugins: [
       new workbox.expiration.ExpirationPlugin({
-        maxAgeSeconds: 1 * 24 * 60 * 60, // 1天缓存
-        maxEntries: 10, // 最多缓存10个HTML文件
+        maxAgeSeconds: 1 * 24 * 60 * 60, // 1-day cache
+        maxEntries: 10, // Cache at most 10 HTML files
       }),
     ],
   })

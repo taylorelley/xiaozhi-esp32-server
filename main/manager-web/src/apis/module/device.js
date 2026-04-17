@@ -62,7 +62,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('UpdateOTAStatusfailed:', err)
-                this.$message.error(err.msg || '更新OTA状态失败')
+                this.$message.error(err.msg || 'Failed to update OTA status')
                 RequestService.reAjaxFun(() => {
                     this.updateDeviceInfo(id, payload, callback)
                 })
@@ -90,7 +90,7 @@ export default {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/device/bind/${agentId}`)
             .method('POST')
-            .data({}) // 发送空对象作为请求体
+            .data({}) // Send an empty object as the request body
             .success((res) => {
                 RequestService.clearRequestTime();
                 callback(res);

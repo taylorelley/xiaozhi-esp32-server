@@ -36,7 +36,7 @@ class FeatureManager {
                 description: 'feature.asr.description'
             }
         };
-        this.currentFeatures = { ...this.defaultFeatures }; // 当前内存中的配置
+        this.currentFeatures = { ...this.defaultFeatures }; // Current in-memory configuration
         this.initialized = false;
         this.initPromise = null;
     }
@@ -56,7 +56,7 @@ class FeatureManager {
  // frompub-configAPIGetConfiguration
             const config = await this.getConfigFromPubConfig();
             if (config) {
-                this.currentFeatures = { ...config }; // 保存到内存
+                this.currentFeatures = { ...config }; // Persist to memory
                 this.initialized = true;
                 return;
             }
@@ -64,7 +64,7 @@ class FeatureManager {
             console.warn('frompub-configAPIGetConfigurationfailed:', error);
         }
  // pub-configAPIfailed，UseDefaultConfiguration
-        this.currentFeatures = { ...this.defaultFeatures }; // 保存默认配置到内存
+        this.currentFeatures = { ...this.defaultFeatures }; // Persist default config to memory
         this.initialized = true;
     }
 
@@ -208,7 +208,7 @@ class FeatureManager {
                         }
                     }),
                     valueType: 'json',
-                    remark: '系统功能菜单配置'
+                    remark: 'System feature menu configuration'
                 },
                 (updateResult) => {
                     if (updateResult.code === 0) {
@@ -216,12 +216,12 @@ class FeatureManager {
                     } else {
  // IfFailed to update，isParameteratorError，SavetolocalStorage
                         console.warn('UpdateParameterfailed:', updateResult.msg);
-                        resolve(); // 不阻止保存到localStorage
+                        resolve(); // Do not block save to localStorage
                     }
                 },
                 (error) => {
                     console.warn('UpdateParameterfailed:', error);
-                    resolve(); // 不阻止保存到localStorage
+                    resolve(); // Do not block save to localStorage
                 }
             );
         });

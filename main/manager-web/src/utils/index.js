@@ -111,51 +111,51 @@ export function validateMobile(mobile, areaCode) {
     const cleanMobile = mobile.replace(/\D/g, '');
  // Based onCountry codeUse of Verifythen
     switch (areaCode) {
-        case '+86': // 中国大陆
+        case '+86': // Mainland China
             return /^1[3-9]\d{9}$/.test(cleanMobile);
-        case '+852': // 中国香港
+        case '+852': // Hong Kong
             return /^[569]\d{7}$/.test(cleanMobile);
-        case '+853': // 中国澳门
+        case '+853': // Macau
             return /^6\d{7}$/.test(cleanMobile);
-        case '+886': // 中国台湾
+        case '+886': // Taiwan
             return /^9\d{8}$/.test(cleanMobile);
-        case '+1': // 美国/加拿大
+        case '+1': // United States / Canada
             return /^[2-9]\d{9}$/.test(cleanMobile);
-        case '+44': // 英国
+        case '+44': // United Kingdom
             return /^7[1-9]\d{8}$/.test(cleanMobile);
-        case '+81': // 日本
+        case '+81': // Japan
             return /^[7890]\d{8}$/.test(cleanMobile);
-        case '+82': // 韩国
+        case '+82': // South Korea
             return /^1[0-9]\d{7}$/.test(cleanMobile);
-        case '+65': // 新加坡
+        case '+65': // Singapore
             return /^[89]\d{7}$/.test(cleanMobile);
-        case '+61': // 澳大利亚
+        case '+61': // Australia
             return /^[4578]\d{8}$/.test(cleanMobile);
-        case '+49': // 德国
+        case '+49': // Germany
             return /^1[5-7]\d{8}$/.test(cleanMobile);
-        case '+33': // 法国
+        case '+33': // France
             return /^[67]\d{8}$/.test(cleanMobile);
-        case '+39': // 意大利
+        case '+39': // Italy
             return /^3[0-9]\d{8}$/.test(cleanMobile);
-        case '+34': // 西班牙
+        case '+34': // Spain
             return /^[6-9]\d{8}$/.test(cleanMobile);
-        case '+55': // 巴西
+        case '+55': // Brazil
             return /^[1-9]\d{10}$/.test(cleanMobile);
-        case '+91': // 印度
+        case '+91': // India
             return /^[6-9]\d{9}$/.test(cleanMobile);
-        case '+971': // 阿联酋
+        case '+971': // United Arab Emirates
             return /^[5]\d{8}$/.test(cleanMobile);
-        case '+966': // 沙特阿拉伯
+        case '+966': // Saudi Arabia
             return /^[5]\d{8}$/.test(cleanMobile);
-        case '+880': // 孟加拉国
+        case '+880': // Bangladesh
             return /^1[3-9]\d{8}$/.test(cleanMobile);
-        case '+234': // 尼日利亚
+        case '+234': // Nigeria
             return /^[789]\d{9}$/.test(cleanMobile);
-        case '+254': // 肯尼亚
+        case '+254': // Kenya
             return /^[17]\d{8}$/.test(cleanMobile);
-        case '+255': // 坦桑尼亚
+        case '+255': // Tanzania
             return /^[67]\d{8}$/.test(cleanMobile);
-        case '+7': // 哈萨克斯坦
+        case '+7': // Kazakhstan
             return /^[67]\d{9}$/.test(cleanMobile);
         default:
  // code：5，15
@@ -173,19 +173,19 @@ export function generateSm2KeyPairHex() {
     return {
         publicKey: keypair.publicKey,
         privateKey: keypair.privateKey,
-        clientPublicKey: keypair.publicKey, // 客户端公钥
-        clientPrivateKey: keypair.privateKey // 客户端私钥
+        clientPublicKey: keypair.publicKey, // Client public key
+        clientPrivateKey: keypair.privateKey // Client private key
     };
 }
 
 /** * SM2Public keyEncrypt * @param {string} publicKey Public key（hex format） * @param {string} plainText * @returns {string} Encryptafter of （hex format） */
 export function sm2Encrypt(publicKey, plainText) {
     if (!publicKey) {
-        throw new Error('公钥不能为null或undefined');
+        throw new Error('Public key cannot be null or undefined');
     }
     
     if (!plainText) {
-        throw new Error('明文不能为空');
+        throw new Error('Plaintext cannot be empty');
     }
     
     const sm2 = require('sm-crypto').sm2;

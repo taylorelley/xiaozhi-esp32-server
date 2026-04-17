@@ -103,14 +103,14 @@ export const clearAllCaches = async () => {
 
 /** * willCacheStatusto */
 export const logCacheStatus = async () => {
-  console.group('Service Worker 缓存状态');
+  console.group('Service Worker cache status');
   
   const cacheNames = await getCacheNames();
   console.log('already of Cache:', cacheNames);
   
   for (const cacheName of cacheNames) {
     const urls = await getCacheUrls(cacheName);
-    console.group(`缓存: ${cacheName} (${urls.length} 项)`);
+    console.group(`Cache: ${cacheName} (${urls.length} items)`);
     urls.forEach(url => console.log(url));
     console.groupEnd();
   }

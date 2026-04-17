@@ -81,7 +81,7 @@ export function useUpload<T = string>(url: string, formData: Record<string, any>
   const checkFileSize = (size: number) => {
     const sizeInMB = size / 1024 / 1024
     if (sizeInMB > maxSize) {
-      toast.warning(`文件大小不能超过${maxSize}MB`)
+      toast.warning(`File size cannot exceed ${maxSize}MB`)
       return false
     }
     return true
@@ -112,7 +112,7 @@ export function useUpload<T = string>(url: string, formData: Record<string, any>
  // Use chooseMedia API
     uni.chooseMedia({
       count,
-      mediaType: ['image'], // 仅支持图片类型
+      mediaType: ['image'], // Only image types are supported
       sourceType,
       success: (res) => {
         const file = res.tempFiles[0]
@@ -228,7 +228,7 @@ function uploadFile<T>({
     const uploadTask = uni.uploadFile({
       url,
       filePath: tempFilePath,
-      name: 'file', // 文件对应的 key
+      name: 'file', // The key for the file field
       formData,
       header: {
  // H5needsmanualSettingsContent-Type，BrowserProcessmultipartFormat
@@ -250,7 +250,7 @@ function uploadFile<T>({
  // ResponseParseError
           console.error('ParseUploadResponsefailed:', err)
           error.value = true
-          onError?.(new Error('上传响应解析失败'))
+          onError?.(new Error('Failed to parse upload response'))
         }
       },
       fail: (err) => {
@@ -276,6 +276,6 @@ function uploadFile<T>({
     console.error('CreateUploadfailed:', err)
     error.value = true
     loading.value = false
-    onError?.(new Error('创建上传任务失败'))
+    onError?.(new Error('Failed to create upload task'))
   }
 }

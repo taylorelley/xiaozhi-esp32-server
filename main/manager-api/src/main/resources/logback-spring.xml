@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- 启用JansiConsoleAppender以确保控制台输出有颜色 -->
+    <!-- Enable JansiConsoleAppender to ensure colored console output -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
-    
-    <!-- 确保日志目录存在 -->
+
+    <!-- Ensure the log directory exists -->
     <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
-    
-    <!-- 定义日志文件存储位置 -->
+
+    <!-- Define the log file storage location -->
     <property name="LOG_HOME" value="./logs" />
-    
-    <!-- 使用自定义的初始化监听器确保日志目录存在 -->
+
+    <!-- Use a custom initialization listener to ensure the log directory exists -->
     <define name="LOGBACK_DIR_CHECK" class="ch.qos.logback.core.property.FileExistsPropertyDefiner">
         <path>${LOG_HOME}</path>
         <createIfMissing>true</createIfMissing>
     </define>
-    
-    <!-- 引入Spring Boot默认配置 -->
+
+    <!-- Include Spring Boot default configuration -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    
-    <!-- 控制台输出配置 -->
+
+    <!-- Console output configuration -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{50}) - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    
-    <!-- 文件输出配置 - 所有日志 -->
+
+    <!-- File output configuration - all logs -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/xiaozhi-esp32-api.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -40,8 +40,8 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    
-    <!-- 文件输出配置 - 仅错误日志 -->
+
+    <!-- File output configuration - error logs only -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -58,12 +58,12 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    
-    <!-- 开发环境配置 -->
+
+    <!-- Development environment configuration -->
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
-            <!-- 开发环境也记录日志文件 -->
+            <!-- Development environment also records log files -->
             <appender-ref ref="FILE" />
             <appender-ref ref="ERROR_FILE" />
         </root>
@@ -71,8 +71,8 @@
         <logger name="org.springframework.web" level="INFO" />
         <logger name="org.springboot.sample" level="INFO" />
     </springProfile>
-    
-    <!-- 测试环境配置 -->
+
+    <!-- Test environment configuration -->
     <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
@@ -83,10 +83,10 @@
         <logger name="org.springframework.web" level="INFO" />
         <logger name="org.springboot.sample" level="INFO" />
     </springProfile>
-    
-    <!-- 生产环境配置 - 合并两个版本的最佳实践 -->
+
+    <!-- Production environment configuration - merges best practices from both versions -->
     <springProfile name="prod">
-        <!-- 使用本地日志路径 -->
+        <!-- Use a local log path -->
         <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_HOME}/xiaozhi-esp32-api.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -100,8 +100,8 @@
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
-        
-        <!-- 生产环境错误日志 -->
+
+        <!-- Production environment error log -->
         <appender name="PROD_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_HOME}/error.log</file>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -118,21 +118,21 @@
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
-        
-        <!-- 生产环境根日志配置 -->
+
+        <!-- Production environment root log configuration -->
         <root level="INFO">
             <appender-ref ref="PROD_FILE" />
             <appender-ref ref="PROD_ERROR_FILE" />
             <appender-ref ref="CONSOLE" />
         </root>
-        
-        <!-- 特定包的日志级别 -->
+
+        <!-- Log levels for specific packages -->
         <logger name="xiaozhi" level="INFO" />
         <logger name="org.springframework.web" level="ERROR" />
         <logger name="org.springboot.sample" level="ERROR" />
     </springProfile>
-    
-    <!-- 确保日志目录存在 -->
+
+    <!-- Ensure the log directory exists -->
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>

@@ -20,7 +20,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('GetDictionaryTypelistfailed:', err)
-                this.$message.error(err.msg || '获取字典类型列表失败')
+                this.$message.error(err.msg || 'Failed to get dictionary type list')
                 RequestService.reAjaxFun(() => {
                     this.getDictTypeList(params, callback)
                 })
@@ -38,7 +38,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('GetDictionaryTypedetailsfailed:', err)
-                this.$message.error(err.msg || '获取字典类型详情失败')
+                this.$message.error(err.msg || 'Failed to get dictionary type details')
                 RequestService.reAjaxFun(() => {
                     this.getDictTypeDetail(id, callback)
                 })
@@ -57,7 +57,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('AddDictionaryTypefailed:', err)
-                this.$message.error(err.msg || '新增字典类型失败')
+                this.$message.error(err.msg || 'Failed to add dictionary type')
                 RequestService.reAjaxFun(() => {
                     this.addDictType(data, callback)
                 })
@@ -76,7 +76,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('UpdateDictionaryTypefailed:', err)
-                this.$message.error(err.msg || '更新字典类型失败')
+                this.$message.error(err.msg || 'Failed to update dictionary type')
                 RequestService.reAjaxFun(() => {
                     this.updateDictType(data, callback)
                 })
@@ -95,7 +95,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('DeleteDictionaryTypefailed:', err)
-                this.$message.error(err.msg || '删除字典类型失败')
+                this.$message.error(err.msg || 'Failed to delete dictionary type')
                 RequestService.reAjaxFun(() => {
                     this.deleteDictType(ids, callback)
                 })
@@ -121,7 +121,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('GetDictionaryDatalistfailed:', err)
-                this.$message.error(err.msg || '获取字典数据列表失败')
+                this.$message.error(err.msg || 'Failed to get dictionary data list')
                 RequestService.reAjaxFun(() => {
                     this.getDictDataList(params, callback)
                 })
@@ -139,7 +139,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('GetDictionaryDatadetailsfailed:', err)
-                this.$message.error(err.msg || '获取字典数据详情失败')
+                this.$message.error(err.msg || 'Failed to get dictionary data details')
                 RequestService.reAjaxFun(() => {
                     this.getDictDataDetail(id, callback)
                 })
@@ -158,7 +158,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('AddDictionaryDatafailed:', err)
-                this.$message.error(err.msg || '新增字典数据失败')
+                this.$message.error(err.msg || 'Failed to add dictionary data')
                 RequestService.reAjaxFun(() => {
                     this.addDictData(data, callback)
                 })
@@ -177,7 +177,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('UpdateDictionaryDatafailed:', err)
-                this.$message.error(err.msg || '更新字典数据失败')
+                this.$message.error(err.msg || 'Failed to update dictionary data')
                 RequestService.reAjaxFun(() => {
                     this.updateDictData(data, callback)
                 })
@@ -196,7 +196,7 @@ export default {
             })
             .networkFail((err) => {
                 console.error('DeleteDictionaryDatafailed:', err)
-                this.$message.error(err.msg || '删除字典数据失败')
+                this.$message.error(err.msg || 'Failed to delete dictionary data')
                 RequestService.reAjaxFun(() => {
                     this.deleteDictData(ids, callback)
                 })
@@ -214,7 +214,7 @@ export default {
                     if (res.data && res.data.code === 0) {
                         resolve(res.data)
                     } else {
-                        reject(new Error(res.data?.msg || '获取字典数据列表失败'))
+                        reject(new Error(res.data?.msg || 'Failed to get dictionary data list'))
                     }
                 })
                 .networkFail((err) => {

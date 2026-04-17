@@ -47,6 +47,6 @@ export const usePluginStore = defineStore(
     }
   },
   {
-    persist: false, // 不持久化，每次进入页面重新加载
+    persist: false, // Do not persist; reload every time the page opens
   },
 )
