@@ -6,16 +6,14 @@ Provides unified helpers for obtaining the current time.
 import cnlunar
 from datetime import datetime
 
-# Weekday names are intentionally kept in Chinese because they are surfaced to the
-# LLM prompt and spoken back to the user, who is typically Chinese-speaking.
 WEEKDAY_MAP = {
-    "Monday": "星期一",
-    "Tuesday": "星期二",
-    "Wednesday": "星期三",
-    "Thursday": "星期四",
-    "Friday": "星期五",
-    "Saturday": "星期六",
-    "Sunday": "星期日",
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday",
 }
 
 
@@ -48,7 +46,7 @@ def get_current_lunar_date() -> str:
     try:
         now = datetime.now()
         today_lunar = cnlunar.Lunar(now, godType="8char")
-        return "%s年%s%s" % (
+        return "Year %s, %s %s" % (
             today_lunar.lunarYearCn,
             today_lunar.lunarMonthCn[:-1],
             today_lunar.lunarDayCn,

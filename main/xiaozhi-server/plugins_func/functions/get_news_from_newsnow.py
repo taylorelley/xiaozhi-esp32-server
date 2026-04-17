@@ -15,45 +15,45 @@ logger = setup_logging()
 
 CHANNEL_MAP = {
     "V2EX": "v2ex-share",
-    "知乎": "zhihu",
-    "微博": "weibo",
-    "联合早报": "zaobao",
-    "酷安": "coolapk",
+    "\u77e5\u4e4e": "zhihu",
+    "\u5fae\u535a": "weibo",
+    "\u8054\u5408\u65e9\u62a5": "zaobao",
+    "\u9177\u5b89": "coolapk",
     "MKTNews": "mktnews-flash",
-    "华尔街见闻": "wallstreetcn-quick",
-    "36氪": "36kr-quick",
-    "抖音": "douyin",
-    "虎扑": "hupu",
-    "百度贴吧": "tieba",
-    "今日头条": "toutiao",
-    "IT之家": "ithome",
-    "澎湃新闻": "thepaper",
-    "卫星通讯社": "sputniknewscn",
-    "参考消息": "cankaoxiaoxi",
-    "远景论坛": "pcbeta-windows11",
-    "财联社": "cls-depth",
-    "雪球": "xueqiu-hotstock",
-    "格隆汇": "gelonghui",
-    "法布财经": "fastbull-express",
+    "\u534e\u5c14\u8857\u89c1\u95fb": "wallstreetcn-quick",
+    "36\u6c2a": "36kr-quick",
+    "\u6296\u97f3": "douyin",
+    "\u864e\u6251": "hupu",
+    "\u767e\u5ea6\u8d34\u5427": "tieba",
+    "\u4eca\u65e5\u5934\u6761": "toutiao",
+    "IT\u4e4b\u5bb6": "ithome",
+    "\u6f8e\u6e43\u65b0\u95fb": "thepaper",
+    "\u536b\u661f\u901a\u8baf\u793e": "sputniknewscn",
+    "\u53c2\u8003\u6d88\u606f": "cankaoxiaoxi",
+    "\u8fdc\u666f\u8bba\u575b": "pcbeta-windows11",
+    "\u8d22\u8054\u793e": "cls-depth",
+    "\u96ea\u7403": "xueqiu-hotstock",
+    "\u683c\u9686\u6c47": "gelonghui",
+    "\u6cd5\u5e03\u8d22\u7ecf": "fastbull-express",
     "Solidot": "solidot",
     "Hacker News": "hackernews",
     "Product Hunt": "producthunt",
     "Github": "github-trending-today",
-    "哔哩哔哩": "bilibili-hot-search",
-    "快手": "kuaishou",
-    "靠谱新闻": "kaopu",
-    "金十数据": "jin10",
-    "百度热搜": "baidu",
-    "牛客": "nowcoder",
-    "少数派": "sspai",
-    "稀土掘金": "juejin",
-    "凤凰网": "ifeng",
-    "虫部落": "chongbuluo-latest",
+    "\u54d4\u54e9\u54d4\u54e9": "bilibili-hot-search",
+    "\u5feb\u624b": "kuaishou",
+    "\u9760\u8c31\u65b0\u95fb": "kaopu",
+    "\u91d1\u5341\u6570\u636e": "jin10",
+    "\u767e\u5ea6\u70ed\u641c": "baidu",
+    "\u725b\u5ba2": "nowcoder",
+    "\u5c11\u6570\u6d3e": "sspai",
+    "\u7a00\u571f\u6398\u91d1": "juejin",
+    "\u51e4\u51f0\u7f51": "ifeng",
+    "\u866b\u90e8\u843d": "chongbuluo-latest",
 }
 
 
 # Default news sources dictionary, used when not specified in the config
-DEFAULT_NEWS_SOURCES = "澎湃新闻;百度热搜;财联社"
+DEFAULT_NEWS_SOURCES = "\u6f8e\u6e43\u65b0\u95fb;\u767e\u5ea6\u70ed\u641c;\u8d22\u8054\u793e"
 
 
 def get_news_sources_from_config(conn):
@@ -96,8 +96,8 @@ GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
         "description": (
             "Get the latest news and randomly pick one to broadcast. "
             f"The user can choose different news sources; the standard names are: {example_sources_str}. "
-            "For example, if the user asks for Baidu News, that maps to Baidu Hot Search (百度热搜). "
-            "If not specified, news is fetched from The Paper (澎湃新闻) by default. "
+            "For example, if the user asks for Baidu News, that maps to Baidu Hot Search (\u767e\u5ea6\u70ed\u641c). "
+            "If not specified, news is fetched from The Paper (\u6f8e\u6e43\u65b0\u95fb) by default. "
             "The user may request the detailed content, in which case the full article is fetched."
         ),
         "parameters": {
@@ -180,7 +180,7 @@ def fetch_news_detail(url):
 )
 def get_news_from_newsnow(
     conn: "ConnectionHandler",
-    source: str = "澎湃新闻",
+    source: str = "\u6f8e\u6e43\u65b0\u95fb",
     detail: bool = False,
     lang: str = "zh_CN",
 ):
@@ -253,9 +253,9 @@ def get_news_from_newsnow(
 
         # If no matching English ID is found, fall back to the default source
         if not english_source_id:
-            logger.bind(tag=TAG).warning(f"Invalid news source: {source}, falling back to the default source The Paper (澎湃新闻)")
+            logger.bind(tag=TAG).warning(f"Invalid news source: {source}, falling back to the default source The Paper (\u6f8e\u6e43\u65b0\u95fb)")
             english_source_id = "thepaper"
-            source = "澎湃新闻"
+            source = "\u6f8e\u6e43\u65b0\u95fb"
 
         logger.bind(tag=TAG).info(f"Fetching news: source={source}({english_source_id})")
 

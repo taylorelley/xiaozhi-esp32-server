@@ -127,16 +127,16 @@ def map_category(category_text):
     # LLM and users invoke this plugin with Chinese category words.
     category_map = {
         # Society news
-        "社会": "society_rss_url",
-        "社会新闻": "society_rss_url",
+        "\u793e\u4f1a": "society_rss_url",
+        "\u793e\u4f1a\u65b0\u95fb": "society_rss_url",
         # International news
-        "国际": "world_rss_url",
-        "国际新闻": "world_rss_url",
+        "\u56fd\u9645": "world_rss_url",
+        "\u56fd\u9645\u65b0\u95fb": "world_rss_url",
         # Finance news
-        "财经": "finance_rss_url",
-        "财经新闻": "finance_rss_url",
-        "金融": "finance_rss_url",
-        "经济": "finance_rss_url",
+        "\u8d22\u7ecf": "finance_rss_url",
+        "\u8d22\u7ecf\u65b0\u95fb": "finance_rss_url",
+        "\u91d1\u878d": "finance_rss_url",
+        "\u7ecf\u6d4e": "finance_rss_url",
     }
 
     # Lowercase and strip whitespace
