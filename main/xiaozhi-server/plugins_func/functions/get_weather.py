@@ -137,7 +137,7 @@ def parse_weather_info(soup):
 
     current_abstract = soup.select_one(".c-city-weather-current .current-abstract")
     current_abstract = (
-        current_abstract.get_text(strip=True) if current_abstract else "未知"
+        current_abstract.get_text(strip=True) if current_abstract else "Unknown"
     )
 
     current_basic = {}
@@ -155,7 +155,7 @@ def parse_weather_info(soup):
         weather_code = (
             row.select_one(".date-bg .icon")["src"].split("/")[-1].split(".")[0]
         )
-        weather = WEATHER_CODE_MAP.get(weather_code, "未知")
+        weather = WEATHER_CODE_MAP.get(weather_code, "Unknown")
         temps = [span.get_text(strip=True) for span in row.select(".tmp-cont .temp")]
         high_temp, low_temp = (temps[0], temps[-1]) if len(temps) >= 2 else (None, None)
         temps_list.append((date, weather, high_temp, low_temp))
@@ -170,6 +170,8 @@ def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh
     weather_config = conn.config.get("plugins", {}).get("get_weather", {})
     api_host = weather_config.get("api_host", "mj7p3y7naa.re.qweatherapi.com")
     api_key = weather_config.get("api_key", "a861d0d5e7bf4ee1a83d9a9e4f96d4da")
+    # Default to Guangzhou (广州) when the user does not provide a location.
+    # The string must be in Chinese because it is passed to the QWeather geo lookup API.
     default_location = weather_config.get("default_location", "广州")
     client_ip = conn.client_ip
 
