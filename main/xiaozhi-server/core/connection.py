@@ -272,19 +272,19 @@ class ConnectionHandler:
             try:
                 await self._save_and_close(ws)
             except Exception as final_error:
-                self.logger.bind(tag=TAG).error(f"最终清理时出错: {final_error}")
-                # 确保即使保存记忆失败，也要关闭连接
+                self.logger.bind(tag=TAG).error(f"Error during final cleanup: {final_error}")
+                # Ensure the connection is closed even if saving memory fails
                 try:
                     await self.close(ws)
                 except Exception as close_error:
                     self.logger.bind(tag=TAG).error(
-                        f"强制关闭连接时出错: {close_error}"
+                        f"Error while forcibly closing the connection: {close_error}"
                     )
 
     async def _save_and_close(self, ws):
-        """保存记忆并关闭连接"""
+        """Save memory and close the connection"""
         try:
-            # 守护线程1：独立生成标题（不依赖记忆模型）
+            # Daemon thread 1: independently generate the title (does not depend on the memory model)
             if self.session_id:
                 def generate_title_task():
                     try:
@@ -294,7 +294,7 @@ class ConnectionHandler:
                             generate_and_save_chat_title(self.session_id)
                         )
                     except Exception as e:
-                        self.logger.bind(tag=TAG).error(f"生成标题失败: {e}")
+                        self.logger.bind(tag=TAG).error(f"Failed to generate title: {e}")
                     finally:
                         try:
                             loop.close()

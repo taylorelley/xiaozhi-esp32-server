@@ -236,7 +236,7 @@ class StreamTTSPerformanceTester:
                 async with websockets.connect(ws_url, additional_headers=ws_header, max_size=1000000000) as ws:
                     session_id = uuid.uuid4().hex
 
-                    # 发送会话启动请求
+                    # Send session start request
                     header = bytes([
                         (0b0001 << 4) | 0b0001,  
                         0b0001 << 4 | 0b1011,     
@@ -250,7 +250,7 @@ class StreamTTSPerformanceTester:
                     payload = json.dumps({"speaker": speaker}).encode()
                     await ws.send(header + optional + len(payload).to_bytes(4, "big", signed=True) + payload)
 
-                    # 发送文本
+                    # Send text
                     header = bytes([
                         (0b0001 << 4) | 0b0001,  
                         0b0001 << 4 | 0b1011,    
@@ -268,16 +268,16 @@ class StreamTTSPerformanceTester:
                     first_chunk = await ws.recv()
                     latency = time.time() - start_time
                     latencies.append(latency)
-                    print(f"[火山引擎TTS] 第{i+1}次 首词延迟: {latency:.3f}s")
+                    print(f"[Volcengine TTS] Run {i+1} first-word latency: {latency:.3f}s")
 
             except Exception as e:
-                print(f"[火山引擎TTS] 第{i+1}次测试失败: {str(e)}")
+                print(f"[Volcengine TTS] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
-        
-        return self._calculate_result("火山引擎TTS", latencies, test_count)
+
+        return self._calculate_result("Volcengine TTS", latencies, test_count)
 
     async def test_paddlespeech_tts(self, text=None, test_count=5):
-        """测试PaddleSpeech流式TTS首词延迟（测试多次取平均）"""
+        """Test PaddleSpeech streaming TTS first-word latency (multiple runs, averaged)"""
         text = text or self.test_texts[0]
         latencies = []
         
@@ -291,51 +291,51 @@ class StreamTTSPerformanceTester:
 
                 start_time = time.time()
                 async with websockets.connect(tts_url) as ws:
-                    # 发送开始请求
+                    # Send start request
                     await ws.send(json.dumps({
                         "task": "tts",
                         "signal": "start"
                     }))
-                    
+
                     start_response = json.loads(await ws.recv())
                     if start_response.get("status") != 0:
-                        raise Exception("连接失败")
-                    
-                    # 发送文本数据
+                        raise Exception("Connection failed")
+
+                    # Send text data
                     await ws.send(json.dumps({
                         "text": text,
                         "spk_id": spk_id,
                         "speed": speed,
                         "volume": volume
                     }))
-                    
-                    # 接收第一个数据块
+
+                    # Receive the first chunk
                     first_chunk = await ws.recv()
                     latency = time.time() - start_time
                     latencies.append(latency)
-                    print(f"[PaddleSpeechTTS] 第{i+1}次 首词延迟: {latency:.3f}s")
+                    print(f"[PaddleSpeechTTS] Run {i+1} first-word latency: {latency:.3f}s")
 
-                    # 发送结束请求
+                    # Send end request
                     end_request = {
                         "task": "tts",
                         "signal": "end"
                     }
                     await ws.send(json.dumps(end_request))
 
-                    # 确保连接正常关闭
+                    # Ensure the connection closes normally
                     try:
                         await ws.recv()
                     except websockets.exceptions.ConnectionClosedOK:
                         pass
 
             except Exception as e:
-                print(f"[PaddleSpeechTTS] 第{i+1}次测试失败: {str(e)}")
+                print(f"[PaddleSpeechTTS] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
-        
+
         return self._calculate_result("PaddleSpeechTTS", latencies, test_count)
-            
+
     async def test_indexstream_tts(self, text=None, test_count=5):
-        """测试IndexStream流式TTS首词延迟（测试多次取平均）"""
+        """Test IndexStream streaming TTS first-word latency (multiple runs, averaged)"""
         text = text or self.test_texts[0]
         latencies = []
         
@@ -345,14 +345,14 @@ class StreamTTSPerformanceTester:
                 api_url = tts_config.get("api_url")
                 voice = tts_config.get("voice")
 
-                # 统一计时起点：在建立连接前开始计时
+                # Unified timing start: begin timing before establishing the connection
                 start_time = time.time()
 
                 async with aiohttp.ClientSession() as session:
                     payload = {"text": text, "character": voice}
                     async with session.post(api_url, json=payload, timeout=10) as resp:
                         if resp.status != 200:
-                            raise Exception(f"请求失败: {resp.status}, {await resp.text()}")
+                            raise Exception(f"Request failed: {resp.status}, {await resp.text()}")
 
                         async for chunk in resp.content.iter_any():
                             data = chunk[0] if isinstance(chunk, (list, tuple)) else chunk
@@ -361,20 +361,20 @@ class StreamTTSPerformanceTester:
 
                             latency = time.time() - start_time
                             latencies.append(latency)
-                            print(f"[IndexStreamTTS] 第{i+1}次 首词延迟: {latency:.3f}s")
+                            print(f"[IndexStreamTTS] Run {i+1} first-word latency: {latency:.3f}s")
                             resp.close()
                             break
                         else:
                             latencies.append(None)
 
             except Exception as e:
-                print(f"[IndexStreamTTS] 第{i+1}次测试失败: {str(e)}")
+                print(f"[IndexStreamTTS] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
-        
+
         return self._calculate_result("IndexStreamTTS", latencies, test_count)
 
     async def test_linkerai_tts(self, text=None, test_count=5):
-        """测试Linkerai流式TTS首词延迟（测试多次取平均）"""
+        """Test Linkerai streaming TTS first-word latency (multiple runs, averaged)"""
         text = text or self.test_texts[0]
         latencies = []
         
@@ -385,7 +385,7 @@ class StreamTTSPerformanceTester:
                 access_token = tts_config["access_token"]
                 voice = tts_config["voice"]
 
-                # 统一计时起点：在建立连接前开始计时
+                # Unified timing start: begin timing before establishing the connection
                 start_time = time.time()
                 async with aiohttp.ClientSession() as session:
                     params = {
@@ -395,7 +395,7 @@ class StreamTTSPerformanceTester:
                         "stream": "true",
                         "target_sr": 16000,
                         "audio_format": "pcm",
-                        "instruct_text": "请生成一段自然流畅的语音",
+                        "instruct_text": "Please generate a natural and fluent speech segment",
                     }
                     headers = {
                         "Authorization": f"Bearer {access_token}",

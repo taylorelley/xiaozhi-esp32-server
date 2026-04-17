@@ -483,35 +483,35 @@ class TTSProvider(TTSProviderBase):
             self.ws = None
 
     async def _start_monitor_tts_response(self):
-        """监听TTS响应 - 长期运行"""
+        """Monitor TTS responses - long-running."""
         try:
             while not self.conn.stop_event.is_set():
                 try:
-                    # 确保 `recv()` 运行在同一个 event loop
+                    # Ensure `recv()` runs in the same event loop
                     msg = await self.ws.recv()
                     res = self.parser_response(msg)
                     self.print_response(res, "send_text res:")
 
-                    # 优先处理连接级别事件
+                    # Prioritize connection-level events
                     if res.optional.event == EVENT_ConnectionFinished:
-                        logger.bind(tag=TAG).debug(f"链接关闭成功～～")
+                        logger.bind(tag=TAG).debug(f"Connection closed successfully~~")
                         break
 
-                    # 只处理当前活跃会话的响应
+                    # Only handle responses for the currently active session
                     if res.optional.sessionId and self.conn.sentence_id != res.optional.sessionId:
-                        # 如果是会话结束相关事件，即使会话ID不匹配也要重置状态
+                        # If it is a session-end related event, reset state even if session ID does not match
                         if res.optional.event in [EVENT_SessionCanceled, EVENT_SessionFailed, EVENT_SessionFinished]:
-                            logger.bind(tag=TAG).debug(f"收到残余下行结束响应重置会话状态～～")
+                            logger.bind(tag=TAG).debug(f"Received residual downlink end response, resetting session state~~")
                             self.activate_session = False
                         continue
 
                     if res.optional.event == EVENT_SessionCanceled:
-                        logger.bind(tag=TAG).debug(f"释放服务端资源成功～～")
+                        logger.bind(tag=TAG).debug(f"Server-side resources released successfully~~")
                         self.activate_session = False
                     elif not self.resource_type and res.optional.event == EVENT_TTSSentenceStart:
                         json_data = json.loads(res.payload.decode("utf-8"))
                         self.tts_text = json_data.get("text", "")
-                        logger.bind(tag=TAG).debug(f"句子语音生成开始: {self.tts_text}")
+                        logger.bind(tag=TAG).debug(f"Sentence speech generation started: {self.tts_text}")
                         self.tts_audio_queue.put(
                             (SentenceType.FIRST, [], self.tts_text)
                         )
@@ -519,12 +519,12 @@ class TTSProvider(TTSProviderBase):
                         res.optional.event == EVENT_TTSResponse
                         and res.header.message_type == AUDIO_ONLY_RESPONSE
                     ):
-                        # 处理seed-tts-2.0文本字幕
+                        # Handle seed-tts-2.0 text captions
                         if self.resource_type:
                             tts_text = self.get_tts_text(self.conn.sentence_id)
                             if tts_text:
                                 logger.bind(tag=TAG).info(
-                                    f"句子语音生成成功： {tts_text}"
+                                    f"Sentence speech generated successfully: {tts_text}"
                                 )
                                 self.tts_audio_queue.put(
                                     (SentenceType.FIRST, [], tts_text)
@@ -532,16 +532,16 @@ class TTSProvider(TTSProviderBase):
                                 self.clear_tts_text(self.conn.sentence_id)
                         self.wav_to_opus_data_audio_raw_stream(res.payload, callback=self.handle_opus)
                     elif not self.resource_type and res.optional.event == EVENT_TTSSentenceEnd:
-                        logger.bind(tag=TAG).info(f"句子语音生成成功：{self.tts_text}")
+                        logger.bind(tag=TAG).info(f"Sentence speech generated successfully: {self.tts_text}")
                     elif res.optional.event == EVENT_SessionFinished:
-                        logger.bind(tag=TAG).debug(f"会话结束～～")
+                        logger.bind(tag=TAG).debug(f"Session ended~~")
                         self.activate_session = False
                         self._process_before_stop_play_files()
-                        # 非复用模式下，会话结束后发送 FinishConnection
+                        # In non-reuse mode, send FinishConnection after the session ends
                         if not self.enable_ws_reuse:
                             await self.finish_connection()
                 except websockets.ConnectionClosed:
-                    logger.bind(tag=TAG).warning("WebSocket连接已关闭")
+                    logger.bind(tag=TAG).warning("WebSocket connection closed")
                     break
                 except Exception as e:
                     logger.bind(tag=TAG).error(
@@ -549,14 +549,14 @@ class TTSProvider(TTSProviderBase):
                     )
                     traceback.print_exc()
                     break
-            # 连接异常时关闭WebSocket
+            # Close WebSocket when connection is abnormal
             if self.ws:
                 try:
                     await self.ws.close()
                 except:
                     pass
                 self.ws = None
-        # 监听任务退出时清理引用
+        # Clean up references when monitor task exits
         finally:
             self.activate_session = False
             self._monitor_task = None
@@ -593,7 +593,7 @@ class TTSProvider(TTSProviderBase):
         )
         return await self.send_event(self.ws, header, optional, payload)
 
-    # 读取 res 数组某段 字符串内容
+    # Read a string section from the res array
     def read_res_content(self, res: bytes, offset: int):
         content_size = int.from_bytes(res[offset : offset + 4], "big", signed=True)
         offset += 4
@@ -601,7 +601,7 @@ class TTSProvider(TTSProviderBase):
         offset += content_size
         return content, offset
 
-    # 读取 payload
+    # Read payload
     def read_res_payload(self, res: bytes, offset: int):
         payload_size = int.from_bytes(res[offset : offset + 4], "big", signed=True)
         offset += 4
@@ -613,7 +613,7 @@ class TTSProvider(TTSProviderBase):
         if isinstance(res, str):
             raise RuntimeError(res)
         response = Response(Header(), Optional())
-        # 解析结果
+        # Parse result
         # header
         header = response.header
         num = 0b00001111
@@ -683,15 +683,15 @@ class TTSProvider(TTSProviderBase):
         speaker="",
         audio_format="pcm",
     ):
-        # 构建 req_params
+        # Build req_params
         req_params = {
             "text": text,
             "speaker": speaker,
             "audio_params": {**self.audio_params, "format": audio_format},
             "additions": json.dumps(self.additions)
         }
-        
-        # 如果有 mix_speaker 配置，添加到 req_params
+
+        # If mix_speaker config exists, add it to req_params
         if self.mix_speaker:
             req_params["mix_speaker"] = self.mix_speaker
 

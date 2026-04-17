@@ -358,15 +358,15 @@ class TTSProvider(TTSProviderBase):
             }
             await self.ws.send(json.dumps(start_request))
             self.last_active_time = time.time()
-            logger.bind(tag=TAG).debug("会话启动请求已发送")
+            logger.bind(tag=TAG).debug("Session start request sent")
         except Exception as e:
-            logger.bind(tag=TAG).error(f"启动会话失败: {str(e)}")
-            # 确保清理资源
+            logger.bind(tag=TAG).error(f"Failed to start session: {str(e)}")
+            # Ensure resources are cleaned up
             await self.close()
             raise
 
     async def finish_session(self, task_id):
-        logger.bind(tag=TAG).debug(f"关闭会话～～{task_id}")
+        logger.bind(tag=TAG).debug(f"Closing session~~{task_id}")
         try:
             if self.ws:
                 stop_request = {
@@ -379,17 +379,17 @@ class TTSProvider(TTSProviderBase):
                     }
                 }
                 await self.ws.send(json.dumps(stop_request))
-                logger.bind(tag=TAG).debug("会话结束请求已发送")
+                logger.bind(tag=TAG).debug("Session finish request sent")
                 self.last_active_time = time.time()
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"关闭会话失败: {str(e)}")
-            # 确保清理资源
+            logger.bind(tag=TAG).error(f"Failed to close session: {str(e)}")
+            # Ensure resources are cleaned up
             await self.close()
             raise
 
     async def close(self):
-        """资源清理"""
+        """Resource cleanup"""
         await super().close()
         self.activate_session = False
         if self._monitor_task:
@@ -399,7 +399,7 @@ class TTSProvider(TTSProviderBase):
             except asyncio.CancelledError:
                 pass
             except Exception as e:
-                logger.bind(tag=TAG).warning(f"关闭时取消监听任务错误: {e}")
+                logger.bind(tag=TAG).warning(f"Error cancelling listener task during close: {e}")
             self._monitor_task = None
 
         if self.ws:
@@ -411,68 +411,68 @@ class TTSProvider(TTSProviderBase):
             self.last_active_time = None
 
     async def _start_monitor_tts_response(self):
-        """监听TTS响应 - 长期运行"""
+        """Listen to TTS responses - long-running"""
         try:
             while not self.conn.stop_event.is_set():
                 try:
                     msg = await self.ws.recv()
                     self.last_active_time = time.time()
 
-                    if isinstance(msg, str):  # 文本控制消息
+                    if isinstance(msg, str):  # Text control message
                         try:
                             data = json.loads(msg)
                             header = data.get("header", {})
                             event_name = header.get("name")
                             task_id = header.get("task_id")
 
-                            # 只处理当前活跃会话的响应
+                            # Only process responses from the current active session
                             if task_id and self.task_id != task_id:
                                 if event_name in ["SynthesisCompleted", "TaskFailed"]:
-                                    logger.bind(tag=TAG).debug(f"收到残余下行结束响应重置会话状态～～")
+                                    logger.bind(tag=TAG).debug(f"Received residual downstream end response, resetting session state~~")
                                     self.activate_session = False
                                 continue
 
                             if event_name == "SynthesisStarted":
-                                logger.bind(tag=TAG).debug("TTS合成已启动")
+                                logger.bind(tag=TAG).debug("TTS synthesis started")
                                 self.tts_audio_queue.put(
                                     (SentenceType.FIRST, [], None)
                                 )
                             elif event_name == "SentenceEnd":
-                                # 发送缓存的数据
+                                # Send cached data
                                 tts_text = self.get_tts_text(self.conn.sentence_id)
                                 if tts_text:
                                     logger.bind(tag=TAG).info(
-                                        f"句子语音生成成功： {tts_text}"
+                                        f"Sentence voice generated successfully: {tts_text}"
                                     )
                                     self.tts_audio_queue.put(
                                         (SentenceType.FIRST, [], tts_text)
                                     )
                                     self.clear_tts_text(self.conn.sentence_id)
                             elif event_name == "SynthesisCompleted":
-                                logger.bind(tag=TAG).debug(f"会话结束～～")
+                                logger.bind(tag=TAG).debug(f"Session ended~~")
                                 self.activate_session = False
                                 self._process_before_stop_play_files()
                         except json.JSONDecodeError:
-                            logger.bind(tag=TAG).warning("收到无效的JSON消息")
-                    # 二进制消息（音频数据）
+                            logger.bind(tag=TAG).warning("Received invalid JSON message")
+                    # Binary message (audio data)
                     elif isinstance(msg, (bytes, bytearray)):
                         self.opus_encoder.encode_pcm_to_opus_stream(msg, False, self.handle_opus)
                 except websockets.ConnectionClosed:
-                    logger.bind(tag=TAG).warning("WebSocket连接已关闭")
+                    logger.bind(tag=TAG).warning("WebSocket connection closed")
                     break
                 except Exception as e:
                     logger.bind(tag=TAG).error(
-                        f"处理TTS响应时出错: {e}\n{traceback.format_exc()}"
+                        f"Error processing TTS response: {e}\n{traceback.format_exc()}"
                     )
                     break
-            # 连接异常时关闭WebSocket
+            # Close WebSocket on connection error
             if self.ws:
                 try:
                     await self.ws.close()
                 except:
                     pass
                 self.ws = None
-        # 监听任务退出时清理引用
+        # Clean up references when the listener task exits
         finally:
             self.activate_session = False
             self._monitor_task = None
