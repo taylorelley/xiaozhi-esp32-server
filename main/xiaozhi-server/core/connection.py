@@ -1471,57 +1471,57 @@ class ConnectionHandler:
             self.logger.bind(tag=TAG).error(f"Chat and close error: {str(e)}")
 
     async def _check_timeout(self):
-        """检查连接超时"""
+        """Check connection timeout"""
         try:
             while not self.stop_event.is_set():
                 last_activity_time = self.last_activity_time
                 if self.need_bind:
                     last_activity_time = self.first_activity_time
 
-                # 检查是否超时（只有在时间戳已初始化的情况下）
+                # Check whether the connection has timed out (only when the timestamp has been initialized)
                 if last_activity_time > 0.0:
                     current_time = time.time() * 1000
                     if current_time - last_activity_time > self.timeout_seconds * 1000:
                         if not self.stop_event.is_set():
-                            self.logger.bind(tag=TAG).info("连接超时，准备关闭")
-                            # 设置停止事件，防止重复处理
+                            self.logger.bind(tag=TAG).info("Connection timed out, preparing to close")
+                            # Set the stop event to prevent repeated processing
                             self.stop_event.set()
-                            # 使用 try-except 包装关闭操作，确保不会因为异常而阻塞
+                            # Wrap the close operation in try-except to ensure it is not blocked by exceptions
                             try:
                                 await self.close(self.websocket)
                             except Exception as close_error:
                                 self.logger.bind(tag=TAG).error(
-                                    f"超时关闭连接时出错: {close_error}"
+                                    f"Error while closing connection on timeout: {close_error}"
                                 )
                         break
-                # 每10秒检查一次，避免过于频繁
+                # Check every 10 seconds to avoid being too frequent
                 await asyncio.sleep(10)
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"超时检查任务出错: {e}")
+            self.logger.bind(tag=TAG).error(f"Timeout check task error: {e}")
         finally:
-            self.logger.bind(tag=TAG).info("超时检查任务已退出")
+            self.logger.bind(tag=TAG).info("Timeout check task has exited")
 
     def _merge_tool_calls(self, tool_calls_list, tools_call):
-        """合并工具调用列表
+        """Merge tool call lists
 
         Args:
-            tool_calls_list: 已收集的工具调用列表
-            tools_call: 新的工具调用
+            tool_calls_list: list of already collected tool calls
+            tools_call: new tool call
         """
         for tool_call in tools_call:
             tool_index = getattr(tool_call, "index", None)
             if tool_index is None:
                 if tool_call.function.name:
-                    # 有 function_name，说明是新的工具调用
+                    # function_name is present, indicating a new tool call
                     tool_index = len(tool_calls_list)
                 else:
                     tool_index = len(tool_calls_list) - 1 if tool_calls_list else 0
 
-            # 确保列表有足够的位置
+            # Ensure the list has enough slots
             if tool_index >= len(tool_calls_list):
                 tool_calls_list.append({"id": "", "name": "", "arguments": ""})
 
-            # 更新工具调用信息
+            # Update tool call information
             if tool_call.id:
                 tool_calls_list[tool_index]["id"] = tool_call.id
             if tool_call.function.name:
