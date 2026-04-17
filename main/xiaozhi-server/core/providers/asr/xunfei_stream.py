@@ -59,18 +59,18 @@ class ASRProvider(ASRProviderBase):
         self.delete_audio_file = delete_audio_file
 
     def create_url(self) -> str:
-        """生成认证URL"""
+        """Generate authentication URL"""
         url = "ws://iat.cn-huabei-1.xf-yun.com/v1"
-        # 生成RFC1123格式的时间戳
+        # Generate RFC1123 formatted timestamp
         now = datetime.now()
         date = format_date_time(mktime(now.timetuple()))
 
-        # 拼接字符串
+        # Concatenate strings
         signature_origin = "host: " + "iat.cn-huabei-1.xf-yun.com" + "\n"
         signature_origin += "date: " + date + "\n"
         signature_origin += "GET " + "/v1 " + "HTTP/1.1"
 
-        # 进行hmac-sha256进行加密
+        # Encrypt using hmac-sha256
         signature_sha = hmac.new(
             self.api_secret.encode("utf-8"),
             signature_origin.encode("utf-8"),
@@ -86,14 +86,14 @@ class ASRProvider(ASRProviderBase):
             encoding="utf-8"
         )
 
-        # 将请求的鉴权参数组合为字典
+        # Combine the request's authentication parameters into a dictionary
         v = {
             "authorization": authorization,
             "date": date,
             "host": "iat.cn-huabei-1.xf-yun.com",
         }
 
-        # 拼接鉴权参数，生成url
+        # Concatenate authentication parameters to generate the URL
         url = url + "?" + urlencode(v)
         return url
 

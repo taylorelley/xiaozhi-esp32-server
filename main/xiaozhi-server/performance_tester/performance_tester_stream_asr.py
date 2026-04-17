@@ -228,7 +228,7 @@ class QwenASRFlashTester(BaseASRTester):
         try:
             audio_data = audio_file_info['data']
 
-            # 优化：将临时文件准备工作移到计时前，减少磁盘IO对性能测试的影响
+            # Optimization: move temp-file preparation before timing to reduce disk IO impact on the performance test
             with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
                 temp_file_path = f.name
 
@@ -249,14 +249,14 @@ class QwenASRFlashTester(BaseASRTester):
 
             api_key = self.asr_config.get("api_key") or os.getenv("DASHSCOPE_API_KEY")
             if not api_key:
-                raise ValueError("未配置 api_key")
+                raise ValueError("api_key is not configured")
 
             if dashscope is None:
-                raise RuntimeError("未安装 dashscope 库")
+                raise RuntimeError("dashscope library is not installed")
 
             dashscope.api_key = api_key
 
-            # 统一计时起点：在API调用前开始计时（但文件准备已完成）
+            # Unified timing start: begin timing before the API call (file preparation is already done)
             start_time = time.time()
 
             response = dashscope.MultiModalConversation.call(
@@ -271,10 +271,10 @@ class QwenASRFlashTester(BaseASRTester):
                 latency = time.time() - start_time
                 return latency
 
-            raise Exception("流式结束，未收到任何响应")
+            raise Exception("Stream ended with no response received")
 
         except Exception as e:
-            raise Exception(f"通义ASR流式失败: {str(e)}")
+            raise Exception(f"Qwen ASR stream failed: {str(e)}")
 
         finally:
             if temp_file_path and os.path.exists(temp_file_path):
@@ -285,22 +285,22 @@ class QwenASRFlashTester(BaseASRTester):
 
     async def test(self, test_count=5):
         if not self.test_audio_files:
-            return {"name": "通义千问ASR", "latency": 0, "status": "失败: 未找到测试音频"}
+            return {"name": "Qwen ASR", "latency": 0, "status": "Failure: no test audio found"}
         if not self.asr_config and not os.getenv("DASHSCOPE_API_KEY"):
-            return {"name": "通义千问ASR", "latency": 0, "status": "失败: 未配置 api_key"}
+            return {"name": "Qwen ASR", "latency": 0, "status": "Failure: api_key not configured"}
 
         latencies = []
         for i in range(test_count):
             try:
-                # print(f"\n[通义ASR] 开始第 {i+1} 次测试...")
+                # print(f"\n[Qwen ASR] Starting run {i+1}...")
                 latency = await self._test_single(self.test_audio_files[0])
                 latencies.append(latency)
-                print(f"[通义ASR] 第{i+1}次 首词延迟: {latency:.3f}s")
+                print(f"[Qwen ASR] Run {i+1} first-word latency: {latency:.3f}s")
             except Exception as e:
-                # print(f"[通义ASR] 第{i+1}次测试失败: {str(e)}")
+                # print(f"[Qwen ASR] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
 
-        return self._calculate_result("通义千问ASR", latencies, test_count)
+        return self._calculate_result("Qwen ASR", latencies, test_count)
 
 
 class XunfeiStreamASRTester(BaseASRTester):
@@ -328,14 +328,14 @@ class XunfeiStreamASRTester(BaseASRTester):
 
     async def test(self, test_count: int = 5):
         if not self.test_audio_files:
-            return {"name": "讯飞流式ASR", "latency": 0, "status": "失败: 未找到测试音频"}
+            return {"name": "Xunfei streaming ASR", "latency": 0, "status": "Failure: no test audio found"}
         if not self.asr_config:
-            return {"name": "讯飞流式ASR", "latency": 0, "status": "失败: 未配置"}
+            return {"name": "Xunfei streaming ASR", "latency": 0, "status": "Failure: not configured"}
 
         required = ["app_id", "api_key", "api_secret"]
         for k in required:
             if k not in self.asr_config:
-                return {"name": "讯飞流式ASR", "latency": 0, "status": f"失败: 缺少配置 {k}"}
+                return {"name": "Xunfei streaming ASR", "latency": 0, "status": f"Failure: missing config {k}"}
 
         latencies = []
         frame_size = 1280

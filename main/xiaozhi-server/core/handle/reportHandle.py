@@ -1,12 +1,12 @@
 """
-TTS上报功能已集成到ConnectionHandler类中。
+TTS reporting has been integrated into the ConnectionHandler class.
 
-上报功能包括：
-1. 每个连接对象拥有自己的上报队列和处理线程
-2. 上报线程的生命周期与连接对象绑定
-3. 使用ConnectionHandler.enqueue_tts_report方法进行上报
+Reporting features include:
+1. Each connection object has its own report queue and processing thread
+2. The lifecycle of the reporting thread is bound to the connection object
+3. Use the ConnectionHandler.enqueue_tts_report method to perform reporting
 
-具体实现请参考core/connection.py中的相关代码。
+For the implementation details, refer to the related code in core/connection.py.
 """
 
 import time
