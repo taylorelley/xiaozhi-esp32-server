@@ -1,63 +1,63 @@
-Log in to AutoDL and rent an image.
-Choose the image:
+登录AutoDL，租赁镜像
+选择镜像:
 ```
 PyTorch / 2.1.0 / 3.10(ubuntu22.04) / cuda 12.1
 ```
 
-Once the machine is powered on, enable the academic accelerator:
+机器开机后，设置学术加速
 ```
 source /etc/network_turbo
 ```
 
-Enter the working directory:
+进入工作目录
 ```
 cd autodl-tmp/
 ```
 
-Pull the project:
+拉取项目
 ```
 git clone https://gitclone.com/github.com/fishaudio/fish-speech.git ; cd fish-speech
 ```
 
-Install dependencies:
+安装依赖
 ```
 pip install -e.
 ```
 
-If you get an error, install portaudio:
+如果报错，安装portaudio
 ```
 apt-get install portaudio19-dev -y
 ```
 
-After installation, run:
+安装后执行
 ```
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 
-Download the models:
+下载模型
 ```
 cd tools
 python download_models.py 
 ```
 
-After the models are downloaded, run the API:
+下载完模型后运行接口
 ```
 python -m tools.api_server --listen 0.0.0.0:6006 
 ```
 
-Then go to the AutoDL instance page in your browser:
+然后用浏览器去到aotodl实例页面
 ```
 https://autodl.com/console/instance/list
 ```
 
-As shown in the image below, click the `Custom Service` button of the machine you just rented and enable port forwarding.
-![Custom Service](images/fishspeech/autodl-01.png)
+如下图点击你刚才机器的`自定义服务`按钮，开启端口转发服务
+![自定义服务](images/fishspeech/autodl-01.png)
 
-After port forwarding is configured, open `http://localhost:6006/` on your local computer and you'll be able to access the fish-speech API.
-![Service Preview](images/fishspeech/autodl-02.png)
+端口转发服务设置完成后，你本地电脑打开网址`http://localhost:6006/`，就可以访问fish-speech的接口了
+![服务预览](images/fishspeech/autodl-02.png)
 
 
-If you are doing a single-module deployment, the core configuration is:
+如果你是单模块部署，核心配置如下
 ```
 selected_module:
   TTS: FishSpeech
@@ -69,4 +69,4 @@ TTS:
     api_url: "http://127.0.0.1:6006/v1/tts"
 ```
 
-Then restart the service.
+然后重启服务
