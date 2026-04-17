@@ -9,7 +9,7 @@ import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
  * SM2decryptandVerification codeverificationtoolclass
- * 封装re-复 SM2decrypt、Verification codeextractandverification逻辑
+ * encapsulatere-re- SM2decrypt、Verification codeextractandverificationlogic
  */
 public class Sm2DecryptUtil {
 
@@ -25,7 +25,7 @@ public class Sm2DecryptUtil {
      * @param captchaId         Verification codeID
      * @param captchaService    Verification codeservice
      * @param sysParamsService  systemparameterservice
-     * @return decryptafter 际Password
+     * @return decryptafter Password
      */
     public static String decryptAndValidateCaptcha(String encryptedPassword, String captchaId,
             CaptchaService captchaService, SysParamsService sysParamsService) {
@@ -43,7 +43,7 @@ public class Sm2DecryptUtil {
             throw new RenException(ErrorCode.SM2_DECRYPT_ERROR);
         }
 
-        // 分离Verification codeandPassword：before5bitYesVerification code，after面YesPassword
+        // distanceVerification codeandPassword：before5bitYesVerification code，aftersideYesPassword
         if (decryptedContent.length() > CAPTCHA_LENGTH) {
             String embeddedCaptcha = decryptedContent.substring(0, CAPTCHA_LENGTH);
             String actualPassword = decryptedContent.substring(CAPTCHA_LENGTH);

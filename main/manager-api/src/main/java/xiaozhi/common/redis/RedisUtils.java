@@ -29,19 +29,19 @@ public class RedisUtils {
     private ResourcesUtils resourceUtils;
 
     /**
-     * default期when长as24smallwhen，unit：seconds
+     * defaultperiodwhenlongas24smallwhen，unit：seconds
      */
     public final static long DEFAULT_EXPIRE = 60 * 60 * 24L;
     /**
-     * 期when长as1smallwhen，unit：seconds
+     * periodwhenlongas1smallwhen，unit：seconds
      */
     public final static long HOUR_ONE_EXPIRE = (long) 60 * 60;
     /**
-     * 期when长as6smallwhen，unit：seconds
+     * periodwhenlongas6smallwhen，unit：seconds
      */
     public final static long HOUR_SIX_EXPIRE = 60 * 60 * 6L;
     /**
-     * not set期when长
+     * not setperiodwhenlong
      */
     public final static long NOT_EXPIRE = -1L;
 
@@ -153,10 +153,10 @@ public class RedisUtils {
 
 
     /**
-     * 清emptyall Redis datalibrary allkey
+     * clearemptyall Redis datalibrary allkey
      */
     public void emptyAll() {
-        // Lua script FLUSHALLYesredis清emptyalllibrary command
+        // Lua script FLUSHALLYesredisclearemptyalllibrary command
         String luaScript =resourceUtils.loadString("lua/emptyAll.lua");
 
         // create DefaultRedisScript object
@@ -165,7 +165,7 @@ public class RedisUtils {
         redisScript.setResultType(Void.class); // setreturnvaluetype
 
         // execute Lua script
-        List<String> keys = Collections.emptyList(); // ifscriptnot 依赖 key，可to传入emptylist
+        List<String> keys = Collections.emptyList(); // ifscriptnot dependency key，cantotransferinemptylist
         redisTemplate.execute(redisScript, keys);
 
     }

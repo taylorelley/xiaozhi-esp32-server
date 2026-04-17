@@ -131,12 +131,12 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                 break;
             case "json":
                 try {
-                    // 首firstcheckYesNoto { 开header，to } 结尾
+                    // first check whether it starts with { and ends with }
                     String trimmedValue = paramValue.trim();
                     if (!trimmedValue.startsWith("{") || !trimmedValue.endsWith("}")) {
                         throw new RenException(ErrorCode.PARAM_JSON_INVALID);
                     }
-                    // 然after尝试parseJSON
+                    // thenaftertryparseJSON
                     JsonUtils.parseObject(paramValue, Object.class);
                 } catch (Exception e) {
                     throw new RenException(ErrorCode.PARAM_JSON_INVALID);
@@ -235,7 +235,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     }
 
     /**
-     * detectSMSparameterYesNomatchingneed to求
+     * detectSMSparameterYesNomatchingneed torequest
      * 
      * @param paramCode  Parameter code
      * @param paramValue Parameter value
@@ -264,7 +264,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             }
         });
         if (!str.isEmpty()) {
-            String promptStr = "%stheseparameternot 可toasempty";
+            String promptStr = "%stheseparameternot cantoasempty";
             String substring = str.substring(1, str.length());
             throw new RenException(promptStr.formatted(substring));
         }

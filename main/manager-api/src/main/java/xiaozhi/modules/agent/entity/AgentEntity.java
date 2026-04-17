@@ -28,10 +28,10 @@ public class AgentEntity {
     @Schema(description = "Agent name")
     private String agentName;
 
-    @Schema(description = "voice识别modelidentifier")
+    @Schema(description = "voiceidentifymodelidentifier")
     private String asrModelId;
 
-    @Schema(description = "voice活动detectidentifier")
+    @Schema(description = "voiceactivitydetectidentifier")
     private String vadModelId;
 
     @Schema(description = "largeLanguagemodelidentifier")
@@ -55,10 +55,10 @@ public class AgentEntity {
     @Schema(description = "TTSvolume")
     private Integer ttsVolume;
 
-    @Schema(description = "TTS语速")
+    @Schema(description = "TTSspeech rate")
     private Integer ttsRate;
 
-    @Schema(description = "TTS音调")
+    @Schema(description = "TTStone")
     private Integer ttsPitch;
 
     @Schema(description = "memorymodelidentifier")
@@ -80,7 +80,7 @@ public class AgentEntity {
     @Schema(description = "Languagecode")
     private String langCode;
 
-    @Schema(description = "交互语种")
+    @Schema(description = "interactionkind")
     private String language;
 
     @Schema(description = "Sort order")

@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * datafilter注解
+ * datafilterannotation
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface DataFilter {
     /**
-     * table 别名
+     * table aliasname
      */
     String tableAlias() default "";
 

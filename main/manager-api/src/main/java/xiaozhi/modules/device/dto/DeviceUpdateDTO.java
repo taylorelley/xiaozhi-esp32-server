@@ -20,7 +20,7 @@ public class DeviceUpdateDTO implements Serializable {
     private Integer autoUpdate;
 
     /**
-    * device别名
+    * devicealiasname
     */
     @Size(max = 64)
     private String alias;

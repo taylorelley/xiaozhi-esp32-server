@@ -8,7 +8,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "通用扩展function DTO")
+@Schema(description = "useextensionfunction DTO")
 public class CommonDTO {
 
     // ========== 1. referencedetails (detail_share_embedded) ==========
@@ -47,22 +47,22 @@ public class CommonDTO {
         @JsonProperty("doc_name")
         private String docName;
 
-        @Schema(description = "图片 ID list")
+        @Schema(description = "image ID list")
         @JsonProperty("img_id")
-        private String imageId; // Note：RAGFlow haswhenreturn String haswhenreturn List，需according to际情况confirm，暂定 String used for ID
+        private String imageId; // Note：RAGFlow haswhenreturn String haswhenreturn List，needaccording tosituationconfirm，temporarily String used for ID
 
         @Schema(description = "document ID")
         @JsonProperty("doc_id")
         private String docId;
     }
 
-    // ========== 2. 通用问答 (ask_about) - 调试用 ==========
+    // ========== 2. useQ&A (ask_about) - adjusttryuse ==========
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "通用问答request (调试用)")
+    @Schema(description = "useQ&Arequest (adjusttryuse)")
     public static class AskAboutReq implements Serializable {
         @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is this dataset about?")
         @NotBlank(message = "questioncannot be empty")
@@ -75,5 +75,5 @@ public class CommonDTO {
         private List<String> datasetIds;
     }
 
-    // response通常复用 String or简  Map 结构，视具implementwhile定，暂not define专用 VO
+    // responsecommonre-use String orsimple  Map resultconstruct，viewhaveimplementwhile，temporarilynot definespecialuse VO
 }

@@ -31,7 +31,7 @@ public interface AgentDao extends BaseDao<AgentEntity> {
     AgentEntity getDefaultAgentByMacAddress(@Param("macAddress") String macAddress);
 
     /**
-     * according toidqueryagentinformation，包括plugininformation
+     * according toidqueryagentinformation，includeplugininformation
      *
      * @param agentId Agent ID
      */

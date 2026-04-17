@@ -27,7 +27,7 @@ public interface SysDictDataService extends BaseService<SysDictDataEntity> {
      * according toIDgetdataDictionaryentity
      *
      * @param id dataDictionaryentity unique identifier
-     * @return returndataDictionaryentity 详细information
+     * @return returndataDictionaryentity detailedinformation
      */
     SysDictDataVO get(Long id);
 

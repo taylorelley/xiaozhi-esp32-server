@@ -2,7 +2,7 @@ package xiaozhi.modules.llm.service;
 
 /**
  * LLMserviceinterface
- * support多种largemodelcall
+ * supportmultiplekindlargemodelcall
  */
 public interface LLMService {
 
@@ -43,7 +43,7 @@ public interface LLMService {
     String generateSummary(String conversation, String promptTemplate, String modelId);
 
     /**
-     * generateChat historysummary（containhistorymemory合and）
+     * generateChat historysummary（containhistorymemorymergeand）
      * 
      * @param conversation   conversationcontent
      * @param historyMemory  historymemory
@@ -73,7 +73,7 @@ public interface LLMService {
      * 
      * @param conversation conversationcontent
      * @param modelId      Model ID
-     * @return title（约15字）
+     * @return title（about15character）
      */
     String generateTitle(String conversation, String modelId);
 }

@@ -12,11 +12,11 @@ import java.util.Map;
 public class XiaoZhiMcpJsonRpcJson {
     //LittleWiseinitializemcprequestjson
     private static final String INITIALIZE_JSON;
-    //LittleWisemcpinitializesuccess，return通知requestjson
+    //LittleWisemcpinitializesuccess，returnnotifyrequestjson
     private static final String NOTIFICATIONS_INITIALIZED_JSON;
     //LittleWisemcpgetmcptoolcollectionrequestjson
     private static final String TOOLS_LIST_REQUEST;
-    // 延迟加载
+    // delayaddload
     static {
         INITIALIZE_JSON = JsonUtils.toJsonString(new JsonRpcTwo("initialize",
                 Map.of(

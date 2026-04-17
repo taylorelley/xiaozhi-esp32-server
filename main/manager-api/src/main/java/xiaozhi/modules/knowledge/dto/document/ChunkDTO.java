@@ -35,7 +35,7 @@ public class ChunkDTO {
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设questionlist")
+        @Schema(description = "presetquestionlist")
         private List<String> questions;
     }
 
@@ -54,7 +54,7 @@ public class ChunkDTO {
         @Schema(description = "new slicecontent")
         private String content;
 
-        @Schema(description = "updatekeywordlist (覆盖原haslist)")
+        @Schema(description = "updatekeywordlist (overrideoriginalhaslist)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
@@ -81,10 +81,10 @@ public class ChunkDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "searchkeyword (全文retrieve)")
+        @Schema(description = "searchkeyword (alltextretrieve)")
         private String keywords;
 
-        @Schema(description = "精确slice ID")
+        @Schema(description = "precisionexactslice ID")
         private String id;
     }
 
@@ -121,7 +121,7 @@ public class ChunkDTO {
         @Schema(description = "slice ID (usually  document_id + index)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String id;
 
-        @Schema(description = "slicetextcontent (全文retrieve 主need toobject)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "slicetextcontent (alltextretrieve mainneed toobject)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String content;
 
         @Schema(description = "belonging todocument ID", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -132,14 +132,14 @@ public class ChunkDTO {
         @JsonProperty("docnm_kwd")
         private String docnmKwd;
 
-        @Schema(description = "re-need tokeywordlist (used forkeyword增strongretrieve)")
+        @Schema(description = "re-need tokeywordlist (used forkeywordincreasestrongretrieve)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设questionlist (used for Q&A mode增strong)")
+        @Schema(description = "presetquestionlist (used for Q&A modeincreasestrong)")
         private List<String> questions;
 
-        @Schema(description = "associated 图片 ID")
+        @Schema(description = "associated image ID")
         @JsonProperty("image_id")
         private String imageId;
 
@@ -147,10 +147,10 @@ public class ChunkDTO {
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "sliceYesNoavailable (true: 参andretrieve, false: isdisable)")
+        @Schema(description = "sliceYesNoavailable (true: parameterandretrieve, false: isdisable)")
         private Boolean available;
 
-        @Schema(description = "slicein原文 bit置indexlist (RAGFlowreturn嵌套array, e.g. [[start, end, filename]])")
+        @Schema(description = "sliceinoriginaltext bitsetindexlist (RAGFlowreturnnestedarray, e.g. [[start, end, filename]])")
         private List<List<Object>> positions;
 
         @Schema(description = "Token ID list")
@@ -159,13 +159,13 @@ public class ChunkDTO {
     }
 
     /**
-     * 分片listaggregationresponse
+     * piecelistaggregationresponse
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "分片listaggregationresponse")
+    @Schema(description = "piecelistaggregationresponse")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListVO implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -173,7 +173,7 @@ public class ChunkDTO {
         @Schema(description = "sliceinformationlist")
         private List<InfoVO> chunks;
 
-        @Schema(description = "associated document详细information")
+        @Schema(description = "associated documentdetailedinformation")
         private DocumentDTO.InfoVO doc;
 
         @Schema(description = "totalrecordnumber")

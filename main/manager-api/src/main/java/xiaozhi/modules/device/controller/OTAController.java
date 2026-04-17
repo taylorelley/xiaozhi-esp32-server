@@ -52,14 +52,14 @@ public class OTAController {
             clientId = deviceId;
         }
         boolean macAddressValid = isMacAddressValid(deviceId);
-        // deviceIdandMacAddress应Yesconsistent , andandmustneedapplicationfield
+        // deviceIdandMacAddressshouldYesconsistent , andandmustneedapplicationfield
         if (!macAddressValid) {
             return createResponse(DeviceReportRespDTO.createError("Invalid device ID"));
         }
         return createResponse(deviceService.checkDeviceActive(deviceId, clientId, deviceReportReqDTO));
     }
 
-    @Operation(summary = "device快速checkactivationstatus")
+    @Operation(summary = "devicequicklycheckactivationstatus")
     @PostMapping("activate")
     public ResponseEntity<String> activateDevice(
             @Parameter(name = "Device-Id", description = "deviceunique identifier", required = true, in = ParameterIn.HEADER) @RequestHeader("Device-Id") String deviceId,
@@ -89,7 +89,7 @@ public class OTAController {
         if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
             return ResponseEntity.ok("OTAinterfacenot normal，missingotaAddress，Please log in to the control console，inParameter managementfindto【server.ota】configuration");
         }
-        return ResponseEntity.ok("OTAinterfacerunnormal，websocketcollection群count：" + wsUrl.split(";").length);
+        return ResponseEntity.ok("OTAinterfacerunnormal，websocketcollectiongroupcount：" + wsUrl.split(";").length);
     }
 
     @SneakyThrows
@@ -106,7 +106,7 @@ public class OTAController {
     }
 
     /**
-     * 简determinemacAddressYesNovalid（non-严格）
+     * simpledeterminemacAddressYesNovalid（non-strict）
      * 
      * @param macAddress
      * @return
@@ -115,7 +115,7 @@ public class OTAController {
         if (StringUtils.isBlank(macAddress)) {
             return false;
         }
-        // MACAddressusually 12bit十六进制number，可tocontain冒numberor连字符分隔符
+        // MACAddressusually 12bithexadecimalnumber，cantocontaincoldnumberorconnectcharactersymboldelimitersymbol
         String macPattern = "^([0-9A-Za-z]{2}[:-]){5}([0-9A-Za-z]{2})$";
         return macAddress.matches(macPattern);
     }

@@ -7,10 +7,10 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * find回PasswordDTO
+ * findreturnPasswordDTO
  */
 @Data
-@Schema(description = "find回Password")
+@Schema(description = "findreturnPassword")
 public class RetrievePasswordDTO implements Serializable {
 
     @Schema(description = "Mobile phone number")
@@ -25,7 +25,7 @@ public class RetrievePasswordDTO implements Serializable {
     @NotBlank(message = "{sysuser.password.require}")
     private String password;
 
-    @Schema(description = "图形Verification codeID")
+    @Schema(description = "graphicVerification codeID")
     @NotBlank(message = "{sysuser.uuid.require}")
     private String captchaId;
 

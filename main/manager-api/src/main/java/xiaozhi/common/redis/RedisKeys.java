@@ -1,7 +1,7 @@
 package xiaozhi.common.redis;
 
 /**
- * Redis Key 常量class
+ * Redis Key constantclass
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -133,7 +133,7 @@ public class RedisKeys {
     }
 
     /**
-     * getSMSVerification code今日sendtimes cachekey
+     * getSMSVerification codetodaysendtimes cachekey
      */
     public static String getSMSTodayCountKey(String phone) {
         return "sms:Validate:Code:" + phone + ":today_count";
@@ -161,7 +161,7 @@ public class RedisKeys {
     }
 
     /**
-     * get临whenregisterdevice标记key
+     * gettemporarywhenregisterdevicemarkkey
      */
     public static String getTmpRegisterMacKey(String deviceId) {
         return "tmp_register_mac:" + deviceId;

@@ -36,6 +36,6 @@ public class AgentTagEntity {
     @Schema(description = "updatetime")
     private Date updatedAt;
 
-    @Schema(description = "delete标记")
+    @Schema(description = "deletemark")
     private Integer deleted;
 }

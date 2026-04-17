@@ -41,7 +41,7 @@ import xiaozhi.common.utils.DateUtils;
 public class WebSocketClientManager implements Closeable {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    // 全局callback线程池
+    // globalcallbacklineprocesspool
     private static final ExecutorService CALLBACK_EXECUTOR = Executors
             .newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactory() {
                 private final AtomicInteger cnt = new AtomicInteger();
@@ -66,7 +66,7 @@ public class WebSocketClientManager implements Closeable {
 
     private final int queueCapacity;
 
-    // 私hasconstruct，onlyby Builder call
+    // privatehasconstruct，onlyby Builder call
     private WebSocketClientManager(Builder b) {
         this.maxSessionDuration = b.maxSessionDuration;
         this.maxSessionDurationUnit = b.maxSessionDurationUnit;
@@ -84,9 +84,9 @@ public class WebSocketClientManager implements Closeable {
                 URI.create(b.uri));
         WebSocketSession sess = future.get(b.connectTimeout, b.connectUnit);
         if (sess == null || !sess.isOpen()) {
-            throw new IOException("握手failedorsessionnot打开");
+            throw new IOException("handshakefailedorsessionnothitopen");
         }
-        // set缓冲区
+        // setbufferarea
         sess.setTextMessageSizeLimit(b.bufferSize);
         sess.setBinaryMessageSizeLimit(b.bufferSize);
         ws.session = sess;
@@ -168,14 +168,14 @@ public class WebSocketClientManager implements Closeable {
                 break;
             }
         }
-        // not call close()，保持connection开放
+        // not call close()，maintainconnectionopenplace
         return collected;
     }
 
     /**
-     * synchronousreceive多itemsmessage，直to predicate as true ortimeout抛exception；
+     * synchronousreceivemultipleitemsmessage，straightto predicate as true ortimeoutthrowexception；
      * 
-     * @return return监听期间 allmessagelist
+     * @return returnlistenperiodbetween allmessagelist
      */
     public List<String> listener(Predicate<String> predicate)
             throws InterruptedException, TimeoutException, ExecutionException {
@@ -183,10 +183,10 @@ public class WebSocketClientManager implements Closeable {
     }
 
     /**
-     * synchronousreceive多itemsmessage，直to predicate as true ortimeout抛exception；
-     * not automaticcloseconnection，适used forneedin同oneconnection上send多message 场景
+     * synchronousreceivemultipleitemsmessage，straightto predicate as true ortimeoutthrowexception；
+     * not automaticcloseconnection，suitableused forneedinsameoneconnectionupsendmultiplemessage scene
      * 
-     * @return return监听期间 allmessagelist
+     * @return returnlistenperiodbetween allmessagelist
      */
     public List<String> listenerWithoutClose(Predicate<String> predicate)
             throws InterruptedException, TimeoutException, ExecutionException {
@@ -207,7 +207,7 @@ public class WebSocketClientManager implements Closeable {
     }
 
     /**
-     * register二进制callback
+     * registerbinarycallback
      */
     public WebSocketClientManager onBinary(Consumer<byte[]> c) {
         this.onBinary = c;
@@ -248,7 +248,7 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * connection建立whencallback
+         * connectionbuildstandwhencallback
          */
         @Override
         public void afterConnectionEstablished(WebSocketSession session) {
@@ -265,7 +265,7 @@ public class WebSocketClientManager implements Closeable {
         @Override
         protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
             String payload = message.getPayload();
-            // 入队
+            // inqueue
             textMessageQueue.offer(payload);
             // callbackUser registration  onText
             if (onText != null) {
@@ -274,14 +274,14 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * process二进制message
+         * processbinarymessage
          */
         @Override
         protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
             ByteBuffer buf = message.getPayload();
             byte[] data = new byte[buf.remaining()];
             buf.get(data);
-            // 入队
+            // inqueue
             binaryMessageQueue.offer(data);
             // callbackUser registration  onBinary
             if (onBinary != null) {
@@ -290,12 +290,12 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * 传输errorwhencallback
+         * transferinputerrorwhencallback
          */
         @Override
         public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
             super.handleTransportError(session, exception);
-            // 保持原has逻辑：complete errorFuture、callback onError、closesession、asynchronous通知connectionfailed
+            // maintainoriginalhaslogic：complete errorFuture、callback onError、closesession、asynchronousnotifyconnectionfailed
             errorFuture.completeExceptionally(exception);
             if (onError != null) {
                 CALLBACK_EXECUTOR.submit(() -> onError.accept(exception));
@@ -312,7 +312,7 @@ public class WebSocketClientManager implements Closeable {
             if (stopWatch.isRunning()) {
                 stopWatch.stop();
             }
-            log.info("wsconnectionclose, targetURI: {}, closetime: {}, connectiontotalwhen长: {}s,断开reason：{}",
+            log.info("wsconnectionclose, targetURI: {}, closetime: {}, connectiontotalwhenlong: {}s,breakopenreason：{}",
                     targetUri, DateUtils.getDateTimeNow(DateUtils.DATE_TIME_MILLIS_PATTERN),
                     DateUtils.millsToSecond(stopWatch.getTotalTimeMillis()),status);
         }
@@ -323,9 +323,9 @@ public class WebSocketClientManager implements Closeable {
         private String uri; // target WS URI
         private long connectTimeout = 3; // requestconnectionwaittime
         private TimeUnit connectUnit = TimeUnit.SECONDS; // requestconnectionwaittimeunit
-        private long maxSessionDuration = 5; // mostlarge连线time，default5seconds
-        private TimeUnit maxSessionDurationUnit = TimeUnit.SECONDS; // mostlarge连线timeunit
-        private int queueCapacity = 100; // message队column容量
+        private long maxSessionDuration = 5; // mostlargeconnectlinetime，default5seconds
+        private TimeUnit maxSessionDurationUnit = TimeUnit.SECONDS; // mostlargeconnectlinetimeunit
+        private int queueCapacity = 100; // messagequeuecolumncapacityamount
         private int bufferSize = 8 * 1024; //default 8kb
         private WebSocketHttpHeaders headers; // requestheader
 

@@ -6,7 +6,7 @@ import xiaozhi.modules.sys.enums.ServerActionResponseEnum;
 import java.util.Map;
 
 /**
- * serviceend动作response
+ * serviceendactionresponse
  */
 @Data
 public class ServerActionResponseDTO
@@ -14,7 +14,7 @@ public class ServerActionResponseDTO
     private ServerActionResponseEnum status;
     private String message;
     private String type;
-    private Map<String, Object> content; // after续thisfield可to移除，andthisclassas基class，针forbusinesswrite自己 contenttype
+    private Map<String, Object> content; // aftercontinuethisfieldcantoremove，andthisclassasbaseclass，forbusinesswriteself contenttype
     public static final String DEFAULT_TYPE_FORM_SERVER = "server";
 
     public static Boolean isSuccess(ServerActionResponseDTO actionResponseDTO) {

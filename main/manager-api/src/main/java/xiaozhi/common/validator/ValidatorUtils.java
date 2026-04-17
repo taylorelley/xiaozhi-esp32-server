@@ -48,8 +48,8 @@ public class ValidatorUtils {
     }
 
     /**
-     * 国际Mobile phone numberthentable达式
-     * need to求mustwith国际区number，format：+[国家代code][Mobile phone number]
+     * internationalMobile phone numberthentableexpression
+     * need torequestmustwithinternationalareanumber，format：+[countrycode][Mobile phone number]
      * For example：
      * - +8613800138000
      * - +12345678900
@@ -59,7 +59,7 @@ public class ValidatorUtils {
 
     /**
      * validateMobile phone numberYesNovalid
-     * need to求mustwith国际区number，format：+[国家代code][Mobile phone number]
+     * need torequestmustwithinternationalareanumber，format：+[countrycode][Mobile phone number]
      * For example：+8613800138000
      * 
      * @param phone Mobile phone number
@@ -70,7 +70,7 @@ public class ValidatorUtils {
             return false;
         }
 
-        // verificationmustwith国际区number Mobile phone numberformat
+        // verificationmustwithinternationalareanumber Mobile phone numberformat
         Pattern pattern = Pattern.compile(INTERNATIONAL_PHONE_REGEX);
         return pattern.matcher(phone).matches();
     }

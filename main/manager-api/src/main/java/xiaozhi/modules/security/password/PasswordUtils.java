@@ -19,9 +19,9 @@ public class PasswordUtils {
     }
 
     /**
-     * 比较PasswordYesNo相etc.
+     * comparePasswordYesNoetc.
      *
-     * @param str      明文Password
+     * @param str      plaintextPassword
      * @param password encryptafterPassword
      * @return true：success false：failed
      */

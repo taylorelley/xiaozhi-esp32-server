@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * AgentinformationreturnVO
- * thisindirectlyextendAgententityclassAgentEntity，after续need规范returnfield可tocopyfield出来
+ * thisindirectlyextendAgententityclassAgentEntity，aftercontinueneedrulepatternreturnfieldcantocopyfieldoutcome
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

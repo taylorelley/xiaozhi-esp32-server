@@ -98,9 +98,9 @@ public interface KnowledgeBaseService extends BaseService<KnowledgeBaseEntity> {
      * updateKnowledge basestatisticsinformation (used forisfileservicecallback)
      * 
      * @param datasetId  Knowledge baseID
-     * @param docDelta   documentnumber增量
-     * @param chunkDelta chunknumber增量
-     * @param tokenDelta Tokennumber增量
+     * @param docDelta   documentnumberincremental
+     * @param chunkDelta chunknumberincremental
+     * @param tokenDelta Tokennumberincremental
      */
     void updateStatistics(String datasetId, Integer docDelta, Long chunkDelta, Long tokenDelta);
 }

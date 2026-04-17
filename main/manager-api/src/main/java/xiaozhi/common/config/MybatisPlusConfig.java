@@ -25,9 +25,9 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(new DataFilterInterceptor());
         // paginationplugin
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        // 乐观锁
+        // optimistic lock
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        // prevent全tableupdateanddelete
+        // preventalltableupdateanddelete
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
         return mybatisPlusInterceptor;

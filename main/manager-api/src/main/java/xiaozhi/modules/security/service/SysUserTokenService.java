@@ -24,7 +24,7 @@ public interface SysUserTokenService extends BaseService<SysUserTokenEntity> {
     SysUserDTO getUserByToken(String token);
 
     /**
-     * 退出
+     * backout
      *
      * @param userId User ID
      */

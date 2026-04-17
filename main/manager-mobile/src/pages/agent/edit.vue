@@ -14,14 +14,14 @@ const props = withDefaults(defineProps<Props>(), {
   agentId: '',
 })
 
-// 组件参数
+// ComponentParameter
 interface Props {
   agentId?: string
 }
 
 const agentId = computed(() => props.agentId)
 
-// 表单数据
+// FormData
 const formData = ref<Partial<AgentDetail>>({
   agentName: '',
   systemPrompt: '',
@@ -41,9 +41,9 @@ const formData = ref<Partial<AgentDetail>>({
   ttsPitch: 0,
 })
 
-// 显示名称数据
+// ShowNameData
 const displayNames = ref({
-// 显示名称数据
+// ShowNameData
   vad: t('agent.pleaseSelect'),
   asr: t('agent.pleaseSelect'),
   llm: t('agent.pleaseSelect'),
@@ -57,15 +57,15 @@ const displayNames = ref({
   language: t('agent.pleaseSelect'),
 })
 
-// 角色模板数据
+// RoleTemplateData
 const roleTemplates = ref<RoleTemplate[]>([])
 const selectedTemplateId = ref('')
 
-// 加载状态
+// LoadStatus
 const loading = ref(false)
 const saving = ref(false)
 
-// 模型选项数据
+// ModelOptionData
 const modelOptions = ref<{
   [key: string]: ModelOption[]
 }>({
@@ -78,18 +78,18 @@ const modelOptions = ref<{
   TTS: [],
 })
 
-// 音色选项数据
+// VoiceOptionData
 const voiceOptions = ref([])
-// 保存完整的音色信息
+// Save of VoiceInfo
 const voiceDetails = ref({})
 
-// 上报模式选项数据
+// modeOptionData
 const reportOptions = [
   { name: t('agent.reportText'), value: 1 },
   { name: t('agent.reportTextVoice'), value: 2 },
 ]
 
-// 选择器显示状态
+// SelectShowStatus
 const pickerShow = ref<{
   [key: string]: boolean
 }>({
@@ -114,11 +114,11 @@ const languageOptions = ref([])
 const isVisibleReport = ref(false)
 const tempSummaryMemory = ref('')
 
-// 音频播放相关
+// AudioPlay
 const audioRef = ref<UniApp.InnerAudioContext | null>(null)
 const playingVoiceId = ref<string>('')
 
-// 使用插件store
+// Usepluginstore
 const pluginStore = usePluginStore()
 const speedPitchStore = useSpeedPitch()
 const providerStore = useProvider()
@@ -166,10 +166,10 @@ function handleInputConfirm() {
   inputVisible.value = false
 }
 
-// 是否禁用历史记忆输入框
+// Whether toDisableHistoryinput
 const isMemoryDisabled = computed(() => formData.value.memModelId !== 'Memory_mem_local_short')
 
-// 打开上下文源编辑弹窗
+// OpenEditDialog
 function openContextProviderDialog() {
   uni.navigateTo({
     url: '/pages/agent/provider',
@@ -182,7 +182,7 @@ function handleRegulate() {
   })
 }
 
-// 加载智能体详情
+// LoadAgentdetails
 async function loadAgentDetail() {
   if (!agentId.value)
     return
@@ -192,32 +192,27 @@ async function loadAgentDetail() {
     tempSummaryMemory.value = ''
     const detail = await getAgentDetail(agentId.value)
     formData.value = { ...detail }
-
-    // 更新插件store
+ // Updatepluginstore
     pluginStore.setCurrentAgentId(agentId.value)
     pluginStore.setCurrentFunctions(detail.functions || [])
-
-    // 更新语速音调
+ // Update
     speedPitchStore.updateSpeedPitch({
       ttsVolume: detail.ttsVolume || 0,
       ttsRate: detail.ttsRate || 0,
       ttsPitch: detail.ttsPitch || 0,
     })
-
-    // 加载上下文配置
+ // LoadConfiguration
     providerStore.updateProviders(detail.contextProviders || [])
-
-    // 如果有TTS模型，加载对应的音色选项
+ // IfhasTTSModel，LoadcorrespondingVoiceOption
     if (detail.ttsModelId) {
       await fetchAllLanguag(detail.ttsModelId)
     }
-
-    // 等待模型选项加载完成后再更新显示名称
+ // waitModelOptionLoadDoneafterUpdateShowName
     await nextTick()
     updateDisplayNames()
   }
   catch (error) {
-    console.error('加载智能体详情失败:', error)
+    console.error('LoadAgentdetailsfailed:', error)
     toast.error(t('agent.loadFail'))
   }
   finally {
@@ -225,28 +220,25 @@ async function loadAgentDetail() {
   }
 }
 
-// 获取音色显示名称
+// GetVoiceShowName
 function getVoiceDisplayName(ttsVoiceId: string) {
   if (!ttsVoiceId)
     return '请选择'
 
-  console.log('=== 音色映射调试 ===')
-  console.log('当前音色ID:', ttsVoiceId)
-  console.log('当前TTS模型:', formData.value.ttsModelId)
-  console.log('可用音色选项:', voiceOptions.value)
-
-  // 首先尝试直接从音色选项中匹配ID
+  console.log('=== Voice ===')
+  console.log('currentVoiceID:', ttsVoiceId)
+  console.log('currentTTSModel:', formData.value.ttsModelId)
+  console.log('VoiceOption:', voiceOptions.value)
+ // firstdirectlyfromVoiceOptioninID
   const voice = voiceOptions.value.find(v => v.id === ttsVoiceId)
   if (voice) {
-    console.log('直接匹配成功:', voice)
+    console.log('directlysuccessful:', voice)
     return voice.name
   }
-
-  // 如果没找到，尝试兼容性映射
+ // Ifto，
   if (voiceOptions.value.length > 0) {
-    console.log('直接匹配失败，尝试兼容性映射')
-
-    // 创建索引映射：voice1 → 第1个音色，voice2 → 第2个音色
+    console.log('directlyfailed，')
+ // Create：voice1 → 1Voice，voice2 → 2Voice
     const indexMap = {
       voice1: 0,
       voice2: 1,
@@ -258,16 +250,16 @@ function getVoiceDisplayName(ttsVoiceId: string) {
     const index = indexMap[ttsVoiceId]
     if (index !== undefined && voiceOptions.value[index]) {
       const mappedVoice = voiceOptions.value[index]
-      console.log(`索引映射: ${ttsVoiceId} → index ${index} → ${mappedVoice.name}`)
+      console.log(`: ${ttsVoiceId} → index ${index} → ${mappedVoice.name}`)
       return mappedVoice.name
     }
   }
 
-  console.log('所有映射方式都失败，返回原始ID:', ttsVoiceId)
+  console.log('allmodefailed，BackID:', ttsVoiceId)
   return ttsVoiceId
 }
 
-// 更新显示名称
+// UpdateShowName
 function updateDisplayNames() {
   if (!formData.value)
     return
@@ -280,47 +272,46 @@ function updateDisplayNames() {
   displayNames.value.intent = getModelDisplayName('Intent', formData.value.intentModelId)
   displayNames.value.memory = getModelDisplayName('Memory', formData.value.memModelId)
   displayNames.value.tts = getModelDisplayName('TTS', formData.value.ttsModelId)
-
-  // 角色音色特殊处理
+ // RoleVoiceProcess
   displayNames.value.report = reportOptions.find(item => item.value === formData.value.chatHistoryConf)?.name
 
   isVisibleReport.value = formData.value.memModelId !== 'Memory_nomem'
 
-  console.log('最终音色显示名称:', displayNames.value.voiceprint)
+  console.log('VoiceShowName:', displayNames.value.voiceprint)
 }
 
-// 加载角色模板
+// LoadRoleTemplate
 async function loadRoleTemplates() {
   try {
     const templates = await getRoleTemplates()
     roleTemplates.value = templates
   }
   catch (error) {
-    console.error('加载角色模板失败:', error)
+    console.error('LoadRoleTemplatefailed:', error)
   }
 }
 
-// 加载模型选项
+// LoadModelOption
 async function loadModelOptions() {
   const modelTypes = ['VAD', 'ASR', 'LLM', 'VLLM', 'Intent', 'Memory', 'TTS']
 
   try {
     await Promise.all(
       modelTypes?.map(async (type) => {
-        console.log(`加载模型类型: ${type}`)
+        console.log(`LoadModelType: ${type}`)
         const options = await getModelOptions(type)
         modelOptions.value[type] = options
-        console.log(`${type} 选项:`, options)
+        console.log(`${type} Option:`, options)
       }) || [],
     )
-    console.log('所有模型选项加载完成:', modelOptions.value)
+    console.log('allModelOptionLoadDone:', modelOptions.value)
   }
   catch (error) {
-    console.error('加载模型选项失败:', error)
+    console.error('LoadModelOptionfailed:', error)
   }
 }
 
-// 根据语言筛选音色
+// Based onVoice
 function filterVoicesByLanguage() {
   if (!voiceDetails.value || Object.keys(voiceDetails.value).length === 0) {
     voiceOptions.value = []
@@ -328,8 +319,7 @@ function filterVoicesByLanguage() {
   }
 
   const allVoices = Object.values(voiceDetails.value) as any[]
-
-  // 根据选中的语言筛选音色
+ // Based onSelected of Voice
   const filteredVoices = allVoices.filter((voice) => {
     if (!voice.languages) {
       return false
@@ -346,8 +336,7 @@ function filterVoicesByLanguage() {
     isClone: Boolean(voice.isClone),
     train_status: voice.trainStatus,
   }))
-
-  // 检查当前选中的音色是否支持当前语言，如果不支持则选择第一个
+ // CheckcurrentSelected of VoiceWhether tocurrent，IfthenSelect
   const currentVoiceSupportsLanguage = formData.value.ttsVoiceId
     && filteredVoices.some(voice => voice.id === formData.value.ttsVoiceId)
 
@@ -358,8 +347,7 @@ function filterVoicesByLanguage() {
   else {
     displayNames.value.voiceprint = filteredVoices.find(item => item.id === formData.value.ttsVoiceId)?.name
   }
-
-  // 同步到ttsSettings（如果值为null，使用0作为显示默认值，但不修改form中的值）
+ // tottsSettings（Ifvalueisnull，Use0isShowDefaultvalue，Modifyformin of value）
   speedPitchStore.updateSpeedPitch({
     ttsVolume: formData.value.ttsVolume !== null && formData.value.ttsVolume !== undefined ? formData.value.ttsVolume : 0,
     ttsRate: formData.value.ttsRate !== null && formData.value.ttsRate !== undefined ? formData.value.ttsRate : 0,
@@ -367,16 +355,16 @@ function filterVoicesByLanguage() {
   })
 }
 
-// 根据语音合成模型加载语言
+// Based onModelLoad
 async function fetchAllLanguag(ttsModelId: string) {
   try {
     const res = await getAllLanguage(ttsModelId)
-    // 保存完整的音色信息
+ // Save of VoiceInfo
     voiceDetails.value = res.reduce((acc, voice) => {
       acc[voice.id] = voice
       return acc
     }, {})
-    // 提取所有语言选项并去重
+ // allOptionand
     const allLanguages = new Set()
     res.forEach((voice) => {
       if (voice.languages) {
@@ -388,8 +376,7 @@ async function fetchAllLanguag(ttsModelId: string) {
       value: lang,
       name: lang,
     }))
-
-    // 使用后端返回的用户选择的语言，如果没有则使用第一个语言选项
+ // UsebackendBack of UserSelect of ，IfhasthenUseOption
     if (formData.value.ttsLanguage && languageOptions.value.some(option => option.value === formData.value.ttsLanguage)) {
       formData.value.language = formData.value.ttsLanguage
       displayNames.value.language = formData.value.ttsLanguage
@@ -398,8 +385,7 @@ async function fetchAllLanguag(ttsModelId: string) {
       formData.value.language = languageOptions.value[0].value
       displayNames.value.language = languageOptions.value[0].value
     }
-
-    // 根据选中的语言筛选音色
+ // Based onSelected of Voice
     filterVoicesByLanguage()
   }
   catch {
@@ -407,24 +393,24 @@ async function fetchAllLanguag(ttsModelId: string) {
   }
 }
 
-// 加载TTS音色选项
+// LoadTTSVoiceOption
 // async function loadVoiceOptions(ttsModelId?: string) {
 //   if (!ttsModelId)
 //     return
 
 //   try {
-//     console.log(`加载音色选项: ${ttsModelId}`)
+// console.log(`LoadVoiceOption: ${ttsModelId}`)
 //     const voices = await getTTSVoices(ttsModelId)
 //     voiceOptions.value = voices
-//     console.log('音色选项:', voices)
+//     console.log('VoiceOption:', voices)
 //   }
 //   catch (error) {
-//     console.error('加载音色选项失败:', error)
+// console.error('LoadVoiceOptionfailed:', error)
 //     voiceOptions.value = []
 //   }
 // }
 
-// 选择角色模板
+// SelectRoleTemplate
 function selectRoleTemplate(templateId: string) {
   if (selectedTemplateId.value === templateId) {
     selectedTemplateId.value = ''
@@ -456,16 +442,15 @@ function selectRoleTemplate(templateId: string) {
   }
 }
 
-// 打开选择器
+// OpenSelect
 function openPicker(type: string) {
   pickerShow.value[type] = true
 }
 
-// 选择器确认
+// SelectConfirm
 async function onPickerConfirm(type: string, value: any, name: string) {
-  console.log('选择器确认:', type, value, name)
-
-  // 保存显示名称
+  console.log('SelectConfirm:', type, value, name)
+ // SaveShowName
   displayNames.value[type] = name
 
   switch (type) {
@@ -523,53 +508,47 @@ async function onPickerConfirm(type: string, value: any, name: string) {
   pickerShow.value[type] = false
 }
 
-// 选择器取消
+// SelectCancel
 function onPickerCancel(type: string) {
   pickerShow.value[type] = false
-  // 关闭时停止播放
+ // ClosewhenStopPlay
   if (type === 'voiceprint') {
     stopAudio()
   }
 }
 
-// 播放音频
+// PlayAudio
 function playAudio(voiceDemo: string, voiceId: string, event: Event) {
   event.stopPropagation() // 阻止事件冒泡，防止关闭下拉框
 
   if (!voiceDemo) {
     return
   }
-
-  // 如果正在播放同一个音频，则停止
+ // IfatPlayAudio，thenStop
   if (playingVoiceId.value === voiceId) {
     stopAudio()
     return
   }
-
-  // 停止之前的音频
+ // Stop of Audio
   stopAudio()
-
-  // 创建新的音频实例
+ // Createnew of Audioinstance
   audioRef.value = uni.createInnerAudioContext()
   audioRef.value.src = voiceDemo
   playingVoiceId.value = voiceId
-
-  // 监听播放结束
+ // Listen to playbackEnd
   audioRef.value.onEnded(() => {
     playingVoiceId.value = ''
   })
-
-  // 监听播放错误
+ // Listen to playbackError
   audioRef.value.onError(() => {
     toast.error('音频播放失败')
     playingVoiceId.value = ''
   })
-
-  // 播放音频
+ // PlayAudio
   audioRef.value.play()
 }
 
-// 停止音频
+// StopAudio
 function stopAudio() {
   if (audioRef.value) {
     audioRef.value.stop()
@@ -579,12 +558,11 @@ function stopAudio() {
   playingVoiceId.value = ''
 }
 
-// 获取模型显示名称
+// GetModelShowName
 function getModelDisplayName(modelType: string, modelId: string) {
   if (!modelId)
     return '请选择'
-
-  // 直接从API配置数据中查找匹配的ID
+ // directlyfromAPIConfigurationDatain of ID
   const options = modelOptions.value[modelType]
 
   if (!options || options.length === 0) {
@@ -598,7 +576,7 @@ function getModelDisplayName(modelType: string, modelId: string) {
   return modelId
 }
 
-// 保存智能体
+// SaveAgent
 async function saveAgent() {
   if (!formData.value.agentName?.trim()) {
     toast.warning(t('agent.pleaseInputAgentName'))
@@ -620,7 +598,7 @@ async function saveAgent() {
 
   try {
     saving.value = true
-    // 构建保存数据，包含上下文配置和语音设置
+ // buildSaveData，includesConfigurationandSettings
     const saveData = {
       ...formData.value,
       ...speedPitchStore.speedPitch,
@@ -633,7 +611,7 @@ async function saveAgent() {
     toast.success(t('agent.saveSuccess'))
   }
   catch (error) {
-    console.error('保存失败:', error)
+    console.error('Failed to save:', error)
     toast.error(t('agent.saveFail'))
   }
   finally {
@@ -653,15 +631,14 @@ function loadPluginFunctions() {
     }) || []
 
     allFunctions.value = processedFunctions
-    // 同时更新到store
+ // whenUpdatetostore
     pluginStore.setAllFunctions(processedFunctions)
   })
 }
 
 function handleTools() {
-  console.log('当前插件配置:', formData.value.functions)
-
-  // 确保store中有最新数据
+  console.log('currentpluginConfiguration:', formData.value.functions)
+ // EnsurestoreinhasnewData
   pluginStore.setCurrentAgentId(agentId.value)
   pluginStore.setCurrentFunctions(formData.value.functions || [])
   pluginStore.setAllFunctions(allFunctions.value)
@@ -671,7 +648,7 @@ function handleTools() {
   })
 }
 
-// 获取智能体标签
+// GetAgentTag
 async function loadAgentTags() {
   try {
     const res = await getAgentTags(agentId.value)
@@ -680,28 +657,26 @@ async function loadAgentTags() {
   catch (error) {}
 }
 
-// 更新智能体标签
+// UpdateAgentTag
 async function handleUpdateAgentTags() {
   const tagNames = dynamicTags.value.map(tag => tag.tagName)
   await updateAgentTags(agentId.value, { tagNames })
 }
 
-// 监听store中的插件配置变化
+// listen tostorein of pluginConfigurationchange
 watch(() => pluginStore.currentFunctions, (newFunctions) => {
   formData.value.functions = newFunctions
 }, { deep: true })
 
 onMounted(async () => {
   loadAgentTags()
-
-  // 先加载模型选项和角色模板
+ // firstLoadModelOptionandRoleTemplate
   await Promise.all([
     loadRoleTemplates(),
     loadModelOptions(),
     loadPluginFunctions(),
   ])
-
-  // 然后加载智能体详情，这样可以正确映射显示名称
+ // afterLoadAgentdetails，thisShowName
   if (agentId.value) {
     await loadAgentDetail()
   }
@@ -710,14 +685,9 @@ onMounted(async () => {
 
 <template>
   <view class="bg-[#f5f7fb] px-[20rpx]">
-    <!-- 基础信息标题
-    <view class="pb-[20rpx] first:pt-[20rpx]">
-      <text class="text-[32rpx] text-[#232338] font-bold">
-        {{ t('agent.basicInfo') }}
-      </text>
-    </view -->
+    <!-- InfoTitle <view class="pb-[20rpx] first:pt-[20rpx]"> <text class="text-[32rpx] text-[#232338] font-bold"> {{ t('agent.basicInfo') }} </text> </view -->
 
-    <!-- 基础信息卡片 -->
+    <!-- Infocard -->
     <view class="mb-[24rpx] border border-[#eeeeee] rounded-[20rpx] bg-[#fbfbfb] p-[24rpx]" style="box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);">
       <view class="mb-[24rpx] last:mb-0">
         <text class="mb-[12rpx] block text-[28rpx] text-[#232338] font-medium">
@@ -807,14 +777,14 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 模型配置标题 -->
+    <!-- Model configurationTitle -->
     <view class="pb-[20rpx]">
       <text class="text-[32rpx] text-[#232338] font-bold">
         {{ t('agent.modelConfig') }}
       </text>
     </view>
 
-    <!-- 模型配置卡片 -->
+    <!-- Model configurationcard -->
     <view class="mb-[24rpx] border border-[#eeeeee] rounded-[20rpx] bg-[#fbfbfb] p-[24rpx]" style="box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);">
       <view class="flex flex-col gap-[16rpx]">
         <view class="flex cursor-pointer items-center justify-between border border-[#eeeeee] rounded-[12rpx] bg-[#f5f7fb] p-[20rpx] transition-all duration-300 active:bg-[#eef3ff]" @click="openPicker('vad')">
@@ -899,14 +869,14 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 语音设置标题 -->
+    <!-- SettingsTitle -->
     <view class="pb-[20rpx]">
       <text class="text-[32rpx] text-[#232338] font-bold">
         {{ t('agent.voiceSettings') }}
       </text>
     </view>
 
-    <!-- 语音设置卡片 -->
+    <!-- Settingscard -->
     <view class="mb-[24rpx] border border-[#eeeeee] rounded-[20rpx] bg-[#fbfbfb] p-[24rpx]" style="box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);">
       <view class="flex flex-col gap-[16rpx]">
         <view class="flex cursor-pointer items-center justify-between border border-[#eeeeee] rounded-[12rpx] bg-[#f5f7fb] p-[20rpx] transition-all duration-300 active:bg-[#eef3ff]" @click="openPicker('tts')">
@@ -959,14 +929,14 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 记忆历史标题 -->
+    <!-- HistoryTitle -->
     <view class="pb-[20rpx]">
       <text class="text-[32rpx] text-[#232338] font-bold">
         {{ t('agent.historyMemory') }}
       </text>
     </view>
 
-    <!-- 记忆历史卡片 -->
+    <!-- Historycard -->
     <view class="mb-[24rpx] border border-[#eeeeee] rounded-[20rpx] bg-[#fbfbfb] p-[24rpx]" style="box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);">
       <view class="mb-[24rpx] last:mb-0">
         <textarea
@@ -979,7 +949,7 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 保存按钮 -->
+    <!-- SaveButton -->
     <view class="mt-[40rpx] p-0">
       <wd-button
         type="primary"
@@ -991,7 +961,7 @@ onMounted(async () => {
         {{ saving ? t('agent.saving') : t('agent.save') }}
       </wd-button>
     </view>
-    <!-- 模型选择器 -->
+    <!-- ModelSelect -->
     <wd-action-sheet
       v-model="pickerShow.vad"
       :actions="modelOptions.VAD && modelOptions.VAD.map(item => ({ name: item.modelName, value: item.id }))"
@@ -1049,7 +1019,7 @@ onMounted(async () => {
       @select="({ item }) => onPickerConfirm('tts', item.value, item.name)"
     />
 
-    <!-- 自定义语音选择弹出层 -->
+    <!-- customSelect -->
     <wd-popup v-model="pickerShow.voiceprint" class="custom-popup" position="bottom" @close="onPickerCancel('voiceprint')">
       <view class="overflow-hidden rounded-[20rpx] bg-white pb-[20rpx] pt-[20rpx]">
         <view class="max-h-[600rpx] overflow-y-auto">

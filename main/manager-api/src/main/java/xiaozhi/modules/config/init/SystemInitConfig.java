@@ -29,9 +29,9 @@ public class SystemInitConfig {
         // checkversionnumber
         String redisVersion = (String) redisUtils.get(RedisKeys.getVersionKey());
         if (!Constant.VERSION.equals(redisVersion)) {
-            // ifversionnot consistent，清emptyRedis
+            // ifversionnot consistent，clearemptyRedis
             redisUtils.emptyAll();
-            // store储newversionnumber
+            // storestorenewversionnumber
             redisUtils.set(RedisKeys.getVersionKey(), Constant.VERSION);
         }
 

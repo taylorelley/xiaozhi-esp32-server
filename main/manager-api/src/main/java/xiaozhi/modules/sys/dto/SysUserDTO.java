@@ -47,7 +47,7 @@ public class SysUserDTO implements Serializable {
     @Schema(description = "avatar")
     private String headUrl;
 
-    @Schema(description = "别   0：男   1：女    2：保密", required = true)
+    @Schema(description = "alias   0：male   1：female    2：confidential", required = true)
     @Range(min = 0, max = 2, message = "{sysuser.gender.range}", groups = DefaultGroup.class)
     private Integer gender;
 
@@ -78,7 +78,7 @@ public class SysUserDTO implements Serializable {
     @Schema(description = "RoleIDlist")
     private List<Long> roleIdList;
 
-    @Schema(description = "岗bitIDlist")
+    @Schema(description = "postbitIDlist")
     private List<Long> postIdList;
 
     @Schema(description = "departmentname")

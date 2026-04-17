@@ -54,7 +54,7 @@ public interface KnowledgeFilesService {
          * batchdeletedocument
          * 
          * @param datasetId Knowledge baseID
-         * @param req       deleterequestparameter (含documentIDlist)
+         * @param req       deleterequestparameter (containdocumentIDlist)
          */
         void deleteDocuments(String datasetId, DocumentDTO.BatchIdReq req);
 
@@ -104,20 +104,20 @@ public interface KnowledgeFilesService {
          * 
          * @param documentIds documentIDlist
          * @param datasetId   datacollectionID
-         * @param chunkDelta  pending扣减 totalchunknumber
-         * @param tokenDelta  pending扣减 totalTokennumber
+         * @param chunkDelta  pendingdeduct totalchunknumber
+         * @param tokenDelta  pendingdeduct totalTokennumber
          */
         void deleteDocumentShadows(List<String> documentIds, String datasetId, Long chunkDelta, Long tokenDelta);
 
         /**
-         * according todatacollectionIDclean upallassociateddocument (cascadedelete专用)
+         * according todatacollectionIDclean upallassociateddocument (cascadedeletespecialuse)
          * 
          * @param datasetId datacollectionID
          */
         void deleteDocumentsByDatasetId(String datasetId);
 
         /**
-         * synchronousall处于 RUNNING status document (供定whentaskcall)
+         * synchronousallplaceto RUNNING status document (providewhentaskcall)
          */
         void syncRunningDocuments();
 }

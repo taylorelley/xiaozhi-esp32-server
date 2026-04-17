@@ -50,7 +50,7 @@ public class SysDictDataController {
             @Parameter(name = Constant.LIMIT, description = "per pagerecordnumber", required = true) })
     public Result<PageData<SysDictDataVO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
         ValidatorUtils.validateEntity(params);
-        // strong制validatedictTypeIdYesNostorein
+        // strongmakevalidatedictTypeIdYesNostorein
         if (!params.containsKey("dictTypeId") || StringUtils.isEmpty(String.valueOf(params.get("dictTypeId")))) {
             return new Result<PageData<SysDictDataVO>>().error("dictTypeIdcannot be empty");
         }

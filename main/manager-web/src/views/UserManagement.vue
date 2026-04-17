@@ -259,7 +259,7 @@ export default {
       }).then(() => {
         Api.admin.resetUserPassword(row.userid, ({ data }) => {
           if (data.code === 0) {
-            // 显示生成的默认密码
+ // ShowGenerate of DefaultPassword
             this.$alert(this.$t('user.resetPasswordSuccess') + '\n\n' + this.$t('user.generatedPassword') + ': ' + data.data, this.$t('common.success'), {
               confirmButtonText: this.$t('common.confirm'),
               dangerouslyUseHTMLString: true
@@ -312,7 +312,7 @@ export default {
       this.fetchUsers();
     },
     handleChangeStatus(row, status) {
-      // 处理单个用户或用户数组
+ // ProcesssingleUserorUserArray
       const users = Array.isArray(row) ? row : [row];
       const actionText = status === 0 ? this.$t('user.disable') : this.$t('user.enable');
       const userCount = users.length;
@@ -343,10 +343,10 @@ export default {
           }
         });
       }).catch(() => {
-        // 用户取消操作
+        // UserCancelAction
       });
     },
-    // 这个方法已被batchDelete替代，保留用于向后兼容
+ // thisMethodalreadybatchDelete，Used forafter
     handleBatchDelete() {
       this.batchDelete();
     },
@@ -381,7 +381,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询72px
+ // Top 63px Bottom 35px Query72px
   height: calc(100vh - 63px - 35px - 72px);
   margin: 0 22px;
   border-radius: 15px;

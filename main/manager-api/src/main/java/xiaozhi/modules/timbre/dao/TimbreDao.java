@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import xiaozhi.modules.timbre.entity.TimbreEntity;
 
 /**
- * voice持久layerdefine
+ * voicepersistentlayerdefine
  * 
  * @author zjy
  * @since 2025-3-21

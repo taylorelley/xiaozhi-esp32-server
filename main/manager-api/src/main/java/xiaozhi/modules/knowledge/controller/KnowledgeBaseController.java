@@ -66,7 +66,7 @@ public class KnowledgeBaseController {
 
         KnowledgeBaseDTO knowledgeBaseDTO = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // checkPermission：useronlycan查看自己create Knowledge base
+        // checkPermission：useronlycanviewselfcreate Knowledge base
         if (knowledgeBaseDTO.getCreator() == null || !knowledgeBaseDTO.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
@@ -90,15 +90,15 @@ public class KnowledgeBaseController {
         // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // firstget现hasKnowledge baseinformationtocheckPermission
+        // firstgetcurrenthasKnowledge baseinformationtocheckPermission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // checkPermission：useronlycanupdate自己create Knowledge base
+        // checkPermission：useronlycanupdateselfcreate Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [FIX] 注入 ID，prevent Service layerfindnot torecord
+        // [FIX] notein ID，prevent Service layerfindnot torecord
         knowledgeBaseDTO.setId(existingKnowledgeBase.getId());
         knowledgeBaseDTO.setDatasetId(datasetId);
         KnowledgeBaseDTO resp = knowledgeBaseService.update(knowledgeBaseDTO);
@@ -113,22 +113,22 @@ public class KnowledgeBaseController {
         // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // firstget现hasKnowledge baseinformationtocheckPermission
+        // firstgetcurrenthasKnowledge baseinformationtocheckPermission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // checkPermission：useronlycandelete自己create Knowledge base
+        // checkPermission：useronlycandeleteselfcreate Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [Architecture Fix] via编排layercascadedelete，prevent孤儿dataand解决循环依赖
+        // [Architecture Fix] viaeditsortlayercascadedelete，preventorphandataandresolveloopdependency
         knowledgeManagerService.deleteDatasetWithFiles(datasetId);
         return new Result<>();
     }
 
     @DeleteMapping("/batch")
     @Operation(summary = "batchdeleteKnowledge base")
-    @Parameter(name = "ids", description = "Knowledge baseIDlist，用逗number分隔", required = true)
+    @Parameter(name = "ids", description = "Knowledge baseIDlist，usecommanumberdelimiter", required = true)
     @RequiresPermissions("sys:role:normal")
     public Result<Void> deleteBatch(@RequestParam("ids") String ids) {
         if (StringUtils.isBlank(ids)) {
@@ -142,11 +142,11 @@ public class KnowledgeBaseController {
                 .orElseGet(ArrayList::new);
         if (ToolUtil.isNotEmpty(knowledgeBaseDTOs)) {
             knowledgeBaseDTOs.forEach(item -> {
-                // checkPermission：useronlycandelete自己create Knowledge base
+                // checkPermission：useronlycandeleteselfcreate Knowledge base
                 if (item.getCreator() == null || !item.getCreator().equals(currentUserId)) {
                     throw new RenException(ErrorCode.NO_PERMISSION);
                 }
-                // [Architecture Fix] via编排layercascadedelete
+                // [Architecture Fix] viaeditsortlayercascadedelete
                 knowledgeManagerService.deleteDatasetWithFiles(item.getDatasetId());
             });
         }

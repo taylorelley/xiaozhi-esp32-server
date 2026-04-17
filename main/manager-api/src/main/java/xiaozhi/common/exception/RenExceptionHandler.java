@@ -27,7 +27,7 @@ import xiaozhi.common.utils.Result;
 public class RenExceptionHandler {
 
     /**
-     * process自defineexception
+     * processselfdefineexception
      */
     @ExceptionHandler(RenException.class)
     public Result<Void> handleRenException(RenException ex) {

@@ -48,7 +48,7 @@ public class ServerSideManageController {
     private static final ObjectMapper objectMapper;
     static {
         objectMapper = new ObjectMapper();
-        // 忽略jsonstringstorein，butpojodoes not existcorrespondingfield 情况
+        // ignorejsonstringstorein，butpojodoes not existcorrespondingfield situation
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
@@ -63,9 +63,9 @@ public class ServerSideManageController {
         return new Result<List<String>>().ok(Arrays.asList(wsText.split(";")));
     }
 
-    @Operation(summary = "通知pythonserviceendupdateconfiguration")
+    @Operation(summary = "notifypythonserviceendupdateconfiguration")
     @PostMapping("/emit-action")
-    @LogOperation("通知pythonserviceendupdateconfiguration")
+    @LogOperation("notifypythonserviceendupdateconfiguration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Boolean> emitServerAction(@RequestBody @Valid EmitSeverActionDTO emitSeverActionDTO) {
         if (emitSeverActionDTO.getAction() == null) {
@@ -77,7 +77,7 @@ public class ServerSideManageController {
         }
         String targetWs = emitSeverActionDTO.getTargetWs();
         String[] wsList = wsText.split(";");
-        // findtoneed发起 
+        // findtoneedsendstart 
         if (StringUtils.isBlank(targetWs) || !Arrays.asList(wsList).contains(targetWs)) {
             throw new RenException(ErrorCode.TARGET_WEBSOCKET_NOT_EXIST);
         }
@@ -94,7 +94,7 @@ public class ServerSideManageController {
         String clientId = UUID.randomUUID().toString();
 
         String redisKey = xiaozhi.common.redis.RedisKeys.getTmpRegisterMacKey(deviceId);
-        redisUtils.set(redisKey, "true", 300); // 5分钟valid期
+        redisUtils.set(redisKey, "true", 300); // 5validperiod
 
         WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
         headers.add("device-id", deviceId);
@@ -112,12 +112,12 @@ public class ServerSideManageController {
                 .uri(targetWsUri)
                 .headers(headers)
                 .build()) {
-            // ifconnectionsuccessthensendonejsondata包andwaitserviceendresponse
+            // ifconnectionsuccessthensendonejsondatapackageandwaitserviceendresponse
             client.sendJson(
                     ServerActionPayloadDTO.build(
                             actionEnum,
                             Map.of("secret", serverSK)));
-            // waitserviceendresponseand持续监听information
+            // waitserviceendresponseandholdcontinuelisteninformation
             client.listener((jsonText) -> {
                 if (StringUtils.isBlank(jsonText)) {
                     return false;
@@ -131,7 +131,7 @@ public class ServerSideManageController {
                 }
             });
         } catch (Exception e) {
-            // 捕获Allerror，by全局exceptionprocessreturn
+            // captureAllerror，byglobalexceptionprocessreturn
             throw new RenException(ErrorCode.WEB_SOCKET_CONNECT_FAILED);
         }
         return true;

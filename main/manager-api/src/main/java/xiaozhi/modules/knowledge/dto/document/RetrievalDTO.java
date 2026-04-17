@@ -59,7 +59,7 @@ public class RetrievalDTO {
         @NotEmpty(message = "Knowledge baseIDlistcannot be empty")
         private List<String> datasetIds;
 
-        @Schema(description = "document ID list (可select，used for限定retrieve范围)")
+        @Schema(description = "document ID list (canselect，used forlimitretrieverange)")
         @JsonProperty("document_ids")
         private List<String> documentIds;
 
@@ -74,11 +74,11 @@ public class RetrievalDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "similar度阈value (default 0.2)")
+        @Schema(description = "similarthresholdvalue (default 0.2)")
         @JsonProperty("similarity_threshold")
         private Float similarityThreshold;
 
-        @Schema(description = "vectorsimilar度权re- (default 0.3)")
+        @Schema(description = "vectorsimilarpermissionre- (default 0.3)")
         @JsonProperty("vector_similarity_weight")
         private Float vectorSimilarityWeight;
 
@@ -90,13 +90,13 @@ public class RetrievalDTO {
         @JsonProperty("rerank_id")
         private String rerankId;
 
-        @Schema(description = "YesNo高亮keyword")
+        @Schema(description = "YesNohighbrightkeyword")
         private Boolean highlight;
 
         @Schema(description = "YesNoenablekeywordretrieve")
         private Boolean keyword;
 
-        @Schema(description = "跨Language翻译list (可select)")
+        @Schema(description = "crossLanguagetranslatelist (canselect)")
         @JsonProperty("cross_languages")
         private List<String> crossLanguages;
 
@@ -106,13 +106,13 @@ public class RetrievalDTO {
     }
 
     /**
-     * retrieve命result (VO)
+     * retrieveresult (VO)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "retrieve命slicedetails")
+    @Schema(description = "retrieveslicedetails")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class HitVO implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -139,46 +139,46 @@ public class RetrievalDTO {
         @JsonProperty("document_keyword")
         private String documentKeyword;
 
-        @Schema(description = "综合similar度", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "overallmergesimilar", requiredMode = Schema.RequiredMode.REQUIRED)
         private Float similarity;
 
-        @Schema(description = "vectorsimilar度")
+        @Schema(description = "vectorsimilar")
         @JsonProperty("vector_similarity")
         private Float vectorSimilarity;
 
-        @Schema(description = "keywordsimilar度")
+        @Schema(description = "keywordsimilar")
         @JsonProperty("term_similarity")
         private Float termSimilarity;
 
-        @Schema(description = "indexbit置")
+        @Schema(description = "indexbitset")
         private Integer index;
 
-        @Schema(description = "高亮content")
+        @Schema(description = "highbrightcontent")
         private String highlight;
 
         @Schema(description = "re-need tokeywordlist")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设questionlist")
+        @Schema(description = "presetquestionlist")
         private List<String> questions;
 
-        @Schema(description = "图片 ID")
+        @Schema(description = "image ID")
         @JsonProperty("image_id")
         private String imageId;
 
-        @Schema(description = "bit置index (RAGFlowreturn嵌套array, e.g. [[start, end, filename]])")
+        @Schema(description = "bitsetindex (RAGFlowreturnnestedarray, e.g. [[start, end, filename]])")
         private Object positions;
     }
 
     /**
-     * Knowledge basedata摘need to (VO)
+     * Knowledge basedataabstractneed to (VO)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Knowledge basedata摘need toinformation")
+    @Schema(description = "Knowledge basedataabstractneed toinformation")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MetaSummaryVO implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -191,11 +191,11 @@ public class RetrievalDTO {
         @JsonProperty("total_token_count")
         private Long totalTokenCount;
 
-        @Schema(description = "File type分布 (key: fileafter缀, value: count)")
+        @Schema(description = "File type (key: fileafterfix, value: count)")
         @JsonProperty("file_type_distribution")
         private Map<String, Long> fileTypeDistribution;
 
-        @Schema(description = "文status分布 (key: statuscode, value: count)")
+        @Schema(description = "textstatus (key: statuscode, value: count)")
         @JsonProperty("status_distribution")
         private Map<String, Long> statusDistribution;
 
@@ -216,7 +216,7 @@ public class RetrievalDTO {
     public static class MetaBatchReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "filter: used forspecifiedneed toupdate document范围 (defaultAll)")
+        @Schema(description = "filter: used forspecifiedneed toupdate documentrange (defaultAll)")
         private Selector selector;
 
         @Schema(description = "addorupdate datalist")
@@ -241,7 +241,7 @@ public class RetrievalDTO {
             @JsonProperty("document_ids")
             private List<String> documentIds;
 
-            @Schema(description = "dataitemsitem匹配 (key: field name, value: 匹配value)")
+            @Schema(description = "dataitemsitemmatch (key: field name, value: matchvalue)")
             @JsonProperty("metadata_condition")
             private Map<String, Object> metadataCondition;
         }
@@ -258,7 +258,7 @@ public class RetrievalDTO {
         public static class UpdateItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "datakey名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "datakeyname", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
 
             @Schema(description = "datavalue", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -277,7 +277,7 @@ public class RetrievalDTO {
         public static class DeleteItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "需delete datakey名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "needdelete datakeyname", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
         }
     }
@@ -294,14 +294,14 @@ public class RetrievalDTO {
     public static class ResultVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "retrieve命 slicelist")
+        @Schema(description = "retrieve slicelist")
         private List<HitVO> chunks;
 
-        @Schema(description = "document分布statistics")
+        @Schema(description = "documentstatistics")
         @JsonProperty("doc_aggs")
         private List<DocAggVO> docAggs;
 
-        @Schema(description = "total命recordnumber")
+        @Schema(description = "totalrecordnumber")
         private Long total;
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Schema(description = "deviceOTAdetectversionreturn，containActivation codeneed to求")
+@Schema(description = "deviceOTAdetectversionreturn，containActivation codeneed torequest")
 public class DeviceReportRespDTO {
     @Schema(description = "servicetime")
     private ServerTime server_time;
@@ -50,7 +50,7 @@ public class DeviceReportRespDTO {
         @Schema(description = "Activation codeinformation: activationAddress")
         private String message;
 
-        @Schema(description = "挑战code")
+        @Schema(description = "challengecode")
         private String challenge;
     }
 
@@ -60,10 +60,10 @@ public class DeviceReportRespDTO {
         @Schema(description = "timestamp")
         private Long timestamp;
 
-        @Schema(description = "when区")
+        @Schema(description = "whenarea")
         private String timeZone;
 
-        @Schema(description = "when区偏移量，unitas分钟")
+        @Schema(description = "whenareaoffsetamount，unitas")
         private Integer timezone_offset;
     }
 
@@ -79,17 +79,17 @@ public class DeviceReportRespDTO {
     @Getter
     @Setter
     public static class MQTT {
-        @Schema(description = "MQTT configuration网址")
+        @Schema(description = "MQTT configurationURL")
         private String endpoint;
-        @Schema(description = "MQTT clientunique identifier符")
+        @Schema(description = "MQTT clientunique identifiersymbol")
         private String client_id;
         @Schema(description = "MQTT authenticationUsername")
         private String username;
         @Schema(description = "MQTT authenticationPassword")
         private String password;
-        @Schema(description = "ESP32 发布message 主题")
+        @Schema(description = "ESP32 sendmessage maintopic")
         private String publish_topic;
-        @Schema(description = "ESP32 订阅 主题")
+        @Schema(description = "ESP32 subscribe maintopic")
         private String subscribe_topic;
     }
 }

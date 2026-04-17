@@ -23,7 +23,7 @@ public class AgentDTO {
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL define (画布 JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "DSL define (canvas JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "DSL definecannot be empty")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
@@ -47,7 +47,7 @@ public class AgentDTO {
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL define (画布 JSON)")
+        @Schema(description = "DSL define (canvas JSON)")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
@@ -90,7 +90,7 @@ public class AgentDTO {
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "title模糊search")
+        @Schema(description = "titlefuzzysearch")
         @JsonProperty("title")
         private String title;
     }
@@ -125,7 +125,7 @@ public class AgentDTO {
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "画布Category")
+        @Schema(description = "canvasCategory")
         @JsonProperty("canvas_category")
         private String canvasCategory;
 
@@ -138,19 +138,19 @@ public class AgentDTO {
         private Long updateTime;
     }
 
-    // ========== 2. Webhook 调试andtrace - corresponding RAGFlow_Agentinterfacedetails ==========
+    // ========== 2. Webhook adjusttryandtrace - corresponding RAGFlow_Agentinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 触发request (parameter动态)")
+    @Schema(description = "Webhook triggersendrequest (parameterdynamic)")
     public static class WebhookTriggerReq implements Serializable {
-        @Schema(description = "输入变量", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "输入变量cannot be empty")
+        @Schema(description = "inputchangeamount", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "inputchangeamountcannot be empty")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 
-        @Schema(description = "query词", example = "Hello")
+        @Schema(description = "queryword", example = "Hello")
         @JsonProperty("query")
         private String query;
     }
@@ -161,7 +161,7 @@ public class AgentDTO {
     @AllArgsConstructor
     @Schema(description = "Webhook tracerequest")
     public static class WebhookTraceReq implements Serializable {
-        @Schema(description = "timestamp游标", example = "1700000000.0")
+        @Schema(description = "timestampcursor", example = "1700000000.0")
         @JsonProperty("since_ts")
         private Double sinceTs;
 
@@ -184,11 +184,11 @@ public class AgentDTO {
         @JsonProperty("finished")
         private Boolean finished;
 
-        @Schema(description = "下onetimesquery timestamp游标")
+        @Schema(description = "belowonetimesquery timestampcursor")
         @JsonProperty("next_since_ts")
         private Double nextSinceTs;
 
-        @Schema(description = "事itemlist")
+        @Schema(description = "eventitemlist")
         @JsonProperty("events")
         private List<TraceEvent> events;
 
@@ -196,17 +196,17 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "trace事itemitem")
+        @Schema(description = "traceeventitemitem")
         public static class TraceEvent implements Serializable {
             @Schema(description = "timestamp")
             @JsonProperty("ts")
             private Double ts;
 
-            @Schema(description = "事itemtype")
+            @Schema(description = "eventitemtype")
             @JsonProperty("event")
             private String event;
 
-            @Schema(description = "事itemdata")
+            @Schema(description = "eventitemdata")
             @JsonProperty("data")
             private Object data;
         }
@@ -344,7 +344,7 @@ public class AgentDTO {
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "回复content")
+        @Schema(description = "returnre-content")
         @JsonProperty("content")
         private String content;
 
@@ -368,7 +368,7 @@ public class AgentDTO {
         @JsonProperty("knowledge_id")
         private String knowledgeId;
 
-        @Schema(description = "query词")
+        @Schema(description = "queryword")
         @JsonProperty("query")
         private String query;
 
@@ -380,7 +380,7 @@ public class AgentDTO {
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
 
-        @Schema(description = "YesNouse知识图谱")
+        @Schema(description = "YesNouseknowledge graph")
         @JsonProperty("use_kg")
         private Boolean useKg;
     }
@@ -405,7 +405,7 @@ public class AgentDTO {
             @JsonProperty("content")
             private String content;
 
-            @Schema(description = "similar度分number")
+            @Schema(description = "similarnumber")
             @JsonProperty("score")
             private Double score;
 

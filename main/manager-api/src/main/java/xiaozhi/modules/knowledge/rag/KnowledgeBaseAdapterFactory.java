@@ -10,8 +10,8 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * Knowledge baseadapter工厂class
- * 负责createandmanagementnot 同type Knowledge baseAPIadapter
+ * Knowledge baseadapterfactoryclass
+ * responsiblecreateandmanagementnot sametype Knowledge baseAPIadapter
  */
 @Slf4j
 public class KnowledgeBaseAdapterFactory {
@@ -22,13 +22,13 @@ public class KnowledgeBaseAdapterFactory {
     // adapterexamplecache
     private static final Map<String, KnowledgeBaseAdapter> adapterCache = new ConcurrentHashMap<>();
 
-    // mostlargecacheexamplenumber，prevent内store泄露 (Issue 9)
+    // mostlargecacheexamplenumber，preventinternalstoreleak (Issue 9)
     private static final int MAX_CACHE_SIZE = 50;
 
     static {
-        // register内置adaptertype
+        // registerinternalsetadaptertype
         registerAdapter("ragflow", xiaozhi.modules.knowledge.rag.impl.RAGFlowAdapter.class);
-        // 可tointhisinregister更多adaptertype
+        // cantointhisinregistermoremultipleadaptertype
     }
 
     /**
@@ -39,7 +39,7 @@ public class KnowledgeBaseAdapterFactory {
      */
     public static void registerAdapter(String adapterType, Class<? extends KnowledgeBaseAdapter> adapterClass) {
         if (adapterRegistry.containsKey(adapterType)) {
-            log.warn("adaptertype '{}' already exists，willis覆盖", adapterType);
+            log.warn("adaptertype '{}' already exists，willisoverride", adapterType);
         }
         adapterRegistry.put(adapterType, adapterClass);
         log.info("registeradaptertype: {} -> {}", adapterType, adapterClass.getSimpleName());
@@ -64,10 +64,10 @@ public class KnowledgeBaseAdapterFactory {
         // createnew adapterexample
         KnowledgeBaseAdapter adapter = createAdapter(adapterType, config);
 
-        // cacheadapterexample (with容量限制check)
+        // cacheadapterexample (withcapacityamountlimitcheck)
         if (adapterCache.size() >= MAX_CACHE_SIZE) {
-            log.warn("adaptercachealready达上限 ({})，execute内store保护clear", MAX_CACHE_SIZE);
-            // 简process：directly清empty，production环境下suggestionuse LRU
+            log.warn("adaptercachealreadyreachuplimit ({})，executeinternalstoreprotectclear", MAX_CACHE_SIZE);
+            // simpleprocess：directlyclearempty，productionenvironmentbelowsuggestionuse LRU
             adapterCache.clear();
         }
 
@@ -112,11 +112,11 @@ public class KnowledgeBaseAdapterFactory {
     public static void clearCache() {
         int cacheSize = adapterCache.size();
         adapterCache.clear();
-        log.info("clearadaptercache，共clear {} example", cacheSize);
+        log.info("clearadaptercache，commonclear {} example", cacheSize);
     }
 
     /**
-     * 移除特定adaptertype cache
+     * removespecialadaptertype cache
      * 
      * @param adapterType adaptertype
      */
@@ -128,11 +128,11 @@ public class KnowledgeBaseAdapterFactory {
                 removedCount++;
             }
         }
-        log.info("移除adaptertype '{}'  cache，共移除 {} example", adapterType, removedCount);
+        log.info("removeadaptertype '{}'  cache，commonremove {} example", adapterType, removedCount);
     }
 
     /**
-     * getadapter工厂statusinformation
+     * getadapterfactorystatusinformation
      * 
      * @return statusinformation
      */
@@ -194,10 +194,10 @@ public class KnowledgeBaseAdapterFactory {
             return adapterType + "@default";
         }
 
-        // 基于configurationparametergeneratecachekey
+        // basetoconfigurationparametergeneratecachekey
         StringBuilder keyBuilder = new StringBuilder(adapterType + "@");
 
-        // useconfiguration 哈希valueascachekey one部分
+        // useconfiguration hashvalueascachekey onepart
         int configHash = config.hashCode();
         keyBuilder.append(configHash);
 

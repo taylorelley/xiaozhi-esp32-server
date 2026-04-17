@@ -72,7 +72,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     public void save(SysUserDTO dto) {
         SysUserEntity entity = ConvertUtils.sourceToTarget(dto, SysUserEntity.class);
 
-        // Passwordstrong度
+        // Passwordstrong
         if (!isStrongPassword(entity.getPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -113,12 +113,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new RenException(ErrorCode.TOKEN_INVALID);
         }
 
-        // determine旧PasswordYesNo确
+        // determineoldPasswordYesNoexact
         if (!PasswordUtils.matches(passwordDTO.getPassword(), sysUserEntity.getPassword())) {
             throw new RenException(ErrorCode.OLD_PASSWORD_ERROR);
         }
 
-        // newPasswordstrong度
+        // newPasswordstrong
         if (!isStrongPassword(passwordDTO.getNewPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -133,7 +133,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void changePasswordDirectly(Long userId, String password) {
-        // newPasswordstrong度
+        // newPasswordstrong
         if (!isStrongPassword(password)) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -165,7 +165,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 getPage(params, "id", true),
                 new QueryWrapper<SysUserEntity>().like(StringUtils.isNotBlank(dto.getMobile()), "username",
                         dto.getMobile()));
-        // 循环processpageget回来 data，returnneed field
+        // loopprocesspagegetreturncome data，returnneed field
         List<AdminPageUserVO> list = page.getRecords().stream().map(user -> {
             AdminPageUserVO adminPageUserVO = new AdminPageUserVO();
             adminPageUserVO.setUserid(user.getId().toString());
@@ -180,7 +180,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     }
 
     private boolean isStrongPassword(String password) {
-        // 弱Password thentable达式
+        // weakPassword thentableexpression
         String weakPasswordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).+$";
         Pattern pattern = Pattern.compile(weakPasswordRegex);
         Matcher matcher = pattern.matcher(password);
@@ -191,28 +191,28 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     private static final Random random = new Random();
 
     /**
-     * generate随机Password
+     * generaterandomPassword
      * 
-     * @return 随机generate Password
+     * @return randomgenerate Password
      */
     private String generatePassword() {
         StringBuilder password = new StringBuilder();
 
-        // ensurecontain至少onenumber
+        // ensurecontainat leastonenumber
         password.append("0123456789".charAt(random.nextInt(10)));
-        // ensurecontain至少onesmallwrite字母
+        // ensurecontainat leastonesmallwritecharacterletter
         password.append("abcdefghijklmnopqrstuvwxyz".charAt(random.nextInt(26)));
-        // ensurecontain至少onelargewrite字母
+        // ensurecontainat leastonelargewritecharacterletter
         password.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(random.nextInt(26)));
-        // ensurecontain至少one特殊符number
+        // ensurecontainat leastonespecialsymbolnumber
         password.append("!@#$%^&*()".charAt(random.nextInt(10)));
 
-        // generate剩余 8字符
+        // generateremaining 8charactersymbol
         for (int i = 4; i < 12; i++) {
             password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
-        // 打乱Password字符 顺order
+        // shufflePasswordcharactersymbol orderorder
         char[] passwordChars = password.toString().toCharArray();
         for (int i = 0; i < passwordChars.length; i++) {
             int randomIndex = random.nextInt(passwordChars.length);

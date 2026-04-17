@@ -76,7 +76,7 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictTypeDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(SysDictTypeDTO dto) {
-        // Dictionary typecodenot canre-复
+        // Dictionary typecodenot canre-re-
         checkDictTypeUnique(dto.getDictType(), null);
 
         SysDictTypeEntity entity = ConvertUtils.sourceToTarget(dto, SysDictTypeEntity.class);
@@ -87,7 +87,7 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictTypeDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SysDictTypeDTO dto) {
-        // Dictionary typecodenot canre-复
+        // Dictionary typecodenot canre-re-
         checkDictTypeUnique(dto.getDictType(), String.valueOf(dto.getId()));
 
         SysDictTypeEntity entity = ConvertUtils.sourceToTarget(dto, SysDictTypeEntity.class);
@@ -122,14 +122,14 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictTypeDao, SysD
      * @param sysDictTypeList Dictionary typecollection
      */
     private void setUserName(List<SysDictTypeVO> sysDictTypeList) {
-        // 收collectionalluser ID
+        // receivecollectionalluser ID
         Set<Long> userIds = sysDictTypeList.stream().flatMap(vo -> Stream.of(vo.getCreator(), vo.getUpdater()))
                 .filter(Objects::nonNull).collect(Collectors.toSet());
 
         // setupdateandCreatorname
         if (!userIds.isEmpty()) {
             List<SysUserEntity> sysUserEntities = sysUserDao.selectBatchIds(userIds);
-            // List转成Map，Map<Long, String>
+            // ListconvertMap，Map<Long, String>
             Map<Long, String> userNameMap = sysUserEntities.stream().collect(Collectors.toMap(SysUserEntity::getId,
                     SysUserEntity::getUsername, (existing, replacement) -> existing));
 

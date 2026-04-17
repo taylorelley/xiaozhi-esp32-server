@@ -32,7 +32,7 @@ import xiaozhi.common.service.BaseService;
 import xiaozhi.common.utils.ConvertUtils;
 
 /**
- * baseserviceclass，allServiceallneed to继承
+ * baseserviceclass，allServiceallneed toinherit
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -51,7 +51,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
      *      params.put(Constant.PAGE, "1");
      *      params.put(Constant.LIMIT, "10");
      *      params.put(Constant.ORDER_FIELD, "field"); // field
-     *      params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // 多field
+     *      params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // multiplefield
      *      params.put(Constant.ORDER, "asc");
      */
     protected IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
@@ -132,10 +132,10 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
      * determinedatalibraryoperationYesNosuccess
      * </p>
      * <p>
-     * Note！！ thismethodas Integer determine，not 可传入 int 基thistype
+     * Note！！ thismethodas Integer determine，not cantransferin int basethistype
      * </p>
      *
-     * @param result datalibraryoperationreturn影响itemsnumber
+     * @param result datalibraryoperationreturnaffectitemsnumber
      * @return boolean
      */
     protected static boolean retBool(Integer result) {

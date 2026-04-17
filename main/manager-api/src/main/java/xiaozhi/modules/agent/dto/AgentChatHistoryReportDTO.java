@@ -23,11 +23,11 @@ public class AgentChatHistoryReportDTO {
     @Schema(description = "messagetype: 1-user, 2-agent", example = "1")
     @NotNull
     private Byte chatType;
-    @Schema(description = "chatcontent", example = "Hello呀")
+    @Schema(description = "chatcontent", example = "Hello")
     @NotBlank
     private String content;
     @Schema(description = "base64code opusaudio data", example = "")
     private String audioBase64;
-    @Schema(description = "上报time，十bittimestamp，emptywhendefaultusecurrenttime", example = "1745657732")
+    @Schema(description = "reporttime，tenbittimestamp，emptywhendefaultusecurrenttime", example = "1745657732")
     private Long reportTime;
 }

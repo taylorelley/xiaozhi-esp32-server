@@ -57,7 +57,7 @@ public class AgentChatHistoryController {
      * <p>
      * LittleWiseservicechat reportingrequest，containBase64code audio dataandrelatedinformation。
      *
-     * @param request containuploadfile及relatedinformation requestobject
+     * @param request containuploadfileandrelatedinformation requestobject
      */
     @Operation(summary = "LittleWiseservicechat reportingrequest")
     @PostMapping("/report")
@@ -87,7 +87,7 @@ public class AgentChatHistoryController {
 
         // generateUUID
         String uuid = UUID.randomUUID().toString();
-        // store储agentIdandsessionIdtoRedis，formatasagentId:sessionId
+        // storestoreagentIdandsessionIdtoRedis，formatasagentId:sessionId
         redisUtils.set(RedisKeys.getChatHistoryKey(uuid), agentId + ":" + sessionId);
 
         return new Result<String>().ok(uuid);
@@ -121,18 +121,18 @@ public class AgentChatHistoryController {
             // executedownload
             downloadChatHistory(agentId, List.of(sessionId), response);
         } finally {
-            // downloadcompleteafterdeleteUUID，prevent盗刷
+            // downloadcompleteafterdeleteUUID，preventtheft
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
 
     /**
-     * downloadthissession及before20itemssessionChat history
+     * downloadthissessionandbefore20itemssessionChat history
      * 
      * @param uuid     downloadidentifier
      * @param response HTTPresponse
      */
-    @Operation(summary = "downloadthissession及before20itemssessionChat history")
+    @Operation(summary = "downloadthissessionandbefore20itemssessionChat history")
     @GetMapping("/download/{uuid}/previous")
     public void downloadCurrentSessionWithPrevious(@PathVariable("uuid") String uuid,
             HttpServletResponse response) {
@@ -155,12 +155,12 @@ public class AgentChatHistoryController {
             Map<String, Object> params = Map.of(
                     "agentId", agentId,
                     Constant.PAGE, 1,
-                    Constant.LIMIT, 1000 // get足够多 session
+                    Constant.LIMIT, 1000 // getenoughmultiple session
             );
             PageData<AgentChatSessionDTO> sessionPage = agentChatHistoryService.getSessionListByAgentId(params);
             List<AgentChatSessionDTO> allSessions = sessionPage.getList();
 
-            // findcurrentsessioninlist bit置
+            // findcurrentsessioninlist bitset
             int currentIndex = -1;
             for (int i = 0; i < allSessions.size(); i++) {
                 if (allSessions.get(i).getSessionId().equals(sessionId)) {
@@ -169,23 +169,23 @@ public class AgentChatHistoryController {
                 }
             }
 
-            // iffindtocurrentsession，收collectioncurrentsession及before20itemsSession ID
+            // iffindtocurrentsession，receivecollectioncurrentsessionandbefore20itemsSession ID
             List<String> sessionIdsToDownload = new ArrayList<>();
             if (currentIndex != -1) {
-                // fromcurrentsessionstart，向after（arrayafter面）取most多20itemssession（包括currentsession）
-                int endIndex = Math.min(allSessions.size() - 1, currentIndex + 20); // ensurenot 越界
+                // fromcurrentsessionstart，directionafter（arrayafterside）getmostmultiple20itemssession（includecurrentsession）
+                int endIndex = Math.min(allSessions.size() - 1, currentIndex + 20); // ensurenot exceedboundary
                 for (int i = currentIndex; i <= endIndex; i++) {
                     sessionIdsToDownload.add(allSessions.get(i).getSessionId());
                 }
             }
 
-            // ifnofindtocurrentsession，至少downloadcurrentsession
+            // ifnofindtocurrentsession，at leastdownloadcurrentsession
             if (sessionIdsToDownload.isEmpty()) {
                 sessionIdsToDownload.add(sessionId);
             }
             downloadChatHistory(agentId, sessionIdsToDownload, response);
         } finally {
-            // downloadcompleteafterdeleteUUID，prevent盗刷
+            // downloadcompleteafterdeleteUUID，preventtheft
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
@@ -204,15 +204,15 @@ public class AgentChatHistoryController {
             String fileName = URLEncoder.encode("history.txt", StandardCharsets.UTF_8.toString());
             response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 
-            // getChat historyandwrite入response流
+            // getChat historyandwriteinresponseflow
             try (OutputStream out = response.getOutputStream()) {
-                // as每sessiongenerateChat history
+                // aseverysessiongenerateChat history
                 for (String sessionId : sessionIds) {
                     // getthissession allChat history
                     List<AgentChatHistoryDTO> chatHistoryList = agentChatHistoryService
                             .getChatHistoryBySessionId(agentId, sessionId);
 
-                    // fromChat historyget第oneitemsmessage Create timeassessiontime
+                    // fromChat historygetno.oneitemsmessage Create timeassessiontime
                     if (!chatHistoryList.isEmpty()) {
                         Date firstMessageTime = chatHistoryList.get(0).getCreatedAt();
                         String sessionTimeStr = DateUtils.format(firstMessageTime, DateUtils.DATE_TIME_PATTERN);
@@ -231,7 +231,7 @@ public class AgentChatHistoryController {
                         out.write(line.getBytes(StandardCharsets.UTF_8));
                     }
 
-                    // session之间addemptyrow分隔
+                    // sessionofbetweenaddemptyrowdelimiter
                     if (sessionIds.indexOf(sessionId) < sessionIds.size() - 1) {
                         out.write("\n".getBytes(StandardCharsets.UTF_8));
                     }

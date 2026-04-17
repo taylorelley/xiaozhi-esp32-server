@@ -3,13 +3,13 @@ package xiaozhi.modules.knowledge.service;
 import java.util.List;
 
 /**
- * Knowledge basemodule领域编排service
- * used forprocess跨 KnowledgeBase and KnowledgeFiles  复杂business流程，彻底解决 Service 间 循环依赖question。
+ * Knowledge basemoduledomain codesortservice
+ * used forprocesscross KnowledgeBase and KnowledgeFiles  re-miscellaneousbusinessflowprocess，thoroughresolve Service between loopdependencyquestion。
  */
 public interface KnowledgeManagerService {
 
     /**
-     * cascadedeleteKnowledge base及其下alldocument (包括this DB and RAGFlow remotedata)
+     * cascadedeleteKnowledge baseanditsbelowalldocument (includethis DB and RAGFlow remotedata)
      * 
      * @param datasetId Knowledge base ID
      */

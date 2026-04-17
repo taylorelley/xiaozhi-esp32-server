@@ -12,14 +12,14 @@ import jakarta.validation.constraints.*;
 /**
  * Knowledge basemanagementaggregation DTO
  * <p>
- * 容class，内含Knowledge basemoduleallrequest/responseobject 静态内部classdefine。
+ * capacityclass，internalcontainKnowledge basemoduleallrequest/responseobject staticinternalclassdefine。
  * </p>
  */
 @Schema(description = "Knowledge basemanagementaggregation DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetDTO {
 
-    // ========== 通用内部class ==========
+    // ========== useinternalclass ==========
 
     /**
      * parserconfiguration
@@ -36,14 +36,14 @@ public class DatasetDTO {
         @JsonProperty("chunk_token_num")
         private Integer chunkTokenNum;
 
-        @Schema(description = "分隔符", example = "\\n!?;。；！？")
+        @Schema(description = "delimitersymbol", example = "\\n!?;。；！？")
         private String delimiter;
 
-        @Schema(description = "布局识别model: DeepDOC / Simple", example = "DeepDOC")
+        @Schema(description = "layoutidentifymodel: DeepDOC / Simple", example = "DeepDOC")
         @JsonProperty("layout_recognize")
         private String layoutRecognize;
 
-        @Schema(description = "YesNowill Excel 转as HTML", example = "false")
+        @Schema(description = "YesNowill Excel convertas HTML", example = "false")
         private Boolean html4excel;
 
         @Schema(description = "automaticgeneratekeywordcount (0 representsclose)", example = "0")
@@ -75,7 +75,7 @@ public class DatasetDTO {
         @Schema(description = "Knowledge baseavatar (Base64 code)", example = "")
         private String avatar;
 
-        @Schema(description = "Knowledge baseDescription", example = "used forstore储产品document")
+        @Schema(description = "Knowledge baseDescription", example = "used forstorestoreproductdocument")
         private String description;
 
         @Schema(description = "embeddingModel name", example = "BAAI/bge-large-zh-v1.5")
@@ -129,7 +129,7 @@ public class DatasetDTO {
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
-        @Schema(description = "PageRank 权re- (0-100)", example = "50")
+        @Schema(description = "PageRank permissionre- (0-100)", example = "50")
         private Integer pagerank;
     }
 
@@ -157,7 +157,7 @@ public class DatasetDTO {
         @Schema(description = "YesNodescending", example = "true")
         private Boolean desc;
 
-        @Schema(description = "bynamefilter (模糊匹配)", example = "my_dataset")
+        @Schema(description = "bynamefilter (fuzzymatch)", example = "my_dataset")
         private String name;
 
         @Schema(description = "byKnowledge base ID filter", example = "abc123")
@@ -175,7 +175,7 @@ public class DatasetDTO {
     public static class BatchIdReq implements Serializable {
 
         @NotNull(message = "Knowledge base ID listcannot be empty")
-        @Size(min = 1, message = "至少needoneKnowledge base ID")
+        @Size(min = 1, message = "at leastneedoneKnowledge base ID")
         @Schema(description = "Knowledge base ID list", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"id1\", \"id2\"]")
         private List<String> ids;
     }
@@ -208,11 +208,11 @@ public class DatasetDTO {
     @Schema(description = "run RAPTOR request")
     public static class RunRaptorReq implements Serializable {
 
-        @Schema(description = "mostlarge聚classnumber", example = "64")
+        @Schema(description = "mostlargegatherclassnumber", example = "64")
         @JsonProperty("max_cluster")
         private Integer maxCluster;
 
-        @Schema(description = "自defineprompt", example = "请summaryto下content...")
+        @Schema(description = "selfdefineprompt", example = "pleasesummarytobelowcontent...")
         private String prompt;
     }
 
@@ -262,7 +262,7 @@ public class DatasetDTO {
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "Knowledge baseDescription", example = "used forstore储产品document")
+        @Schema(description = "Knowledge baseDescription", example = "used forstorestoreproductdocument")
         private String description;
 
         @Schema(description = "embeddingModel name", example = "BAAI/bge-large-zh-v1.5")
@@ -327,76 +327,76 @@ public class DatasetDTO {
         private List<Object> errors;
     }
 
-    // ========== 知识图谱related ==========
+    // ========== knowledge graphrelated ==========
 
     /**
-     * 知识图谱data VO (mappinginterface 5: knowledge_graph)
+     * knowledge graphdata VO (mappinginterface 5: knowledge_graph)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "知识图谱data VO")
+    @Schema(description = "knowledge graphdata VO")
     public static class GraphVO implements Serializable {
 
-        @Schema(description = "图谱节点list")
+        @Schema(description = "graphnodelist")
         private List<Node> nodes;
 
-        @Schema(description = "图谱边list")
+        @Schema(description = "graphedgelist")
         private List<Edge> edges;
 
-        @Schema(description = "思维导图data")
+        @Schema(description = "mind mapdata")
         @JsonProperty("mind_map")
         private Map<String, Object> mindMap;
 
         /**
-         * 图谱节点
+         * graphnode
          */
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        @Schema(description = "图谱节点")
+        @Schema(description = "graphnode")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Node implements Serializable {
 
-            @Schema(description = "节点 ID", example = "node_001")
+            @Schema(description = "node ID", example = "node_001")
             private String id;
 
-            @Schema(description = "节点Tag", example = "产品")
+            @Schema(description = "nodeTag", example = "product")
             private String label;
 
             @Schema(description = "PageRank value", example = "0.85")
             private Double pagerank;
 
-            @Schema(description = "节点颜色", example = "#FF5733")
+            @Schema(description = "nodecolor", example = "#FF5733")
             private String color;
 
-            @Schema(description = "节点图片 URL", example = "https://example.com/icon.png")
+            @Schema(description = "nodeimage URL", example = "https://example.com/icon.png")
             private String img;
         }
 
         /**
-         * 图谱边
+         * graphedge
          */
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        @Schema(description = "图谱边")
+        @Schema(description = "graphedge")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Edge implements Serializable {
 
-            @Schema(description = "source节点 ID", example = "node_001")
+            @Schema(description = "sourcenode ID", example = "node_001")
             private String source;
 
-            @Schema(description = "target节点 ID", example = "node_002")
+            @Schema(description = "targetnode ID", example = "node_002")
             private String target;
 
-            @Schema(description = "边权re-", example = "0.75")
+            @Schema(description = "edgepermissionre-", example = "0.75")
             private Double weight;
 
-            @Schema(description = "边Tag (关系Description)", example = "belongs to")
+            @Schema(description = "edgeTag (relatedsystemDescription)", example = "belongs to")
             private String label;
         }
     }
@@ -421,7 +421,7 @@ public class DatasetDTO {
         @JsonProperty("doc_id")
         private String docId;
 
-        @Schema(description = "起始page number", example = "1")
+        @Schema(description = "startpage number", example = "1")
         @JsonProperty("from_page")
         private Integer fromPage;
 
@@ -429,10 +429,10 @@ public class DatasetDTO {
         @JsonProperty("to_page")
         private Integer toPage;
 
-        @Schema(description = "progress百分比 (0.0 - 1.0)", example = "0.75")
+        @Schema(description = "progresspercentage (0.0 - 1.0)", example = "0.75")
         private Double progress;
 
-        @Schema(description = "progressmessage", example = "inprocess第 5 页...")
+        @Schema(description = "progressmessage", example = "inprocessno. 5 page...")
         @JsonProperty("progress_msg")
         private String progressMsg;
 

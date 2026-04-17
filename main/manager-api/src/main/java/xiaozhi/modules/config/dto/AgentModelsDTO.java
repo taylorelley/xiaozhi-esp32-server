@@ -19,7 +19,7 @@ public class AgentModelsDTO {
     @Schema(description = "clientID")
     private String clientId;
 
-    @NotNull(message = "clientalreadyexample化 modelcannot be empty")
-    @Schema(description = "clientalreadyexample化 model")
+    @NotNull(message = "clientalreadyexample modelcannot be empty")
+    @Schema(description = "clientalreadyexample model")
     private Map<String, String> selectedModule;
 }

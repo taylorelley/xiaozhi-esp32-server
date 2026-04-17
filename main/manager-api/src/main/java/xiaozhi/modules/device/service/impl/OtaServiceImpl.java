@@ -40,14 +40,14 @@ public class OtaServiceImpl extends BaseServiceImpl<OtaDao, OtaEntity> implement
 
     @Override
     public void update(OtaEntity entity) {
-        // checkYesNostoreinsametypeandversion firmware（排除currentrecord）
+        // checkYesNostoreinsametypeandversion firmware（excludecurrentrecord）
         QueryWrapper<OtaEntity> queryWrapper = new QueryWrapper<OtaEntity>()
                 .eq("type", entity.getType())
                 .eq("version", entity.getVersion())
-                .ne("id", entity.getId()); // 排除currentrecord
+                .ne("id", entity.getId()); // excludecurrentrecord
 
         if (baseDao.selectCount(queryWrapper) > 0) {
-            throw new RuntimeException("already existssametypeandversion firmware，请updateafterre-试");
+            throw new RuntimeException("already existssametypeandversion firmware，pleaseupdateafterre-try");
         }
 
         entity.setUpdateDate(new Date());
@@ -63,7 +63,7 @@ public class OtaServiceImpl extends BaseServiceImpl<OtaDao, OtaEntity> implement
     public boolean save(OtaEntity entity) {
         QueryWrapper<OtaEntity> queryWrapper = new QueryWrapper<OtaEntity>()
                 .eq("type", entity.getType());
-        // 同classfirmwareonly保留mostnew oneitems
+        // sameclassfirmwareonlyreservemostnew oneitems
         List<OtaEntity> otaList = baseDao.selectList(queryWrapper);
         if (otaList != null && otaList.size() > 0) {
             OtaEntity otaBefore = otaList.get(0);

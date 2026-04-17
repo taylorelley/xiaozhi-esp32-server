@@ -8,13 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import xiaozhi.modules.knowledge.service.KnowledgeFilesService;
 
 /**
- * Knowledge basedocumentstatussynchronous定whentask
+ * Knowledge basedocumentstatussynchronouswhentask
  * 
- * 作用：
- * 1. automatic扫描处于 "RUNNING" (parse) status document
+ * operateuse：
+ * 1. automaticscanplaceto "RUNNING" (parse) status document
  * 2. call RAGFlow interfacegetmostnewstatus
- * 3. status翻转 (RUNNING -> SUCCESS/FAIL) when，synchronousupdatedatalibrary
- * 4. [关key] parsesuccesswhen，补偿updateKnowledge base statisticsinformation (TokenCount)
+ * 3. statusturnconvert (RUNNING -> SUCCESS/FAIL) when，synchronousupdatedatalibrary
+ * 4. [relatedkey] parsesuccesswhen，compensateupdateKnowledge base statisticsinformation (TokenCount)
  */
 @Component
 @AllArgsConstructor
@@ -24,8 +24,8 @@ public class DocumentStatusSyncTask {
     private final KnowledgeFilesService knowledgeFilesService;
 
     /**
-     * 每 30 secondsexecuteonetimessynchronous
-     * 采用 fixedDelay，ensure上onetimesexecute完 30 secondsafteronlystart下onetimes，prevent积压
+     * every 30 secondsexecuteonetimessynchronous
+     * collectuse fixedDelay，ensureuponetimesexecutecomplete 30 secondsafteronlystartbelowonetimes，preventbacklog
      */
     @Scheduled(fixedDelay = 30000)
     public void syncRunningDocuments() {

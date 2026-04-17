@@ -11,7 +11,7 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * Redis切面processclass
+ * Redisslicesideprocessclass
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */

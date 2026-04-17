@@ -90,8 +90,7 @@ export default {
         this.$message.error(this.$t('changePassword.newPasswordSameAsOld'));
         return;
       }
-
-      // 修改后的接口调用
+ // Modifyafter of APICall
       userApi.changePassword(this.oldPassword, this.newPassword, (res) => {
         if (res.data.code === 0) {
           this.$message.success({

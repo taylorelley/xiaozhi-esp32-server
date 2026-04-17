@@ -92,10 +92,10 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
     @Transactional(rollbackFor = Exception.class)
     public void deleteByAgentId(String agentId, Boolean deleteAudio, Boolean deleteText) {
         if (deleteAudio) {
-            // 分批deleteaudio,避免timeout
+            // batchdeleteaudio,avoidtimeout
             List<String> audioIds = baseMapper.getAudioIdsByAgentId(agentId);
             if (ToolUtil.isNotEmpty(audioIds)) {
-                // 每批delete1000items
+                // everybatchdelete1000items
                 List<List<String>> batch = ListUtil.split(audioIds, 1000);
                 batch.forEach(dataList -> {
                     baseMapper.deleteAudioByIds(dataList);
@@ -113,19 +113,19 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     @Override
     public List<AgentChatHistoryUserVO> getRecentlyFiftyByAgentId(String agentId) {
-        // buildqueryitemsitem(not addbyaccording toCreate timeSort order，datathis来thenYesPrimary key越largeCreate time越large
-        // not addthis样可to减少Sort orderAlldatainpagination 全盘扫描消耗)
+        // buildqueryitemsitem(not addbyaccording toCreate timeSort order，datathiscomethenYesPrimary keyexceedlargeCreate timeexceedlarge
+        // not addthissamplecantoreduceSort orderAlldatainpagination alldisk scan consumedconsumption)
         LambdaQueryWrapper<AgentChatHistoryEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(AgentChatHistoryEntity::getContent, AgentChatHistoryEntity::getAudioId)
                 .eq(AgentChatHistoryEntity::getAgentId, agentId)
                 .eq(AgentChatHistoryEntity::getChatType, AgentChatHistoryType.USER.getValue())
                 .isNotNull(AgentChatHistoryEntity::getAudioId)
-                // addthisrow，ensurequeryresultbyaccording toCreate timedescending排column
-                // useid reason：data形式，id越large Create timethen越晚，所touseid resultandCreate timedescending排columnresultone样
-                // idasdescending排column priority势，can高，hasPrimary keyindex，not 用inSort order when候re-newperform排除扫描比较
+                // addthisrow，ensurequeryresultbyaccording toCreate timedescendingsortcolumn
+                // useid reason：dataform，idexceedlarge Create timethenexceedlate，touseid resultandCreate timedescendingsortcolumnresultonesample
+                // idasdescendingsortcolumn prioritytrend，canhigh，hasPrimary keyindex，not useinSort order whenwaitre-newperformexcludescancompare
                 .orderByDesc(AgentChatHistoryEntity::getId);
 
-        // buildpaginationquery，querybefore50页data
+        // buildpaginationquery，querybefore50pagedata
         Page<AgentChatHistoryEntity> pageParam = new Page<>(0, 50);
         IPage<AgentChatHistoryEntity> result = this.baseMapper.selectPage(pageParam, wrapper);
         return result.getRecords().stream().map(item -> {
@@ -140,9 +140,9 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     /**
      * from content fieldextractchatcontent
-     * if content Yes JSON format（e.g. {"speaker": "Unknown说话人", "content": "现in几点。"}），thenextract content
+     * if content Yes JSON format（e.g. {"speaker": "Unknownsaytalkperson", "content": "currentinfewpoint。"}），thenextract content
      * field
-     * if content Yes普通string，thendirectlyreturn
+     * if content Yesordinarystring，thendirectlyreturn
      * 
      * @param content originalcontent
      * @return extract chatcontent
@@ -152,7 +152,7 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
             return content;
         }
 
-        // 尝试parseas JSON
+        // tryparseas JSON
         try {
             Map<String, Object> jsonMap = JsonUtils.parseObject(content, Map.class);
             if (jsonMap != null && jsonMap.containsKey("content")) {
@@ -160,10 +160,10 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
                 return contentObj != null ? contentObj.toString() : content;
             }
         } catch (Exception e) {
-            // ifnot Yesvalid  JSON，directlyreturn原content
+            // ifnot Yesvalid  JSON，directlyreturnoriginalcontent
         }
 
-        // ifnot Yes JSON formatorno content field，directlyreturn原content
+        // ifnot Yes JSON formatorno content field，directlyreturnoriginalcontent
         return content;
     }
 

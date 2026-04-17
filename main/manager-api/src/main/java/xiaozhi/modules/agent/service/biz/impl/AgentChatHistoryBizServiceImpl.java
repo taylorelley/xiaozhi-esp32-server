@@ -42,9 +42,9 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
     private final DeviceService deviceService;
 
     /**
-     * processChat history上报，包括fileuploadandrelatedinformationrecord
+     * processChat historyreport，includefileuploadandrelatedinformationrecord
      *
-     * @param report containchat reporting所需information 输入object
+     * @param report containchat reportingrequiredinformation inputobject
      * @return uploadresult，truerepresentssuccess，falserepresentsfailed
      */
     @Override
@@ -56,7 +56,7 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
                 : System.currentTimeMillis();
         log.info("LittleWisedevicechat reportingrequest: macAddress={}, type={} reportTime={}", macAddress, chatType, reportTimeMillis);
 
-        // according todeviceMACAddressquerycorresponding defaultagent，determineYesNoneed上报
+        // according todeviceMACAddressquerycorresponding defaultagent，determineYesNoneedreport
         AgentEntity agentEntity = agentService.getDefaultAgentByMacAddress(macAddress);
         if (agentEntity == null) {
             return Boolean.FALSE;
@@ -80,14 +80,14 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
         if (device != null) {
             deviceService.updateDeviceConnectionInfo(agentId, device.getId(), null);
         } else {
-            log.warn("Chat history上报when，not foundmacAddressas {}  device", macAddress);
+            log.warn("Chat historyreportwhen，not foundmacAddressas {}  device", macAddress);
         }
 
         return Boolean.TRUE;
     }
 
     /**
-     * base64解codereport.getOpusDataBase64(),storeai_agent_chat_audiotable
+     * base64solvecodereport.getOpusDataBase64(),storeai_agent_chat_audiotable
      */
     private String saveChatAudio(AgentChatHistoryReportDTO report) {
         String audioId = null;
@@ -106,7 +106,7 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
     }
 
     /**
-     * group装上报data
+     * groupreportdata
      */
     private void saveChatText(AgentChatHistoryReportDTO report, String agentId, String macAddress, String audioId,
             Long reportTime) {
@@ -119,12 +119,12 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
                 .content(report.getContent())
                 .audioId(audioId)
                 .createdAt(new Date(reportTime))
-                // NOTE(haotian): 2025/5/26 updateAt可tonot set，re-点YescreateAt，whileandthis样可to看to上报延迟
+                // NOTE(haotian): 2025/5/26 updateAtcantonot set，re-pointYescreateAt，whileandthissamplecantoseetoreportdelay
                 .build();
 
         // Save data
         agentChatHistoryService.save(entity);
 
-        log.info("device {} correspondingagent {} 上报success", macAddress, agentId);
+        log.info("device {} correspondingagent {} reportsuccess", macAddress, agentId);
     }
 }

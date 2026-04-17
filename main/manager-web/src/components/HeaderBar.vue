@@ -1,13 +1,13 @@
 <template>
   <el-header class="header">
     <div class="header-container">
-      <!-- 左侧元素 -->
+      <!-- -->
       <div class="header-left" @click="goHome">
         <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" class="logo-img" />
         <img loading="lazy" alt="" :src="xiaozhiAiIcon" class="brand-img" />
       </div>
 
-      <!-- 中间导航菜单 -->
+      <!-- inNavigationMenu -->
       <div class="header-center">
         <div class="equipment-management" :class="{
           'active-tab':
@@ -25,7 +25,7 @@
           }" />
           <span class="nav-text">{{ $t("header.smartManagement") }}</span>
         </div>
-        <!-- 普通用户显示音色克隆 -->
+        <!-- UserShowVoiceclone -->
         <div v-if="!userInfo.superAdmin && featureStatus.voiceClone" class="equipment-management"
           :class="{ 'active-tab': $route.path === '/voice-clone-management' }" @click="goVoiceCloneManagement">
           <img loading="lazy" alt="" src="@/assets/header/voice.png" :style="{
@@ -37,7 +37,7 @@
           <span class="nav-text">{{ $t("header.voiceCloneManagement") }}</span>
         </div>
 
-        <!-- 超级管理员显示音色克隆下拉菜单 -->
+        <!-- managementShowVoicecloneMenu -->
         <el-dropdown v-if="userInfo.superAdmin && featureStatus.voiceClone" trigger="click" class="equipment-management more-dropdown" :class="{
           'active-tab':
             $route.path === '/voice-clone-management' ||
@@ -138,7 +138,7 @@
         </el-dropdown>
       </div>
 
-      <!-- 右侧元素 -->
+      <!-- -->
       <div class="header-right">
         <div class="search-container" v-if="$route.path === '/home' && !(userInfo.superAdmin && isSmallScreen)">
           <div class="search-wrapper">
@@ -147,7 +147,7 @@
               ref="searchInput">
               <i slot="suffix" class="el-icon-search search-icon" @click="handleSearch"></i>
             </el-input>
-            <!-- 搜索历史下拉框 -->
+            <!-- SearchHistory -->
             <div v-if="showHistory && searchHistory.length > 0" class="search-history-dropdown">
               <div class="search-history-header">
                 <span>{{ $t("header.searchHistory") }}</span>
@@ -181,7 +181,7 @@
       </div>
     </div>
 
-    <!-- 修改密码弹窗 -->
+    <!-- ModifyPasswordDialog -->
     <ChangePasswordDialog v-model="isChangePasswordDialogVisible" />
   </el-header>
 </template>
@@ -208,12 +208,12 @@ export default {
       userMenuVisible: false, // 添加用户菜单可见状态
       menuVisibleTimer: null, // 菜单显示定时器，防止够快触发
       isSmallScreen: false,
-      // 搜索历史相关
+ // SearchHistory
       searchHistory: [],
       showHistory: false,
       SEARCH_HISTORY_KEY: "xiaozhi_search_history",
       MAX_HISTORY_COUNT: 3,
-      // Cascader 配置
+      // Cascader Configuration
       cascaderProps: {
         expandTrigger: "click",
         value: "value",
@@ -230,11 +230,11 @@ export default {
       }),
       userInfo: (state) => state.userInfo,
     }),
-    // 获取当前语言
+ // Getcurrent
     currentLanguage() {
       return i18n.locale || "zh_CN";
     },
-    // 获取当前语言显示文本
+ // GetcurrentShowText
     currentLanguageText() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -254,7 +254,7 @@ export default {
           return this.$t("language.zhCN");
       }
     },
-    // 根据当前语言获取对应的xiaozhi-ai图标
+ // Based oncurrentGetcorrespondingxiaozhi-aiIcon
     xiaozhiAiIcon() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -274,7 +274,7 @@ export default {
           return require("@/assets/xiaozhi-ai.png");
       }
     },
-    // 用户菜单选项
+    // UserMenuOption
     userMenuOptions() {
       return [
         {
@@ -321,18 +321,18 @@ export default {
   async mounted() {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
-    // 从localStorage加载搜索历史
+ // fromlocalStorageLoadSearchHistory
     this.loadSearchHistory();
-    // 等待featureManager初始化完成后再加载功能状态
+ // waitfeatureManagerInitializeDoneafterLoad featureStatus
     await this.loadFeatureStatus();
   },
-  //移除事件监听器
+ //Removelisten to
   beforeDestroy() {
     window.removeEventListener("resize", this.checkScreenSize);
   },
   methods: {
     goHome() {
-      // 跳转到首页
+ // Redirect toFirst
       this.$router.push("/home");
     },
     goUserManagement() {
@@ -362,63 +362,55 @@ export default {
     goServerSideManagement() {
       this.$router.push("/server-side-management");
     },
-
-    // 跳转到音色资源管理
+ // Redirect toVoiceResourcemanagement
     goVoiceResourceManagement() {
       this.$router.push("/voice-resource-management");
     },
-    // 添加默认角色模板管理导航方法
+    // AddDefaultRoleTemplatemanagementNavigationMethod
     goAgentTemplateManagement() {
       this.$router.push("/agent-template-management");
     },
-    // 跳转到功能管理
+ // Redirect tomanagement
     goFeatureManagement() {
       this.$router.push("/feature-management");
     },
-    // 加载功能状态
+ // Load featureStatus
     async loadFeatureStatus() {
-      // 等待featureManager初始化完成
+ // waitfeatureManagerInitializeDone
       await featureManager.waitForInitialization();
     },
     checkScreenSize() {
       this.isSmallScreen = window.innerWidth <= 1386;
     },
-    // 处理搜索
+ // ProcessSearch
     handleSearch() {
       const searchValue = this.search.trim();
-
-      // 如果搜索内容为空，触发重置事件
+ // IfSearchContentis，Reset
       if (!searchValue) {
         this.$emit("search-reset");
         return;
       }
-
-      // 保存搜索历史
+ // SaveSearchHistory
       this.saveSearchHistory(searchValue);
-
-      // 触发搜索事件，将搜索关键词传递给父组件
+ // Search，willSearchKeywordComponent
       this.$emit("search", searchValue);
-
-      // 搜索完成后让输入框失去焦点，从而触发blur事件隐藏搜索历史
+ // SearchDoneafterinput，fromblurHideSearchHistory
       if (this.$refs.searchInput) {
         this.$refs.searchInput.blur();
       }
     },
-
-    // 显示搜索历史
+ // ShowSearchHistory
     showSearchHistory() {
       this.showHistory = true;
     },
-
-    // 隐藏搜索历史
+ // HideSearchHistory
     hideSearchHistory() {
-      // 延迟隐藏，以便点击事件能够执行
+ // Hide，
       setTimeout(() => {
         this.showHistory = false;
       }, 200);
     },
-
-    // 加载搜索历史
+ // LoadSearchHistory
     loadSearchHistory() {
       try {
         const history = localStorage.getItem(this.SEARCH_HISTORY_KEY);
@@ -426,104 +418,95 @@ export default {
           this.searchHistory = JSON.parse(history);
         }
       } catch (error) {
-        console.error("加载搜索历史失败:", error);
+        console.error("LoadSearchHistoryfailed:", error);
         this.searchHistory = [];
       }
     },
-
-    // 保存搜索历史
+ // SaveSearchHistory
     saveSearchHistory(keyword) {
       if (!keyword || this.searchHistory.includes(keyword)) {
         return;
       }
-
-      // 添加到历史记录开头
+ // AddtoHistory
       this.searchHistory.unshift(keyword);
-
-      // 限制历史记录数量
+ // History
       if (this.searchHistory.length > this.MAX_HISTORY_COUNT) {
         this.searchHistory = this.searchHistory.slice(0, this.MAX_HISTORY_COUNT);
       }
-
-      // 保存到localStorage
+ // SavetolocalStorage
       try {
         localStorage.setItem(this.SEARCH_HISTORY_KEY, JSON.stringify(this.searchHistory));
       } catch (error) {
-        console.error("保存搜索历史失败:", error);
+        console.error("SaveSearchHistoryfailed:", error);
       }
     },
-
-    // 选择搜索历史项
+ // SelectSearchHistory
     selectSearchHistory(keyword) {
       this.search = keyword;
       this.handleSearch();
     },
-
-    // 移除单个搜索历史项
+ // RemovesingleSearchHistory
     removeSearchHistory(index) {
       this.searchHistory.splice(index, 1);
       try {
         localStorage.setItem(this.SEARCH_HISTORY_KEY, JSON.stringify(this.searchHistory));
       } catch (error) {
-        console.error("更新搜索历史失败:", error);
+        console.error("UpdateSearchHistoryfailed:", error);
       }
     },
-
-    // 清空所有搜索历史
+ // ClearallSearchHistory
     clearSearchHistory() {
       this.searchHistory = [];
       try {
         localStorage.removeItem(this.SEARCH_HISTORY_KEY);
       } catch (error) {
-        console.error("清空搜索历史失败:", error);
+        console.error("ClearSearchHistoryfailed:", error);
       }
     },
-    // 显示修改密码弹窗
+ // ShowModifyPasswordDialog
     showChangePasswordDialog() {
       this.isChangePasswordDialogVisible = true;
-      // 添加：显示修改密码弹窗后重置用户菜单可见状态
+ // Add：ShowModifyPasswordDialogafterResetUserMenuStatus
       this.userMenuVisible = false;
     },
-    // 退出登录
+    // Log outLog in
     async handleLogout() {
       try {
-        // 调用 Vuex 的 logout action
+ // Call Vuex of logout action
         await this.logout();
         this.$message.success({
           message: this.$t("message.success"),
           showClose: true,
         });
       } catch (error) {
-        console.error("退出登录失败:", error);
+        console.error("Log outLog infailed:", error);
         this.$message.error({
           message: this.$t("message.error"),
           showClose: true,
         });
       }
     },
-    // 监听参数字典下拉菜单的可见状态变化
+ // listen toParameterDictionaryMenu of Statuschange
     handleParamDropdownVisibleChange(visible) {
       this.paramDropdownVisible = visible;
     },
-
-    // 监听音色克隆下拉菜单的可见状态变化
+ // listen toVoicecloneMenu of Statuschange
     handleVoiceCloneDropdownVisibleChange(visible) {
       this.voiceCloneDropdownVisible = visible;
     },
-    // 在data中添加一个key用于强制重新渲染组件
-    // 处理 Cascader 选择变化
+ // atdatainAddkeyUsed forre-Component
+ // Process Cascader Selectchange
     handleCascaderChange(value) {
       if (!value || value.length === 0) {
         return;
       }
 
       const action = value[value.length - 1];
-
-      // 处理语言切换
+ // ProcessSwitch
       if (value.length === 2 && value[0] === "language") {
         this.changeLanguage(action);
       } else {
-        // 处理其他操作
+ // ProcessAction
         switch (action) {
           case "changePassword":
             this.showChangePasswordDialog();
@@ -533,35 +516,31 @@ export default {
             break;
         }
       }
-
-      // 操作完成后立即清空选择
+ // ActionDoneafterClearSelect
       setTimeout(() => {
         this.completeResetCascader();
       }, 300);
     },
-
-    // 切换语言
+ // Switch
     changeLanguage(lang) {
       changeLanguage(lang);
       this.$message.success({
         message: this.$t("message.success"),
         showClose: true,
       });
-      // 添加：切换语言后重置用户菜单可见状态
+ // Add：SwitchafterResetUserMenuStatus
       this.userMenuVisible = false;
     },
-
-    // 完全重置级联选择器
+ // ResetSelect
     completeResetCascader() {
       if (this.$refs.userCascader) {
         try {
-          // 尝试所有可能的方法来清空选择
-          // 1. 尝试使用组件提供的clearValue方法
+ // all of MethodClearSelect
+ // 1. UseComponent of clearValueMethod
           if (this.$refs.userCascader.clearValue) {
             this.$refs.userCascader.clearValue();
           }
-
-          // 2. 直接清空内部属性
+ // 2. directlyClearProperty
           if (this.$refs.userCascader.$data) {
             this.$refs.userCascader.$data.selectedPaths = [];
             this.$refs.userCascader.$data.displayLabels = [];
@@ -570,7 +549,7 @@ export default {
             this.$refs.userCascader.$data.showAllLevels = false;
           }
 
-          // 3. 操作DOM清除选中状态
+          // 3. ActionDOMClearSelectedStatus
           const menuElement = this.$refs.userCascader.$refs.menu;
           if (menuElement && menuElement.$el) {
             const activeItems = menuElement.$el.querySelectorAll(
@@ -586,28 +565,25 @@ export default {
 
           console.log("Cascader values cleared");
         } catch (error) {
-          console.error("清空选择值失败:", error);
+          console.error("ClearSelectvaluefailed:", error);
         }
       }
     },
-
-    // 点击头像触发cascader下拉菜单
+ // cascaderMenu
     handleAvatarClick() {
       if (this.$refs.userCascader) {
-        // 切换菜单可见状态
+ // SwitchMenuStatus
         this.userMenuVisible = !this.userMenuVisible;
-
-        // 菜单收起时清空选择值
+ // MenuCollapsewhenClearSelectvalue
         if (!this.userMenuVisible) {
           this.completeResetCascader();
         }
-
-        // 直接设置菜单的显隐状态
+ // directlySettingsMenu of Status
         try {
-          // 尝试使用toggleDropDownVisible方法
+ // UsetoggleDropDownVisibleMethod
           this.$refs.userCascader.toggleDropDownVisible(this.userMenuVisible);
         } catch (error) {
-          // 如果toggle方法失败，尝试直接设置属性
+ // IftoggleMethodfailed，directlySettingsProperty
           if (this.$refs.userCascader.$refs.menu) {
             this.$refs.userCascader.$refs.menu.showMenu(this.userMenuVisible);
           } else {
@@ -616,8 +592,7 @@ export default {
         }
       }
     },
-
-    // 处理用户菜单可见性变化
+ // ProcessUserMenuchange
     handleUserMenuVisibleChange(visible) {
       if (this.menuVisibleTimer) return;
       this.menuVisibleTimer = setTimeout(() => {
@@ -625,14 +600,12 @@ export default {
         clearTimeout(this.menuVisibleTimer);
         this.menuVisibleTimer = null;
       }, 100);
-
-      // 如果菜单关闭了，也要清空选择值
+ // IfMenuClose，ClearSelectvalue
       if (!visible) {
         this.completeResetCascader();
       }
     },
-
-    // 使用 mapActions 引入 Vuex 的 logout action
+ // Use mapActions Vuex of logout action
     ...mapActions(["logout"]),
   },
 };
@@ -644,7 +617,7 @@ export default {
   border: 1px solid #fff;
   height: 63px !important;
   min-width: 900px;
-  /* 设置最小宽度防止过度压缩 */
+  /* Settings */
   overflow: visible;
 }
 
@@ -705,7 +678,7 @@ export default {
   transition: all 0.3s ease;
   cursor: pointer;
   flex-shrink: 0;
-  /* 防止导航按钮被压缩 */
+  /* NavigationButton */
   padding: 0 15px;
   position: relative;
 }
@@ -843,7 +816,7 @@ export default {
   cursor: pointer;
 }
 
-/* 导航文本样式 - 支持中英文换行 */
+/* NavigationTextStyle - in */
 .nav-text {
   white-space: normal;
   text-align: center;
@@ -851,7 +824,7 @@ export default {
   line-height: 1.2;
 }
 
-/* 响应式调整 */
+/* Response */
 @media (max-width: 1200px) {
   .header-center {
     gap: 14px;
@@ -882,7 +855,7 @@ export default {
   white-space: nowrap;
 }
 
-/* 添加倒三角旋转样式 */
+/* AddStyle */
 .rotate-down {
   transform: rotate(180deg);
   transition: transform 0.3s ease;

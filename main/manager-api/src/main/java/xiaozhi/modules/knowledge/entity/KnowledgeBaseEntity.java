@@ -24,7 +24,7 @@ public class KnowledgeBaseEntity {
     private String datasetId;
 
 //    @Deprecated
-    @Schema(description = "RAGModel configurationID (connectionRAGFlow 凭证指针)")
+    @Schema(description = "RAGModel configurationID (connectionRAGFlow credential)")
     private String ragModelId;
 
     @Schema(description = "tenantID")

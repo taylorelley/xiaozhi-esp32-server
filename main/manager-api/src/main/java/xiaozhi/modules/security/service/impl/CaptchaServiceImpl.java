@@ -38,7 +38,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Value("${renren.redis.open}")
     private boolean open;
     /**
-     * Local Cache 5分钟期
+     * Local Cache 5period
      */
     Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000)
             .expireAfterAccess(5, TimeUnit.MINUTES).build();
@@ -78,7 +78,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
     @Override
     public void sendSMSValidateCode(String phone) {
-        // checksend间隔
+        // checksendbetweenspace
         String lastSendTimeKey = RedisKeys.getSMSLastSendTimeKey(phone);
         // getYesNosend，ifnosetlastsendtime（60seconds）
         String lastSendTime = redisUtils
@@ -93,14 +93,14 @@ public class CaptchaServiceImpl implements CaptchaService {
             }
         }
 
-        // check今日sendtimes
+        // checktodaysendtimes
         String todayCountKey = RedisKeys.getSMSTodayCountKey(phone);
         Integer todayCount = (Integer) redisUtils.get(todayCountKey);
         if (todayCount == null) {
             todayCount = 0;
         }
 
-        // getmostlargesendtimes限制
+        // getmostlargesendtimeslimit
         Integer maxSendCount = sysParamsService.getValueObject(
                 Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue(),
                 Integer.class);
@@ -118,7 +118,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         // setVerification code
         setCache(key, validateCodes);
 
-        // update今日sendtimes
+        // updatetodaysendtimes
         if (todayCount == 0) {
             redisUtils.increment(todayCountKey, RedisUtils.DEFAULT_EXPIRE);
         } else {
@@ -136,13 +136,13 @@ public class CaptchaServiceImpl implements CaptchaService {
     }
 
     /**
-     * generatespecifiedcount 随机numberVerification code
+     * generatespecifiedcount randomnumberVerification code
      * 
      * @param length count
-     * @return 随机code
+     * @return randomcode
      */
     private String generateValidateCode(Integer length) {
-        String chars = "0123456789"; // 字符范围可to自define：number
+        String chars = "0123456789"; // charactersymbolrangecantoselfdefine：number
         Random random = new Random();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -154,7 +154,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     private void setCache(String key, String value) {
         if (open) {
             key = RedisKeys.getCaptchaKey(key);
-            // set5分钟期
+            // set5period
             redisUtils.set(key, value, 300);
         } else {
             localCache.put(key, value);

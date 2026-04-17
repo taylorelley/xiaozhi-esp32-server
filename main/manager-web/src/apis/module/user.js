@@ -3,7 +3,7 @@ import RequestService from '../httpRequest'
 
 
 export default {
-    // 登录
+    // Log in
     login(loginForm, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/login`)
@@ -23,7 +23,7 @@ export default {
                 })
             }).send()
     },
-    // 获取验证码
+    // GetCaptcha
     getCaptcha(uuid, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/captcha?uuid=${uuid}`)
@@ -42,7 +42,7 @@ export default {
 
             }).send()
     },
-    // 发送短信验证码
+ // Captcha
     sendSmsVerification(data, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/smsVerification`)
@@ -62,7 +62,7 @@ export default {
                 })
             }).send()
     },
-    // 注册账号
+ // Register
     register(registerForm, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/register`)
@@ -82,7 +82,7 @@ export default {
                 })
             }).send()
     },
-    // 保存设备配置
+    // SaveDeviceConfiguration
     saveDeviceConfig(device_id, configData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/configDevice/${device_id}`)
@@ -93,13 +93,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('保存配置失败:', err);
+                console.error('SaveConfigurationfailed:', err);
                 RequestService.reAjaxFun(() => {
                     this.saveDeviceConfig(device_id, configData, callback);
                 });
             }).send();
     },
-    // 用户信息获取
+    // User infoGet
     getUserInfo(callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/info`)
@@ -109,13 +109,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('接口请求失败:', err)
+                console.error('APIRequest failed:', err)
                 RequestService.reAjaxFun(() => {
                     this.getUserInfo(callback)
                 })
             }).send()
     },
-    // 修改用户密码
+    // ModifyUserPassword
     changePassword(oldPassword, newPassword, successCallback, errorCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/change-password`)
@@ -135,7 +135,7 @@ export default {
             })
             .send();
     },
-    // 修改用户状态
+    // ModifyUserStatus
     changeUserStatus(status, userIds, successCallback) {
         console.log(555, userIds)
         RequestService.sendRequest()
@@ -147,13 +147,13 @@ export default {
                 successCallback(res);
             })
             .networkFail((err) => {
-                console.error('修改用户状态失败:', err)
+                console.error('ModifyUserStatusfailed:', err)
                 RequestService.reAjaxFun(() => {
                     this.changeUserStatus(status, userIds)
                 })
             }).send()
     },
-    // 获取公共配置
+    // GetPublicConfiguration
     getPubConfig(callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/pub-config`)
@@ -169,13 +169,13 @@ export default {
                 }
             })
             .networkFail((err) => {
-                console.error('获取公共配置失败:', err);
+                console.error('GetPublicConfigurationfailed:', err);
                 RequestService.reAjaxFun(() => {
                     this.getPubConfig(callback, failCallback);
                 });
             }).send();
     },
-    // 找回用户密码
+ // UserPassword
     retrievePassword(passwordData, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/retrieve-password`)

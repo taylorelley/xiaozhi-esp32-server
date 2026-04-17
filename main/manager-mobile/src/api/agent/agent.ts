@@ -7,7 +7,7 @@ import type {
 } from './types'
 import { http } from '@/http/request/alova'
 
-// 获取智能体详情
+// GetAgentdetails
 export function getAgentDetail(id: string) {
   return http.Get<AgentDetail>(`/agent/${id}`, {
     meta: {
@@ -20,7 +20,7 @@ export function getAgentDetail(id: string) {
   })
 }
 
-// 获取角色模板列表
+// GetRoleTemplatelist
 export function getRoleTemplates() {
   return http.Get<RoleTemplate[]>('/agent/template', {
     meta: {
@@ -33,7 +33,7 @@ export function getRoleTemplates() {
   })
 }
 
-// 获取模型选项
+// GetModelOption
 export function getModelOptions(modelType: string, modelName: string = '') {
   return http.Get<ModelOption[]>('/models/names', {
     params: {
@@ -50,7 +50,7 @@ export function getModelOptions(modelType: string, modelName: string = '') {
   })
 }
 
-// 获取智能体列表
+// GetAgent list
 export function getAgentList() {
   return http.Get<Agent[]>('/agent/list', {
     meta: {
@@ -63,7 +63,7 @@ export function getAgentList() {
   })
 }
 
-// 创建智能体
+// CreateAgent
 export function createAgent(data: AgentCreateData) {
   return http.Post<string>('/agent', data, {
     meta: {
@@ -73,7 +73,7 @@ export function createAgent(data: AgentCreateData) {
   })
 }
 
-// 删除智能体
+// DeleteAgent
 export function deleteAgent(id: string) {
   return http.Delete(`/agent/${id}`, {
     meta: {
@@ -83,7 +83,7 @@ export function deleteAgent(id: string) {
   })
 }
 
-// 获取TTS音色列表
+// GetTTSVoice list
 export function getTTSVoices(ttsModelId: string, voiceName: string = '') {
   return http.Get<{ id: string, name: string }[]>(`/models/${ttsModelId}/voices`, {
     params: {
@@ -99,7 +99,7 @@ export function getTTSVoices(ttsModelId: string, voiceName: string = '') {
   })
 }
 
-// 更新智能体
+// UpdateAgent
 export function updateAgent(id: string, data: Partial<AgentDetail>) {
   return http.Put(`/agent/${id}`, data, {
     meta: {
@@ -112,7 +112,7 @@ export function updateAgent(id: string, data: Partial<AgentDetail>) {
   })
 }
 
-// 获取插件列表
+// Getpluginlist
 export function getPluginFunctions() {
   return http.Get<any[]>(`/models/provider/plugin/names`, {
     meta: {
@@ -125,7 +125,7 @@ export function getPluginFunctions() {
   })
 }
 
-// 获取mcp接入点
+// Getmcp
 export function getMcpAddress(agentId: string) {
   return http.Get<string>(`/agent/mcp/address/${agentId}`, {
     meta: {
@@ -136,7 +136,7 @@ export function getMcpAddress(agentId: string) {
   })
 }
 
-// 获取mcp工具
+// Getmcptool
 export function getMcpTools(agentId: string) {
   return http.Get<string[]>(`/agent/mcp/tools/${agentId}`, {
     meta: {
@@ -149,7 +149,7 @@ export function getMcpTools(agentId: string) {
   })
 }
 
-// 获取声纹列表
+// GetVoiceprint list
 export function getVoicePrintList(agentId: string) {
   return http.Get<any[]>(`/agent/voice-print/list/${agentId}`, {
     meta: {
@@ -162,7 +162,7 @@ export function getVoicePrintList(agentId: string) {
   })
 }
 
-// 获取语音对话记录
+// Get
 export function getChatHistoryUser(agentId: string) {
   return http.Get<any[]>(`/agent/${agentId}/chat-history/user`, {
     meta: {
@@ -175,7 +175,7 @@ export function getChatHistoryUser(agentId: string) {
   })
 }
 
-// 新增声纹说话人
+// AddVoiceprintspeaker
 export function createVoicePrint(data: { agentId: string, audioId: string, sourceName: string, introduce: string }) {
   return http.Post('/agent/voice-print', data, {
     meta: {
@@ -185,7 +185,7 @@ export function createVoicePrint(data: { agentId: string, audioId: string, sourc
   })
 }
 
-// 获取智能体标签
+// GetAgentTag
 export function getAgentTags(agentId: string) {
   return http.Get<any[]>(`/agent/${agentId}/tags`, {
     meta: {
@@ -198,7 +198,7 @@ export function getAgentTags(agentId: string) {
   })
 }
 
-// 更新智能体标签
+// UpdateAgentTag
 export function updateAgentTags(agentId: string, data) {
   return http.Put(`/agent/${agentId}/tags`, data, {
     meta: {
@@ -208,7 +208,7 @@ export function updateAgentTags(agentId: string, data) {
   })
 }
 
-// 获取所有语言
+// Getall
 export function getAllLanguage(modelId: string) {
   return http.Get<{ id: string, name: string, languages: string }[]>(`/models/${modelId}/voices`, {
     meta: {

@@ -21,16 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SM2encrypttoolclass（采用十六进制format，andchancheng-archive-serviceitem目保持consistent）
+ * SM2encrypttoolclass（collectusehexadecimalformat，andchancheng-archive-serviceitemitemmaintainconsistent）
  */
 public class SM2Utils {
 
     /**
-     * public key常量
+     * public keyconstant
      */
     public static final String KEY_PUBLIC_KEY = "publicKey";
     /**
-     * private keyreturnvalue常量
+     * private keyreturnvalueconstant
      */
     public static final String KEY_PRIVATE_KEY = "privateKey";
 
@@ -39,21 +39,21 @@ public class SM2Utils {
     }
 
     /**
-     * SM2encrypt算法
+     * SM2encryptalgorithm
      *
-     * @param publicKey 十六进制public key
-     * @param data      明文data
-     * @return 十六进制ciphertext
+     * @param publicKey hexadecimalpublic key
+     * @param data      plaintextdata
+     * @return hexadecimalciphertext
      */
     public static String encrypt(String publicKey, String data) {
         try {
-            // getoneitemsSM2曲线parameter
+            // getoneitemsSM2lineparameter
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
-            // constructECC算法parameter，曲线方程、椭圆曲线G点、large整numberN
+            // constructECCalgorithmparameter，linewayprocess、ellipselineGpoint、largewholenumberN
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
-            //extractpublic key点
+            //extractpublic keypoint
             ECPoint pukPoint = sm2ECParameters.getCurve().decodePoint(Hex.decode(publicKey));
-            // public keybefore面 02or03representsYes压缩public key，04representsnot压缩public key, 04 when候，可to去掉before面 04
+            // public keybeforeside 02or03representsYescompresspublic key，04representsnotcompresspublic key, 04 whenwait，cantoremovebeforeside 04
             ECPublicKeyParameters publicKeyParameters = new ECPublicKeyParameters(pukPoint, domainParameters);
 
             SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C3C2);
@@ -69,21 +69,21 @@ public class SM2Utils {
     }
 
     /**
-     * SM2decrypt算法
+     * SM2decryptalgorithm
      *
-     * @param privateKey 十六进制private key
-     * @param cipherData 十六进制ciphertextdata
-     * @return 明文
+     * @param privateKey hexadecimalprivate key
+     * @param cipherData hexadecimalciphertextdata
+     * @return plaintext
      */
     public static String decrypt(String privateKey, String cipherData) {
         try {
-            // useBClibrary加decryptwhenciphertextto04开header，传入 ciphertextbefore面no04then补上
+            // useBClibraryadddecryptwhenciphertextto04openheader，transferin ciphertextbeforesideno04thensupplementup
             if (!cipherData.startsWith("04")) {
                 cipherData = "04" + cipherData;
             }
             byte[] cipherDataByte = Hex.decode(cipherData);
             BigInteger privateKeyD = new BigInteger(privateKey, 16);
-            //getoneitemsSM2曲线parameter
+            //getoneitemsSM2lineparameter
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
             //constructdomainparameter
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
@@ -106,7 +106,7 @@ public class SM2Utils {
     public static Map<String, String> createKey() {
         try {
             ECGenParameterSpec sm2Spec = new ECGenParameterSpec("sm2p256v1");
-            // getone椭圆曲线type keyforgenerate
+            // getoneellipselinetype keyforgenerate
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC", new BouncyCastleProvider());
             // useSM2parameterinitializegenerate
             kpg.initialize(sm2Spec);

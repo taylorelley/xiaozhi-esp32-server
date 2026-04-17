@@ -1,7 +1,7 @@
 package xiaozhi.common.interceptor;
 
 /**
- * data范围
+ * datarange
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */

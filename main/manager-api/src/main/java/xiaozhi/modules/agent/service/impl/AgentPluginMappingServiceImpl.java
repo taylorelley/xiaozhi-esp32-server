@@ -85,9 +85,9 @@ public class AgentPluginMappingServiceImpl extends ServiceImpl<AgentPluginMappin
                 paramInfo.put("dataset_ids",
                         knowledgeBaseList.stream().map(KnowledgeBaseEntity::getDatasetId).toList());
 
-                String description = "ifuser询问and【"
+                String description = "ifuseraskand【"
                         + String.join(",", knowledgeBaseList.stream().map(KnowledgeBaseEntity::getName).toList())
-                        + "】涵盖 主范围relatedcontentwhen应callthismethod，used forquery：" + String.join(",",
+                        + "】cover mainrangerelatedcontentwhenshouldcallthismethod，used forquery：" + String.join(",",
                                 knowledgeBaseList.stream().map(KnowledgeBaseEntity::getDescription).toList());
                 paramInfo.put("description", description);
                 agentPluginMapping.setParamInfo(JsonUtils.toJsonString(paramInfo));

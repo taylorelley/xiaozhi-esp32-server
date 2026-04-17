@@ -3,7 +3,7 @@ package xiaozhi.common.exception;
 import xiaozhi.common.utils.MessageUtils;
 
 /**
- * 自defineexception
+ * selfdefineexception
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */

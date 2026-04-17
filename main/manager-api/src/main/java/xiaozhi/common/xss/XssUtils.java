@@ -18,7 +18,7 @@ public class XssUtils extends Safelist {
     }
 
     /**
-     * XSSfilter白名
+     * XSSfilterwhitename
      */
     private static Safelist xssWhitelist() {
         return new Safelist()
@@ -55,7 +55,7 @@ public class XssUtils extends Safelist {
                 .addAttributes("param", "name", "value")
                 .addAttributes("span", "class", "style")
 
-                // Tagcorresponding 协议
+                // Tagcorresponding protocol
                 .addProtocols("a", "href", "ftp", "http", "https", "mailto")
                 .addProtocols("img", "src", "http", "https")
                 .addProtocols("blockquote", "cite", "http", "https")

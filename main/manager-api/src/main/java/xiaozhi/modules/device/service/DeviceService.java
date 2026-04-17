@@ -15,7 +15,7 @@ import xiaozhi.modules.device.vo.UserShowDeviceListVO;
 
 public interface DeviceService extends BaseService<DeviceEntity> {
     /**
-     * getdevicein线data
+     * getdeviceinlinedata
      */
     String getDeviceOnlineData(String agentId);
 
@@ -31,7 +31,7 @@ public interface DeviceService extends BaseService<DeviceEntity> {
     List<DeviceEntity> getUserDevices(Long userId, String agentId);
 
     /**
-     * 解绑device
+     * unbinddevice
      */
     void unbindDevice(Long userId, String deviceId);
 
@@ -87,10 +87,10 @@ public interface DeviceService extends BaseService<DeviceEntity> {
     String geCodeByDeviceId(String deviceId);
 
     /**
-     * getthisAgent device理 most近 lastconnectiontime
+     * getthisAgent device mostrecent lastconnectiontime
      * 
      * @param agentId agentid
-     * @return returndevicemost近 lastconnectiontime
+     * @return returndevicemostrecent lastconnectiontime
      */
     Date getLatestLastConnectionTime(String agentId);
 

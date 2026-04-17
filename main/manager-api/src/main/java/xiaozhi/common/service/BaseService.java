@@ -6,7 +6,7 @@ import java.util.Collection;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 
 /**
- * baseserviceinterface，allServiceinterfaceallneed to继承
+ * baseserviceinterface，allServiceinterfaceallneed toinherit
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -15,7 +15,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * insertoneitemsrecord（selectfield，策略insert）
+     * insertoneitemsrecord（selectfield，strategyinsert）
      * </p>
      *
      * @param entity entity object
@@ -37,7 +37,7 @@ public interface BaseService<T> {
      * </p>
      *
      * @param entityList entity object collection
-     * @param batchSize  insert批timescount
+     * @param batchSize  insertbatchtimescount
      */
     boolean insertBatch(Collection<T> entityList, int batchSize);
 
@@ -56,7 +56,7 @@ public interface BaseService<T> {
      * </p>
      *
      * @param entity        entity object
-     * @param updateWrapper entity object封装operationclass
+     * @param updateWrapper entity objectencapsulateoperationclass
      *                      {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
      */
     boolean update(T entity, Wrapper<T> updateWrapper);
@@ -76,7 +76,7 @@ public interface BaseService<T> {
      * </p>
      *
      * @param entityList entity object collection
-     * @param batchSize  update批timescount
+     * @param batchSize  updatebatchtimescount
      */
     boolean updateBatchById(Collection<T> entityList, int batchSize);
 

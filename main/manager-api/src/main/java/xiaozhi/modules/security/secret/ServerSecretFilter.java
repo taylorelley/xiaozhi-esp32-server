@@ -42,7 +42,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        // forOPTIONSrequest放row
+        // forOPTIONSrequestplacerow
         if (((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())) {
             return true;
         }
@@ -59,11 +59,11 @@ public class ServerSecretFilter extends AuthenticatingFilter {
             return false;
         }
 
-        // verificationtokenYesNo匹配
+        // verificationtokenYesNomatch
         String serverSecret = getServerSecret();
         if (StringUtils.isBlank(serverSecret) || !serverSecret.equals(token)) {
-            // tokenno效，return401
-            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "no效 servicekey");
+            // tokennoeffective，return401
+            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "noeffective servicekey");
             return false;
         }
 
@@ -71,7 +71,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
     }
 
     /**
-     * sendnot授权response
+     * sendnotgrantpermissionresponse
      */
     private void sendUnauthorizedResponse(HttpServletResponse response, String message) {
         response.setContentType("application/json;charset=utf-8");
@@ -82,7 +82,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
             String json = JsonUtils.toJsonString(new Result<Void>().error(ErrorCode.UNAUTHORIZED, message));
             response.getWriter().print(json);
         } catch (IOException e) {
-            log.error("response输出failed", e);
+            log.error("responseoutputfailed", e);
         }
     }
 

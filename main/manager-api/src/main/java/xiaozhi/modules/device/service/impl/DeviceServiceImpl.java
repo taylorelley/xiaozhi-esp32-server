@@ -155,7 +155,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * getdevicein线data
+     * getdeviceinlinedata
      */
     @Override
     public String getDeviceOnlineData(String agentId) {
@@ -178,7 +178,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             return StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
         }).collect(Collectors.toSet());
 
-        // buildrequest入参
+        // buildrequestinparameter
         Map<String, Set<String>> params = MapUtil
                 .builder(new HashMap<String, Set<String>>())
                 .put("clientIds", deviceIds).build();
@@ -204,14 +204,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         DeviceEntity deviceById = getDeviceByMacAddress(macAddress);
 
-        // devicenotbind，thenreturncurrentupload firmwareinformation（not update）tothiscompatible旧firmwareversion
+        // devicenotbind，thenreturncurrentupload firmwareinformation（not update）tothiscompatibleoldfirmwareversion
         if (deviceById == null) {
             DeviceReportRespDTO.Firmware firmware = new DeviceReportRespDTO.Firmware();
             firmware.setVersion(deviceReport.getApplication().getVersion());
             firmware.setUrl(Constant.INVALID_FIRMWARE_URL);
             response.setFirmware(firmware);
         } else {
-            // onlyhasindevicealreadybindandautoUpdatenot as0 情况下onlyreturnfirmwareupgradeinformation
+            // onlyhasindevicealreadybindandautoUpdatenot as0 situationbelowonlyreturnfirmwareupgradeinformation
             if (deviceById.getAutoUpdate() != 0) {
                 String type = deviceReport.getBoard() == null ? null : deviceReport.getBoard().getType();
                 DeviceReportRespDTO.Firmware firmware = buildFirmwareInfo(type,
@@ -247,7 +247,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         } else {
             String[] wsUrls = wsUrl.split("\\;");
             if (wsUrls.length > 0) {
-                // 随机selectoneWebSocket URL
+                // randomselectoneWebSocket URL
                 websocket.setUrl(wsUrls[RandomUtil.randomInt(0, wsUrls.length)]);
             } else {
                 log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter managementfindto【server.websocket】configuration");
@@ -275,10 +275,10 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         }
 
         if (deviceById != null) {
-            // ifdevicestorein，thenasynchronousupdate上timesconnectiontimeandversioninformation
+            // ifdevicestorein，thenasynchronousupdateuptimesconnectiontimeandversioninformation
             String appVersion = deviceReport.getApplication() != null ? deviceReport.getApplication().getVersion()
                     : null;
-            // viaSpring代理callasynchronousmethod
+            // viaSpringcallasynchronousmethod
             ((DeviceServiceImpl) AopContext.currentProxy()).updateDeviceConnectionInfo(deviceById.getAgentId(),
                     deviceById.getId(), appVersion);
         } else {
@@ -348,17 +348,17 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 new QueryWrapper<DeviceEntity>()
                         // mustdevicekeywordfind
                         .like(StringUtils.isNotBlank(dto.getKeywords()), "alias", dto.getKeywords()));
-        // 循环processpageget回来 data，returnneed field
+        // loopprocesspagegetreturncome data，returnneed field
         List<UserShowDeviceListVO> list = page.getRecords().stream().map(device -> {
             UserShowDeviceListVO vo = ConvertUtils.sourceToTarget(device, UserShowDeviceListVO.class);
-            // lastupdate time，改as简短Description time
+            // lastupdate time，modifyassimpleshortDescription time
             vo.setRecentChatTime(DateUtils.getShortTime(device.getUpdateDate()));
             sysUserUtilService.assignUsername(device.getUserId(),
                     vo::setBindUserName);
             vo.setDeviceType(device.getBoard());
             return vo;
         }).toList();
-        // 计算page count
+        // calculatepage count
         return new PageData<>(list, page.getTotal());
     }
 
@@ -443,11 +443,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             dataMap.put("deviceId", deviceId);
             dataMap.put("activation_code", newCode);
 
-            // write入主data key
+            // writeinmaindata key
             String dataKey = getDeviceCacheKey(deviceId);
             redisUtils.set(dataKey, dataMap);
 
-            // write入反查Activation code key
+            // writeinreversequeryActivation code key
             String codeKey = RedisKeys.getOtaActivationCode(newCode);
             redisUtils.set(codeKey, deviceId);
         }
@@ -467,18 +467,18 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         String downloadUrl = null;
 
         if (ota != null) {
-            // ifdevicenoversioninformation，orOTAversion比deviceversionnew，thenreturndownloadAddress
+            // ifdevicenoversioninformation，orOTAversioncomparedeviceversionnew，thenreturndownloadAddress
             if (compareVersions(ota.getVersion(), currentVersion) > 0) {
                 String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
                 if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
                     log.error("OTAAddressnotconfiguration，Please log in to the control console，inParameter managementfindto【server.ota】configuration");
-                    // 尝试fromrequestget
+                    // tryfromrequestget
                     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                             .getRequestAttributes())
                             .getRequest();
                     otaUrl = request.getRequestURL().toString();
                 }
-                // willURL /ota/替换as/otaMag/download/
+                // willURL /ota/replaceas/otaMag/download/
                 String uuid = UUID.randomUUID().toString();
                 redisUtils.set(RedisKeys.getOtaIdKey(uuid), ota.getId());
                 downloadUrl = otaUrl.replace("/ota/", "/otaMag/download/") + uuid;
@@ -495,7 +495,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
      * 
      * @param version1 version1
      * @param version2 version2
-     * @return ifversion1 > version2return1，version1 < version2return-1，相etc.return0
+     * @return ifversion1 > version2return1，version1 < version2return-1，etc.return0
      */
     private static int compareVersions(String version1, String version2) {
         if (version1 == null || version2 == null) {
@@ -572,7 +572,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * generateWebSocketauthenticationtoken 遵循PythonendAuthManager implement逻辑：token = signature.timestamp
+     * generateWebSocketauthenticationtoken followPythonendAuthManager implementlogic：token = signature.timestamp
      * 
      * @param clientId clientID
      * @param username Username (usually deviceId/macAddress)
@@ -598,7 +598,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         hmac.init(keySpec);
         byte[] signature = hmac.doFinal(content.getBytes(StandardCharsets.UTF_8));
 
-        // Base64 URL-safecodesignature(去除填充符=)
+        // Base64 URL-safecodesignature(removepaddingsymbol=)
         String signatureBase64 = Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
 
         // returnformat: signature.timestamp
@@ -609,12 +609,12 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
      * buildMQTTconfigurationinformation
      * 
      * @param macAddress MACAddress
-     * @param groupId    分groupID
+     * @param groupId    groupID
      * @return MQTTconfigurationobject
      */
     private DeviceReportRespDTO.MQTT buildMqttConfig(String macAddress, String groupId)
             throws Exception {
-        // from环境变量orsystemparametergetsignaturekey
+        // fromenvironmentchangeamountorsystemparametergetsignaturekey
         String signatureKey = sysParamsService.getValue("server.mqtt_signature_key", true);
         if (StringUtils.isBlank(signatureKey)) {
             log.warn("missingMQTT_SIGNATURE_KEY，skipMQTTconfigurationgenerate");
@@ -628,7 +628,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         // builduserdata（containIPetc.information）
         Map<String, String> userData = new HashMap<>();
-        // 尝试getclientIP
+        // trygetclientIP
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
                     .getRequestAttributes();
@@ -703,11 +703,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         // buildcomplete URL
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // store储alltool list
+        // storestorealltool list
         List<Object> allTools = new ArrayList<>();
         String cursor = null;
 
-        // 循环getpaginationdata
+        // loopgetpaginationdata
         while (true) {
             // buildparams
             Map<String, Object> paramsMap = MapUtil.builder(new HashMap<String, Object>())
@@ -756,16 +756,16 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 break;
             }
 
-            // get current页 tool list
+            // get currentpage tool list
             JSONArray tools = data.getJSONArray("tools");
             if (tools != null && !tools.isEmpty()) {
                 allTools.addAll(tools);
             }
 
-            // get下one页 cursor
+            // getbelowonepage cursor
             String nextCursor = data.getStr("nextCursor");
             if (StringUtils.isBlank(nextCursor)) {
-                // no下one页
+                // nobelowonepage
                 break;
             }
             cursor = nextCursor;

@@ -27,16 +27,16 @@ public interface AgentTemplateService extends IService<AgentTemplateEntity> {
     void updateDefaultTemplateModelId(String modelType, String modelId);
 
     /**
-     * deletetemplateafterre-newSort order剩余template
+     * deletetemplateafterre-newSort orderremainingtemplate
      * 
      * @param deletedSort isdeletetemplate Sort ordervalue
      */
     void reorderTemplatesAfterDelete(Integer deletedSort);
 
     /**
-     * get下oneavailable Sort orderordernumber（寻findminimum notuseordernumber）
+     * getbelowoneavailable Sort orderordernumber（findfindminimum notuseordernumber）
      * 
-     * @return 下oneavailable Sort orderordernumber
+     * @return belowoneavailable Sort orderordernumber
      */
     Integer getNextAvailableSort();
 }

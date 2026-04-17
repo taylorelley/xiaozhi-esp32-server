@@ -15,10 +15,10 @@
             </div>
         </div>
 
-        <!-- 主体内容 -->
+        <!-- Content -->
         <div class="main-wrapper">
             <div class="content-panel">
-                <!-- 左侧字典类型列表 -->
+                <!-- DictionaryTypelist -->
                 <div class="dict-type-panel">
                     <div class="dict-type-header">
                         <el-button type="success" size="mini" @click="showAddDictTypeDialog">{{ $t('dictManagement.addDictType') }}</el-button>
@@ -42,7 +42,7 @@
                     </el-table>
                 </div>
 
-                <!-- 右侧字典数据列表 -->
+                <!-- DictionaryDatalist -->
                 <div class="content-area">
                     <el-card class="dict-data-card" shadow="never">
                         <el-table ref="dictDataTable" :data="dictDataList" style="width: 100%"
@@ -111,11 +111,11 @@
             </div>
         </div>
 
-        <!-- 使用字典类型编辑弹框组件 -->
+        <!-- UseDictionaryTypeEditComponent -->
         <DictTypeDialog :visible.sync="dictTypeDialogVisible" :title="dictTypeDialogTitle" :dictTypeData="dictTypeForm"
             @save="saveDictType" />
 
-        <!-- 使用字典数据编辑弹框组件 -->
+        <!-- UseDictionaryDataEditComponent -->
         <DictDataDialog :visible.sync="dictDataDialogVisible" :title="dictDataDialogTitle" :dictData="dictDataForm"
             :dictTypeId="selectedDictType?.id" @save="saveDictData" />
         <el-footer style="flex-shrink:unset;">
@@ -140,7 +140,7 @@ export default {
     },
     data() {
         return {
-            // 字典类型相关
+ // DictionaryType
             dictTypeList: [],
             dictTypeLoading: false,
             selectedDictType: null,
@@ -152,8 +152,7 @@ export default {
                 dictName: '',
                 dictType: ''
             },
-
-            // 字典数据相关
+ // DictionaryData
             dictDataList: [],
             dictDataLoading: false,
             isAllDictDataSelected: false,
@@ -167,7 +166,7 @@ export default {
                 sort: 0
             },
             search: '',
-            // 添加分页相关数据
+ // AddPaginationData
             pageSizeOptions: [10, 20, 50, 100],
             currentPage: 1,
             pageSize: 10,
@@ -178,7 +177,7 @@ export default {
         this.loadDictTypeList()
     },
     methods: {
-        // 字典类型相关方法
+ // DictionaryTypeMethod
         loadDictTypeList() {
             this.dictTypeLoading = true
             dictApi.getDictTypeList({
@@ -254,8 +253,7 @@ export default {
                 })
             })
         },
-
-        // 字典数据相关方法
+ // DictionaryDataMethod
         loadDictDataList(dictTypeId) {
             if (!dictTypeId) return
             this.dictDataLoading = true
@@ -351,20 +349,19 @@ export default {
         },
         handleSearch() {
             if (!this.selectedDictType) {
-                this.$message.warning('请先选择字典类型')
+                this.$message.warning('firstSelectDictionaryType')
                 return
             }
             this.currentPage = 1
             this.loadDictDataList(this.selectedDictType.id)
         },
-        // 添加分页相关方法
+ // AddPaginationMethod
         handlePageSizeChange(val) {
             this.pageSize = val;
             this.currentPage = 1;
             this.loadDictDataList(this.selectedDictType?.id);
         },
-        
-        // 更新选择列表头翻译文本
+ // UpdateSelectlistText
         updateSelectionHeaderText() {
             const thElement = document.querySelector(`.el-table__header th:nth-child(1) .cell`);
             if (thElement) {
@@ -391,16 +388,16 @@ export default {
             this.currentPage = page;
             this.loadDictDataList(this.selectedDictType?.id);
         },
-        // 表头单元格样式类名，用于选择列
+ // Style，Used forSelect
         headerCellClassName({ columnIndex }) {
             if (columnIndex === 0) {
                 return 'custom-selection-header';
             }
             return '';
         },
-        // 单元格样式类名，用于设置选择列表头的翻译文本
+ // Style，Used forSettingsSelectlist of Text
         selectionCellClassName({ row, column, rowIndex, columnIndex }) {
-            // 只对表头行设置data-content
+ // Settingsdata-content
             if (rowIndex === undefined) {
                 setTimeout(() => {
                     this.updateSelectionHeaderText();
@@ -411,14 +408,14 @@ export default {
     },
     
     mounted() {
-        // 在组件挂载后确保表头翻译文本正确显示
+ // atComponentMountafterEnsureTextShow
         setTimeout(() => {
             this.updateSelectionHeaderText();
         }, 100);
     },
     
     updated() {
-        // 在组件更新后重新设置表头翻译文本
+ // atComponentUpdateafterre-SettingsText
         this.updateSelectionHeaderText();
     },
     
@@ -461,7 +458,7 @@ export default {
 }
 
 .main-wrapper {
-    // 顶部 63px 底部 35px 查询72px
+ // Top 63px Bottom 35px Query72px
     height: calc(100vh - 63px - 35px - 72px);
     margin: 0 22px;
     border-radius: 15px;

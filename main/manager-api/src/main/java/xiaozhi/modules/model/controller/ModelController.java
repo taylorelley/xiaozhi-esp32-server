@@ -93,7 +93,7 @@ public class ModelController {
     }
 
     @PutMapping("/{modelType}/{provideCode}/{id}")
-    @Operation(summary = "编辑Model configuration")
+    @Operation(summary = "editModel configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<ModelConfigDTO> editModelConfig(@PathVariable String modelType,
             @PathVariable String provideCode,

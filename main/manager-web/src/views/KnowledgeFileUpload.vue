@@ -110,7 +110,7 @@
       </div>
     </div>
 
-    <!-- 上传文档对话框 -->
+    <!-- UploadDocumentDialog -->
     <el-dialog :title="$t('knowledgeFileUpload.uploadDocument')" :visible.sync="uploadDialogVisible" width="800px">
       <el-upload class="document-uploader" drag :action="uploadUrl" :auto-upload="false" :on-change="handleFileChange"
         :multiple="true" :show-file-list="false" accept=".doc,.docx,.pdf,.txt,.md,.mdx,.csv,.xls,.xlsx,.ppt,.pptx">
@@ -119,7 +119,7 @@
         <div class="el-upload__tip">{{ $t('knowledgeFileUpload.uploadTip') }}</div>
       </el-upload>
 
-      <!-- 已选择文件列表 -->
+      <!-- alreadySelectFilelist -->
       <div class="selected-files-section" v-if="selectedFilesList.length > 0">
         <h4>{{ $t('knowledgeFileUpload.selectedFiles') }} ({{ selectedFilesList.length }})</h4>
         <div class="selected-files-list">
@@ -146,13 +146,13 @@
       </div>
     </el-dialog>
 
-    <!-- 切片管理弹窗 -->
+    <!-- slicemanagementDialog -->
     <el-dialog :title="`${$t('knowledgeFileUpload.viewSlices')} - ${currentDocumentName}`"
       :visible.sync="sliceDialogVisible" width="1200px" class="slice-dialog">
       <div class="slice-management">
-        <!-- 切片列表 -->
+        <!-- slicelist -->
         <div class="slice-list-section">
-          <!-- 切片内容卡片式布局 -->
+          <!-- sliceContentcard -->
           <div v-loading="sliceLoading" class="slice-content-container">
             <div v-if="sliceList.length > 0" class="slice-cards-container">
               <div v-for="(slice, index) in sliceList" :key="index" class="slice-card">
@@ -170,10 +170,10 @@
             </div>
           </div>
 
-          <!-- 切片分页 -->
+          <!-- slicePagination -->
           <div class="slice-pagination" style="margin-top: 20px; text-align: right;">
             <div class="custom-pagination">
-              <!-- 条/页选择器 -->
+              <!-- items/pageSelect -->
               <el-select v-model="slicePageSize" @change="handleSliceSizeChange" class="page-size-select"
                 :popper-append-to-body="false">
                 <el-option v-for="item in pageSizeOptions" :key="item"
@@ -181,28 +181,28 @@
                 </el-option>
               </el-select>
 
-              <!-- 首页按钮 -->
+              <!-- FirstButton -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === 1" @click="goToSliceFirstPage">
                 {{ $t('knowledgeFileUpload.firstPage') }}
               </button>
 
-              <!-- 上一页按钮 -->
+              <!-- PreviousButton -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === 1" @click="goToSlicePrevPage">
                 {{ $t('knowledgeFileUpload.prevPage') }}
               </button>
 
-              <!-- 页码按钮 -->
+              <!-- pagecodeButton -->
               <button v-for="page in sliceVisiblePages" :key="page" class="pagination-btn"
                 :class="{ active: page === sliceCurrentPage }" @click="goToSlicePage(page)">
                 {{ page }}
               </button>
 
-              <!-- 下一页按钮 -->
+              <!-- NextButton -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === slicePageCount" @click="goToSliceNextPage">
                 {{ $t('knowledgeFileUpload.nextPage') }}
               </button>
 
-              <!-- 总记录数 -->
+              <!-- -->
               <span class="total-text">{{ $t('knowledgeFileUpload.totalRecords', { total: sliceTotal }) }}</span>
             </div>
           </div>
@@ -210,7 +210,7 @@
       </div>
     </el-dialog>
 
-    <!-- 召回测试弹窗 -->
+    <!-- recallTestDialog -->
     <el-dialog :title="$t('knowledgeFileUpload.retrievalTest')" :visible.sync="retrievalTestDialogVisible"
       width="1200px" class="retrieval-test-dialog">
       <div class="retrieval-test-form">
@@ -289,8 +289,7 @@ export default {
       uploadUrl: '',
       isAllSelected: false,
       selectedFilesList: [], // 批量上传选择的文件列表
-
-      // 切片管理相关数据
+ // slicemanagementData
       sliceDialogVisible: false,
       currentDocumentId: '',
       currentDocumentName: '',
@@ -299,16 +298,14 @@ export default {
       sliceCurrentPage: 1,
       slicePageSize: 10,
       sliceTotal: 0,
-
-      // 召回测试相关数据
+ // recallTestData
       retrievalTestDialogVisible: false,
       retrievalTestForm: {
         question: ''
       },
       retrievalTestResult: null,
       retrievalTestLoading: false,
-      
-      // 状态轮询相关数据
+ // StatuspollingData
       statusPollingTimer: null,
       statusPollingInterval: 5000, // 5秒轮询一次
       maxStatusPollingTime: 300000, // 最大轮询时间5分钟
@@ -344,11 +341,11 @@ export default {
       }
       return pages;
     },
-    // 切片分页页数计算
+ // slicePaginationpagecalculate
     slicePageCount() {
       return Math.ceil(this.sliceTotal / this.slicePageSize);
     },
-    // 切片分页可见页码计算（最多显示3个页码）
+ // slicePaginationpagecodecalculate（Show3pagecode）
     sliceVisiblePages() {
       const pages = [];
       const maxVisible = 3;
@@ -388,11 +385,9 @@ export default {
           if (data && data.code === 0) {
             this.fileList = data.data.list;
             this.total = data.data.total;
-
-            // 为每个文档获取切片数量
+ // isDocumentGetslice count
             await this.fetchSliceCountsForDocuments();
-            
-            // 自动为处理中的文档启动状态检测
+ // isProcessing of DocumentStartStatusDetect
             this.startStatusPolling();
           } else {
             this.$message.error(data?.msg || this.$t('knowledgeFileUpload.getListFailed'));
@@ -404,62 +399,56 @@ export default {
           this.loading = false;
           console.log('Error callback received:', err);
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('backendBackErrorMessage:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.getListFailed'));
           } else {
             this.$message.error(this.$t('knowledgeFileUpload.getListFailed'));
           }
-          console.error('获取文档列表失败:', err);
+          console.error('GetDocumentlistfailed:', err);
           this.fileList = [];
           this.total = 0;
         }
       );
     },
-    
-    // 启动文档状态轮询
+ // StartDocumentStatuspolling
     startStatusPolling: function () {
-      // 检查是否已经有轮询在进行
+ // CheckWhether toalreadyhaspollingat
       if (this.statusPollingTimer) {
-        console.log('状态轮询已在运行');
+        console.log('Statuspollingalreadyat');
         return;
       }
-      
-      // 检查是否有处理中的文档
+ // CheckWhether tohasProcessing of Document
       const hasProcessingDocuments = this.fileList.some(document => 
         document.parseStatusCode === 1
       );
       
       if (!hasProcessingDocuments) {
-        console.log('没有处理中的文档，不启动状态轮询');
+        console.log('hasProcessing of Document，StartStatuspolling');
         return;
       }
       
-      console.log('启动文档状态轮询');
+      console.log('StartDocumentStatuspolling');
       this.statusPollingStartTime = Date.now();
-      
-      // 立即执行一次状态检查
+ // StatusCheck
       this.pollDocumentStatus();
-      
-      // 开始轮询
+ // Startpolling
       this.statusPollingTimer = setInterval(() => {
         this.pollDocumentStatus();
       }, this.statusPollingInterval);
     },
-    
-    // 停止文档状态轮询
+ // StopDocumentStatuspolling
     stopStatusPolling: function () {
       if (this.statusPollingTimer) {
         clearInterval(this.statusPollingTimer);
         this.statusPollingTimer = null;
-        console.log('停止文档状态轮询');
+        console.log('StopDocumentStatuspolling');
       }
     },
-    
-    // 轮询文档状态
+ // pollingDocumentStatus
     pollDocumentStatus: async function () {
-      // 检查是否超过最大轮询时间
+ // CheckWhether topollingwhen
       if (Date.now() - this.statusPollingStartTime > this.maxStatusPollingTime) {
-        console.log('达到最大轮询时间，停止状态轮询');
+        console.log('topollingwhen，StopStatuspolling');
         this.stopStatusPolling();
         return;
       }
@@ -481,37 +470,35 @@ export default {
         if (response && response.code === 0) {
           const updatedFileList = response.data.list;
           
-          // 更新文档状态
+          // UpdateDocumentStatus
           this.updateDocumentStatuses(updatedFileList);
-          
-          // 检查是否还有处理中的文档
+ // CheckWhether tohasProcessing of Document
           const hasProcessingDocuments = updatedFileList.some(document => 
             document.parseStatusCode === 1
           );
           
           if (!hasProcessingDocuments) {
-            console.log('所有文档处理完成，停止状态轮询');
+            console.log('allDocumentProcessDone，StopStatuspolling');
             this.stopStatusPolling();
           }
         }
       } catch (error) {
-        console.warn('轮询文档状态失败:', error);
+        console.warn('pollingDocumentStatusfailed:', error);
       }
     },
     
-    // 更新文档状态
+    // UpdateDocumentStatus
     updateDocumentStatuses: function (updatedFileList) {
       let hasChanges = false;
       
       updatedFileList.forEach(updatedDoc => {
         const existingDoc = this.fileList.find(doc => doc.id === updatedDoc.id);
         if (existingDoc && existingDoc.parseStatusCode !== updatedDoc.parseStatusCode) {
-          // 状态发生变化，更新文档
+ // Statuschange，UpdateDocument
           Object.assign(existingDoc, updatedDoc);
           hasChanges = true;
-          console.log(`文档 ${existingDoc.name} 状态已更新: ${existingDoc.parseStatusCode} -> ${updatedDoc.parseStatusCode}`);
-          
-          // 如果状态变为完成，启动切片数量检测
+          console.log(`Document ${existingDoc.name} StatusalreadyUpdate: ${existingDoc.parseStatusCode} -> ${updatedDoc.parseStatusCode}`);
+ // IfStatusisDone，Startslice countDetect
           if (updatedDoc.parseStatusCode === 3) {
             this.fetchSliceCountForSingleDocument(updatedDoc.id);
           }
@@ -522,24 +509,21 @@ export default {
         this.$forceUpdate();
       }
     },
-
-    // 为文档列表中的每个文档获取切片数量
+ // isDocumentlistin of DocumentGetslice count
     fetchSliceCountsForDocuments: async function () {
       if (!this.fileList || this.fileList.length === 0) {
         return;
       }
-
-      // 为每个文档获取切片数量
+ // isDocumentGetslice count
       for (const document of this.fileList) {
         this.fetchSliceCountForSingleDocument(document.id);
       }
     },
-
-    // 获取单个文档的切片数量
+ // GetsingleDocument of slice count
     fetchSliceCountForSingleDocument: function (documentId) {
       const document = this.fileList.find(doc => doc.id === documentId);
       if (!document) {
-        console.warn('未找到文档:', documentId);
+        console.warn('toDocument:', documentId);
         return;
       }
 
@@ -552,30 +536,28 @@ export default {
         ({ data }) => {
           if (data && data.code === 0) {
             const sliceCount = data.data.total || 0;
-            // 更新文档的切片数量
+ // UpdateDocument of slice count
             this.$set(document, 'sliceCount', sliceCount);
-            // 强制更新视图
+ // Update
             this.$forceUpdate();
-            console.log(`文档 ${document.name} 切片数量已更新为:`, sliceCount);
+            console.log(`Document ${document.name} slice countalreadyUpdateis:`, sliceCount);
           } else {
-            console.warn(`获取文档 ${document.name} 切片数量失败:`, data?.msg);
+            console.warn(`GetDocument ${document.name} slice countfailed:`, data?.msg);
           }
         },
         (err) => {
-          console.warn(`获取文档 ${document.name} 切片数量失败:`, err);
+          console.warn(`GetDocument ${document.name} slice countfailed:`, err);
         }
       );
     },
-
-    // 智能检测切片生成状态并自动刷新
+ // DetectsliceGenerateStatusandRefresh
     smartRefreshSliceCount: function (documentId) {
       const document = this.fileList.find(doc => doc.id === documentId);
       if (!document) {
-        console.warn('未找到文档:', documentId);
+        console.warn('toDocument:', documentId);
         return;
       }
-
-      // 延迟2秒后获取切片数量，给后端更多处理时间
+ // 2afterGetslice count，backendProcesswhen
       setTimeout(() => {
         this.fetchSliceCountForSingleDocument(documentId);
       }, 2000);
@@ -600,15 +582,13 @@ export default {
     },
     handleFileChange: function (file, fileList) {
       if (!file || !file.raw) return;
-
-      // 文件上传前的验证
+ // FileUpload of Verify
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
-        this.$message.error('文件大小不能超过10MB!');
+        this.$message.error('Filesize10MB!');
         return;
       }
-
-      // 添加到已选择文件列表
+ // AddtoalreadySelectFilelist
       this.selectedFilesList.push({
         name: file.name,
         size: file.size,
@@ -616,22 +596,21 @@ export default {
       });
     },
     beforeUpload: function (file) {
-      // 文件上传前的验证
+ // FileUpload of Verify
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
-        this.$message.error('文件大小不能超过10MB!');
+        this.$message.error('Filesize10MB!');
         return false;
       }
-      // 保存文件到uploadForm
+ // SaveFiletouploadForm
       this.uploadForm.file = file;
       return false; // 阻止自动上传，使用自定义上传逻辑
     },
-    // 移除已选择的文件
+ // RemovealreadySelect of File
     removeSelectedFile: function (index) {
       this.selectedFilesList.splice(index, 1);
     },
-
-    // 格式化文件大小
+ // FormatFilesize
     formatFileSize: function (bytes) {
       if (bytes === 0) return '0 B';
       const k = 1024;
@@ -639,17 +618,15 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
-
-    // 批量上传提交
+ // batchUploadSubmit
     handleBatchUploadSubmit: function () {
       if (this.selectedFilesList.length === 0) {
-        this.$message.error('请选择要上传的文件');
+        this.$message.error('Please selectUpload of File');
         return;
       }
 
       this.uploading = true;
-
-      // 创建上传任务数组
+ // CreateUploadArray
       const uploadPromises = this.selectedFilesList.map(file => {
         return new Promise((resolve, reject) => {
           const formData = new FormData();
@@ -664,19 +641,18 @@ export default {
               }
             },
             (err) => {
-              // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
               if (err && err.data) {
                 reject({ success: false, fileName: file.name, error: err.data.msg || err.msg || this.$t('knowledgeFileUpload.uploadFailed') });
               } else {
                 reject({ success: false, fileName: file.name, error: this.$t('knowledgeFileUpload.uploadFailed') });
               }
-              console.error('上传文档失败:', err);
+              console.error('UploadDocumentfailed:', err);
             }
           );
         });
       });
-
-      // 执行所有上传任务
+ // allUpload
       Promise.all(uploadPromises.map(p => p.catch(e => e)))
         .then(results => {
           this.uploading = false;
@@ -685,12 +661,12 @@ export default {
           const failedCount = results.filter(r => !r.success).length;
 
           if (successCount > 0) {
-            this.$message.success(`成功上传 ${successCount} 个文件`);
+            this.$message.success(`successfulUpload ${successCount} File`);
           }
 
           if (failedCount > 0) {
             const failedFiles = results.filter(r => !r.success).map(r => r.fileName);
-            this.$message.error(`上传失败 ${failedCount} 个文件: ${failedFiles.join(', ')}`);
+            this.$message.error(`Failed to upload ${failedCount} File: ${failedFiles.join(', ')}`);
           }
 
           if (successCount > 0) {
@@ -700,12 +676,11 @@ export default {
         })
         .catch(error => {
           this.uploading = false;
-          this.$message.error('批量上传失败');
-          console.error('批量上传失败:', error);
+          this.$message.error('batchFailed to upload');
+          console.error('batchFailed to upload:', error);
         });
     },
-
-    // 单文件上传（保留原有功能）
+ // FileUpload（has）
     handleUploadSubmit: function () {
       if (!this.uploadForm.file) {
         this.$message.error(this.$t('knowledgeFileUpload.fileRequired'));
@@ -730,13 +705,13 @@ export default {
         },
         (err) => {
           this.uploading = false;
-          // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
           if (err && err.data) {
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.uploadFailed'));
           } else {
             this.$message.error(this.$t('knowledgeFileUpload.uploadFailed'));
           }
-          console.error('上传文档失败:', err);
+          console.error('UploadDocumentfailed:', err);
         }
       );
     },
@@ -749,32 +724,29 @@ export default {
         KnowledgeBaseAPI.parseDocument(this.datasetId, row.id,
           ({ data }) => {
             if (data && data.code === 0) {
-              this.$message.success('请求已提交，解析中');
-              
-              // 立即更新文档状态为处理中
+              this.$message.success('requestalreadySubmit，Parsein');
+ // UpdateDocumentStatusisProcessing
               const document = this.fileList.find(doc => doc.id === row.id);
               if (document) {
                 document.parseStatusCode = 1; // 处理中状态
                 this.$forceUpdate();
               }
-              
-              // 启动状态轮询
+ // StartStatuspolling
               this.startStatusPolling();
-              
-              // 使用智能检测自动刷新切片数量
+ // UseDetectRefreshslice count
               this.smartRefreshSliceCount(row.id);
             } else {
               this.$message.error(data?.msg || this.$t('knowledgeFileUpload.parseFailed'));
             }
           },
           (err) => {
-            // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
             if (err && err.data) {
               this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.parseFailed'));
             } else {
               this.$message.error(this.$t('knowledgeFileUpload.parseFailed'));
             }
-            console.error('解析文档失败:', err);
+            console.error('ParseDocumentfailed:', err);
           }
         );
       }).catch(() => {
@@ -782,7 +754,7 @@ export default {
       });
     },
     handleViewSlices: function (row) {
-      // 查看切片
+ // slice
       this.currentDocumentId = row.id;
       this.currentDocumentName = row.name;
       this.sliceDialogVisible = true;
@@ -806,13 +778,13 @@ export default {
             }
           },
           (err) => {
-            // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
             if (err && err.data) {
               this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.deleteFailed'));
             } else {
               this.$message.error(this.$t('knowledgeFileUpload.deleteFailed'));
             }
-            console.error('删除文档失败:', err);
+            console.error('DeleteDocumentfailed:', err);
           }
         );
       }).catch(() => {
@@ -856,13 +828,13 @@ export default {
                 }
               },
               (err) => {
-                // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
                 if (err && err.data) {
                   reject(err.data.msg || err.msg || this.$t('knowledgeFileUpload.deleteFailed'));
                 } else {
                   reject(this.$t('knowledgeFileUpload.deleteFailed'));
                 }
-                console.error('删除文档失败:', err);
+                console.error('DeleteDocumentfailed:', err);
               }
             );
           });
@@ -942,8 +914,7 @@ export default {
       const date = new Date(dateString);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
     },
-
-    // 切片管理相关方法
+ // slicemanagementMethod
     fetchSlices: function () {
       this.sliceLoading = true;
 
@@ -960,7 +931,7 @@ export default {
         ({ data }) => {
           this.sliceLoading = false;
           if (data && data.code === 0) {
-            // 解析切片列表数据
+ // ParseslicelistData
             this.parseSliceData(data.data);
           } else {
             this.$message.error(data?.msg || '获取切片列表失败');
@@ -970,13 +941,13 @@ export default {
         },
         (err) => {
           this.sliceLoading = false;
-          // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
           if (err && err.data) {
             this.$message.error(err.data.msg || err.msg || '获取切片列表失败');
           } else {
-            this.$message.error('获取切片列表失败');
+            this.$message.error('Getslicelistfailed');
           }
-          console.error('获取切片列表失败:', err);
+          console.error('Getslicelistfailed:', err);
           this.sliceList = [];
           this.sliceTotal = 0;
         }
@@ -986,11 +957,11 @@ export default {
     parseSliceData: function (data) {
       try {
         if (data && data.list) {
-          // 后端已经解析过的格式
+ // backendalreadyParse of Format
           this.sliceList = data.list;
           this.sliceTotal = data.total || data.list.length;
         } else if (data && data.chunks && Array.isArray(data.chunks)) {
-          // RAGFlow API原始格式
+ // RAGFlow APIFormat
           this.sliceList = data.chunks;
           this.sliceTotal = data.total || data.chunks.length;
         } else if (data && Array.isArray(data)) {
@@ -1001,12 +972,12 @@ export default {
           this.sliceTotal = 0;
         }
 
-        console.log('解析后的切片数据:', {
+        console.log('Parseafter of sliceData:', {
           list: this.sliceList,
           total: this.sliceTotal
         });
       } catch (error) {
-        console.error('解析切片数据失败:', error);
+        console.error('ParsesliceDatafailed:', error);
         this.sliceList = [];
         this.sliceTotal = 0;
       }
@@ -1022,42 +993,37 @@ export default {
       this.sliceCurrentPage = page;
       this.fetchSlices();
     },
-
-    // 跳转到切片管理第一页
+ // Redirect toslicemanagementpage
     goToSliceFirstPage: function () {
       if (this.sliceCurrentPage !== 1) {
         this.sliceCurrentPage = 1;
         this.fetchSlices();
       }
     },
-
-    // 切片管理上一页
+ // slicemanagementPrevious
     goToSlicePrevPage: function () {
       if (this.sliceCurrentPage > 1) {
         this.sliceCurrentPage--;
         this.fetchSlices();
       }
     },
-
-    // 切片管理跳转到指定页
+ // slicemanagementRedirect topage
     goToSlicePage: function (page) {
       if (page !== this.sliceCurrentPage) {
         this.sliceCurrentPage = page;
         this.fetchSlices();
       }
     },
-
-    // 切片管理下一页
+ // slicemanagementNext
     goToSliceNextPage: function () {
       if (this.sliceCurrentPage < this.slicePageCount) {
         this.sliceCurrentPage++;
         this.fetchSlices();
       }
     },
-
-    // 召回测试相关方法
+ // recallTestMethod
     showRetrievalTestDialog: function () {
-      // 初始化召回测试表单
+ // InitializerecallTestForm
       this.retrievalTestForm = {
         question: ''
       };
@@ -1073,32 +1039,30 @@ export default {
 
       this.retrievalTestLoading = true;
       this.retrievalTestResult = null;
-
-      // 准备请求数据
+ // requestData
       const requestData = {
         question: this.retrievalTestForm.question.trim()
       };
-
-      // 调用召回测试API
+ // CallrecallTestAPI
       KnowledgeBaseAPI.retrievalTest(this.datasetId, requestData,
         ({ data }) => {
           this.retrievalTestLoading = false;
           if (data && data.code === 0) {
             this.retrievalTestResult = data.data || data;
-            this.$message.success('召回测试完成');
+            this.$message.success('recallTestDone');
           } else {
             this.$message.error(data?.msg || '召回测试失败');
           }
         },
         (err) => {
           this.retrievalTestLoading = false;
-          // 错误回调处理后端返回的错误信息
+ // Errorcallback handling backendBack of ErrorInfo
           if (err && err.data) {
             this.$message.error(err.data.msg || err.msg || '召回测试失败');
           } else {
-            this.$message.error('召回测试失败');
+            this.$message.error('recallTest failed');
           }
-          console.error('召回测试失败:', err);
+          console.error('recallTest failed:', err);
         }
       );
     },
@@ -1127,7 +1091,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询58px
+ // Top 63px Bottom 35px Query58px
   height: calc(100vh - 63px - 35px - 58px);
   margin: 0 22px;
   border-radius: 15px;
@@ -1469,7 +1433,7 @@ export default {
   min-height: 300px;
 }
 
-/* 拖拽上传区域样式 */
+/* UploadareaStyle */
 .document-uploader {
   :deep(.el-upload-dragger) {
     width: 600px;
@@ -1508,7 +1472,7 @@ export default {
   }
 }
 
-/* 召回测试弹窗样式 */
+/* recallTestDialogStyle */
 .retrieval-test-dialog {
   ::v-deep .el-dialog__wrapper {
     display: block !important;
@@ -1580,7 +1544,7 @@ export default {
   max-height: 100%;
   padding: 16px;
 
-  /* 滚动条样式 */
+  /* itemsStyle */
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -1660,7 +1624,7 @@ export default {
     max-height: 120px;
     overflow-y: auto;
 
-    /* 内容滚动条样式 */
+    /* ContentitemsStyle */
     &::-webkit-scrollbar {
       width: 4px;
     }
@@ -1684,7 +1648,7 @@ export default {
   }
 }
 
-/* 已选择文件列表样式 */
+/* alreadySelectFilelistStyle */
 .selected-files-section {
   margin-top: 20px;
   border: 1px solid #e4e7ed;
@@ -1758,7 +1722,7 @@ export default {
   }
 }
 
-/* 上传对话框容器样式 */
+/* UploadDialogStyle */
 :deep(.el-dialog) {
   border-radius: 16px !important;
   overflow: hidden;
@@ -1779,13 +1743,13 @@ export default {
   overflow-y: auto;
 }
 
-/* 切片管理弹窗固定容器大小 */
+/* slicemanagementDialogsize */
 .slice-dialog {
   ::v-deep .el-dialog__wrapper {
     display: block !important;
   }
 
-  /* 切片管理弹窗滚动条样式 */
+  /* slicemanagementDialogitemsStyle */
   ::v-deep .el-dialog::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -1839,7 +1803,7 @@ export default {
     overflow: hidden;
   }
 
-  /* 切片内容容器样式 */
+  /* sliceContentStyle */
   .slice-content-container {
     flex: 1;
     height: 100%;
@@ -1854,7 +1818,7 @@ export default {
     max-height: 100%;
     padding: 16px;
 
-    /* 滚动条样式 */
+    /* itemsStyle */
     &::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -1911,7 +1875,7 @@ export default {
       min-height: 120px;
       overflow-y: auto;
 
-      /* 内容滚动条样式 */
+      /* ContentitemsStyle */
       &::-webkit-scrollbar {
         width: 4px;
       }
@@ -1938,12 +1902,12 @@ export default {
         white-space: pre-wrap;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 
-        /* 确保文本正常显示，包括空格和换行 */
+        /* EnsureTextNormalShow，and */
         white-space: pre-wrap;
         word-break: break-word;
         overflow-wrap: break-word;
 
-        /* 段落样式 */
+        /* Style */
         p {
           margin: 0 0 12px 0;
           line-height: 1.6;
@@ -1953,7 +1917,7 @@ export default {
           }
         }
 
-        /* 列表样式 */
+        /* listStyle */
         ul,
         ol {
           margin: 8px 0;
@@ -1965,7 +1929,7 @@ export default {
           }
         }
 
-        /* 标题样式 */
+        /* TitleStyle */
         h1,
         h2,
         h3,
@@ -1995,14 +1959,14 @@ export default {
           font-size: 14px;
         }
 
-        /* 强调文本 */
+        /* Text */
         strong,
         b {
           font-weight: 600;
           color: #1a1a1a;
         }
 
-        /* 代码样式 */
+        /* codeStyle */
         code {
           background-color: #f5f5f5;
           padding: 2px 4px;
@@ -2011,7 +1975,7 @@ export default {
           font-size: 13px;
         }
 
-        /* 引用样式 */
+        /* Style */
         blockquote {
           margin: 12px 0;
           padding: 8px 12px;

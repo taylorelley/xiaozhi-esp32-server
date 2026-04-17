@@ -110,19 +110,19 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Map<String, Object> getAgentModels(String macAddress, Map<String, String> selectedModule) {
-        // checkYesNoasmanagementcontrol台request
+        // checkYesNoasmanagementcontrolconsolerequest
         String redisKey = RedisKeys.getTmpRegisterMacKey(macAddress);
         Object isAdminRequest = redisUtils.get(redisKey);
         
         if (isAdminRequest != null && "true".equals(isAdminRequest)) {
-            // managementcontrol台request，returngetConfig result
+            // managementcontrolconsolerequest，returngetConfig result
             redisUtils.delete(redisKey); // useafterclean up
             return (Map<String, Object>) getConfig(true);
         }
         // according toMACAddressfinddevice
         DeviceEntity device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null) {
-            // ifdevice，去redisin看看hasnoneedconnection device
+            // ifdevice，goredisinseehasnoneedconnection device
             String cachedCode = deviceService.geCodeByDeviceId(macAddress);
             if (StringUtils.isNotBlank(cachedCode)) {
                 throw new RenException(ErrorCode.OTA_DEVICE_NEED_BIND, cachedCode);
@@ -145,7 +145,7 @@ public class ConfigServiceImpl implements ConfigService {
             voice = timbre.getTtsVoice();
             referenceAudio = timbre.getReferenceAudio();
             referenceText = timbre.getReferenceText();
-            // priorityfirstuseuserselect Language，ifnothenusevoicesupport 第oneLanguage
+            // priorityfirstuseuserselect Language，ifnothenusevoicesupport no.oneLanguage
             if (StringUtils.isNotBlank(agent.getTtsLanguage())) {
                 language = agent.getTtsLanguage();
             } else if (StringUtils.isNotBlank(timbre.getLanguages())) {
@@ -156,12 +156,12 @@ public class ConfigServiceImpl implements ConfigService {
             if (voice_print != null) {
                 voice = voice_print.getVoiceId();
                 // priorityfirstuseuserselect Language，ifnothenusedefaultvalue
-                language = StringUtils.isNotBlank(agent.getTtsLanguage()) ? agent.getTtsLanguage() : "普通话";
+                language = StringUtils.isNotBlank(agent.getTtsLanguage()) ? agent.getTtsLanguage() : "ordinarytalk";
             }
         }
         // buildreturndata
         Map<String, Object> result = new HashMap<>();
-        // get台device每天most多输出字number
+        // getconsoledeviceeverydaymostmultipleoutputcharacternumber
         String deviceMaxOutputSize = sysParamsService.getValue("device_max_output_size", true);
         result.put("device_max_output_size", deviceMaxOutputSize);
 
@@ -175,7 +175,7 @@ public class ConfigServiceImpl implements ConfigService {
             chatHistoryConf = Constant.ChatHistoryConfEnum.RECORD_TEXT_AUDIO.getCode();
         }
         result.put("chat_history_conf", chatHistoryConf);
-        // ifclientalreadyexample化model，thennot return
+        // ifclientalreadyexamplemodel，thennot return
         String alreadySelectedVadModelId = selectedModule.get("VAD");
         if (alreadySelectedVadModelId != null && alreadySelectedVadModelId.equals(agent.getVadModelId())) {
             agent.setVadModelId(null);
@@ -254,7 +254,7 @@ public class ConfigServiceImpl implements ConfigService {
             String[] keys = param.getParamCode().split("\\.");
             Map<String, Object> current = config;
 
-            // 遍历除lastonekey之外 allkey
+            // iteratedividelastonekeyexcept allkey
             for (int i = 0; i < keys.length - 1; i++) {
                 String key = keys[i];
                 if (!current.containsKey(key)) {
@@ -272,7 +272,7 @@ public class ConfigServiceImpl implements ConfigService {
                 case "number":
                     try {
                         double doubleValue = Double.parseDouble(value);
-                        // ifnumbervalueYes整number形式，thenconvert toInteger
+                        // ifnumbervalueYeswholenumberform，thenconvert toInteger
                         if (doubleValue == (int) doubleValue) {
                             current.put(lastKey, (int) doubleValue);
                         } else {
@@ -286,7 +286,7 @@ public class ConfigServiceImpl implements ConfigService {
                     current.put(lastKey, Boolean.parseBoolean(value));
                     break;
                 case "array":
-                    // will分number分隔 stringconvert tonumberarray
+                    // willnumberdelimiter stringconvert tonumberarray
                     List<String> list = new ArrayList<>();
                     for (String num : value.split(";")) {
                         if (StringUtils.isNotBlank(num)) {
@@ -345,7 +345,7 @@ public class ConfigServiceImpl implements ConfigService {
             voiceprintConfig.put("url", voiceprintUrl);
             voiceprintConfig.put("speakers", speakers);
 
-            // getVoiceprint identificationsimilar度阈value，default0.4
+            // getVoiceprint identificationsimilarthresholdvalue，default0.4
             String thresholdStr = sysParamsService.getValue("server.voiceprint_similarity_threshold", true);
             if (StringUtils.isNotBlank(thresholdStr) && !"null".equals(thresholdStr)) {
                 try {
@@ -361,7 +361,7 @@ public class ConfigServiceImpl implements ConfigService {
 
             result.put("voiceprint", voiceprintConfig);
         } catch (Exception e) {
-            // voiceprintconfigurationgetfailedwhennot 影响otherfunction
+            // voiceprintconfigurationgetfailedwhennot affectotherfunction
             System.err.println("getvoiceprintconfigurationfailed: " + e.getMessage());
         }
     }
@@ -428,7 +428,7 @@ public class ConfigServiceImpl implements ConfigService {
             if (modelIds[i] == null) {
                 continue;
             }
-            // 关key：第三parameter传false，ensuregetoriginalkey
+            // relatedkey：no.threeparametertransferfalse，ensuregetoriginalkey
             ModelConfigEntity model = modelConfigService.getModelByIdFromCache(modelIds[i]);
             if (model == null) {
                 continue;
@@ -453,16 +453,16 @@ public class ConfigServiceImpl implements ConfigService {
                     if (ttsPitch != null)
                         ((Map<String, Object>) model.getConfigJson()).put("ttsPitch", ttsPitch);
 
-                    // 火山引擎Voice cloneneed替换resource_id
+                    // Huoshan EngineVoice cloneneedreplaceresource_id
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
                     if (Constant.VOICE_CLONE_HUOSHAN_DOUBLE_STREAM.equals(map.get("type"))) {
-                        // ifvoiceYes”S_“开header ，useseed-icl-1.0
+                        // ifvoiceYes”S_“openheader ，useseed-icl-1.0
                         if (voice != null && voice.startsWith("S_")) {
                             map.put("resource_id", "seed-icl-1.0");
                         }
                     }
                 }
-                // ifYesIntenttype，andtype=intent_llm，thento他add附加model
+                // ifYesIntenttype，andtype=intent_llm，thentoheaddattachedaddmodel
                 if ("Intent".equals(modelTypes[i])) {
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
                     if ("intent_llm".equals(map.get("type"))) {
@@ -490,7 +490,7 @@ public class ConfigServiceImpl implements ConfigService {
                         }
                     }
                 }
-                // ifYesLLMtype，andintentLLMModelIdnot asempty，thenadd附加model
+                // ifYesLLMtype，andintentLLMModelIdnot asempty，thenaddattachedaddmodel
                 if ("LLM".equals(modelTypes[i])) {
                     if (StringUtils.isNotBlank(intentLLMModelId)) {
                         if (!typeConfig.containsKey(intentLLMModelId)) {

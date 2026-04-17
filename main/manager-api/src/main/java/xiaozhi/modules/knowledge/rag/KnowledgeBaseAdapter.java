@@ -13,8 +13,8 @@ import xiaozhi.modules.knowledge.dto.document.RetrievalDTO;
 import java.util.function.Consumer;
 
 /**
- * Knowledge baseAPIadapter抽象基class
- * define通用 Knowledge baseoperationinterface，support多种afterendAPIimplement
+ * Knowledge baseAPIadapterabstractbaseclass
+ * defineuse Knowledge baseoperationinterface，supportmultiplekindafterendAPIimplement
  */
 public abstract class KnowledgeBaseAdapter {
 
@@ -185,14 +185,14 @@ public abstract class KnowledgeBaseAdapter {
         /**
          * sendstreamingrequest (SSE)
          * 
-         * @param endpoint APIend点
+         * @param endpoint APIendpoint
          * @param body     request
          * @param onData   datacallback
          */
         public abstract void postStream(String endpoint, Object body, Consumer<String> onData);
 
         /**
-         * SearchBot 提问
+         * SearchBot ask
          *
          * @param config RAGconfiguration
          * @param body   request

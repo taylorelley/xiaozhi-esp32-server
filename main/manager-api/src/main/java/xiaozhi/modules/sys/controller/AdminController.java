@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    @Operation(summary = "re-置Password")
+    @Operation(summary = "re-setPassword")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> update(
             @PathVariable Long id) {

@@ -70,7 +70,7 @@ public interface VoiceCloneService extends BaseService<VoiceCloneEntity> {
     byte[] getVoiceData(String id);
 
     /**
-     * cloneaudio，call火山引擎performvoice复刻training
+     * cloneaudio，callHuoshan Engineperformvoicere-momenttraining
      * 
      * @param cloneId voiceclonerecordID
      */

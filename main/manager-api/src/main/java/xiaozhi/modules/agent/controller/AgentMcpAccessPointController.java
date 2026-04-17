@@ -30,7 +30,7 @@ public class AgentMcpAccessPointController {
      * getagent McpendpointAddress
      * 
      * @param agentId agentid
-     * @return returnerror提醒orMcpendpointAddress
+     * @return returnerrorremindorMcpendpointAddress
      */
     @Operation(summary = "getagent McpendpointAddress")
     @GetMapping("/address/{agentId}")

@@ -12,7 +12,7 @@ import xiaozhi.common.user.UserDetail;
 import xiaozhi.modules.security.user.SecurityUser;
 
 /**
- * 公共field，automatic填充value
+ * commonfield，automaticpaddingvalue
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -32,7 +32,7 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
         // Creator
         strictInsertFill(metaObject, CREATOR, Long.class, user.getId());
-        // Create time - supportcreateDateandcreatedAt两种field name
+        // Create time - supportcreateDateandcreatedAttwokindfield name
         if (metaObject.hasSetter(CREATE_DATE)) {
             strictInsertFill(metaObject, CREATE_DATE, Date.class, date);
         }
@@ -42,7 +42,7 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
         // update
         strictInsertFill(metaObject, UPDATER, Long.class, user.getId());
-        // updatetime - supportupdateDateandupdatedAt两种field name
+        // updatetime - supportupdateDateandupdatedAttwokindfield name
         if (metaObject.hasSetter(UPDATE_DATE)) {
             strictInsertFill(metaObject, UPDATE_DATE, Date.class, date);
         }
@@ -60,7 +60,7 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
         // update
         strictUpdateFill(metaObject, UPDATER, Long.class, SecurityUser.getUserId());
-        // updatetime - supportupdateDateandupdatedAt两种field name
+        // updatetime - supportupdateDateandupdatedAttwokindfield name
         if (metaObject.hasSetter(UPDATE_DATE)) {
             strictUpdateFill(metaObject, UPDATE_DATE, Date.class, date);
         }

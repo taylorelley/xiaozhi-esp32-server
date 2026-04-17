@@ -8,14 +8,14 @@ import java.util.Map;
 import xiaozhi.common.validator.AssertUtils;
 
 /**
- * 树形结构toolclass，For example: Menu、departmentetc.
+ * treeshapeconstructtoolclass，For example: Menu、departmentetc.
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class TreeUtils {
 
     /**
-     * according topid，build树节点
+     * according topid，buildtreenode
      */
     public static <T extends TreeNode<T>> List<T> build(List<T> treeNodes, Long pid) {
         // pidcannot be empty
@@ -32,7 +32,7 @@ public class TreeUtils {
     }
 
     /**
-     * findchild节点
+     * findchildnode
      */
     private static <T extends TreeNode<T>> T findChildren(List<T> treeNodes, T rootNode) {
         for (T treeNode : treeNodes) {
@@ -44,12 +44,12 @@ public class TreeUtils {
     }
 
     /**
-     * build树节点
+     * buildtreenode
      */
     public static <T extends TreeNode<T>> List<T> build(List<T> treeNodes) {
         List<T> result = new ArrayList<>();
 
-        // list转map
+        // listconvertmap
         Map<Long, T> nodeMap = new LinkedHashMap<>(treeNodes.size());
         for (T treeNode : treeNodes) {
             nodeMap.put(treeNode.getId(), treeNode);

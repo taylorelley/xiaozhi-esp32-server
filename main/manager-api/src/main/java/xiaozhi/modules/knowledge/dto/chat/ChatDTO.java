@@ -11,7 +11,7 @@ import jakarta.validation.constraints.*;
 /**
  * conversationmanagementaggregation DTO
  * <p>
- * 容class，内含conversationassistant、sessionandmessage allrequest/responseobject。
+ * capacityclass，internalcontainconversationassistant、sessionandmessage allrequest/responseobject。
  * </p>
  */
 @Schema(description = "conversationmanagementaggregation DTO")
@@ -29,14 +29,14 @@ public class ChatDTO {
     @Schema(description = "promptconfiguration")
     public static class PromptConfig implements Serializable {
 
-        @Schema(description = "systemprompt", example = "youYesone专业 customer serviceassistant...")
+        @Schema(description = "systemprompt", example = "youYesonespecialbusiness customer serviceassistant...")
         @JsonProperty("prompt")
         private String systemPrompt;
 
-        @Schema(description = "开场白", example = "您好，IYes您 intelligent assistant，请问has什么可to帮您？")
+        @Schema(description = "opening greeting", example = "Hello, I am your intelligent assistant. How can I help you?")
         private String opener;
 
-        @Schema(description = "emptyresult回复", example = "抱歉，Inofindtorelatedinformation。")
+        @Schema(description = "emptyresultreturnre-", example = "sorry，Inofindtorelatedinformation。")
         @JsonProperty("empty_response")
         private String emptyResponse;
 
@@ -47,11 +47,11 @@ public class ChatDTO {
         @Schema(description = "YesNoenable TTS", example = "false")
         private Boolean tts;
 
-        @Schema(description = "similar度阈value (0.0 - 1.0)", example = "0.2")
+        @Schema(description = "similarthresholdvalue (0.0 - 1.0)", example = "0.2")
         @JsonProperty("similarity_threshold")
         private Float similarityThreshold;
 
-        @Schema(description = "keywordsimilar度权re- (0.0 - 1.0)", example = "0.7")
+        @Schema(description = "keywordsimilarpermissionre- (0.0 - 1.0)", example = "0.7")
         @JsonProperty("keywords_similarity_weight")
         private Float vectorSimilarityWeight;
 
@@ -63,11 +63,11 @@ public class ChatDTO {
         @JsonProperty("rerank_model")
         private String rerankId;
 
-        @Schema(description = "YesNoenable多轮conversationpriority化", example = "false")
+        @Schema(description = "YesNoenablemultipleroundconversationpriority", example = "false")
         @JsonProperty("refine_multiturn")
         private Boolean refineMultigraph;
 
-        @Schema(description = "变量list")
+        @Schema(description = "changeamountlist")
         private List<Map<String, Object>> variables;
     }
 
@@ -86,10 +86,10 @@ public class ChatDTO {
         @JsonProperty("model_name")
         private String modelName;
 
-        @Schema(description = "温度parameter (0.0 - 2.0)", example = "0.7")
+        @Schema(description = "warmparameter (0.0 - 2.0)", example = "0.7")
         private Float temperature;
 
-        @Schema(description = "Top P 采样", example = "0.9")
+        @Schema(description = "Top P collectsample", example = "0.9")
         @JsonProperty("top_p")
         private Float topP;
 
@@ -97,11 +97,11 @@ public class ChatDTO {
         @JsonProperty("max_tokens")
         private Integer maxTokens;
 
-        @Schema(description = "storein惩罚", example = "0.0")
+        @Schema(description = "storeinpenalty", example = "0.0")
         @JsonProperty("presence_penalty")
         private Float presencePenalty;
 
-        @Schema(description = "频率惩罚", example = "0.0")
+        @Schema(description = "frequency penalty", example = "0.0")
         @JsonProperty("frequency_penalty")
         private Float frequencyPenalty;
     }
@@ -117,7 +117,7 @@ public class ChatDTO {
     public static class AssistantCreateReq implements Serializable {
 
         @NotBlank(message = "assistantnamecannot be empty")
-        @Schema(description = "assistantname", requiredMode = Schema.RequiredMode.REQUIRED, example = "智cancustomer serviceassistant")
+        @Schema(description = "assistantname", requiredMode = Schema.RequiredMode.REQUIRED, example = "intelligentcancustomer serviceassistant")
         private String name;
 
         @Schema(description = "assistantavatar (Base64 code)", example = "")
@@ -127,7 +127,7 @@ public class ChatDTO {
         @JsonProperty("dataset_ids")
         private List<String> datasetIds;
 
-        @Schema(description = "assistantDescription", example = "thisYesone智cancustomer serviceassistant")
+        @Schema(description = "assistantDescription", example = "thisYesoneintelligentcancustomer serviceassistant")
         private String description;
 
         @Schema(description = "LLM Model configuration")
@@ -149,7 +149,7 @@ public class ChatDTO {
     @Schema(description = "updateassistantrequest")
     public static class AssistantUpdateReq implements Serializable {
 
-        @Schema(description = "assistantname", example = "智cancustomer serviceassistant V2")
+        @Schema(description = "assistantname", example = "intelligentcancustomer serviceassistant V2")
         private String name;
 
         @Schema(description = "assistantavatar (Base64 code)", example = "")
@@ -159,7 +159,7 @@ public class ChatDTO {
         @JsonProperty("dataset_ids")
         private List<String> datasetIds;
 
-        @Schema(description = "assistantDescription", example = "thisYesone智cancustomer serviceassistant")
+        @Schema(description = "assistantDescription", example = "thisYesoneintelligentcancustomer serviceassistant")
         private String description;
 
         @Schema(description = "LLM Model configuration")
@@ -188,7 +188,7 @@ public class ChatDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "bynamefilter (模糊匹配)", example = "customer service")
+        @Schema(description = "bynamefilter (fuzzymatch)", example = "customer service")
         private String name;
 
         @Schema(description = "Sort orderfield: create_time / update_time", example = "create_time")
@@ -197,7 +197,7 @@ public class ChatDTO {
         @Schema(description = "YesNodescending", example = "true")
         private Boolean desc;
 
-        @Schema(description = "by ID 精确filter", example = "assistant_001")
+        @Schema(description = "by ID precisionexactfilter", example = "assistant_001")
         private String id;
     }
 
@@ -218,7 +218,7 @@ public class ChatDTO {
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "assistantname", example = "智cancustomer serviceassistant")
+        @Schema(description = "assistantname", example = "intelligentcancustomer serviceassistant")
         private String name;
 
         @Schema(description = "assistantavatar", example = "")
@@ -277,7 +277,7 @@ public class ChatDTO {
     @Schema(description = "createsessionrequest")
     public static class SessionCreateReq implements Serializable {
 
-        @Schema(description = "sessionname", example = "技术咨询session")
+        @Schema(description = "sessionname", example = "technical consultationsession")
         private String name;
 
         @Schema(description = "user ID", example = "user_001")
@@ -295,7 +295,7 @@ public class ChatDTO {
     @Schema(description = "updatesessionrequest")
     public static class SessionUpdateReq implements Serializable {
 
-        @Schema(description = "sessionname", example = "技术咨询session - update")
+        @Schema(description = "sessionname", example = "technical consultationsession - update")
         private String name;
     }
 
@@ -320,7 +320,7 @@ public class ChatDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "bynamefilter", example = "技术")
+        @Schema(description = "bynamefilter", example = "technology")
         private String name;
 
         @Schema(description = "Sort orderfield", example = "create_time")
@@ -329,7 +329,7 @@ public class ChatDTO {
         @Schema(description = "YesNodescending", example = "true")
         private Boolean desc;
 
-        @Schema(description = "session ID 精确filter", example = "session_001")
+        @Schema(description = "session ID precisionexactfilter", example = "session_001")
         private String id;
 
         @Schema(description = "useridentifierfilter", example = "user_001")
@@ -354,11 +354,11 @@ public class ChatDTO {
         @JsonProperty("chat_id")
         private String chatId;
 
-        @Schema(description = "assistant ID (compatible旧版)", example = "assistant_001")
+        @Schema(description = "assistant ID (compatibleoldversion)", example = "assistant_001")
         @JsonProperty("assistant_id")
         private String assistantId;
 
-        @Schema(description = "sessionname", example = "技术咨询session")
+        @Schema(description = "sessionname", example = "technical consultationsession")
         private String name;
 
         @Schema(description = "Create time (timestamp)", example = "1700000000000")
@@ -412,7 +412,7 @@ public class ChatDTO {
     public static class CompletionReq implements Serializable {
 
         @NotBlank(message = "questioncontentcannot be empty")
-        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "请介绍one下yous 产品")
+        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "pleaseintroductiononebelowyous product")
         private String question;
 
         @Schema(description = "YesNousestreamingresponse (SSE)", example = "true")
@@ -420,14 +420,14 @@ public class ChatDTO {
         private Boolean stream = true;
 
         @NotBlank(message = "session ID cannot be empty")
-        @Schema(description = "session ID (可select，not 传thencreatenewsession)", example = "session_001")
+        @Schema(description = "session ID (canselect，not transferthencreatenewsession)", example = "session_001")
         @JsonProperty("session_id")
         private String sessionId;
 
         @Schema(description = "YesNodisplayreference", example = "true")
         private Boolean quote;
 
-        @Schema(description = "specifiedretrieve document ID list (逗number分隔)", example = "doc_001,doc_002")
+        @Schema(description = "specifiedretrieve document ID list (commanumberdelimiter)", example = "doc_001,doc_002")
         @JsonProperty("doc_ids")
         private String docIds;
 
@@ -446,7 +446,7 @@ public class ChatDTO {
     @Schema(description = "messageresponse VO")
     public static class CompletionVO implements Serializable {
 
-        @Schema(description = "AI 回答content")
+        @Schema(description = "AI returnanswercontent")
         private String answer;
 
         @Schema(description = "referenceinformation")
@@ -461,7 +461,7 @@ public class ChatDTO {
         private String taskId;
 
         /**
-         * referenceinformation (retrieve命result)
+         * referenceinformation (retrieveresult)
          */
         @Data
         @NoArgsConstructor
@@ -470,7 +470,7 @@ public class ChatDTO {
         @Schema(description = "referenceinformation")
         public static class Reference implements Serializable {
 
-            @Schema(description = "命 documentblocklist")
+            @Schema(description = " documentblocklist")
             private List<xiaozhi.modules.knowledge.dto.document.RetrievalDTO.HitVO> chunks;
 
             @Schema(description = "Document aggregationinformation")
@@ -492,23 +492,23 @@ public class ChatDTO {
             @JsonProperty("doc_id")
             private String docId;
 
-            @Schema(description = "documentname", example = "产品手册.pdf")
+            @Schema(description = "documentname", example = "productmanual.pdf")
             @JsonProperty("doc_name")
             private String docName;
 
-            @Schema(description = "命times", example = "3")
+            @Schema(description = "times", example = "3")
             private Integer count;
         }
     }
 
     /**
-     * 简易Knowledge base VO (used for Assistant list)
+     * simpleeasyKnowledge base VO (used for Assistant list)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "简易Knowledge base VO")
+    @Schema(description = "simpleeasyKnowledge base VO")
     public static class SimpleDatasetVO implements Serializable {
         @Schema(description = "Knowledge base ID")
         private String id;

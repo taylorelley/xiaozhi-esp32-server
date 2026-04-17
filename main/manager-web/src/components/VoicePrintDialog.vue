@@ -103,7 +103,7 @@ export default {
     },
     playAudio(audioId) {
       if (this.playingAudioId === audioId) {
-        // 如果正在播放当前音频，则停止播放
+ // IfatPlaycurrentAudio，thenStopPlay
         if (this.audioElement) {
           this.audioElement.pause();
           this.audioElement = null;
@@ -111,18 +111,16 @@ export default {
         this.playingAudioId = null;
         return;
       }
-
-      // 停止当前正在播放的音频
+ // StopcurrentatPlay of Audio
       if (this.audioElement) {
         this.audioElement.pause();
         this.audioElement = null;
       }
-
-      // 先获取音频下载ID
+ // firstGetAudioDownloadID
       this.playingAudioId = audioId;
       api.agent.getAudioId(audioId, (res) => {
         if (res.data && res.data.data) {
-          // 使用获取到的下载ID播放音频
+ // UseGetto of DownloadIDPlayAudio
           this.audioElement = new Audio(api.getServiceUrl() + `/agent/play/${res.data.data}`);
 
           this.audioElement.onended = () => {

@@ -10,12 +10,12 @@ import lombok.Data;
 @Data
 public class IdentifyVoicePrintResponse {
     /**
-     * most匹配 voiceprintid
+     * mostmatch voiceprintid
      */
     @JsonProperty("speaker_id")
     private String speakerId;
     /**
-     * voiceprint 分number
+     * voiceprint number
      */
     private Double score;
 }

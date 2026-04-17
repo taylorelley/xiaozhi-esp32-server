@@ -29,7 +29,7 @@ import xiaozhi.modules.voiceclone.dto.VoiceCloneDTO;
 import xiaozhi.modules.voiceclone.dto.VoiceCloneResponseDTO;
 import xiaozhi.modules.voiceclone.service.VoiceCloneService;
 
-@Tag(name = "Voice resourcemanagement", description = "Voice resource开通relatedinterface")
+@Tag(name = "Voice resourcemanagement", description = "Voice resourceopenrelatedinterface")
 @Slf4j
 @RestController
 @RequiredArgsConstructor

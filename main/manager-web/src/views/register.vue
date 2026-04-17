@@ -1,7 +1,7 @@
 <template>
   <div class="welcome" @keyup.enter="register">
     <el-container style="height: 100%;">
-      <!-- 保持相同的头部 -->
+      <!-- of -->
       <el-header>
         <div style="display: flex;align-items: center;margin-top: 15px;margin-left: 10px;gap: 10px;">
           <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" style="width: 45px;height: 45px;" />
@@ -13,7 +13,7 @@
       </div>
       <el-main style="position: relative;">
         <div class="login-box">
-          <!-- 修改标题部分 -->
+          <!-- ModifyTitlepart -->
           <div style="display: flex;align-items: center;gap: 20px;margin-bottom: 39px;padding: 0 30px;">
             <img loading="lazy" alt="" src="@/assets/login/hi.png" style="width: 34px;height: 34px;" />
             <div class="login-text">{{ $t('register.title') }}</div>
@@ -24,13 +24,13 @@
 
           <div style="padding: 0 30px;">
             <form @submit.prevent="register">
-              <!-- 用户名/手机号输入框 -->
+              <!-- Username/Mobile numberinput -->
               <div class="input-box" v-if="!enableMobileRegister">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/username.png" />
                 <el-input v-model="form.username" :placeholder="$t('register.usernamePlaceholder')" />
               </div>
 
-              <!-- 手机号注册部分 -->
+              <!-- Mobile numberRegisterpart -->
               <template v-if="enableMobileRegister">
                 <div class="input-box">
                   <div style="display: flex; align-items: center; width: 100%;">
@@ -52,7 +52,7 @@
                     style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
                 </div>
 
-                <!-- 手机验证码 -->
+                <!-- MobileCaptcha -->
 
                 <div style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                   <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
@@ -69,21 +69,21 @@
                 </div>
               </template>
 
-              <!-- 密码输入框 -->
+              <!-- Passwordinput -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
                 <el-input v-model="form.password" :placeholder="$t('register.passwordPlaceholder')" type="password"
                   show-password />
               </div>
 
-              <!-- 新增确认密码 -->
+              <!-- AddConfirmPassword -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
                 <el-input v-model="form.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
                   type="password" show-password />
               </div>
 
-              <!-- 验证码部分保持相同 -->
+              <!-- Captchapart -->
               <div v-if="!enableMobileRegister"
                 style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                 <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
@@ -94,17 +94,17 @@
                   style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
               </div>
 
-              <!-- 修改底部链接 -->
+              <!-- ModifyBottomLink -->
               <div style="font-weight: 400;font-size: 14px;text-align: left;color: #5778ff;margin-top: 20px;">
                 <div style="cursor: pointer;" @click="goToLogin">{{ $t('register.goToLogin') }}</div>
               </div>
             </form>
           </div>
 
-          <!-- 修改按钮文本 -->
+          <!-- ModifyButtonText -->
           <div class="login-btn" @click="register">{{ $t('register.registerButton') }}</div>
 
-          <!-- 保持相同的协议声明 -->
+          <!-- of -->
           <div style="font-size: 14px;color: #979db1;">
             {{ $t('register.agreeTo') }}
             <div style="display: inline-block;color: #5778FF;cursor: pointer;" @click="openPage('/user-agreement.html')">{{ $t('register.userAgreement') }}</div>
@@ -114,7 +114,7 @@
         </div>
       </el-main>
 
-      <!-- 保持相同的页脚 -->
+      <!-- of page -->
       <el-footer>
         <version-footer />
       </el-footer>
@@ -129,7 +129,7 @@ import { getUUID, goToPage, showDanger, showSuccess, sm2Encrypt, validateMobile 
 import { mapState } from 'vuex';
 import i18n from '@/i18n';
 
-// 导入语言切换功能
+// ImportSwitch
 
 export default {
   name: 'register',
@@ -143,11 +143,11 @@ export default {
       mobileAreaList: state => state.pubConfig.mobileAreaList,
       sm2PublicKey: state => state.pubConfig.sm2PublicKey,
     }),
-    // 获取当前语言
+ // Getcurrent
     currentLanguage() {
       return i18n.locale || "zh_CN";
     },
-    // 根据当前语言获取对应的xiaozhi-ai图标
+ // Based oncurrentGetcorrespondingxiaozhi-aiIcon
     xiaozhiAiIcon() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -205,7 +205,7 @@ export default {
       }
       window.open(url, '_blank');
     },
-    // 复用验证码获取方法
+ // CaptchaGetMethod
     fetchCaptcha() {
       this.form.captchaId = getUUID();
       Api.user.getCaptcha(this.form.captchaId, (res) => {
@@ -214,13 +214,12 @@ export default {
           this.captchaUrl = URL.createObjectURL(blob);
 
         } else {
-          console.error('验证码加载异常:', error);
+          console.error('CaptchaLoadAbnormal:', error);
           showDanger(this.$t('register.captchaLoadFailed'));
         }
       });
     },
-
-    // 封装输入验证逻辑
+ // Verifylogic
     validateInput(input, message) {
       if (!input.trim()) {
         showDanger(message);
@@ -228,27 +227,23 @@ export default {
       }
       return true;
     },
-
-    // 发送手机验证码
+ // MobileCaptcha
     sendMobileCaptcha() {
       if (!validateMobile(this.form.mobile, this.form.areaCode)) {
         showDanger(this.$t('register.inputCorrectMobile'));
         return;
       }
-
-      // 验证图形验证码
+ // VerifygraphicCaptcha
       if (!this.validateInput(this.form.captcha, this.$t('register.inputCaptcha'))) {
         this.fetchCaptcha();
         return;
       }
-
-      // 清除可能存在的旧定时器
+ // Clearat of when
       if (this.timer) {
         clearInterval(this.timer);
         this.timer = null;
       }
-
-      // 开始倒计时
+ // Startwhen
       this.countdown = 60;
       this.timer = setInterval(() => {
         if (this.countdown > 0) {
@@ -258,8 +253,7 @@ export default {
           this.timer = null;
         }
       }, 1000);
-
-      // 调用发送验证码接口
+ // CallCaptchaAPI
       Api.user.sendSmsVerification({
         phone: this.form.areaCode + this.form.mobile,
         captcha: this.form.captcha,
@@ -272,11 +266,10 @@ export default {
         this.fetchCaptcha();
       });
     },
-
-    // 注册逻辑
+ // Registerlogic
     async register() {
       if (this.enableMobileRegister) {
-        // 手机号注册验证
+        // Mobile numberRegisterVerify
         if (!validateMobile(this.form.mobile, this.form.areaCode)) {
           showDanger(this.$t('register.inputCorrectMobile'));
           return;
@@ -286,13 +279,13 @@ export default {
           return;
         }
       } else {
-        // 用户名注册验证
+        // UsernameRegisterVerify
         if (!this.validateInput(this.form.username, this.$t('register.requiredUsername'))) {
           return;
         }
       }
 
-      // 验证密码
+      // VerifyPassword
       if (!this.validateInput(this.form.password, this.$t('register.requiredPassword'))) {
         return;
       }
@@ -300,18 +293,18 @@ export default {
         showDanger(this.$t('register.passwordsNotMatch'))
         return
       }
-      // 验证验证码
+      // VerifyCaptcha
       if (!this.validateInput(this.form.captcha, this.$t('register.requiredCaptcha'))) {
         return;
       }
-      // 加密
+      // Encrypt
       let encryptedPassword;
       try {
-        // 拼接验证码和密码
+ // CaptchaandPassword
         const captchaAndPassword = this.form.captcha + this.form.password;
         encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
       } catch (error) {
-        console.error("密码加密失败:", error);
+        console.error("PasswordEncryptfailed:", error);
         showDanger(this.$t('sm2.encryptionFailed'));
         return;
       }
@@ -322,8 +315,7 @@ export default {
       } else {
         plainUsername = this.form.username;
       }
-
-      // 准备注册数据
+ // RemarkData
       const registerData = {
         username: plainUsername,
         password: encryptedPassword,

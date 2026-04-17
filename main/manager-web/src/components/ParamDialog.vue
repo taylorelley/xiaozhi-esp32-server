@@ -118,15 +118,13 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           const submitData = { ...this.form };
-
-          // 如果是 array 类型，校验格式并转换
+ // If it is array Type，ValidateFormatandConvert
           if (submitData.valueType === 'array' && submitData.paramValue) {
             const lines = submitData.paramValue.split('\n').filter(line => line.trim());
-
-            // 检查除最后一行外的每行是否以分号结尾
+ // Checkafter of Whether to
             for (let i = 0; i < lines.length - 1; i++) {
               if (!lines[i].trim().endsWith(';')) {
-                this.$message.error('数组格式错误，需要使用英文分号结尾');
+                this.$message.error('ArrayFormatError，needsUse');
                 return;
               }
             }
@@ -136,13 +134,13 @@ export default {
               .filter(item => item);
             submitData.paramValue = items.join(';');
           }
-          // 如果是 json 类型，压缩 JSON 格式后再提交
+ // If it is json Type， JSON FormatafterSubmit
           else if (submitData.valueType === 'json' && submitData.paramValue) {
             try {
               const parsed = JSON.parse(submitData.paramValue);
               submitData.paramValue = JSON.stringify(parsed);
             } catch (e) {
-              // 如果解析失败，保持原值
+ // IfParsefailed，value
             }
           }
 
@@ -156,8 +154,7 @@ export default {
       this.dialogKey = Date.now();
       this.$emit('cancel');
     },
-
-    // 提供给父组件调用以重置saving状态
+ // ComponentCallResetsavingStatus
     resetSaving() {
       this.saving = false;
     }
@@ -166,23 +163,23 @@ export default {
     visible(newVal) {
       if (newVal) {
         if (this.form.paramValue) {
-          // 如果是 json 类型，格式化显示
+ // If it is json Type，FormatShow
           if (this.form.valueType === 'json') {
             try {
               const parsed = JSON.parse(this.form.paramValue);
               this.form.paramValue = JSON.stringify(parsed, null, 2);
             } catch (e) {
-              // 如果解析失败，保持原值
+ // IfParsefailed，value
             }
           }
-          // 如果是 array 类型，将分号分隔的字符串转换为每行一个项目
+ // If it is array Type，will of StringConvert to
           else if (this.form.valueType === 'array') {
             const items = this.form.paramValue.split(';').filter(item => item.trim());
             this.form.paramValue = items.join(';\n');
           }
         }
       } else {
-        // 当对话框关闭时，重置saving状态
+ // DialogClosewhen，ResetsavingStatus
         this.saving = false;
       }
     }

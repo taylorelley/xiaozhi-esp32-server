@@ -18,7 +18,7 @@ import xiaozhi.modules.timbre.vo.TimbreDetailsVO;
  */
 public interface TimbreService extends BaseService<TimbreEntity> {
     /**
-     * paginationgetvoicespecifiedtts 下 voice
+     * paginationgetvoicespecifiedtts below voice
      * 
      * @param dto paginationfindparameter
      * @return voicelistpaginationdata

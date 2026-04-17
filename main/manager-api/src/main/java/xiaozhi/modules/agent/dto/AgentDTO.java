@@ -9,7 +9,7 @@ import xiaozhi.modules.agent.dto.AgentTagDTO;
 
 /**
  * agentdatatransfer object
- * used forinservicelayerandcontrollayer之间传递agentrelated data
+ * used forinservicelayerandcontrollayerofbetweentransferdeliveragentrelated data
  */
 @Data
 @Schema(description = "agentobject")
@@ -29,13 +29,13 @@ public class AgentDTO {
     @Schema(description = "largeLanguageModel name", example = "llm_model_01")
     private String llmModelName;
 
-    @Schema(description = "视觉Model name", example = "vllm_model_01")
+    @Schema(description = "visualModel name", example = "vllm_model_01")
     private String vllmModelName;
 
     @Schema(description = "memoryModel ID", example = "mem_model_01")
     private String memModelId;
 
-    @Schema(description = "Rolesetparameter", example = "youYesone专业 customer serviceassistant，负责回答userquestionand提供帮助")
+    @Schema(description = "Rolesetparameter", example = "youYesonespecialbusiness customer serviceassistant，responsiblereturnansweruserquestionandprovidehelp")
     private String systemPrompt;
 
     @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation simultaneously，Intelligently maintaininformationevolution trajectory\n" +

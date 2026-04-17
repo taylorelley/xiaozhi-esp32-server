@@ -116,7 +116,7 @@
       </div>
     </div>
 
-    <!-- 新增/编辑供应器对话框 -->
+    <!-- Add/EditproviderDialog -->
     <provider-dialog :title="dialogTitle" :visible.sync="dialogVisible" :form="providerForm" :model-types="modelTypes"
       @submit="handleSubmit" @cancel="dialogVisible = false" />
 
@@ -214,8 +214,7 @@ export default {
       // });
 
       // list.sort((a, b) => a.sort - b.sort);
-
-      // // 分页处理
+ // // PaginationProcess
       // const start = (this.currentPage - 1) * this.pageSize;
       // return list.slice(start, start + this.pageSize);
     }
@@ -288,7 +287,7 @@ export default {
     handleSubmit({ form, done }) {
       this.loading = true;
       if (form.id) {
-        // 编辑
+        // Edit
         Api.model.updateModelProvider(form, ({ data }) => {
 
           if (data.code === 0) {
@@ -300,7 +299,7 @@ export default {
           }
         });
       } else {
-        // 新增
+        // Add
         Api.model.addModelProvider(form, ({ data }) => {
           if (data.code === 0) {
             this.fetchProviders(); // 刷新表格
@@ -400,7 +399,7 @@ export default {
       return "custom-selection-cell";
     },
     updateSelectionHeaderText() {
-      // 确保表格已渲染
+ // EnsureTablealready
       this.$nextTick(() => {
         if (this.$refs.providersTable && this.$refs.providersTable.$el) {
           const headerCheckbox = this.$refs.providersTable.$el.querySelector('.custom-selection-header .el-checkbox .el-checkbox__label');
@@ -460,7 +459,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询72px
+ // Top 63px Bottom 35px Query72px
   height: calc(100vh - 63px - 35px - 72px);
   margin: 0 22px;
   border-radius: 15px;
@@ -902,7 +901,7 @@ export default {
   color: #409EFF;
 }
 
-/* 确保选择列标题样式正确 */
+/* EnsureSelectTitleStyle */
 .custom-selection-header {
   position: relative;
 }

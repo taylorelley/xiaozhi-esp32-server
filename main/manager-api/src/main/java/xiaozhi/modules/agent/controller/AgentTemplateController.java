@@ -47,7 +47,7 @@ public class AgentTemplateController {
     @Parameters({
             @Parameter(name = Constant.PAGE, description = "currentpage number，from1start", required = true),
             @Parameter(name = Constant.LIMIT, description = "per pagerecordnumber", required = true),
-            @Parameter(name = "agentName", description = "templatename，模糊query")
+            @Parameter(name = "agentName", description = "templatename，fuzzyquery")
     })
     public Result<PageData<AgentTemplateVO>> getAgentTemplatesPage(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -71,7 +71,7 @@ public class AgentTemplateController {
         // useConvertUtilsconvert toVOlist
         List<AgentTemplateVO> voList = ConvertUtils.sourceToTarget(pageResult.getRecords(), AgentTemplateVO.class);
 
-        // 修复：useconstructfunctioncreatePageDataobject，whilenot Yesno参construct+setter
+        // modifyre-：useconstructfunctioncreatePageDataobject，whilenot Yesnoparameterconstruct+setter
         PageData<AgentTemplateVO> pageData = new PageData<>(voList, pageResult.getTotal());
 
         return new Result<PageData<AgentTemplateVO>>().ok(pageData);
@@ -96,7 +96,7 @@ public class AgentTemplateController {
     @Operation(summary = "createtemplate")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<AgentTemplateEntity> createAgentTemplate(@Valid @RequestBody AgentTemplateEntity template) {
-        // setSort ordervalueas下oneavailable ordernumber
+        // setSort ordervalueasbelowoneavailable ordernumber
         template.setSort(agentTemplateService.getNextAvailableSort());
         
         boolean saved = agentTemplateService.save(template);
@@ -123,7 +123,7 @@ public class AgentTemplateController {
     @Operation(summary = "deletetemplate")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> deleteAgentTemplate(@PathVariable("id") String id) {
-        // firstqueryneed todelete templateinformation，get其Sort ordervalue
+        // firstqueryneed todelete templateinformation，getitsSort ordervalue
         AgentTemplateEntity template = agentTemplateService.getById(id);
         if (template == null) {
             return ResultUtils.error("templatedoes not exist");
@@ -134,7 +134,7 @@ public class AgentTemplateController {
         // executedeleteoperation
         boolean deleted = agentTemplateService.removeById(id);
         if (deleted) {
-            // deletesuccessafter，re-newSort order剩余template
+            // deletesuccessafter，re-newSort orderremainingtemplate
             agentTemplateService.reorderTemplatesAfterDelete(deletedSort);
             return ResultUtils.success("deletetemplatesuccess");
         } else {
@@ -143,7 +143,7 @@ public class AgentTemplateController {
     }
     
     
-    // addnew batchdeletemethod，usenot 同 URL
+    // addnew batchdeletemethod，usenot same URL
     @PostMapping("/batch-remove")
     @Operation(summary = "batchdeletetemplate")
     @RequiresPermissions("sys:role:superAdmin")

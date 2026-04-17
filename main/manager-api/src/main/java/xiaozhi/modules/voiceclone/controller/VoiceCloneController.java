@@ -35,7 +35,7 @@ import xiaozhi.modules.voiceclone.dto.VoiceCloneResponseDTO;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 import xiaozhi.modules.voiceclone.service.VoiceCloneService;
 
-@Tag(name = "Voice resourcemanagement", description = "Voice resource开通relatedinterface")
+@Tag(name = "Voice resourcemanagement", description = "Voice resourceopenrelatedinterface")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -83,7 +83,7 @@ public class VoiceCloneController {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_NOT_AUDIO_FILE);
             }
 
-            // 加strongverificationfileextension
+            // addstrongverificationfileextension
             String originalFilename = voiceFile.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
             if (!extension.equals(".mp3") && !extension.equals(".wav")) {
@@ -168,7 +168,7 @@ public class VoiceCloneController {
             response.setContentLength(voiceData.length);
             response.setHeader("Content-Disposition", "inline; filename=voice.wav");
 
-            // write入audio data
+            // writeinaudio data
             response.getOutputStream().write(voiceData);
             response.getOutputStream().flush();
         } catch (Exception e) {
@@ -178,7 +178,7 @@ public class VoiceCloneController {
     }
 
     @PostMapping("/cloneAudio")
-    @Operation(summary = "复刻audio")
+    @Operation(summary = "re-momentaudio")
     @RequiresPermissions("sys:role:normal")
     public Result<String> cloneAudio(@RequestBody Map<String, String> params) {
         String cloneId = params.get("cloneId");

@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface CaptchaService {
 
     /**
-     * 图片Verification code
+     * imageVerification code
      */
     void create(HttpServletResponse response, String uuid) throws IOException;
 

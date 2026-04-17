@@ -28,15 +28,15 @@ public class ChatCompletionRequest implements Serializable {
     @JsonProperty("stream")
     private Boolean stream = false;
 
-    @Schema(description = "温度系number (0-1)", defaultValue = "0.7")
+    @Schema(description = "indoor climatenumber (0-1)", defaultValue = "0.7")
     @JsonProperty("temperature")
     private Double temperature;
 
-    @Schema(description = "Session ID (可select，used for延续session)")
+    @Schema(description = "Session ID (canselect，used fordelaycontinuesession)")
     @JsonProperty("session_id")
     private String sessionId;
 
-    @Schema(description = "otherRAGFlow特定parameter (可select)")
+    @Schema(description = "otherRAGFlowspecialparameter (canselect)")
     private Map<String, Object> extra;
 
     @Data

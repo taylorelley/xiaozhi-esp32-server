@@ -10,8 +10,8 @@ import lombok.Data;
 
 /**
  * agentupdateDTO
- * 专used forupdateagent，idfieldYes必需 ，used foridentifierneed toupdate agent
- * otherfield均asnon-必填，onlyupdate提供 field
+ * specialused forupdateagent，idfieldYesmustneed ，used foridentifierneed toupdate agent
+ * otherfieldaverageasnon-required，onlyupdateprovide field
  */
 @Data
 @Schema(description = "agentupdateobject")
@@ -24,10 +24,10 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "Agent name", example = "customer serviceassistant", nullable = true)
     private String agentName;
 
-    @Schema(description = "voice识别modelidentifier", example = "asr_model_02", nullable = true)
+    @Schema(description = "voiceidentifymodelidentifier", example = "asr_model_02", nullable = true)
     private String asrModelId;
 
-    @Schema(description = "voice活动detectidentifier", example = "vad_model_02", nullable = true)
+    @Schema(description = "voiceactivitydetectidentifier", example = "vad_model_02", nullable = true)
     private String vadModelId;
 
     @Schema(description = "largeLanguagemodelidentifier", example = "llm_model_02", nullable = true)
@@ -45,16 +45,16 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "voiceidentifier", example = "voice_02", nullable = true)
     private String ttsVoiceId;
 
-    @Schema(description = "voiceLanguage", example = "普通话", nullable = true)
+    @Schema(description = "voiceLanguage", example = "ordinarytalk", nullable = true)
     private String ttsLanguage;
 
     @Schema(description = "TTSvolume", example = "50", nullable = true)
     private Integer ttsVolume;
 
-    @Schema(description = "TTS语速", example = "50", nullable = true)
+    @Schema(description = "TTSspeech rate", example = "50", nullable = true)
     private Integer ttsRate;
 
-    @Schema(description = "TTS音调", example = "50", nullable = true)
+    @Schema(description = "TTStone", example = "50", nullable = true)
     private Integer ttsPitch;
 
     @Schema(description = "memorymodelidentifier", example = "mem_model_02", nullable = true)
@@ -66,7 +66,7 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "pluginfunctioninformation", nullable = true)
     private List<FunctionInfo> functions;
 
-    @Schema(description = "Rolesetparameter", example = "youYesone专业 customer serviceassistant，负责回答userquestionand提供帮助", nullable = true)
+    @Schema(description = "Rolesetparameter", example = "youYesonespecialbusiness customer serviceassistant，responsiblereturnansweruserquestionandprovidehelp", nullable = true)
     private String systemPrompt;
 
     @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation simultaneously，Intelligently maintaininformationevolution trajectory\n"
@@ -79,7 +79,7 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "Languagecode", example = "zh_CN", nullable = true)
     private String langCode;
 
-    @Schema(description = "交互语种", example = "Chinese", nullable = true)
+    @Schema(description = "interactionkind", example = "Chinese", nullable = true)
     private String language;
 
     @Schema(description = "Sort order", example = "1", nullable = true)

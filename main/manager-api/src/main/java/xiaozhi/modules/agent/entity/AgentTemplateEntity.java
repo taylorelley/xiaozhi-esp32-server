@@ -36,12 +36,12 @@ public class AgentTemplateEntity implements Serializable {
     private String agentName;
 
     /**
-     * voice识别modelidentifier
+     * voiceidentifymodelidentifier
      */
     private String asrModelId;
 
     /**
-     * voice活动detectidentifier
+     * voiceactivitydetectidentifier
      */
     private String vadModelId;
 
@@ -76,12 +76,12 @@ public class AgentTemplateEntity implements Serializable {
     private Integer ttsVolume;
 
     /**
-     * TTS语速
+     * TTSspeech rate
      */
     private Integer ttsRate;
 
     /**
-     * TTS音调
+     * TTStone
      */
     private Integer ttsPitch;
 
@@ -115,12 +115,12 @@ public class AgentTemplateEntity implements Serializable {
     private String langCode;
 
     /**
-     * 交互语种
+     * interactionkind
      */
     private String language;
 
     /**
-     * Sort order权re-
+     * Sort orderpermissionre-
      */
     private Integer sort;
 

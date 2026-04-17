@@ -8,9 +8,7 @@ const fly = new Fly()
 // Set request timeout
 fly.config.timeout = 30000
 
-/**
- * Request服务封装
- */
+/** * Request */
 export default {
     sendRequest,
     reAjaxFun,

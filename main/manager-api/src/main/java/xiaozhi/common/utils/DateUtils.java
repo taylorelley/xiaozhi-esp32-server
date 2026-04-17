@@ -79,7 +79,7 @@ public class DateUtils {
     }
 
     /**
-     * get简短 timestring：10secondsbeforereturn刚刚，多少secondsbefore，几smallwhenbefore，超one周return年月日when分seconds
+     * getsimpleshort timestring：10secondsbeforereturnjust now，multiplefewsecondsbefore，fewsmallwhenbefore，exceedoneweekreturnyear-month-daywhenseconds
      * @param date
      * @return
      */
@@ -89,27 +89,27 @@ public class DateUtils {
         }
         // will Date convert to Instant
         LocalDateTime localDateTime = date.toInstant()
-                // getsystemdefaultwhen区
+                // getsystemdefaultwhenarea
                 .atZone(ZoneId.systemDefault())
                 // convert to LocalDateTime
                 .toLocalDateTime();
         // currenttime
         LocalDateTime now = LocalDateTime.now();
-        // time差，unitasseconds
+        // timedifference，unitasseconds
         long secondsBetween = ChronoUnit.SECONDS.between(localDateTime, now);
 
         if (secondsBetween <= 10) {
-            return "刚刚";
+            return "just now";
         } else if (secondsBetween < 60) {
             return secondsBetween + "secondsbefore";
         } else if (secondsBetween < 60 * 60) {
-            return secondsBetween / 60 + "分钟before";
+            return secondsBetween / 60 + "before";
         } else if (secondsBetween < 86400) {
             return secondsBetween / 3600 + "smallwhenbefore";
         } else if (secondsBetween < 604800) {
-            return secondsBetween / 86400 + "天before";
+            return secondsBetween / 86400 + "daybefore";
         } else {
-            // 超one周，显示completedatetime
+            // exceedoneweek，displaycompletedatetime
             return format(date,DATE_TIME_PATTERN);
         }
     }

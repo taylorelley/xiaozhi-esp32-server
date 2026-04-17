@@ -61,7 +61,7 @@ public class DeviceController {
         if (StringUtils.isBlank(macAddress)) {
             return new Result<String>().error(ErrorCode.MCA_NOT_NULL);
         }
-        // generate六bitVerification code
+        // generatesixbitVerification code
         String code;
         String key;
         String existsMac = null;
@@ -85,18 +85,18 @@ public class DeviceController {
     }
 
     @PostMapping("/bind/{agentId}")
-    @Operation(summary = "devicein线interface")
+    @Operation(summary = "deviceinlineinterface")
     @RequiresPermissions("sys:role:normal")
     public Result<String> forwardToMqttGateway(@PathVariable String agentId, @RequestBody String requestBody) {
         try {
             return new Result<String>().ok(deviceService.getDeviceOnlineData(agentId));
         } catch (Exception e) {
-            return new Result<String>().error("转发requestfailed: " + e.getMessage());
+            return new Result<String>().error("convertsendrequestfailed: " + e.getMessage());
         }
     }
 
     @PostMapping("/unbind")
-    @Operation(summary = "解绑device")
+    @Operation(summary = "unbinddevice")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> unbindDevice(@RequestBody DeviceUnBindDTO unDeviveBind) {
         UserDetail user = SecurityUser.getUser();

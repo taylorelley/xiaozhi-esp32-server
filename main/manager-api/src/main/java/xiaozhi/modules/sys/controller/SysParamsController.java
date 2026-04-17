@@ -59,7 +59,7 @@ public class SysParamsController {
             @Parameter(name = Constant.PAGE, description = "currentpage number，from1start", in = ParameterIn.QUERY, required = true, ref = "int"),
             @Parameter(name = Constant.LIMIT, description = "per pagerecordnumber", in = ParameterIn.QUERY, required = true, ref = "int"),
             @Parameter(name = Constant.ORDER_FIELD, description = "Sort orderfield", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "Sort orderway，可selectvalue(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.ORDER, description = "Sort orderway，canselectvalue(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
             @Parameter(name = "paramCode", description = "Parameter codeorparameterRemark", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:role:superAdmin")
@@ -122,7 +122,7 @@ public class SysParamsController {
     /**
      * verificationWebSocketAddresslist
      *
-     * @param urls WebSocketAddresslist，to分number分隔
+     * @param urls WebSocketAddresslist，tonumberdelimiter
      * @return verificationresult
      */
     private void validateWebSocketUrls(String paramCode, String urls) {
@@ -270,7 +270,7 @@ public class SysParamsController {
         }
     }
 
-    // validatemqttkeylengthand复杂度
+    // validatemqttkeylengthandre-miscellaneous
     private void validateMqttSecretLength(String paramCode, String secret) {
         if (!paramCode.equals(Constant.SERVER_MQTT_SECRET)) {
             return;
@@ -281,11 +281,11 @@ public class SysParamsController {
         if (secret.length() < 8) {
             throw new RenException(ErrorCode.MQTT_SECRET_LENGTH_INSECURE);
         }
-        // checkYesNosimultaneouslycontainlargesmallwrite字母
+        // checkYesNosimultaneouslycontainlargesmallwritecharacterletter
         if (!secret.matches(".*[a-z].*") || !secret.matches(".*[A-Z].*")) {
             throw new RenException(ErrorCode.MQTT_SECRET_CHARACTER_INSECURE);
         }
-        // not allowcontain弱Password
+        // not allowcontainweakPassword
         String[] weakPasswords = { "test", "1234", "admin", "password", "qwerty", "xiaozhi" };
         for (String weakPassword : weakPasswords) {
             if (secret.toLowerCase().contains(weakPassword)) {

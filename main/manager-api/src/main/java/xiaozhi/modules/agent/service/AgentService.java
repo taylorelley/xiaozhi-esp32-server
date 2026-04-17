@@ -77,7 +77,7 @@ public interface AgentService extends BaseService<AgentEntity> {
     AgentEntity getDefaultAgentByMacAddress(String macAddress);
 
     /**
-     * checkuserYesNohasPermission访问agent
+     * checkuserYesNohasPermissionaccessagent
      *
      * @param agentId Agent ID
      * @param userId  User ID
@@ -89,14 +89,14 @@ public interface AgentService extends BaseService<AgentEntity> {
      * updateagent
      *
      * @param agentId Agent ID
-     * @param dto     updateagent所需 information
+     * @param dto     updateagentrequired information
      */
     void updateAgentById(String agentId, AgentUpdateDTO dto);
 
     /**
      * createagent
      *
-     * @param dto createagent所需 information
+     * @param dto createagentrequired information
      * @return create Agent ID
      */
     String createAgent(AgentCreateDTO dto);

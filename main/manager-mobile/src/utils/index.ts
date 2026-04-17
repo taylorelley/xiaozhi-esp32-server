@@ -3,14 +3,10 @@ import { pages, subPackages } from '@/pages.json'
 
 import { isMpWeixin } from './platform'
 
-/**
- * 运行时服务端地址覆盖存储键
- */
+/** * whenserverAddressStorage */
 export const SERVER_BASE_URL_OVERRIDE_KEY = 'server_base_url_override'
 
-/**
- * 设置/清除/获取 运行时覆盖的服务端地址
- */
+/** * Settings/Clear/Get when of serverAddress */
 export function setServerBaseUrlOverride(url: string) {
   uni.setStorageSync(SERVER_BASE_URL_OVERRIDE_KEY, url)
 }
@@ -25,18 +21,14 @@ export function getServerBaseUrlOverride(): string | null {
 }
 
 export function getLastPage() {
-  // getCurrentPages() 至少有1个元素，所以不再额外判断
+ // getCurrentPages() has1，Check
   // const lastPage = getCurrentPages().at(-1)
-  // 上面那个在低版本安卓中打包会报错，所以改用下面这个【虽然我加了 src/interceptions/prototype.ts，但依然报错】
+ // thatatin，this【 src/interceptions/prototype.ts，】
   const pages = getCurrentPages()
   return pages[pages.length - 1]
 }
 
-/**
- * 获取当前页面路由的 path 路径和 redirectPath 路径
- * path 如 '/pages/login/index'
- * redirectPath 如 '/pages/demo/base/route-interceptor'
- */
+/** * GetcurrentPage of path Pathand redirectPath Path * path such as '/pages/login/index' * redirectPath such as '/pages/demo/base/route-interceptor' */
 export function currRoute() {
   const lastPage = getLastPage()
   const currRoute = (lastPage as any).$page
@@ -44,10 +36,10 @@ export function currRoute() {
   // console.log('lastPage.$page.fullpath:', currRoute.fullPath)
   // console.log('lastPage.$page.options:', currRoute.options)
   // console.log('lastPage.options:', (lastPage as any).options)
-  // 经过多端测试，只有 fullPath 靠谱，其他都不靠谱
+ // Test，has fullPath ，
   const { fullPath } = currRoute as { fullPath: string }
   // console.log(fullPath)
-  // eg: /pages/login/index?redirect=%2Fpages%2Fdemo%2Fbase%2Froute-interceptor (小程序)
+ // eg: /pages/login/index?redirect=%2Fpages%2Fdemo%2Fbase%2Froute-interceptor ()
   // eg: /pages/login/index?redirect=%2Fpages%2Froute-interceptor%2Findex%3Fname%3Dfeige%26age%3D30(h5)
   return getUrlObj(fullPath)
 }
@@ -58,11 +50,7 @@ function ensureDecodeURIComponent(url: string) {
   }
   return url
 }
-/**
- * 解析 url 得到 path 和 query
- * 比如输入url: /pages/login/index?redirect=%2Fpages%2Fdemo%2Fbase%2Froute-interceptor
- * 输出: {path: /pages/login/index, query: {redirect: /pages/demo/base/route-interceptor}}
- */
+/** * Parse url to path and query * such asurl: /pages/login/index?redirect=%2Fpages%2Fdemo%2Fbase%2Froute-interceptor * : {path: /pages/login/index, query: {redirect: /pages/demo/base/route-interceptor}} */
 export function getUrlObj(url: string) {
   const [path, queryStr] = url.split('?')
   // console.log(path, queryStr)
@@ -81,21 +69,16 @@ export function getUrlObj(url: string) {
   })
   return { path, query }
 }
-/**
- * 得到所有的需要登录的 pages，包括主包和分包的
- * 这里设计得通用一点，可以传递 key 作为判断依据，默认是 needLogin, 与 route-block 配对使用
- * 如果没有传 key，则表示所有的 pages，如果传递了 key, 则表示通过 key 过滤
- */
+/** * toall of needsLog in of pages，and of * this， key isCheck，Defaultis needLogin, route-block Use * Ifhas key，thenall of pages，If key, then key Filter */
 export function getAllPages(key = 'needLogin') {
-  // 这里处理主包
+ // thisProcess
   const mainPages = pages
     .filter(page => !key || page[key])
     .map(page => ({
       ...page,
       path: `/${page.path}`,
     }))
-
-  // 这里处理分包
+ // thisProcess
   const subPages: any[] = []
   subPackages.forEach((subPageObj) => {
     // console.log(subPageObj)
@@ -115,36 +98,25 @@ export function getAllPages(key = 'needLogin') {
   return result
 }
 
-/**
- * 得到所有的需要登录的 pages，包括主包和分包的
- * 只得到 path 数组
- */
+/** * toall of needsLog in of pages，and of * to path Array */
 export const getNeedLoginPages = (): string[] => getAllPages('needLogin').map(page => page.path)
 
-/**
- * 得到所有的需要登录的 pages，包括主包和分包的
- * 只得到 path 数组
- */
+/** * toall of needsLog in of pages，and of * to path Array */
 export const needLoginPages: string[] = getAllPages('needLogin').map(page => page.path)
 
-/**
- * 根据微信小程序当前环境，判断应该获取的 baseUrl
- */
+/** * Based oncurrent，CheckGet of baseUrl */
 export function getEnvBaseUrl() {
-  // 若存在用户设置的覆盖地址，优先返回
+ // atUserSettings of Address，firstBack
   const override = getServerBaseUrlOverride()
   if (override)
     return override
-
-  // 请求基准地址（默认来源于 env）
+ // requestAddress（Default env）
   let baseUrl = import.meta.env.VITE_SERVER_BASEURL
-
-  // # 有些同学可能需要在微信小程序里面根据 develop、trial、release 分别设置上传地址，参考代码如下。
+ // # hasneedsatBased on develop、trial、release SettingsUploadAddress，referencecodesuch as。
   const VITE_SERVER_BASEURL__WEIXIN_DEVELOP = 'https://ukw0y1.laf.run'
   const VITE_SERVER_BASEURL__WEIXIN_TRIAL = 'https://ukw0y1.laf.run'
   const VITE_SERVER_BASEURL__WEIXIN_RELEASE = 'https://ukw0y1.laf.run'
-
-  // 微信小程序端环境区分
+ // 
   if (isMpWeixin) {
     const {
       miniProgram: { envVersion },
@@ -166,18 +138,15 @@ export function getEnvBaseUrl() {
   return baseUrl
 }
 
-/**
- * 根据微信小程序当前环境，判断应该获取的 UPLOAD_BASEURL
- */
+/** * Based oncurrent，CheckGet of UPLOAD_BASEURL */
 export function getEnvBaseUploadUrl() {
-  // 请求基准地址
+ // requestAddress
   let baseUploadUrl = import.meta.env.VITE_UPLOAD_BASEURL
 
   const VITE_UPLOAD_BASEURL__WEIXIN_DEVELOP = 'https://ukw0y1.laf.run/upload'
   const VITE_UPLOAD_BASEURL__WEIXIN_TRIAL = 'https://ukw0y1.laf.run/upload'
   const VITE_UPLOAD_BASEURL__WEIXIN_RELEASE = 'https://ukw0y1.laf.run/upload'
-
-  // 微信小程序端环境区分
+ // 
   if (isMpWeixin) {
     const {
       miniProgram: { envVersion },
@@ -199,12 +168,9 @@ export function getEnvBaseUploadUrl() {
   return baseUploadUrl
 }
 
-/**
- * 生成SM2密钥对（十六进制格式）
- * @returns {Object} 包含公钥和私钥的对象
- */
+/** * GenerateSM2Key（hex format） * @returns {Object} includesPublic keyandPrivate key of Object */
 export function generateSm2KeyPairHex() {
-  // 使用sm-crypto库生成SM2密钥对
+ // Usesm-cryptoGenerateSM2Key
   const sm2 = smCrypto.sm2
   const keypair = sm2.generateKeyPairHex()
 
@@ -216,12 +182,7 @@ export function generateSm2KeyPairHex() {
   }
 }
 
-/**
- * SM2公钥加密
- * @param {string} publicKey 公钥（十六进制格式）
- * @param {string} plainText 明文
- * @returns {string} 加密后的密文（十六进制格式）
- */
+/** * SM2Public keyEncrypt * @param {string} publicKey Public key（hex format） * @param {string} plainText * @returns {string} Encryptafter of （hex format） */
 export function sm2Encrypt(publicKey: string, plainText: string): string {
   if (!publicKey) {
     throw new Error('公钥不能为null或undefined')
@@ -232,25 +193,20 @@ export function sm2Encrypt(publicKey: string, plainText: string): string {
   }
 
   const sm2 = smCrypto.sm2
-  // SM2加密，添加04前缀表示未压缩公钥
+ // SM2Encrypt，Add04Public key
   const encrypted = sm2.doEncrypt(plainText, publicKey, 1)
-  // 转换为十六进制格式（与后端保持一致，添加04前缀）
+ // Convert tohex format（backend，Add04）
   const result = `04${encrypted}`
 
   return result
 }
 
-/**
- * SM2私钥解密
- * @param {string} privateKey 私钥（十六进制格式）
- * @param {string} cipherText 密文（十六进制格式）
- * @returns {string} 解密后的明文
- */
+/** * SM2Private keyDecrypt * @param {string} privateKey Private key（hex format） * @param {string} cipherText （hex format） * @returns {string} Decryptafter of */
 export function sm2Decrypt(privateKey: string, cipherText: string): string {
   const sm2 = smCrypto.sm2
-  // 移除04前缀（与后端保持一致）
+ // Remove04（backend）
   const dataWithoutPrefix = cipherText.startsWith('04') ? cipherText.substring(2) : cipherText
-  // SM2解密
+  // SM2Decrypt
   return sm2.doDecrypt(dataWithoutPrefix, privateKey, 1)
 }
 
@@ -260,13 +216,7 @@ interface DebouncedFunction extends AnyFunction {
   cancel: () => void
 }
 
-/**
- * 防抖函数
- * @param fn 要防抖的函数
- * @param delay 延迟时间（毫秒），默认500ms
- * @param immediate 是否立即执行，默认false
- * @returns 防抖处理后的函数
- */
+/** * Function * @param fn of Function * @param delay when（），Default500ms * @param immediate Whether to，Defaultfalse * @returns Processafter of Function */
 export function debounce<T extends AnyFunction>(
   fn: T,
   delay = 500,
@@ -303,11 +253,7 @@ export function debounce<T extends AnyFunction>(
 
 type DeepCloneTarget = string | number | boolean | null | undefined | object
 
-/**
- * 深拷贝方法
- * @param target 要拷贝的目标
- * @returns 拷贝后的新对象
- */
+/** * Method * @param target of * @returns after of newObject */
 export function deepClone<T extends DeepCloneTarget>(target: T): T {
   if (target === null || typeof target !== 'object') {
     return target

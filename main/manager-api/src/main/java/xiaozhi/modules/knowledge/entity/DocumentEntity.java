@@ -14,7 +14,7 @@ import lombok.Data;
 
 /**
  * documenttable (Shadow DB for RAGFlow Documents)
- * correspondingtable名: ai_knowledge_document
+ * correspondingtablename: ai_knowledge_document
  */
 @Data
 @TableName(value = "ai_rag_knowledge_document", autoResultMap = true)
@@ -23,7 +23,7 @@ public class DocumentEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "this唯oneID")
+    @Schema(description = "thisuniqueoneID")
     private String id;
 
     @Schema(description = "Knowledge baseID (associated ai_rag_dataset.dataset_id)")
@@ -56,10 +56,10 @@ public class DocumentEntity implements Serializable {
     @Schema(description = "parseprogress (0.0 ~ 1.0)")
     private Double progress;
 
-    @Schema(description = "缩略图 (Base64 or URL)")
+    @Schema(description = "thumbnail (Base64 or URL)")
     private String thumbnail;
 
-    @Schema(description = "parse耗when (unit: seconds)")
+    @Schema(description = "parseconsumptionwhen (unit: seconds)")
     private Double processDuration;
 
     @Schema(description = "custom metadata (JSON format)")

@@ -55,7 +55,7 @@ public class DateConverter implements Converter<String, Date> {
     /**
      * formatdate
      *
-     * @param dateStr String 字符型date
+     * @param dateStr String charactersymboltypedate
      * @param format  String format
      * @return Date date
      */

@@ -48,7 +48,7 @@ public class KnowledgeFilesController {
         // getKnowledge baseinformation
         KnowledgeBaseDTO knowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // checkPermission：useronlycanoperation自己create Knowledge base
+        // checkPermission：useronlycanoperationselfcreate Knowledge base
         if (knowledgeBase.getCreator() == null || !knowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
@@ -66,7 +66,7 @@ public class KnowledgeFilesController {
         // verificationKnowledge basePermission
         validateKnowledgeBasePermission(datasetId);
 
-        // group装parameter
+        // groupparameter
         KnowledgeFilesDTO knowledgeFilesDTO = new KnowledgeFilesDTO();
         knowledgeFilesDTO.setDatasetId(datasetId);
         knowledgeFilesDTO.setName(name);
@@ -85,7 +85,7 @@ public class KnowledgeFilesController {
             @RequestParam(required = false, defaultValue = "10") Integer page_size) {
         // verificationKnowledge basePermission
         validateKnowledgeBasePermission(datasetId);
-        // group装parameter
+        // groupparameter
         KnowledgeFilesDTO knowledgeFilesDTO = new KnowledgeFilesDTO();
         knowledgeFilesDTO.setDatasetId(datasetId);
         knowledgeFilesDTO.setStatus(status);
@@ -157,7 +157,7 @@ public class KnowledgeFilesController {
         if (success) {
             return new Result<Void>();
         } else {
-            return new Result<Void>().error("Document parsingfailed，document可caninprocess");
+            return new Result<Void>().error("Document parsingfailed，documentcancaninprocess");
         }
     }
 
@@ -169,7 +169,7 @@ public class KnowledgeFilesController {
             @PathVariable("document_id") String documentId,
             @ParameterObject ChunkDTO.ListReq req) {
 
-        // verificationPermission (内部alreadycontainKnowledge basestoreinvalidateand归权validate)
+        // verificationPermission (internalalreadycontainKnowledge basestoreinvalidateandpermissionvalidate)
         validateKnowledgeBasePermission(datasetId);
 
         // setdefaultvalue
@@ -193,12 +193,12 @@ public class KnowledgeFilesController {
         // verificationKnowledge basePermission
         validateKnowledgeBasePermission(datasetId);
 
-        // business下沉逻辑：ifnotspecifiedKnowledge baseID，then设ascurrentpath  datasetId
+        // businessbelowsinklogic：ifnotspecifiedKnowledge baseID，thensetascurrentpath  datasetId
         if (req.getDatasetIds() == null || req.getDatasetIds().isEmpty()) {
             req.setDatasetIds(java.util.Arrays.asList(datasetId));
         }
 
-        // [Reinforce] strong管控paginationparameter，prevent RAGFlow end出现 Negative Slicing 报错
+        // [Reinforce] strongmanagecontrolpaginationparameter，prevent RAGFlow endoutcurrent Negative Slicing error report
         if (req.getPage() == null || req.getPage() < 1) {
             req.setPage(1);
         }

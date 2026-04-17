@@ -15,8 +15,8 @@ public class IpUtils {
     /**
      * getIPAddress
      * <p>
-     * useNginxetc.反向代理软item， thennot canviarequest.getRemoteAddr()getIPAddress
-     * ifuse多级反向代理 话，X-Forwarded-For valueandnot 止one，whileYesone串IPAddress，X-Forwarded-For第onenon-unknown validIPstring，thenas真IPAddress
+     * useNginxetc.reverse softitem， thennot canviarequest.getRemoteAddr()getIPAddress
+     * ifusemultiplecascade reverse talk，X-Forwarded-For valueandnot stopone，whileYesonestringIPAddress，X-Forwarded-Forno.onenon-unknown validIPstring，thenastrueIPAddress
      */
     public static String getIpAddr(HttpServletRequest request) {
         String unknown = "unknown";

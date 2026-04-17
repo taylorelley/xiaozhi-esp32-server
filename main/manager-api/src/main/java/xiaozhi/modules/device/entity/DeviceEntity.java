@@ -31,13 +31,13 @@ public class DeviceEntity {
     @Schema(description = "lastconnectiontime")
     private Date lastConnectedAt;
 
-    @Schema(description = "automaticupdate开关(0close/1enable)")
+    @Schema(description = "automaticupdateopenrelated(0close/1enable)")
     private Integer autoUpdate;
 
-    @Schema(description = "device硬item型number")
+    @Schema(description = "deviceharditemtypenumber")
     private String board;
 
-    @Schema(description = "device别名")
+    @Schema(description = "devicealiasname")
     private String alias;
 
     @Schema(description = "Agent ID")

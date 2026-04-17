@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * operationLog注解
+ * operationLogannotation
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */

@@ -13,7 +13,7 @@ import lombok.Data;
 @Schema(description = "updatePassword")
 public class PasswordDTO implements Serializable {
 
-    @Schema(description = "原Password")
+    @Schema(description = "originalPassword")
     @NotBlank(message = "{sysuser.password.require}")
     private String password;
 

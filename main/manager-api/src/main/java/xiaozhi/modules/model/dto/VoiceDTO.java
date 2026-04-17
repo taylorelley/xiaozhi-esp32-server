@@ -29,7 +29,7 @@ public class VoiceDTO implements Serializable {
     @Schema(description = "YesNoasclonevoice")
     private Boolean isClone;
 
-    // add双parameterconstructfunction，maintain backward compatibility
+    // adddoubleparameterconstructfunction，maintain backward compatibility
     public VoiceDTO(String id, String name) {
         this.id = id;
         this.name = name;
@@ -38,7 +38,7 @@ public class VoiceDTO implements Serializable {
         this.isClone = false; // defaultnot Yesclonevoice
     }
     
-    // add三parameterconstructfunction，used for普通voice
+    // addthreeparameterconstructfunction，used forordinaryvoice
     public VoiceDTO(String id, String name, String voiceDemo) {
         this.id = id;
         this.name = name;

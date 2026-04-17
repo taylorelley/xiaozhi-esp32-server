@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * filemanagementaggregation DTO
  * <p>
- * 容class，内含filemoduleallrequest/responseobject 静态内部classdefine。
+ * capacityclass，internalcontainfilemoduleallrequest/responseobject staticinternalclassdefine。
  * </p>
  */
 @Schema(description = "filemanagementaggregation DTO")
@@ -33,26 +33,26 @@ public class FileDTO {
         @Schema(description = "upload file", requiredMode = Schema.RequiredMode.REQUIRED)
         private MultipartFile file;
 
-        @Schema(description = "parentfile ID (asemptythenuploadto根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythenuploadtoroot directory)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
     }
 
     /**
-     * new建filerequest (correspondinginterface 2: create)
+     * newbuildfilerequest (correspondinginterface 2: create)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "new建filerequest")
+    @Schema(description = "newbuildfilerequest")
     public static class CreateReq implements Serializable {
 
         @NotBlank(message = "filenamecannot be empty")
-        @Schema(description = "filename", requiredMode = Schema.RequiredMode.REQUIRED, example = "new建file")
+        @Schema(description = "filename", requiredMode = Schema.RequiredMode.REQUIRED, example = "newbuildfile")
         private String name;
 
-        @Schema(description = "parentfile ID (asemptythencreatein根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythencreateinroot directory)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
@@ -150,7 +150,7 @@ public class FileDTO {
     @Schema(description = "listqueryrequest")
     public static class ListReq implements Serializable {
 
-        @Schema(description = "parentfile ID (asemptythenquery根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythenqueryroot directory)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
@@ -204,7 +204,7 @@ public class FileDTO {
         @Schema(description = "name", example = "I file")
         private String name;
 
-        @Schema(description = "pathbit置", example = "/root/folder")
+        @Schema(description = "pathbitset", example = "/root/folder")
         private String location;
 
         @Schema(description = "File size (byte)", example = "1024")
@@ -254,7 +254,7 @@ public class FileDTO {
         @Schema(description = "file/filelist")
         private List<InfoVO> files;
 
-        @Schema(description = "面包屑导航path")
+        @Schema(description = "sidepackagebreadcrumbpath")
         private List<InfoVO> breadcrumb;
     }
 
@@ -317,43 +317,43 @@ public class FileDTO {
     }
 
     /**
-     * 面包屑 VO (correspondinginterface 12: all_parent_folder)
+     * sidepackage VO (correspondinginterface 12: all_parent_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "面包屑导航 (allparentfile)")
+    @Schema(description = "sidepackagebreadcrumb (allparentfile)")
     public static class BreadcrumbVO implements Serializable {
 
-        @Schema(description = "parentfilelist (from根tocurrent path)")
+        @Schema(description = "parentfilelist (fromroottocurrent path)")
         @JsonProperty("parent_folders")
         private List<InfoVO> parentFolders;
     }
 
     /**
-     * 根目录information VO (correspondinginterface 10: get_root_folder)
+     * root directoryinformation VO (correspondinginterface 10: get_root_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "根目录information")
+    @Schema(description = "root directoryinformation")
     public static class RootFolderVO implements Serializable {
 
-        @Schema(description = "根fileinformation")
+        @Schema(description = "rootfileinformation")
         @JsonProperty("root_folder")
         private InfoVO rootFolder;
     }
 
     /**
-     * parent目录information VO (correspondinginterface 11: get_parent_folder)
+     * parentdirectoryinformation VO (correspondinginterface 11: get_parent_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "parent目录information")
+    @Schema(description = "parentdirectoryinformation")
     public static class ParentFolderVO implements Serializable {
 
         @Schema(description = "parentfileinformation")

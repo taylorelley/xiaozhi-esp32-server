@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
- * baseentityclass，allentityallneed继承
+ * baseentityclass，allentityallneedinherit
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */

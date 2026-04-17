@@ -13,7 +13,7 @@ import xiaozhi.common.exception.RenException;
 public class SqlFilter {
 
     /**
-     * SQL注入filter
+     * SQLnoteinfilter
      *
      * @param str pendingverification string
      */
@@ -21,20 +21,20 @@ public class SqlFilter {
         if (StringUtils.isBlank(str)) {
             return null;
         }
-        // 去掉'|"|;|\字符
+        // remove'|"|;|\charactersymbol
         str = StringUtils.replace(str, "'", "");
         str = StringUtils.replace(str, "\"", "");
         str = StringUtils.replace(str, ";", "");
         str = StringUtils.replace(str, "\\", "");
 
-        // convert成smallwrite
+        // convertsmallwrite
         str = str.toLowerCase();
 
-        // non-法字符
+        // non-charactersymbol
         String[] keywords = { "master", "truncate", "insert", "select", "delete", "update", "declare", "alter",
                 "drop" };
 
-        // determineYesNocontainnon-法字符
+        // determineYesNocontainnon-charactersymbol
         for (String keyword : keywords) {
             if (str.contains(keyword)) {
                 throw new RenException(ErrorCode.INVALID_SYMBOL);

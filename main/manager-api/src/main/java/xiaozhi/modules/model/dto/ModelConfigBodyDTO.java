@@ -13,7 +13,7 @@ public class ModelConfigBodyDTO {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "Model ID,not填writewillautomaticgenerate")
+    @Schema(description = "Model ID,notfillwritewillautomaticgenerate")
     private String id;
 
     @Schema(description = "Model code(e.g.AliLLM、DoubaoTTS)")
@@ -31,7 +31,7 @@ public class ModelConfigBodyDTO {
     @Schema(description = "Model configuration(JSONformat)")
     private JSONObject configJson;
 
-    @Schema(description = "官方documentlink")
+    @Schema(description = "officialdocumentlink")
     private String docLink;
 
     @Schema(description = "Remark")

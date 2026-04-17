@@ -5,27 +5,19 @@ type FgTabBarItem = TabBar['list'][0] & {
   iconType: 'uiLib' | 'unocss' | 'iconfont'
 }
 
-/**
- * tabbar 选择的策略，更详细的介绍见 tabbar.md 文件
- * 0: 'NO_TABBAR' `无 tabbar`
- * 1: 'NATIVE_TABBAR'  `完全原生 tabbar`
- * 2: 'CUSTOM_TABBAR_WITH_CACHE' `有缓存自定义 tabbar`
- * 3: 'CUSTOM_TABBAR_WITHOUT_CACHE' `无缓存自定义 tabbar`
- *
- * 温馨提示：本文件的任何代码更改了之后，都需要重新运行，否则 pages.json 不会更新导致错误
- */
+/** * tabbar Select of ， of tabbar.md File * 0: 'NO_TABBAR' ` tabbar` * 1: 'NATIVE_TABBAR' ` tabbar` * 2: 'CUSTOM_TABBAR_WITH_CACHE' `hasCachecustom tabbar` * 3: 'CUSTOM_TABBAR_WITHOUT_CACHE' `Cachecustom tabbar` * * Notice：File of codeafter，needsre-，then pages.json UpdateError */
 export const TABBAR_MAP = {
   NO_TABBAR: 0,
   NATIVE_TABBAR: 1,
   CUSTOM_TABBAR_WITH_CACHE: 2,
   CUSTOM_TABBAR_WITHOUT_CACHE: 3,
 }
-// TODO：通过这里切换使用tabbar的策略
+// TODO：thisSwitchUsetabbar of 
 export const selectedTabbarStrategy = TABBAR_MAP.NATIVE_TABBAR
 
-// selectedTabbarStrategy==NATIVE_TABBAR(1) 时，需要填 iconPath 和 selectedIconPath
-// selectedTabbarStrategy==CUSTOM_TABBAR(2,3) 时，需要填 icon 和 iconType
-// selectedTabbarStrategy==NO_TABBAR(0) 时，tabbarList 不生效
+// selectedTabbarStrategy==NATIVE_TABBAR(1) when，needs iconPath and selectedIconPath
+// selectedTabbarStrategy==CUSTOM_TABBAR(2,3) when，needs icon and iconType
+// selectedTabbarStrategy==NO_TABBAR(0) when，tabbarList 
 export const tabbarList: FgTabBarItem[] = [
   {
     iconPath: 'static/tabbar/robot.png',
@@ -33,7 +25,7 @@ export const tabbarList: FgTabBarItem[] = [
     pagePath: 'pages/index/index',
     text: '首页',
     icon: 'home',
-    // 选用 UI 框架自带的 icon 时，iconType 为 uiLib
+ // UI of icon when，iconType is uiLib
     iconType: 'uiLib',
   },
   {
@@ -54,12 +46,12 @@ export const tabbarList: FgTabBarItem[] = [
   },
 ]
 
-// NATIVE_TABBAR(1) 和 CUSTOM_TABBAR_WITH_CACHE(2) 时，需要tabbar缓存
+// NATIVE_TABBAR(1) and CUSTOM_TABBAR_WITH_CACHE(2) when，needstabbarCache
 export const cacheTabbarEnable = selectedTabbarStrategy === TABBAR_MAP.NATIVE_TABBAR
   || selectedTabbarStrategy === TABBAR_MAP.CUSTOM_TABBAR_WITH_CACHE
 
 const _tabbar: TabBar = {
-  // 只有微信小程序支持 custom。App 和 H5 不生效
+ // has custom。App and H5 
   custom: selectedTabbarStrategy === TABBAR_MAP.CUSTOM_TABBAR_WITH_CACHE,
   color: '#e6e6e6',
   selectedColor: '#667dea',
@@ -72,5 +64,5 @@ const _tabbar: TabBar = {
   list: tabbarList as unknown as TabBar['list'],
 }
 
-// 0和1 需要显示底部的tabbar的各种配置，以利用缓存
+// 0and1 needsShowBottom of tabbar of Configuration，Cache
 export const tabBar = cacheTabbarEnable ? _tabbar : undefined

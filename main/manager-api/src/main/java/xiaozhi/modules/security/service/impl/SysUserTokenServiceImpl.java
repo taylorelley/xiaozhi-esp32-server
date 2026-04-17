@@ -27,7 +27,7 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
 
     private final SysUserService sysUserService;
     /**
-     * 12smallwhenafter期
+     * 12smallwhenafterperiod
      */
     private final static int EXPIRE = 3600 * 12;
 
@@ -56,9 +56,9 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
             // savetoken
             this.insert(tokenEntity);
         } else {
-            // determinetokenYesNo期
+            // determinetokenYesNoperiod
             if (tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) {
-                // token期，re-newgeneratetoken
+                // tokenperiod，re-newgeneratetoken
                 token = TokenGenerator.generateValue();
             } else {
                 token = tokenEntity.getToken();

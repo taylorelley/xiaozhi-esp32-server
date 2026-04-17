@@ -34,9 +34,9 @@ import xiaozhi.modules.knowledge.rag.RAGFlowClient;
 /**
  * RAGFlowKnowledge baseadapterimplement
  * <p>
- * re-构Description (Refactoring Note):
- * thisclassalreadyupgradeasuse {@link RAGFlowClient} 统oneprocess HTTP 通信。
- * 解决旧代code Timeout 缺失、Error Handling 分散 question。
+ * re-constructDescription (Refactoring Note):
+ * thisclassalreadyupgradeasuse {@link RAGFlowClient} oneprocess HTTP info。
+ * resolveoldcode Timeout missing、Error Handling scatter question。
  * </p>
  */
 @Slf4j
@@ -66,7 +66,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         String baseUrl = getConfigValue(config, "base_url", "baseUrl");
         String apiKey = getConfigValue(config, "api_key", "apiKey");
 
-        // initialize Client，defaulttimeout 30s，可via config 扩展
+        // initialize Client，defaulttimeout 30s，canvia config extension
         int timeout = 30;
         Object timeoutObj = getConfigValue(config, "timeout", "timeout");
         if (timeoutObj != null) {
@@ -77,7 +77,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
         }
         this.client = new RAGFlowClient(baseUrl, apiKey, timeout);
-        log.info("RAGFlowadapterinitializecomplete，Clientalreadythen绪");
+        log.info("RAGFlowadapterinitializecomplete，Clientalreadythenthread");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * helper method：support多种key名getconfiguration（compatible camelCase and snake_case）
+     * helper method：supportmultiplekindkeynamegetconfiguration（compatible camelCase and snake_case）
      */
     private String getConfigValue(Map<String, Object> config, String snakeKey, String camelKey) {
         if (config.containsKey(snakeKey)) {
@@ -126,11 +126,11 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
      */
     private RAGFlowClient getClient() {
         if (this.client == null) {
-            // 尝试re-newinitialize
+            // tryre-newinitialize
             if (this.config != null) {
                 initialize(this.config);
             } else {
-                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "adapternotinitialize"); // 应this抛出 RuntimeException
+                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "adapternotinitialize"); // shouldthisthrow RuntimeException
             }
         }
         return this.client;
@@ -148,7 +148,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         try {
             log.info("=== [RAGFlow] getdocumentlist: datasetId={} ===", datasetId);
 
-            // use Jackson will DTO 转as Map asqueryparameter
+            // use Jackson will DTO convertas Map asqueryparameter
             @SuppressWarnings("unchecked")
             Map<String, Object> params = objectMapper.convertValue(req, Map.class);
 
@@ -210,7 +210,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 body.add("meta", objectMapper.writeValueAsString(req.getMetaFields()));
             }
             if (req.getChunkMethod() != null) {
-                // willenumerationvalue转as RAGFlow 期pending string（e.g. NAIVE -> naive）
+                // willenumerationvalueconvertas RAGFlow periodpending string（e.g. NAIVE -> naive）
                 body.add("chunk_method", req.getChunkMethod().name().toLowerCase());
             }
             if (req.getParserConfig() != null) {
@@ -296,7 +296,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public ChunkDTO.ListVO listChunks(String datasetId, String documentId, ChunkDTO.ListReq req) {
         try {
-            // [提灯re-构] use objectMapper 动态convertqueryparameter，消除硬code
+            // [lanternre-construct] use objectMapper dynamicconvertqueryparameter，eliminatedividehardcode
             Map<String, Object> params = objectMapper.convertValue(req, new TypeReference<Map<String, Object>>() {
             });
 
@@ -326,8 +326,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public RetrievalDTO.ResultVO retrievalTest(RetrievalDTO.TestReq req) {
         try {
-            // [Production Reinforce] parameter防御for齐：RAGFlow Python endfor 0 or负numberpaginationsensitive
-            // 解决 ValueError('Search does not support negative slicing.')
+            // [Production Reinforce] parameterdefendforalign：RAGFlow Python endfor 0 ornegativenumberpaginationsensitive
+            // resolve ValueError('Search does not support negative slicing.')
             if (req.getPage() != null && req.getPage() < 1) {
                 req.setPage(1);
             }
@@ -335,9 +335,9 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 req.setPageSize(10); // default 10 items
             }
             if (req.getTopK() != null && req.getTopK() < 1) {
-                req.setTopK(1024); // RAGFlow 内部default TopK
+                req.setTopK(1024); // RAGFlow internaldefault TopK
             }
-            // similar度阈value归one化 (0.0 ~ 1.0)
+            // similarthresholdvalueone (0.0 ~ 1.0)
             if (req.getSimilarityThreshold() != null) {
                 if (req.getSimilarityThreshold() < 0f)
                     req.setSimilarityThreshold(0.2f);
@@ -345,7 +345,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     req.setSimilarityThreshold(1.0f);
             }
 
-            // [提灯re-构] directly透传strongtype DTO，by getClient processserialize
+            // [lanternre-construct] directlytransparenttransferstrongtype DTO，by getClient processserialize
             Map<String, Object> response = getClient().post("/api/v1/retrieval", req);
 
             Object dataObj = response.get("data");
@@ -409,8 +409,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.InfoVO createDataset(DatasetDTO.CreateReq req) {
         try {
-            // [Production Fix] strong化defaultvalueprocess，prevent RAGFlow API 因emptystringor缺失field报错 (Code 101)
-            // 解决 "Field: <avatar> - Message: <Missing MIME prefix>" etc.validatefailed
+            // [Production Fix] strongdefaultvalueprocess，prevent RAGFlow API causeemptystringormissingfielderror report (Code 101)
+            // resolve "Field: <avatar> - Message: <Missing MIME prefix>" etc.validatefailed
             if (StringUtils.isBlank(req.getPermission())) {
                 req.setPermission("me");
             }
@@ -418,26 +418,26 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 req.setChunkMethod("naive");
             }
 
-            // 🤖 automatic补全embeddingmodel：priorityfirstuserequest传参，其timesuseconfiguration defaultmodel
+            // 🤖 automaticautocompleteembeddingmodel：priorityfirstuserequesttransferparameter，itstimesuseconfiguration defaultmodel
             if (StringUtils.isBlank(req.getEmbeddingModel())) {
                 String defaultModel = (String) getConfigValue(config, "embedding_model", "embeddingModel");
                 if (StringUtils.isNotBlank(defaultModel)) {
                     log.info("RAGFlow: useconfiguration defaultembeddingmodel: {}", defaultModel);
                     req.setEmbeddingModel(defaultModel);
                 }
-                // 若configurationalsonodefaultvalue，then留emptyby RAGFlow serviceend自row兜底（or抛出businessexception）
+                // ifconfigurationalsonodefaultvalue，thenkeepemptyby RAGFlow serviceendselfrowfallback（orthrowbusinessexception）
             }
 
-            // 🖼️ automatic补全avatar：若asemptythen提供one 1x1 透明像素，prevent RAGFlow validate MIME Prefix failed
+            // 🖼️ automaticautocompleteavatar：ifasemptythenprovideone 1x1 transparent pixel，prevent RAGFlow validate MIME Prefix failed
             if (StringUtils.isBlank(req.getAvatar())) {
                 req.setAvatar(
                         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
             }
 
-            // directlywillstrongtyperequestobject传to Client，Jackson willprocess JsonProperty mapping
+            // directlywillstrongtyperequestobjecttransferto Client，Jackson willprocess JsonProperty mapping
             Map<String, Object> response = getClient().post("/api/v1/datasets", req);
 
-            // 安全get data andvia DatasetDTO.InfoVO perform全量mapping
+            // safeallget data andvia DatasetDTO.InfoVO performallamountmapping
             Object dataObj = response.get("data");
             if (dataObj != null) {
                 return objectMapper.convertValue(dataObj, DatasetDTO.InfoVO.class);
@@ -507,7 +507,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     }
                 }
             }
-            // 降级：not foundor结构does not match
+            // degrade：not foundorresultconstructdoes not match
             return 0;
         } catch (Exception e) {
             log.warn("getdocumentcountfailed: {}", e.getMessage());
@@ -528,14 +528,14 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public Object postSearchBotAsk(Map<String, Object> config, Object body,
             Consumer<String> onData) {
-        // SearchBot 际上Yes Dataset retrieve one种封装，orYesnot公开  API？
-        // 假设 RAGFlow no显式  /searchbots interface供 SDK call，whileYes Dataset Retrieval or Chat。
-        // butaccording to BotDTO，它Yes /api/v1/searchbots/ask (假设)
-        // thisin  config 可canYes覆盖用 ，orIsonlyYes用 adapter examplealreadyhas  client。
-        // but Bot 可canusenot 同  API Key？通常 Adapter examplebindone Key。
-        // if Bot usesystem Key，thendirectly用 getClient()。
+        // SearchBot upYes Dataset retrieve onekindencapsulate，orYesnotpublicopen  API？
+        // assume RAGFlow noexplicit  /searchbots interfaceprovide SDK call，whileYes Dataset Retrieval or Chat。
+        // butaccording to BotDTO，itYes /api/v1/searchbots/ask (assume)
+        // thisin  config cancanYesoverrideuse ，orIsonlyYesuse adapter examplealreadyhas  client。
+        // but Bot cancanusenot same  API Key？common Adapter examplebindone Key。
+        // if Bot usesystem Key，thendirectlyuse getClient()。
 
-        // 暂when假设 endpoint /api/v1/searchbots/ask storein（orclass似 ）
+        // temporarilywhenassume endpoint /api/v1/searchbots/ask storein（orclasslike ）
         // ifYesstreaming:
         try {
             getClient().postStream("/api/v1/searchbots/ask", body, onData);
@@ -558,8 +558,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         }
     }
 
-    // 复用原has 辅助parsemethod，保持compatible
-    // [Bug Fix] not again吞掉deserializeexception，避免上layer误判"documentalreadydelete"
+    // re-useoriginalhas auxiliaryparsemethod，maintaincompatible
+    // [Bug Fix] not againswallowdeserializeexception，avoiduplayermisjudgment"documentalreadydelete"
     private PageData<KnowledgeFilesDTO> parseDocumentListResponse(Object dataObj, long curPage, long pageSize) {
         if (dataObj == null) {
             return new PageData<>(new ArrayList<>(), 0);
@@ -568,14 +568,14 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         Map<String, Object> dataMap = (Map<String, Object>) dataObj;
         List<Map<String, Object>> documents = (List<Map<String, Object>>) dataMap.get("docs");
         if (documents == null || documents.isEmpty()) {
-            // RAGFlow 明确returnemptydocumentlist，thisYes合法 "真empty"
+            // RAGFlow clearexactreturnemptydocumentlist，thisYesmerge "trueempty"
             return new PageData<>(new ArrayList<>(), 0);
         }
 
         List<KnowledgeFilesDTO> list = new ArrayList<>();
         for (Object docObj : documents) {
             try {
-                // documentconvert容错：onedocumentdeserializefailednot 影响otherdocument
+                // documentconvertcapacitywrong：onedocumentdeserializefailednot affectotherdocument
                 DocumentDTO.InfoVO info = objectMapper.convertValue(docObj, DocumentDTO.InfoVO.class);
                 list.add(mapToKnowledgeFilesDTO(info, null));
             } catch (Exception e) {
@@ -594,7 +594,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     private KnowledgeFilesDTO parseUploadResponse(Object dataObj, String datasetId, MultipartFile file) {
         KnowledgeFilesDTO result = null;
 
-        // 尝试fromresponsedataextractdocumentID (documentId)
+        // tryfromresponsedataextractdocumentID (documentId)
         if (dataObj != null) {
             try {
                 DocumentDTO.InfoVO info = null;
@@ -617,7 +617,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
 
         if (result == null) {
             log.error("notcanfromRAGFlowresponseextracttodocumentId，responsecontent: {}", dataObj);
-            // thisin应thisreturnoneminimum化 containbaseinformation  DTO whilenot Yes null，prevent上游 NPE
+            // thisinshouldthisreturnoneminimum containbaseinformation  DTO whilenot Yes null，preventupswim NPE
             result = new KnowledgeFilesDTO();
             result.setDatasetId(datasetId);
             result.setName(file.getOriginalFilename());
@@ -629,8 +629,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * will RAGFlow  strongtype InfoVO mappingto内部use  KnowledgeFilesDTO
-     * ensureallavailablefield（name、largesmall、status、configurationetc.）all得to全量synchronous
+     * will RAGFlow  strongtype InfoVO mappingtointernaluse  KnowledgeFilesDTO
+     * ensureallavailablefield（name、largesmall、status、configurationetc.）allgettoallamountsynchronous
      */
     private KnowledgeFilesDTO mapToKnowledgeFilesDTO(DocumentDTO.InfoVO info, String datasetId) {
         KnowledgeFilesDTO dto = new KnowledgeFilesDTO();
@@ -662,7 +662,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             dto.setUpdatedAt(new Date(info.getUpdateTime()));
         }
 
-        // 核心data补齐 (Issue 1)
+        // coredatasupplementalign (Issue 1)
         dto.setProgress(info.getProgress());
         dto.setThumbnail(info.getThumbnail());
         dto.setProcessDuration(info.getProcessDuration());
@@ -671,7 +671,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         dto.setTokenCount(info.getTokenCount());
         dto.setError(info.getProgressMsg()); // willprogressDescriptionmappingaserrorinformationhint
 
-        // 扩展fieldsynchronous
+        // extensionfieldsynchronous
         dto.setMetaFields(info.getMetaFields());
         if (info.getChunkMethod() != null) {
             dto.setChunkMethod(info.getChunkMethod().name().toLowerCase());

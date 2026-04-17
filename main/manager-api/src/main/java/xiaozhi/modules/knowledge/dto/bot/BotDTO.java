@@ -8,17 +8,17 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "外部机人 (Bot) aggregation DTO")
+@Schema(description = "externalrobot (Bot) aggregation DTO")
 public class BotDTO {
 
-    // ========== 1. SearchBot (retrieve机人) ==========
+    // ========== 1. SearchBot (retrieverobot) ==========
 
     // corresponding /api/v1/searchbots/ask
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问request")
+    @Schema(description = "SearchBot askrequest")
     public static class SearchAskReq implements Serializable {
         @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is RAG?")
         @NotBlank(message = "questioncannot be empty")
@@ -40,13 +40,13 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问response")
+    @Schema(description = "SearchBot askresponse")
     public static class SearchAskVO implements Serializable {
-        @Schema(description = "回答content")
+        @Schema(description = "returnanswercontent")
         @JsonProperty("answer")
         private String answer;
 
-        @Schema(description = "referencesource (Value 结构通常corresponding RetrievalDTO.HitVO)")
+        @Schema(description = "referencesource (Value resultconstructcommoncorresponding RetrievalDTO.HitVO)")
         @JsonProperty("reference")
         private Map<String, Object> reference;
     }
@@ -69,7 +69,7 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "思维导图request")
+    @Schema(description = "mind maprequest")
     public static class MindMapReq implements Serializable {
         @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "questioncannot be empty")
@@ -77,13 +77,13 @@ public class BotDTO {
         private String question;
     }
 
-    // ========== 2. AgentBot (embedding式 Agent) ==========
+    // ========== 2. AgentBot (embeddingstyle Agent) ==========
 
     // corresponding /api/v1/agentbots/{id}/inputs
     @Data
     @Builder
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入parameterrequest")
+    @Schema(description = "AgentBot inputparameterrequest")
     public static class AgentInputsReq implements Serializable {
     }
 
@@ -91,9 +91,9 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入parameterdefineresponse")
+    @Schema(description = "AgentBot inputparameterdefineresponse")
     public static class AgentInputsVO implements Serializable {
-        @Schema(description = "table变量definelist")
+        @Schema(description = "tablechangeamountdefinelist")
         @JsonProperty("variables")
         private List<Map<String, Object>> variables;
     }
@@ -105,7 +105,7 @@ public class BotDTO {
     @AllArgsConstructor
     @Schema(description = "AgentBot conversationrequest")
     public static class AgentCompletionReq implements Serializable {
-        @Schema(description = "输入Parameter value")
+        @Schema(description = "inputParameter value")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 

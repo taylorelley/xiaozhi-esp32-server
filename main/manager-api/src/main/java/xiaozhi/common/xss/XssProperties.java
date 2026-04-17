@@ -20,7 +20,7 @@ public class XssProperties {
      */
     private boolean enabled;
     /**
-     * 排除 URLlist
+     * exclude URLlist
      */
     private List<String> excludeUrls = Collections.emptyList();
 }

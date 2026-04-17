@@ -17,7 +17,7 @@ public class FilterConfig {
     public FilterRegistrationBean<DelegatingFilterProxy> shiroFilterRegistration() {
         FilterRegistrationBean<DelegatingFilterProxy> registration = new FilterRegistrationBean<>();
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
-        // thisvalue缺省asfalse，represents生命周期bySpringApplicationContextmanagement，setastruethenrepresentsbyServletContainermanagement
+        // thisvaluedefaultasfalse，representsgenerateweekperiodbySpringApplicationContextmanagement，setastruethenrepresentsbyServletContainermanagement
         registration.addInitParameter("targetFilterLifecycle", "true");
         registration.setEnabled(true);
         registration.setOrder(Integer.MAX_VALUE - 1);

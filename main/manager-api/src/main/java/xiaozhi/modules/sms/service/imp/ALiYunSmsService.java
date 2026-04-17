@@ -37,11 +37,11 @@ public class ALiYunSmsService implements SmsService {
                     .setPhoneNumbers(phone)
                     .setTemplateParam(String.format("{\"code\":\"%s\"}", VerificationCode));
             RuntimeOptions runtime = new RuntimeOptions();
-            // copy代coderun请自row打印 API  returnvalue
+            // copycoderunpleaseselfrowprint API  returnvalue
             SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(sendSmsRequest, runtime);
             log.info("sendSMSresponse requestID: {}", sendSmsResponse.getBody().getRequestId());
         } catch (Exception e) {
-            // ifsendfailed退stillthistimessendnumber
+            // ifsendfailedbackstillthistimessendnumber
             String todayCountKey = RedisKeys.getSMSTodayCountKey(phone);
             redisUtils.delete(todayCountKey);
             // error message
@@ -53,7 +53,7 @@ public class ALiYunSmsService implements SmsService {
 
 
     /**
-     * create阿in云connection
+     * createincloudconnection
      * @return returnconnectionobject
      */
     private Client createClient(){
@@ -65,7 +65,7 @@ public class ALiYunSmsService implements SmsService {
             Config config = new Config()
                     .setAccessKeyId(ACCESS_KEY_ID)
                     .setAccessKeySecret(ACCESS_KEY_SECRET);
-            // configuration Endpoint。国站请usedysmsapi.aliyuncs.com
+            // configuration Endpoint。country sitepleaseusedysmsapi.aliyuncs.com
             config.endpoint = "dysmsapi.aliyuncs.com";
             return new Client(config);
         }catch (Exception e){

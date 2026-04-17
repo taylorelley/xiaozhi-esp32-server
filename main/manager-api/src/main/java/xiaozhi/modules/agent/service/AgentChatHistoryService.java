@@ -47,7 +47,7 @@ public interface AgentChatHistoryService extends IService<AgentChatHistoryEntity
     void deleteByAgentId(String agentId, Boolean deleteAudio, Boolean deleteText);
 
     /**
-     * according toAgent IDgetmost近50itemsuser Chat historydata（withaudio data）
+     * according toAgent IDgetmostrecent50itemsuser Chat historydata（withaudio data）
      *
      * @param agentId agentid
      * @return Chat historylist（onlyhasuser）

@@ -7,7 +7,7 @@ import lombok.Data;
 
 /**
  * Voice cloneresponseDTO
- * used for向beforeenddisplayVoice cloneinformation，containModel nameandUsernamename
+ * used fordirectionbeforeenddisplayVoice cloneinformation，containModel nameandUsernamename
  */
 @Data
 @Schema(description = "Voice cloneresponseDTO")

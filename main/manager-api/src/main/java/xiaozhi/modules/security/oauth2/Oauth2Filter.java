@@ -83,7 +83,7 @@ public class Oauth2Filter extends AuthenticatingFilter {
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
         try {
-            // use国际化message替代directlyuseexceptionmessage
+            // useinternationalmessagereplacedirectlyuseexceptionmessage
             Result<Void> r = new Result<Void>().error(ErrorCode.UNAUTHORIZED);
 
             String json = JsonUtils.toJsonString(r);

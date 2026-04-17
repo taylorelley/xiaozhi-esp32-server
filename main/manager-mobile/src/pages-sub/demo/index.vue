@@ -17,7 +17,7 @@
       http://localhost:9000/#/pages-sub/demo/index
     </view>
     <view class="text-green-500">
-      分包页面demo
+      Pagedemo
     </view>
   </view>
 </template>

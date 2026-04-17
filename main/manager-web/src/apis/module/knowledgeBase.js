@@ -2,24 +2,13 @@ import { getServiceUrl } from '../api';
 import RequestService from '../httpRequest';
 
 /**
- * 获取认证token
+ * GetAuthenticationtoken
  */
 function getAuthToken() {
   return localStorage.getItem('token') || '';
 }
 
-/**
- * 通用API请求包装器
- * @param {Object} config - 请求配置
- * @param {string} config.url - 请求URL
- * @param {string} config.method - 请求方法
- * @param {Object} [config.data] - 请求数据
- * @param {Object} [config.headers] - 额外请求头
- * @param {Function} config.callback - 成功回调
- * @param {Function} [config.errorCallback] - 错误回调
- * @param {string} [config.errorMessage] - 错误消息
- * @param {Function} [config.retryFunction] - 重试函数
- */
+/** * APIrequest * @param {Object} config - requestConfiguration * @param {string} config.url - requestURL * @param {string} config.method - Request method * @param {Object} [config.data] - requestData * @param {Object} [config.headers] - request * @param {Function} config.callback - successfulcallback * @param {Function} [config.errorCallback] - Errorcallback * @param {string} [config.errorMessage] - ErrorMessage * @param {Function} [config.retryFunction] - Function */
 function makeApiRequest(config) {
   const token = getAuthToken();
   const { url, method, data, headers, callback, errorCallback, errorMessage, retryFunction } = config;
@@ -56,16 +45,9 @@ function makeApiRequest(config) {
     }).send();
 }
 
-/**
- * 知识库管理相关API
- */
+/** * Knowledge base managementAPI */
 export default {
-  /**
-   * 获取知识库列表
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * GetKnowledge base list * @param {Object} params - QueryParameter * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   getKnowledgeBaseList(params, callback, errorCallback) {
     const queryParams = new URLSearchParams({
       page: params.page,
@@ -83,12 +65,7 @@ export default {
     });
   },
 
-  /**
-   * 创建知识库
-   * @param {Object} data - 知识库数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * CreateKnowledge base * @param {Object} data - Knowledge baseData * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   createKnowledgeBase(data, callback, errorCallback) {
     console.log('createKnowledgeBase called with data:', data);
     console.log('API URL:', `${getServiceUrl()}/datasets`);
@@ -103,7 +80,7 @@ export default {
         callback(res);
       },
       errorCallback: (err) => {
-        console.error('创建知识库失败:', err);
+        console.error('CreateKnowledge basefailed:', err);
         if (err.response) {
           console.error('Error response data:', err.response.data);
           console.error('Error response status:', err.response.status);
@@ -117,13 +94,7 @@ export default {
     });
   },
 
-  /**
-   * 更新知识库
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} data - 更新数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * UpdateKnowledge base * @param {string} datasetId - Knowledge baseID * @param {Object} data - UpdateData * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   updateKnowledgeBase(datasetId, data, callback, errorCallback) {
     console.log('updateKnowledgeBase called with datasetId:', datasetId, 'data:', data);
     console.log('API URL:', `${getServiceUrl()}/datasets/${datasetId}`);
@@ -140,12 +111,7 @@ export default {
     });
   },
 
-  /**
-   * 删除单个知识库
-   * @param {string} datasetId - 知识库ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * DeletesingleKnowledge base * @param {string} datasetId - Knowledge baseID * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   deleteKnowledgeBase(datasetId, callback, errorCallback) {
     console.log('deleteKnowledgeBase called with datasetId:', datasetId);
     console.log('API URL:', `${getServiceUrl()}/datasets/${datasetId}`);
@@ -160,14 +126,9 @@ export default {
     });
   },
 
-  /**
-   * 批量删除知识库
-   * @param {string|Array} ids - 知识库ID字符串或数组
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * batchDeleteKnowledge base * @param {string|Array} ids - Knowledge baseIDStringorArray * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   deleteKnowledgeBases(ids, callback, errorCallback) {
-    // 确保ids是正确格式的字符串
+ // EnsureidsisFormat of String
     const idsStr = Array.isArray(ids) ? ids.join(',') : ids;
 
     makeApiRequest({
@@ -180,13 +141,7 @@ export default {
     });
   },
 
-  /**
-   * 获取文档列表
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * GetDocumentlist * @param {string} datasetId - Knowledge baseID * @param {Object} params - QueryParameter * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   getDocumentList(datasetId, params, callback, errorCallback) {
     const queryParams = new URLSearchParams({
       page: params.page,
@@ -204,13 +159,7 @@ export default {
     });
   },
 
-  /**
-   * 上传文档
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} formData - 表单数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * UploadDocument * @param {string} datasetId - Knowledge baseID * @param {Object} formData - FormData * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   uploadDocument(datasetId, formData, callback, errorCallback) {
     makeApiRequest({
       url: `${getServiceUrl()}/datasets/${datasetId}/documents`,
@@ -224,13 +173,7 @@ export default {
     });
   },
 
-  /**
-   * 解析文档
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * ParseDocument * @param {string} datasetId - Knowledge baseID * @param {string} documentId - DocumentID * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   parseDocument(datasetId, documentId, callback, errorCallback) {
     const requestBody = {
       document_ids: [documentId]
@@ -248,13 +191,7 @@ export default {
     });
   },
 
-  /**
-   * 删除文档
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * DeleteDocument * @param {string} datasetId - Knowledge baseID * @param {string} documentId - DocumentID * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   deleteDocument(datasetId, documentId, callback, errorCallback) {
     makeApiRequest({
       url: `${getServiceUrl()}/datasets/${datasetId}/documents/${documentId}`,
@@ -266,21 +203,14 @@ export default {
     });
   },
 
-  /**
-   * 获取文档切片列表
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * GetDocumentslicelist * @param {string} datasetId - Knowledge baseID * @param {string} documentId - DocumentID * @param {Object} params - QueryParameter * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   listChunks(datasetId, documentId, params, callback, errorCallback) {
     let queryParams = new URLSearchParams({
       page: params.page || 1,
       page_size: params.page_size || 10
     }).toString();
 
-    // 添加关键词搜索参数
+    // AddKeywordSearchParameter
     if (params.keywords) {
       queryParams += `&keywords=${encodeURIComponent(params.keywords)}`;
     }
@@ -295,13 +225,7 @@ export default {
     });
   },
 
-  /**
-   * 召回测试
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} data - 召回测试参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
-   */
+  /** * recallTest * @param {string} datasetId - Knowledge baseID * @param {Object} data - recallTestParameter * @param {Function} callback - callback * @param {Function} errorCallback - Errorcallback */
   retrievalTest(datasetId, data, callback, errorCallback) {
     makeApiRequest({
       url: `${getServiceUrl()}/datasets/${datasetId}/retrieval-test`,

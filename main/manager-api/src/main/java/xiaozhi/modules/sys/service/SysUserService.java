@@ -43,10 +43,10 @@ public interface SysUserService extends BaseService<SysUserEntity> {
     void changePasswordDirectly(Long userId, String password);
 
     /**
-     * re-置Password
+     * re-setPassword
      * 
      * @param userId userid
-     * @return 随机generatematching规范 Password
+     * @return randomgeneratematchingrulepattern Password
      */
     String resetPassword(Long userId);
 

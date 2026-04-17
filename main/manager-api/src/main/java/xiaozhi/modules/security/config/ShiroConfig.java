@@ -63,13 +63,13 @@ public class ShiroConfig {
         filters.put("server", new ServerSecretFilter(sysParamsService));
         shiroFilter.setFilters(filters);
 
-        // addShiro 内置filter
+        // addShiro internalsetfilter
         /*
-         * anon：no需authenticationthen可to访问
-         * authc：mustauthenticationonlycanlet问
-         * user：must拥has，记住Ifunction，onlycan访问
-         * perms：拥hasfor某resourcesource Permissiononlycan访问
-         * role：拥has某RolePermissiononlycan访问
+         * anon：noneedauthenticationthencantoaccess
+         * authc：mustauthenticationonlycanletask
+         * user：musthavehas，rememberIfunction，onlycanaccess
+         * perms：havehasforsomeresourcesource Permissiononlycanaccess
+         * role：havehassomeRolePermissiononlycanaccess
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/ota/**", "anon");

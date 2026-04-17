@@ -10,18 +10,18 @@ import java.util.List;
 
 @Setter
 @Getter
-@Schema(description = "devicefirmwareinformation上报求request")
+@Schema(description = "devicefirmwareinformationreportrequestrequest")
 public class DeviceReportReqDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     // region entity
     @Schema(description = "boardfirmwareversionnumber")
     private Integer version;
 
-    @Schema(description = "闪storelargesmall（unit：byte）")
+    @Schema(description = "flash storagelargesmall（unit：byte）")
     @JsonProperty("flash_size")
     private Integer flashSize;
 
-    @Schema(description = "minimumempty闲堆内store（byte）")
+    @Schema(description = "minimumemptyfree heapstore（byte）")
     @JsonProperty("minimum_free_heap_size")
     private Integer minimumFreeHeapSize;
 
@@ -32,15 +32,15 @@ public class DeviceReportReqDTO implements Serializable {
     @Schema(description = "deviceunique identifier UUID")
     private String uuid;
 
-    @Schema(description = "chip型numbername")
+    @Schema(description = "chiptypenumbername")
     @JsonProperty("chip_model_name")
     private String chipModelName;
 
-    @Schema(description = "chip详细information")
+    @Schema(description = "chipdetailedinformation")
     @JsonProperty("chip_info")
     private ChipInfo chipInfo;
 
-    @Schema(description = "应用程orderinformation")
+    @Schema(description = "shoulduseprocessorderinformation")
     private Application application;
 
     @Schema(description = "partitiontablelist")
@@ -59,30 +59,30 @@ public class DeviceReportReqDTO implements Serializable {
     @Setter
     @Schema(description = "chipinformation")
     public static class ChipInfo {
-        @Schema(description = "chipmodel代code")
+        @Schema(description = "chipmodelcode")
         private Integer model;
 
-        @Schema(description = "核心number")
+        @Schema(description = "corenumber")
         private Integer cores;
 
-        @Schema(description = "硬item修订version")
+        @Schema(description = "harditemmodifysubscribeversion")
         private Integer revision;
 
-        @Schema(description = "chipfunction标志bit")
+        @Schema(description = "chipfunctionflagbit")
         private Integer features;
     }
 
     @Getter
     @Setter
-    @Schema(description = "board编译information")
+    @Schema(description = "boardcompileinformation")
     public static class Application {
         @Schema(description = "name")
         private String name;
 
-        @Schema(description = "应用versionnumber")
+        @Schema(description = "shoulduseversionnumber")
         private String version;
 
-        @Schema(description = "编译time（UTC ISOformat）")
+        @Schema(description = "compiletime（UTC ISOformat）")
         @JsonProperty("compile_time")
         private String compileTime;
 
@@ -99,7 +99,7 @@ public class DeviceReportReqDTO implements Serializable {
     @Setter
     @Schema(description = "partitioninformation")
     public static class Partition {
-        @Schema(description = "partitionTag名")
+        @Schema(description = "partitionTagname")
         private String label;
 
         @Schema(description = "partitiontype")
@@ -108,7 +108,7 @@ public class DeviceReportReqDTO implements Serializable {
         @Schema(description = "childtype")
         private Integer subtype;
 
-        @Schema(description = "起始Address")
+        @Schema(description = "startAddress")
         private Integer address;
 
         @Schema(description = "partitionlargesmall")
@@ -133,10 +133,10 @@ public class DeviceReportReqDTO implements Serializable {
         @Schema(description = "connection  Wi-Fi SSID")
         private String ssid;
 
-        @Schema(description = "Wi-Fi 信numberstrong度（RSSI）")
+        @Schema(description = "Wi-Fi infonumberstrong（RSSI）")
         private Integer rssi;
 
-        @Schema(description = "Wi-Fi 信道")
+        @Schema(description = "Wi-Fi infochannel")
         private Integer channel;
 
         @Schema(description = "IP Address")

@@ -82,7 +82,7 @@ public class AgentController {
             @RequestParam(value = "searchType", defaultValue = "name") String searchType) {
         UserDetail user = SecurityUser.getUser();
 
-        // directlycall整合after getUserAgentsmethod，no需again区分searchand普通query
+        // directlycallwholemergeafter getUserAgentsmethod，noneedagainareasearchandordinaryquery
         List<AgentDTO> agents = agentService.getUserAgents(user.getId(), keyword, searchType);
         return new Result<List<AgentDTO>>().ok(agents);
     }
@@ -146,7 +146,7 @@ public class AgentController {
             // immediatelyreturnsuccessresponse，not waitsummarygeneratecomplete
             return new Result<Void>().ok(null);
         } catch (Exception e) {
-            return new Result<Void>().error("启动asynchronoussummarygeneratetaskfailed: " + e.getMessage());
+            return new Result<Void>().error("startasynchronoussummarygeneratetaskfailed: " + e.getMessage());
         }
     }
 
@@ -217,7 +217,7 @@ public class AgentController {
 
         // checkPermission
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryDTO>>().error("noPermission查看thisagent Chat history");
+            return new Result<List<AgentChatHistoryDTO>>().error("noPermissionviewthisagent Chat history");
         }
 
         // queryChat history
@@ -235,7 +235,7 @@ public class AgentController {
 
         // checkPermission
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryUserVO>>().error("noPermission查看thisagent Chat history");
+            return new Result<List<AgentChatHistoryUserVO>>().error("noPermissionviewthisagent Chat history");
         }
 
         // queryChat history

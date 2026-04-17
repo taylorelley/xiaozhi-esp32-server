@@ -56,7 +56,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
                 new QueryWrapper<TimbreEntity>()
                         // mustbyaccording tottsIDfind
                         .eq("tts_model_id", dto.getTtsModelId())
-                        // ifhasvoice名字，byaccording tovoice名模糊find
+                        // ifhasvoicenamecharacter，byaccording tovoicenamefuzzyfind
                         .like(StringUtils.isNotBlank(dto.getName()), "name", dto.getName()));
 
         return getPageData(page, TimbreDetailsVO.class);
@@ -130,7 +130,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
                     VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
                     dto.setVoiceDemo(entity.getVoiceDemo());
                     dto.setLanguages(entity.getLanguages()); // setLanguagetype
-                    dto.setIsClone(false); // setas普通voice
+                    dto.setIsClone(false); // setasordinaryvoice
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -141,11 +141,11 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
             // queryuser allclonevoicerecord
             List<VoiceDTO> cloneEntities = voiceCloneDao.getTrainSuccess(ttsModelId, currentUserId);
             for (VoiceDTO entity : cloneEntities) {
-                // onlyaddtrainingsuccess clonevoice，andModel ID匹配
+                // onlyaddtrainingsuccess clonevoice，andModel IDmatch
                 VoiceDTO voiceDTO = new VoiceDTO();
                 voiceDTO.setId(entity.getId());
                 voiceDTO.setName(MessageUtils.getMessage(ErrorCode.VOICE_CLONE_PREFIX) + entity.getName());
-                // 保留fromdatalibraryqueryto voiceDemofield
+                // reservefromdatalibraryqueryto voiceDemofield
                 voiceDTO.setVoiceDemo(entity.getVoiceDemo());
                 voiceDTO.setLanguages(entity.getLanguages());
                 voiceDTO.setIsClone(true); // setasclonevoice
@@ -162,7 +162,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
      * processYesnot Yesttsmodel id
      */
     private void isTtsModelId(String ttsModelId) {
-        // etc.Model configurationthat边write好callmethoddetermine
+        // etc.Model configurationthatedgewritegoodcallmethoddetermine
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         TimbreEntity entity = list.get(0);
         VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
         dto.setVoiceDemo(entity.getVoiceDemo());
-        dto.setIsClone(false); // setas普通voice
+        dto.setIsClone(false); // setasordinaryvoice
         return dto;
     }
 }

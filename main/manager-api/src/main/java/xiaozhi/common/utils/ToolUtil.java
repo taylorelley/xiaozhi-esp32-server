@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 通用toolclass
+ * usetoolclass
  */
 public class ToolUtil {
     private static final Logger logger = LoggerFactory.getLogger(ToolUtil.class);
@@ -76,7 +76,7 @@ public class ToolUtil {
     }
 
     /**
-     * objectgroupYesNo全Yesemptyobject
+     * objectgroupYesNoallYesemptyobject
      */
     public static boolean isAllEmpty(Object... os) {
         for (Object o : os) {

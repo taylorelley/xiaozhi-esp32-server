@@ -40,10 +40,10 @@ public class KnowledgeFilesDTO implements Serializable {
     @Schema(description = "parseprogress (0.0 ~ 1.0)")
     private Double progress;
 
-    @Schema(description = "缩略图 (Base64 or URL)")
+    @Schema(description = "thumbnail (Base64 or URL)")
     private String thumbnail;
 
-    @Schema(description = "parse耗when (unit: seconds)")
+    @Schema(description = "parseconsumptionwhen (unit: seconds)")
     private Double processDuration;
 
     @Schema(description = "sourcetype (local, s3, url etc.)")
@@ -85,7 +85,7 @@ public class KnowledgeFilesDTO implements Serializable {
     @Schema(description = "parseerrorinformation")
     private String error;
 
-    // Document parsingstatus常量define
+    // Document parsingstatusconstantdefine
     private static final Integer STATUS_UNSTART = 0;
     private static final Integer STATUS_RUNNING = 1;
     private static final Integer STATUS_CANCEL = 2;
@@ -93,7 +93,7 @@ public class KnowledgeFilesDTO implements Serializable {
     private static final Integer STATUS_FAIL = 4;
 
     /**
-     * getDocument parsingstatuscode（基于runfieldconvert）
+     * getDocument parsingstatuscode（basetorunfieldconvert）
      */
     public Integer getParseStatusCode() {
         if (run == null) {

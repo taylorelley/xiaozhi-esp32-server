@@ -85,12 +85,12 @@ public class AgentTemplateServiceImpl extends ServiceImpl<AgentTemplateDao, Agen
             return;
         }
         
-        // queryallSort ordervaluelarge于isdeletetemplate record
+        // queryallSort ordervaluelargetoisdeletetemplate record
         UpdateWrapper<AgentTemplateEntity> updateWrapper = new UpdateWrapper<>();
         updateWrapper.gt("sort", deletedSort)
                     .setSql("sort = sort - 1");
         
-        // executebatchupdate，willtheserecord Sort ordervalue减1
+        // executebatchupdate，willtheserecord Sort ordervaluedecrease1
         this.update(updateWrapper);
     }
 
@@ -109,17 +109,17 @@ public class AgentTemplateServiceImpl extends ServiceImpl<AgentTemplateDao, Agen
             return 1;
         }
         
-        // 寻findminimum notuseordernumber
+        // findfindminimum notuseordernumber
         int expectedSort = 1;
         for (Integer sort : sortValues) {
             if (sort > expectedSort) {
-                // findtoempty缺 ordernumber
+                // findtoemptylack ordernumber
                 return expectedSort;
             }
             expectedSort = sort + 1;
         }
         
-        // ifnoempty缺，returnmostlargeordernumber+1
+        // ifnoemptylack，returnmostlargeordernumber+1
         return expectedSort;
     }
 }

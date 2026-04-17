@@ -48,11 +48,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 特殊用途 convert
+        // specialusepath convert
         converters.add(new ByteArrayHttpMessageConverter());
         converters.add(new ResourceHttpMessageConverter());
 
-        // 通用convert
+        // useconvert
         converters.add(new StringHttpMessageConverter());
         converters.add(new AllEncompassingFormHttpMessageConverter());
 
@@ -65,10 +65,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper mapper = new ObjectMapper();
 
-        // 忽略Unknown
+        // ignoreUnknown
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // setwhen区
+        // setwhenarea
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         // configurationJava8datetimeserialize
@@ -91,7 +91,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN);
         mapper.setDateFormat(dateFormat);
 
-        // Longtype转Stringtype
+        // LongtypeconvertStringtype
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
@@ -102,7 +102,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 国际化configuration - according torequestheader Accept-LanguagesetLanguage环境
+     * internationalconfiguration - according torequestheader Accept-LanguagesetLanguageenvironment
      */
     @Bean
     public LocaleResolver localeResolver() {
@@ -114,14 +114,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     return Locale.getDefault();
                 }
 
-                // parseAccept-Languagerequestheader 首selectLanguage
+                // parseAccept-Languagerequestheader firstselectLanguage
                 String[] languages = acceptLanguage.split(",");
                 if (languages.length > 0) {
-                    // extract第oneLanguage代code，去除可can 质量value(q=...)
+                    // extractno.oneLanguagecode，removecancan qualityamountvalue(q=...)
                     String[] parts = languages[0].split(";" + "\\s*");
                     String primaryLanguage = parts[0].trim();
 
-                    // according tobeforeendsend Language代codedirectlycreateLocaleobject
+                    // according tobeforeendsend LanguagecodedirectlycreateLocaleobject
                     if (primaryLanguage.equals("zh-CN")) {
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.equals("zh-TW")) {
@@ -133,21 +133,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     } else if (primaryLanguage.equals("vi-VN")) {
                         return Locale.forLanguageTag("vi-VN");
                     } else if (primaryLanguage.startsWith("zh")) {
-                        // for于otherChinese变，defaultuse简Chinese
+                        // fortootherChinesechange，defaultusesimpleChinese
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.startsWith("en")) {
-                        // for于otherEnglish变，defaultuse美式英语
+                        // fortootherEnglishchange，defaultuseAmerican English
                         return Locale.US;
                     } else if (primaryLanguage.startsWith("de")) {
-                        // for于other德语变，defaultuse德语
+                        // fortootherGermanchange，defaultuseGerman
                         return Locale.GERMANY;
                     } else if (primaryLanguage.startsWith("vi")) {
-                        // for于other越南语变，defaultuse越南语
+                        // fortootherexceedVietnamesechange，defaultuseexceedVietnamese
                         return Locale.forLanguageTag("vi-VN");
                     }
                 }
 
-                // ifno匹配 Language，usedefaultLanguage
+                // ifnomatch Language，usedefaultLanguage
                 return Locale.getDefault();
             }
         };

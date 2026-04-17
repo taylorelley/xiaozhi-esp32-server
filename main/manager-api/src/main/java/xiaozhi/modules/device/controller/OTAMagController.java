@@ -154,7 +154,7 @@ public class OTAMagController {
         String downloadCountKey = RedisKeys.getOtaDownloadCountKey(uuid);
         Integer downloadCount = (Integer) Optional.ofNullable(redisUtils.get(downloadCountKey)).orElse(0);
 
-        // ifdownloadtimes超3times，return404
+        // ifdownloadtimesexceed3times，return404
         if (downloadCount >= 3) {
             redisUtils.delete(List.of(downloadCountKey, RedisKeys.getOtaIdKey(uuid)));
             logger.warn("Download limit exceeded for UUID: {}", uuid);
@@ -181,16 +181,16 @@ public class OTAMagController {
                 return ResponseEntity.notFound().build();
             }
 
-            // getfilepath - ensurepathYes绝forpathor确 相forpath
+            // getfilepath - ensurepathYesabsolutelyforpathorexact forpath
             String firmwarePath = otaEntity.getFirmwarePath();
             String originalFilename = otaEntity.getType() + "_" + otaEntity.getVersion();
             Path path;
 
-            // checkYesNoYes绝forpath
+            // checkYesNoYesabsolutelyforpath
             if (Paths.get(firmwarePath).isAbsolute()) {
                 path = Paths.get(firmwarePath);
             } else {
-                // ifYes相forpath，thenfromcurrent工作目录parse
+                // ifYesforpath，thenfromcurrentworkdirectoryparse
                 path = Paths.get(System.getProperty("user.dir"), firmwarePath);
             }
 
@@ -198,7 +198,7 @@ public class OTAMagController {
                     id, firmwarePath, path.toAbsolutePath());
 
             if (!Files.exists(path) || !Files.isRegularFile(path)) {
-                // 尝试directlyfromfirmware目录下findFile name
+                // trydirectlyfromfirmwaredirectorybelowfindFile name
                 String fileName = new File(firmwarePath).getName();
                 Path altPath = Paths.get(System.getProperty("user.dir"), "firmware", fileName);
 
@@ -213,7 +213,7 @@ public class OTAMagController {
                 }
             }
 
-            // read取File content
+            // readgetFile content
             byte[] fileContent = Files.readAllBytes(path);
 
             // setresponseheader
@@ -223,7 +223,7 @@ public class OTAMagController {
                 originalFilename += extension;
             }
 
-            // clean upFile name，移除not 安全字符
+            // clean upFile name，removenot safeallcharactersymbol
             String safeFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
 
             logger.info("Providing download for firmware ID: {}, filename: {}, size: {} bytes",
@@ -262,19 +262,19 @@ public class OTAMagController {
         }
 
         try {
-            // 计算file MD5value
+            // calculatefile MD5value
             String md5 = calculateMD5(file);
 
-            // setstore储path
+            // setstorestorepath
             String uploadDir = "uploadfile";
             Path uploadPath = Paths.get(uploadDir);
 
-            // if目录does not exist，create目录
+            // ifdirectorydoes not exist，createdirectory
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // useMD5asFile name，固定use.binextension
+            // useMD5asFile name，fixeduse.binextension
             String uniqueFileName = md5 + extension;
             Path filePath = uploadPath.resolve(uniqueFileName);
 
@@ -306,14 +306,14 @@ public class OTAMagController {
         if (file.getSize() > 20 * 1024 * 1024) {
             return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
         }
-        // Normal useronlycan每天upload50times
+        // Normal useronlycaneverydayupload50times
         if (SecurityUser.getUser().getSuperAdmin() == SuperAdminEnum.NO.value()) {
             String uploadCountKey = RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId());
             Integer uploadCount = (Integer) Optional.ofNullable(redisUtils.get(uploadCountKey)).orElse(0);
             if (uploadCount >= 50) {
                 return new Result<String>().error(ErrorCode.OTA_UPLOAD_COUNT_EXCEED);
             }
-            // 增加uploadtimes
+            // increaseadduploadtimes
             redisUtils.increment(RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId()),
                     RedisUtils.DEFAULT_EXPIRE);
         }

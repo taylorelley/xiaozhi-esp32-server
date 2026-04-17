@@ -5,36 +5,30 @@ import { ref } from 'vue'
 export const usePluginStore = defineStore(
   'plugin',
   () => {
-    // 所有可用插件
+ // allplugin
     const allFunctions = ref<PluginDefinition[]>([])
-
-    // 当前智能体的插件配置
+ // currentAgent of pluginConfiguration
     const currentFunctions = ref<AgentFunction[]>([])
-
-    // 当前编辑的智能体ID
+ // currentEdit of AgentID
     const currentAgentId = ref('')
-
-    // 设置所有可用插件
+ // Settingsallplugin
     const setAllFunctions = (functions: PluginDefinition[]) => {
       allFunctions.value = functions
     }
-
-    // 设置当前智能体的插件配置
+ // SettingscurrentAgent of pluginConfiguration
     const setCurrentFunctions = (functions: AgentFunction[]) => {
       currentFunctions.value = functions
     }
-
-    // 设置当前智能体ID
+ // SettingscurrentAgentID
     const setCurrentAgentId = (agentId: string) => {
       currentAgentId.value = agentId
     }
-
-    // 更新插件配置（用于保存时调用）
+ // UpdatepluginConfiguration（Used forSavewhenCall）
     const updateFunctions = (functions: AgentFunction[]) => {
       currentFunctions.value = functions
     }
 
-    // 清空数据
+    // ClearData
     const clear = () => {
       allFunctions.value = []
       currentFunctions.value = []

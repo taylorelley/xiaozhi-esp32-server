@@ -13,7 +13,7 @@
         <div class="main-wrapper">
             <div class="content-panel">
                 <div class="content-area">
-                    <!-- 显示表格或空状态 -->
+                    <!-- ShowTableorStatus -->
                     <el-card class="params-card" shadow="never" v-if="total > 0">
                         <el-table ref="paramsTable" :data="voiceCloneList" class="transparent-table" v-loading="loading"
                             element-loading-text="Loading" element-loading-spinner="el-icon-loading"
@@ -98,7 +98,7 @@
                         </div>
                     </el-card>
 
-                    <!-- 空状态提示 -->
+                    <!-- StatusNotice -->
                     <div v-else-if="!loading" class="empty-state-wrapper">
                         <div class="empty-state">
                             <div class="empty-icon">
@@ -119,7 +119,7 @@
             <version-footer />
         </el-footer>
 
-        <!-- 复刻弹框 -->
+        <!-- -->
         <VoiceCloneDialog :visible.sync="cloneDialogVisible" :voiceCloneData="currentVoiceClone"
             @success="handleCloneSuccess" />
     </div>
@@ -152,7 +152,7 @@ export default {
                 voiceIds: [],
                 userId: null
             },
-            // 音频播放相关
+ // AudioPlay
             currentAudio: null, // 当前正在播放的音频对象
             playingRowId: null  // 当前正在播放的行 ID
         };
@@ -192,7 +192,7 @@ export default {
                 case 2:
                     return '训练成功';
                 case 3:
-                    // 训练失败时，根据错误信息智能展示
+ // failedwhen，Based onErrorInfo
                     if (row.trainError) {
                         return `训练失败：${row.trainError}`;
                     }
@@ -202,8 +202,8 @@ export default {
             }
         },
         handleViewDetails(row) {
-            console.log('查看详情:', row);
-            // 可以在这里添加查看详情的逻辑
+            console.log('details:', row);
+ // atthisAdddetails of logic
         },
         handlePageSizeChange(val) {
             this.pageSize = val;
@@ -275,7 +275,7 @@ export default {
                     return '';
             }
         },
-        // 获取状态按钮样式
+ // GetStatusButtonStyle
         getStatusButtonClass(row) {
             if (!row.hasVoice || row.trainStatus === 0) {
                 return 'status-waiting';
@@ -286,9 +286,9 @@ export default {
             }
             return '';
         },
-        // 处理复刻操作
+ // ProcessAction
         handleClone(row) {
-            // 防止重复提交
+ // Submit
             if (row._cloning) {
                 return;
             }
@@ -303,85 +303,83 @@ export default {
                         res = res.data;
                         if (res.code === 0) {
                             this.$message.success(this.$t('message.success'));
-                            // 复刻成功后刷新列表
+ // successfulafterRefreshlist
                             this.fetchVoiceCloneList();
                         } else {
-                            // 复刻失败时刷新列表以获取完整的错误信息
-                            console.log('API返回错误，刷新列表获取详细错误信息');
+ // failedwhenRefreshlistGet of ErrorInfo
+                            console.log('APIBackError，RefreshlistGetErrorInfo');
                             this.$message.error(res.msg || this.$t('message.error'));
-                            // 刷新列表以获取后端保存的完整错误详情
+ // RefreshlistGetbackendSave of Errordetails
                             this.fetchVoiceCloneList();
                         }
                     } catch (error) {
-                        // 处理响应时出错，刷新列表
-                        console.error('处理响应时出错:', error);
-                        this.$message.error('处理响应时出错');
+ // ProcessResponsewhen，Refreshlist
+                        console.error('ProcessResponsewhen:', error);
+                        this.$message.error('ProcessResponsewhen');
                         this.fetchVoiceCloneList();
                     } finally {
                         this.$set(row, '_cloning', false);
                     }
                 }, (error) => {
-                    // API调用失败，刷新列表以获取最新状态
-                    console.error('API调用失败:', error);
-                    this.$message.error('克隆失败，请将鼠标悬停在错误提示上，查看错误详情');
+ // APICallfailed，RefreshlistGetnewStatus
+                    console.error('APICallfailed:', error);
+                    this.$message.error('clonefailed，willatErrorNotice，Errordetails');
                     this.fetchVoiceCloneList();
                     this.$set(row, '_cloning', false);
                 });
             } catch (error) {
-                // 调用API时出错，刷新列表
-                console.error('调用API时出错:', error);
-                this.$message.error('调用API时出错');
+ // CallAPIwhen，Refreshlist
+                console.error('CallAPIwhen:', error);
+                this.$message.error('CallAPIwhen');
                 this.fetchVoiceCloneList();
                 this.$set(row, '_cloning', false);
             }
         },
-
-        // 更新行状态并触发视图更新
+ // UpdateStatusandUpdate
         updateRowStatus(row, status, statusCode = null) {
-            // 在Vue中直接修改数组中的对象属性可能不会触发视图更新
+ // atVueindirectlyModifyArrayin of ObjectPropertyUpdate
             const index = this.voiceCloneList.findIndex(item => item.id === row.id);
             const updateData = {
                 trainStatus: status
             };
-
-            // 如果提供了状态码，也更新状态码信息
+ // IfStatuscode，UpdateStatuscodeInfo
             if (statusCode !== null) {
                 updateData.statusCode = statusCode;
             }
 
             if (index !== -1) {
-                // 使用Vue.set来确保响应式更新
+ // UseVue.setEnsureResponseUpdate
                 this.$set(this.voiceCloneList, index, {
                     ...this.voiceCloneList[index],
                     ...updateData
                 });
-                // 强制表格重新渲染
+ // Tablere-
                 if (this.$refs.paramsTable) {
                     this.$refs.paramsTable.doLayout();
                 }
             } else {
-                // 如果找不到索引，直接更新row对象
+ // Ifto，directlyUpdaterowObject
                 row.trainStatus = status;
                 if (statusCode !== null) {
                     row.statusCode = statusCode;
                 }
-                // 强制整个表格重新渲染
+ // Tablere-
                 this.$forceUpdate();
             }
-            console.log('更新行状态:', row.id, '状态:', status, '状态码:', statusCode);
+            console.log('UpdateStatus:', row.id, '状态:', status, '状态码:', statusCode);
         },
-        // 复刻成功后的回调
+ // successfulafter of callback
         handleCloneSuccess() {
             this.fetchVoiceCloneList();
         },
-        // 进入编辑模式
+ // Editmode
         handleEditName(row) {
             this.$set(row, 'isEdit', true);
             this.$nextTick(() => {
-                // 聚焦到输入框
+ // toinput
                 const input = this.$refs.nameInput;
                 if (input) {
-                    // nameInput 可能是一个数组
+ // nameInput isArray
                     if (Array.isArray(input)) {
                         const idx = this.voiceCloneList.indexOf(row);
                         if (input[idx]) {
@@ -393,9 +391,9 @@ export default {
                 }
             });
         },
-        // 提交名称修改
+        // SubmitNameModify
         submitName(row) {
-            // 防止重复提交
+ // Submit
             if (row._submitting) {
                 return;
             }
@@ -412,62 +410,57 @@ export default {
                     this.$message.success(this.$t('voiceClone.updateNameSuccess') || '名称更新成功');
                 } else {
                     this.$message.error(res.msg || this.$t('voiceClone.updateNameFailed') || '名称更新失败');
-                    // 失败时恢复原值
+ // failedwhenvalue
                     this.fetchVoiceCloneList();
                 }
                 row._submitting = false;
             });
         },
-        // 名称输入框:失焦时提交
+ // Nameinput:whenSubmit
         onNameBlur(row) {
             row.isEdit = false;
             setTimeout(() => {
                 this.submitName(row);
             }, 100); // 延迟 100ms，避开 enter+blur 同时触发的窗口
         },
-        // 名称输入框:按回车时提交
+ // Nameinput:whenSubmit
         onNameEnter(row) {
             row.isEdit = false;
             this.submitName(row);
         },
-        // 播放音频
+ // PlayAudio
         handlePlay(row) {
-            // 如果点击的是正在播放的行,则停止播放
+ // If of isatPlay of ,thenStopPlay
             if (this.playingRowId === row.id && this.currentAudio) {
                 this.stopCurrentAudio();
                 return;
             }
-
-            // 停止当前正在播放的音频(如果有)
+ // StopcurrentatPlay of Audio(Ifhas)
             this.stopCurrentAudio();
-
-            // 先获取音频下载ID
+ // firstGetAudioDownloadID
             Api.voiceClone.getAudioId(row.id, (res) => {
                 res = res.data;
                 if (res.code === 0) {
                     const uuid = res.data;
-                    // 使用获取到的uuid播放音频
+ // UseGetto of uuidPlayAudio
                     const audioUrl = Api.voiceClone.getPlayVoiceUrl(uuid);
                     const audio = new Audio(audioUrl);
-
-                    // 设置当前播放状态
+ // SettingscurrentPlayStatus
                     this.currentAudio = audio;
                     this.playingRowId = row.id;
-
-                    // 播放结束时清除状态
+ // PlayEndwhenClearStatus
                     audio.addEventListener('ended', () => {
                         this.playingRowId = null;
                         this.currentAudio = null;
                     });
-
-                    // 播放出错时清除状态
+ // PlaywhenClearStatus
                     audio.addEventListener('error', () => {
                         this.playingRowId = null;
                         this.currentAudio = null;
                     });
 
                     audio.play().catch(err => {
-                        console.error('播放失败:', err);
+                        console.error('Playfailed:', err);
                         this.$message.error(this.$t('voiceClone.playFailed') || '播放失败');
                         this.playingRowId = null;
                         this.currentAudio = null;
@@ -477,7 +470,7 @@ export default {
                 }
             });
         },
-        // 停止当前音频播放
+ // StopcurrentAudioPlay
         stopCurrentAudio() {
             if (this.currentAudio) {
                 this.currentAudio.pause();
@@ -486,7 +479,7 @@ export default {
             }
             this.playingRowId = null;
         },
-        // 上传音频
+        // UploadAudio
         handleUpload(row) {
             this.currentVoiceClone = row;
             this.cloneDialogVisible = true;
@@ -511,7 +504,7 @@ export default {
 }
 
 .main-wrapper {
-    // 顶部 63px 底部 35px 查询72px
+ // Top 63px Bottom 35px Query72px
     height: calc(100vh - 63px - 35px - 72px);
     margin: 0 22px;
     border-radius: 15px;
@@ -774,7 +767,7 @@ export default {
     color: #5a64b5 !important;
 }
 
-/* 状态按钮样式 */
+/* StatusButtonStyle */
 .status-button {
     display: inline-flex;
     align-items: center;

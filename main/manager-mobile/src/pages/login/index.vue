@@ -13,19 +13,19 @@ import type { LoginData } from '@/api/auth'
 import type { Language } from '@/store/lang'
 import { computed, onMounted, ref } from 'vue'
 import { login } from '@/api/auth'
-// 导入国际化相关功能
+// Import
 import { changeLanguage, getCurrentLanguage, getSupportedLanguages, initI18n, t } from '@/i18n'
 import { useConfigStore, useUserStore } from '@/store'
-// 导入SM2加密工具
+// ImportSM2Encrypttool
 import { getEnvBaseUrl, sm2Encrypt } from '@/utils'
 import { toast } from '@/utils/toast'
 
-// 获取屏幕边界到安全区域距离
+// Getscreen boundary toSecurityregion distance
 let safeAreaInsets
 let systemInfo
 
 // #ifdef MP-WEIXIN
-// 微信小程序使用新的API
+// Usenew of API
 systemInfo = uni.getWindowInfo()
 safeAreaInsets = systemInfo.safeArea
   ? {
@@ -38,11 +38,11 @@ safeAreaInsets = systemInfo.safeArea
 // #endif
 
 // #ifndef MP-WEIXIN
-// 其他平台继续使用uni API
+// ContinueUseuni API
 systemInfo = uni.getSystemInfoSync()
 safeAreaInsets = systemInfo.safeAreaInsets
 // #endif
-// 表单数据
+// FormData
 const formData = ref({
   username: '',
   password: '',
@@ -52,46 +52,46 @@ const formData = ref({
   mobile: '',
 })
 
-// 验证码图片
+// CaptchaImage
 const captchaImage = ref('')
 const loading = ref(false)
 
-// 登录方式：'username' | 'mobile'
+// Log inmode：'username' | 'mobile'
 const loginType = ref<'username' | 'mobile'>('username')
 
-// 获取配置store
+// GetConfigurationstore
 const configStore = useConfigStore()
 const userStore = useUserStore()
 
-// 区号选择相关
+// Country codeSelect
 const showAreaCodeSheet = ref(false)
 const selectedAreaCode = ref('+86')
 const selectedAreaName = ref('中国大陆')
 
-// 计算属性：是否启用手机号登录
+// calculateProperty：Whether toEnableMobile numberLog in
 const enableMobileLogin = computed(() => {
   return configStore.config.enableMobileRegister
 })
 
-// 计算属性：区号列表
+// calculateProperty：Country codelist
 const areaCodeList = computed(() => {
   return configStore.config.mobileAreaList || [{ name: '中国大陆', key: '+86' }]
 })
 
-// 切换登录方式
+// SwitchLog inmode
 function toggleLoginType() {
   loginType.value = loginType.value === 'username' ? 'mobile' : 'username'
-  // 清空输入框
+ // Clearinput
   formData.value.username = ''
   formData.value.mobile = ''
 }
 
-// 打开区号选择弹窗
+// OpenCountry codeSelectDialog
 function openAreaCodeSheet() {
   showAreaCodeSheet.value = true
 }
 
-// 选择区号
+// SelectCountry code
 function selectAreaCode(item: { name: string, key: string }) {
   selectedAreaCode.value = item.key
   selectedAreaName.value = item.name
@@ -99,26 +99,26 @@ function selectAreaCode(item: { name: string, key: string }) {
   showAreaCodeSheet.value = false
 }
 
-// 关闭区号选择弹窗
+// CloseCountry codeSelectDialog
 function closeAreaCodeSheet() {
   showAreaCodeSheet.value = false
 }
 
-// 跳转到注册页面
+// Redirect toRegisterPage
 function goToRegister() {
   uni.navigateTo({
     url: '/pages/register/index',
   })
 }
 
-// 跳转到忘记密码页面
+// Redirect toPasswordPage
 function goToForgotPassword() {
   uni.navigateTo({
     url: '/pages/forgot-password/index',
   })
 }
 
-// 跳转到用户协议
+// Redirect toUser
 function goToUserAgreement() {
   const lang = getCurrentLanguage() === 'zh_CN' ? 'zh' : 'en'
   uni.navigateTo({
@@ -126,7 +126,7 @@ function goToUserAgreement() {
   })
 }
 
-// 跳转到隐私政策
+// Redirect to
 function goToPrivacyPolicy() {
   const lang = getCurrentLanguage() === 'zh_CN' ? 'zh' : 'en'
   uni.navigateTo({
@@ -134,7 +134,7 @@ function goToPrivacyPolicy() {
   })
 }
 
-// 生成UUID
+// GenerateUUID
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random() * 16 | 0
@@ -143,23 +143,23 @@ function generateUUID() {
   })
 }
 
-// 跳转至服务端设置页面
+// RedirectserverSettingsPage
 function goToServerSetting() {
   uni.switchTab({
     url: '/pages/settings/index',
   })
 }
 
-// 获取验证码
+// GetCaptcha
 async function refreshCaptcha() {
   const uuid = generateUUID()
   formData.value.captchaId = uuid
   captchaImage.value = `${getEnvBaseUrl()}/user/captcha?uuid=${uuid}&t=${Date.now()}`
 }
 
-// 登录
+// Log in
 async function handleLogin() {
-  // 表单验证
+  // FormVerify
   if (loginType.value === 'username') {
     if (!formData.value.username) {
       toast.warning(t('login.enterUsername'))
@@ -171,7 +171,7 @@ async function handleLogin() {
       toast.warning(t('login.enterPhone'))
       return
     }
-    // 手机号格式验证
+ // Mobile numberFormatVerify
     const phoneRegex = /^1[3-9]\d{9}$/
     if (!phoneRegex.test(formData.value.mobile)) {
       toast.warning(t('login.enterPhone'))
@@ -186,8 +186,7 @@ async function handleLogin() {
     toast.warning(t('login.enterCaptcha'))
     return
   }
-
-  // 检查SM2公钥是否配置
+ // CheckSM2Public keyWhether toConfiguration
   const sm2PublicKey = configStore.config.sm2PublicKey
   if (!sm2PublicKey) {
     toast.warning(t('sm2.publicKeyNotConfigured'))
@@ -197,27 +196,25 @@ async function handleLogin() {
   try {
     loading.value = true
 
-    // 加密密码
+    // EncryptPassword
     let encryptedPassword
     try {
-      // 拼接验证码和密码
+ // CaptchaandPassword
       const captchaAndPassword = formData.value.captcha + formData.value.password
       encryptedPassword = sm2Encrypt(sm2PublicKey, captchaAndPassword)
     }
     catch (error) {
-      console.error('密码加密失败:', error)
+      console.error('PasswordEncryptfailed:', error)
       toast.warning(t('sm2.encryptionFailed'))
       return
     }
-
-    // 构建登录数据
+ // buildLog inData
     const loginData: LoginData = {
       username: '',
       password: encryptedPassword,
       captchaId: formData.value.captchaId,
     }
-
-    // 如果是手机号登录，将区号+手机号拼接到username字段
+ // If it isMobile numberLog in，willCountry code+Mobile numbertousernameField
     if (loginType.value === 'mobile') {
       loginData.username = `${selectedAreaCode.value}${formData.value.mobile}`
     }
@@ -226,13 +223,12 @@ async function handleLogin() {
     }
 
     const response = await login(loginData)
-    // 存储token
+    // Storagetoken
     uni.setStorageSync('token', JSON.stringify(response))
     await userStore.getUserInfo()
 
     toast.success(t('message.loginSuccess'))
-
-    // 跳转到主页
+ // Redirect topage
     setTimeout(() => {
       uni.reLaunch({
         url: '/pages/index/index',
@@ -240,7 +236,7 @@ async function handleLogin() {
     }, 1000)
   }
   catch (error: any) {
-    // 登录失败重新获取验证码
+    // Log infailedre-GetCaptcha
     refreshCaptcha()
   }
   finally {
@@ -248,25 +244,25 @@ async function handleLogin() {
   }
 }
 
-// 页面加载时获取验证码
+// PageLoadwhenGetCaptcha
 onLoad(() => {
   refreshCaptcha()
 })
 
-// 语言切换相关
+// Switch
 const showLanguageSheet = ref(false)
 const supportedLanguages = getSupportedLanguages()
 
-// 初始化国际化
+// Initialize
 initI18n()
 
-// 切换语言
+// Switch
 function handleLanguageChange(lang: Language) {
   changeLanguage(lang)
   showLanguageSheet.value = false
 }
 
-// 组件挂载时确保配置已加载
+// ComponentMountwhenEnsureConfigurationalreadyLoad
 onMounted(async () => {
   if (!configStore.config.name) {
     try {
@@ -293,16 +289,16 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 右上角按钮组 -->
+    <!-- Button -->
     <view class="top-right-buttons" :style="{ top: `${safeAreaInsets?.top + 10}px` }">
-      <!-- 语言切换按钮 -->
+      <!-- SwitchButton -->
       <view class="lang-btn" @click="showLanguageSheet = true">
         <text class="lang-text-icon">
           {{ t('login.selectLanguageTip') }}
         </text>
       </view>
 
-      <!-- 服务端设置按钮 -->
+      <!-- serverSettingsButton -->
       <view class="server-btn" @click="goToServerSetting">
         <wd-icon name="setting" custom-class="server-icon" />
       </view>
@@ -310,7 +306,7 @@ onMounted(async () => {
 
     <view class="form-container">
       <view class="form">
-        <!-- 手机号登录 -->
+        <!-- Mobile numberLog in -->
         <template v-if="loginType === 'mobile'">
           <view class="input-group">
             <view class="input-wrapper mobile-wrapper">
@@ -334,7 +330,7 @@ onMounted(async () => {
           </view>
         </template>
 
-        <!-- 用户名登录 -->
+        <!-- UsernameLog in -->
         <template v-else>
           <view class="input-group">
             <view class="input-wrapper">
@@ -407,7 +403,7 @@ onMounted(async () => {
           </text>
         </view>
 
-        <!-- 登录方式切换 -->
+        <!-- Log inmodeSwitch -->
         <view v-if="enableMobileLogin" class="login-type-switch">
           <view class="switch-tabs">
             <view
@@ -429,7 +425,7 @@ onMounted(async () => {
       </view>
     </view>
 
-    <!-- 区号选择弹窗 -->
+    <!-- Country codeSelectDialog -->
     <wd-action-sheet
       v-model="showAreaCodeSheet"
       :title="t('login.selectCountry')"
@@ -472,7 +468,7 @@ onMounted(async () => {
       </view>
     </wd-action-sheet>
 
-    <!-- 语言选择弹窗 -->
+    <!-- SelectDialog -->
     <wd-action-sheet
       v-model="showLanguageSheet"
       :title="t('login.selectLanguage')"
@@ -816,7 +812,7 @@ onMounted(async () => {
   }
 }
 
-// 区号选择弹窗样式
+// Country codeSelectDialogStyle
 .area-code-sheet {
   background: #ffffff;
   border-radius: 24rpx 24rpx 0 0;
@@ -913,7 +909,7 @@ onMounted(async () => {
     }
   }
 }
-// 右上角按钮组
+// Button
 .top-right-buttons {
   position: absolute;
   right: 20rpx;
@@ -922,7 +918,7 @@ onMounted(async () => {
   z-index: 999;
 }
 
-// 语言切换按钮
+// SwitchButton
 .lang-btn {
   width: 48rpx;
   height: 48rpx;
@@ -948,7 +944,7 @@ onMounted(async () => {
   }
 }
 
-// 服务端设置按钮
+// serverSettingsButton
 .server-btn {
   width: 48rpx;
   height: 48rpx;
@@ -974,7 +970,7 @@ onMounted(async () => {
   }
 }
 
-// 语言选择弹窗样式
+// SelectDialogStyle
 .language-sheet {
   background: #ffffff;
   border-radius: 24rpx 24rpx 0 0;

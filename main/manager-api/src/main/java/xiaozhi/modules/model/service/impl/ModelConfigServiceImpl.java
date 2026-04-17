@@ -91,7 +91,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         long pageSize = Long.parseLong(limit);
         Page<ModelConfigEntity> pageInfo = new Page<>(curPage, pageSize);
 
-        // addSort order规then：firstbyis_enableddescending，againbysortascending
+        // addSort orderrulethen：firstbyis_enableddescending，againbysortascending
         pageInfo.addOrder(OrderItem.desc("is_enabled"), OrderItem.asc("sort"));
 
         IPage<ModelConfigEntity> modelConfigEntityIPage = modelConfigDao.selectPage(
@@ -108,10 +108,10 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         // 1. parameterverification
         validateEditParameters(modelType, provideCode, id, modelConfigBodyDTO);
 
-        // 2. verificationmodel提供
+        // 2. verificationmodelprovide
         validateModelProvider(modelType, provideCode);
 
-        // 3. getoriginalconfiguration（not 经sensitivedataprocess）
+        // 3. getoriginalconfiguration（not sensitivedataprocess）
         ModelConfigEntity originalEntity = getOriginalConfigFromDb(id);
 
         // 4. verificationLLMconfiguration
@@ -126,7 +126,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         // 7. clearcache
         clearModelCache(id);
 
-        // 8. returnprocessafter data（containsensitivedata掩code）
+        // 8. returnprocessafter data（containsensitivedatamaskcode）
         return buildResponseDTO(modelConfigEntity);
     }
 
@@ -228,7 +228,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * verification编辑parameter
+     * verificationeditparameter
      */
     private void validateEditParameters(String modelType, String provideCode, String id,
             ModelConfigBodyDTO modelConfigBodyDTO) {
@@ -254,9 +254,9 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             throw new RenException(ErrorCode.PARAMS_GET_ERROR);
         }
         if (StringUtils.isBlank(modelConfigBodyDTO.getId())) {
-            // 参according to MP @TableId AutoUUID 策略use
+            // parameteraccording to MP @TableId AutoUUID strategyuse
             // com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator(UUID.replace("-",""))
-            // perform分配defaultModel ID
+            // performdefaultModel ID
             modelConfigBodyDTO.setId(DefaultIdentifierGenerator.getInstance().nextUUID(ModelConfigEntity.class));
         }
     }
@@ -281,7 +281,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * verificationmodel提供
+     * verificationmodelprovide
      */
     private void validateModelProvider(String modelType, String provideCode) {
         List<ModelProviderDTO> providerList = modelProviderService.getList(modelType, provideCode);
@@ -291,7 +291,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * fromdatalibrarygetoriginalconfiguration（not 经sensitivedataprocess）
+     * fromdatalibrarygetoriginalconfiguration（not sensitivedataprocess）
      */
     private ModelConfigEntity getOriginalConfigFromDb(String id) {
         ModelConfigEntity originalEntity = modelConfigDao.selectById(id);
@@ -337,7 +337,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             ModelConfigEntity originalEntity,
             String modelType,
             String id) {
-        // 1. copyoriginalentity，保留alloriginaldata（包括sensitiveinformation）
+        // 1. copyoriginalentity，reservealloriginaldata（includesensitiveinformation）
         ModelConfigEntity modelConfigEntity = ConvertUtils.sourceToTarget(originalEntity, ModelConfigEntity.class);
         modelConfigEntity.setId(id);
         modelConfigEntity.setModelType(modelType);
@@ -347,23 +347,23 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         modelConfigEntity.setSort(modelConfigBodyDTO.getSort());
         modelConfigEntity.setIsEnabled(modelConfigBodyDTO.getIsEnabled());
         modelConfigEntity.setRemark(modelConfigBodyDTO.getRemark());
-        // 3. processconfigurationJSON，onlyupdatenon-sensitivefieldand明确update sensitivefield
+        // 3. processconfigurationJSON，onlyupdatenon-sensitivefieldandclearexactupdate sensitivefield
         if (modelConfigBodyDTO.getConfigJson() != null && originalEntity.getConfigJson() != null) {
             JSONObject originalJson = originalEntity.getConfigJson();
-            JSONObject updatedJson = new JSONObject(originalJson); // 基于originalJSONperformupdate
+            JSONObject updatedJson = new JSONObject(originalJson); // basetooriginalJSONperformupdate
 
-            // 遍历update JSON，onlyupdatenon-sensitivefieldor确isupdate sensitivefield
+            // iterateupdate JSON，onlyupdatenon-sensitivefieldorexactisupdate sensitivefield
             for (String key : modelConfigBodyDTO.getConfigJson().keySet()) {
                 Object value = modelConfigBodyDTO.getConfigJson().get(key);
 
-                // ifYessensitivefield，needconfirmYesNo真 isupdate（beforeend传入 可canYes掩codeafter value）
+                // ifYessensitivefield，needconfirmYesNotrue isupdate（beforeendtransferin cancanYesmaskcodeafter value）
                 if (SensitiveDataUtils.isSensitiveField(key)) {
 
                     if (value instanceof String && !SensitiveDataUtils.isMaskedValue((String) value)) {
                         updatedJson.put(key, value);
                     }
                 } else if (value instanceof JSONObject) {
-                    // 递归process嵌套JSON
+                    // recursiveprocessnestedJSON
                     mergeJson(updatedJson, key, (JSONObject) value);
                 } else {
                     // non-sensitivefielddirectlyupdate
@@ -377,15 +377,15 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         return modelConfigEntity;
     }
 
-    // helper method：determinevalueYesNoYes掩codeformat
+    // helper method：determinevalueYesNoYesmaskcodeformat
     private boolean isMaskedValue(String value) {
         if (value == null)
             return false;
-        // 简determineYesNocontain掩code 特征（***）
+        // simpledetermineYesNocontainmaskcode specialfeature（***）
         return value.contains("***");
     }
 
-    // helper method：递归合andJSON，保留originalsensitivefield
+    // helper method：recursivemergeandJSON，reserveoriginalsensitivefield
     private void mergeJson(JSONObject original, String key, JSONObject updated) {
         if (!original.containsKey(key)) {
             original.put(key, new JSONObject());

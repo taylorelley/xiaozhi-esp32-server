@@ -70,7 +70,7 @@ public class LoginController {
     @PostMapping("/smsVerification")
     @Operation(summary = "SMSVerification code")
     public Result<Void> smsVerification(@RequestBody SmsVerificationDTO dto) {
-        // verification图形Verification code
+        // verificationgraphicVerification code
         boolean validate = captchaService.validate(dto.getCaptchaId(), dto.getCaptcha(), false);
         if (!validate) {
             throw new RenException(ErrorCode.SMS_CAPTCHA_ERROR);
@@ -103,7 +103,7 @@ public class LoginController {
         if (userDTO == null) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
-        // determinePasswordYesNo确，not one样then进入if
+        // determinePasswordYesNoexact，not onesamplethenadvanceinif
         if (!PasswordUtils.matches(login.getPassword(), userDTO.getPassword())) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
@@ -174,7 +174,7 @@ public class LoginController {
     }
 
     @PutMapping("/retrieve-password")
-    @Operation(summary = "find回Password")
+    @Operation(summary = "findreturnPassword")
     public Result<?> retrievePassword(@RequestBody RetrievePasswordDTO dto) {
         // YesNoenableMobile registration
         Boolean isMobileRegister = sysParamsService
@@ -215,7 +215,7 @@ public class LoginController {
     }
 
     @GetMapping("/pub-config")
-    @Operation(summary = "公共configuration")
+    @Operation(summary = "commonconfiguration")
     public Result<Map<String, Object>> pubConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("enableMobileRegister", sysParamsService

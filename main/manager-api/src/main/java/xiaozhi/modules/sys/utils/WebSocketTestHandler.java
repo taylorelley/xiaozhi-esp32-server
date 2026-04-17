@@ -20,7 +20,7 @@ public class WebSocketTestHandler implements WebSocketHandler {
         try {
             session.close();
         } catch (Exception e) {
-            // 忽略closeexception
+            // ignorecloseexception
         }
     }
 
@@ -36,7 +36,7 @@ public class WebSocketTestHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
-        // connectionclosewhennot 做任何process
+        // connectionclosewhennot do anyprocess
     }
 
     @Override

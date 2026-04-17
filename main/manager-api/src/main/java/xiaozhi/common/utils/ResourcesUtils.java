@@ -23,8 +23,8 @@ public class ResourcesUtils {
     private ResourceLoader resourceLoader;
 
     /**
-     * read取resourcesource，returnstring
-     * @param fileName resourcesourcepath：resources下start
+     * readgetresourcesource，returnstring
+     * @param fileName resourcesourcepath：resourcesbelowstart
      * @return string
      */
     public String loadString(String fileName)  {
@@ -37,7 +37,7 @@ public class ResourcesUtils {
                 luaScriptBuilder.append(line).append("\n");
             }
         }  catch (IOException e){
-            log.error("method：loadString()read取resourcesourcefailed--{}",e.getMessage());
+            log.error("method：loadString()readgetresourcesourcefailed--{}",e.getMessage());
             throw new RenException(ErrorCode.RESOURCE_READ_ERROR);
         }
         return luaScriptBuilder.toString();

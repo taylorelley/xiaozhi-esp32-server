@@ -37,7 +37,7 @@ public class TimbreEntity {
     @Schema(description = "referenceaudiopath")
     private String referenceAudio;
 
-    @Schema(description = "參考text")
+    @Schema(description = "referencetext")
     private String referenceText;
 
     @Schema(description = "Sort order")

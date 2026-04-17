@@ -32,7 +32,7 @@ public class XssFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        // 放row
+        // placerow
         if (shouldNotFilter(httpServletRequest)) {
             chain.doFilter(request, response);
 
@@ -43,7 +43,7 @@ public class XssFilter implements Filter {
     }
 
     private boolean shouldNotFilter(HttpServletRequest request) {
-        // 放rownot filter URL
+        // placerownot filter URL
         return properties.getExcludeUrls().stream()
                 .anyMatch(excludeUrl -> pathMatcher.match(excludeUrl, request.getServletPath()));
     }

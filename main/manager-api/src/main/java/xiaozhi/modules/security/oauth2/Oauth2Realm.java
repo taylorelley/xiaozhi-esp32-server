@@ -48,7 +48,7 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 授权(verificationPermissionwhencall)
+     * grantpermission(verificationPermissionwhencall)
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -86,14 +86,14 @@ public class Oauth2Realm extends AuthorizingRealm {
         // queryUser information
         SysUserEntity userEntity = shiroService.getUser(tokenEntity.getUserId());
 
-        // convert成UserDetailobject
+        // convertUserDetailobject
         UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
 
         userDetail.setToken(accessToken);
 
-        // 账number锁定
+        // accountnumberlock
         if (userDetail.getStatus() == null) {
-            logger.error("账numberstatusexception，status cannot be empty");
+            logger.error("accountnumberstatusexception，status cannot be empty");
             throw new DisabledAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_DISABLE));
         }
 

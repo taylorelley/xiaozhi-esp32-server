@@ -1,4 +1,4 @@
-// 智能体列表数据类型
+// Agent listDataType
 export interface Agent {
   id: string
   agentName: string
@@ -14,12 +14,12 @@ export interface Agent {
   tags: Record<string, string>[]
 }
 
-// 智能体创建数据类型
+// AgentCreateDataType
 export interface AgentCreateData {
   agentName: string
 }
 
-// 智能体详情数据类型
+// AgentdetailsDataType
 export interface AgentDetail {
   id: string
   userId: string
@@ -67,7 +67,7 @@ export interface AgentFunction {
   paramInfo: Record<string, string | number | boolean> | null
 }
 
-// 角色模板数据类型
+// RoleTemplateDataType
 export interface RoleTemplate {
   id: string
   agentCode: string
@@ -92,7 +92,7 @@ export interface RoleTemplate {
   updatedAt: string
 }
 
-// 模型选项数据类型
+// ModelOptionDataType
 export interface ModelOption {
   id: string
   modelName: string

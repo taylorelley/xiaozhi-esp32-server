@@ -52,9 +52,9 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     private final RestTemplate restTemplate;
     private final SysParamsService sysParamsService;
     private final AgentChatHistoryService agentChatHistoryService;
-    // Springboot提供 编程transactionclass
+    // Springbootprovide editprocesstransactionclass
     private final TransactionTemplate transactionTemplate;
-    // 识别度
+    // identify
     private final Double RECOGNITION = 0.5;
     private final Executor taskExecutor;
 
@@ -73,10 +73,10 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     public boolean insert(AgentVoicePrintSaveDTO dto) {
         // getaudio data
         ByteArrayResource resource = getVoicePrintAudioWAV(dto.getAgentId(), dto.getAudioId());
-        // 识别one下thisvoiceYesNoregister
+        // identifyonebelowthisvoiceYesNoregister
         IdentifyVoicePrintResponse response = identifyVoicePrint(dto.getAgentId(), resource);
         if (response != null && response.getScore() > RECOGNITION) {
-            // according to识别出 Voiceprint IDquerycorresponding User information
+            // according toidentifyout Voiceprint IDquerycorresponding User information
             AgentVoicePrintEntity existingVoicePrint = baseMapper.selectById(response.getSpeakerId());
             String existingUserName = existingVoicePrint != null ? existingVoicePrint.getSourceName() : "Unknownuser";
             throw new RenException(ErrorCode.VOICEPRINT_ALREADY_REGISTERED, existingUserName);
@@ -87,7 +87,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
             try {
                 // saveVoiceprint information
                 int row = baseMapper.insert(entity);
-                // insertoneitemsdata，影响 datanot etc.于1Description出现，savequestion回滚
+                // insertoneitemsdata，affect datanot etc.to1Descriptionoutcurrent，savequestionrollback
                 if (row != 1) {
                     status.setRollbackOnly(); // mark transaction rollback
                     return false;
@@ -127,7 +127,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                 throw new RenException(ErrorCode.VOICEPRINT_DELETE_ERROR);
             }
         }));
-        // datalibraryvoiceprintdatadeletesuccessonly继续executedeletevoiceprintservice data
+        // datalibraryvoiceprintdatadeletesuccessonlycontinuecontinueexecutedeletevoiceprintservice data
         if(b){
             taskExecutor.execute(()-> {
                 try {
@@ -147,7 +147,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                 .eq(AgentVoicePrintEntity::getAgentId, agentId)
                 .eq(AgentVoicePrintEntity::getCreator, userId));
         return list.stream().map(entity -> {
-            // 遍历convert成AgentVoicePrintVOtype
+            // iterateconvertAgentVoicePrintVOtype
             return ConvertUtils.sourceToTarget(entity, AgentVoicePrintVO.class);
         }).toList();
 
@@ -167,17 +167,17 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
         // getagentid
         String agentId = agentVoicePrintEntity.getAgentId();
         ByteArrayResource resource;
-        // audioIdnot etc.于empty，andaudioIdand之before save audioidnot one样，thenneedre-newgetaudio datageneratevoiceprint
+        // audioIdnot etc.toempty，andaudioIdandofbefore save audioidnot onesample，thenneedre-newgetaudio datageneratevoiceprint
         if (!StringUtils.isEmpty(audioId) && !audioId.equals(agentVoicePrintEntity.getAudioId())) {
             resource = getVoicePrintAudioWAV(agentId, audioId);
 
-            // 识别one下thisvoiceYesNoregister
+            // identifyonebelowthisvoiceYesNoregister
             IdentifyVoicePrintResponse response = identifyVoicePrint(agentId, resource);
-            // return分number高于RECOGNITIONDescriptionthisvoiceprintalready经has
+            // returnnumberhightoRECOGNITIONDescriptionthisvoiceprintalreadyhas
             if (response != null && response.getScore() > RECOGNITION) {
-                // determinereturn idifnot Yesneed toupdate voiceprintid，Descriptionthisvoiceprintid，现inneed toregister voicealready经storeinandnot Yes原来 voiceprint，not allowupdate
+                // determinereturn idifnot Yesneed toupdate voiceprintid，Descriptionthisvoiceprintid，currentinneed toregister voicealreadystoreinandnot Yesoriginalcome voiceprint，not allowupdate
                 if (!response.getSpeakerId().equals(dto.getId())) {
-                    // according to识别出 Voiceprint IDquerycorresponding User information
+                    // according toidentifyout Voiceprint IDquerycorresponding User information
                     AgentVoicePrintEntity existingVoicePrint = baseMapper.selectById(response.getSpeakerId());
                     String existingUserName = existingVoicePrint != null ? existingVoicePrint.getSourceName() : "Unknownuser";
                     throw new RenException(ErrorCode.VOICEPRINT_UPDATE_NOT_ALLOWED, existingUserName);
@@ -197,7 +197,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                 }
                 if (resource != null) {
                     String id = entity.getId();
-                    // first注销之beforethisvoiceprintid上 voiceprintvector
+                    // firstunregisteredbeforethisvoiceprintidup voiceprintvector
                     cancelVoicePrint(id);
                     // sendregistervoiceprintrequest
                     registerVoicePrint(id, resource);
@@ -215,7 +215,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     }
 
     /**
-     * get生纹interfaceURIobject
+     * getbiometricinterfaceURIobject
      *
      * @return URIobject
      */
@@ -275,11 +275,11 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
         }
         // gettoaudio data
         byte[] audio = agentChatAudioService.getAudio(audioId);
-        // ifAudio data is empty directly报错not perform下去
+        // ifAudio data is empty directlyerror reportnot performbelowgo
         if (audio == null || audio.length == 0) {
             throw new RenException(ErrorCode.VOICEPRINT_AUDIO_EMPTY);
         }
-        // willbytearray包装asresourcesource，return
+        // willbytearraypackageasresourcesource，return
         return new ByteArrayResource(audio) {
             @Override
             public String getFilename() {
@@ -295,7 +295,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
      * @param resource voiceprintaudioresourcesource
      */
     private void registerVoicePrint(String id, ByteArrayResource resource) {
-        // processVoiceprint interface address，getbefore缀
+        // processVoiceprint interface address，getbeforefix
         URI uri = getVoicePrintURI();
         String baseUrl = getBaseUrl(uri);
         String requestUrl = baseUrl + "/voiceprint/register";
@@ -326,7 +326,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     }
 
     /**
-     * send注销voiceprint request
+     * sendunregistervoiceprint request
      * 
      * @param voicePrintId voiceprintid
      */
@@ -356,11 +356,11 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     }
 
     /**
-     * send识别voiceprinthttprequest
+     * sendidentifyvoiceprinthttprequest
      * 
      * @param agentId  agentid
      * @param resource voiceprintaudioresourcesource
-     * @return return识别data
+     * @return returnidentifydata
      */
     private IdentifyVoicePrintResponse identifyVoicePrint(String agentId, ByteArrayResource resource) {
 
@@ -370,11 +370,11 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                         .select(AgentVoicePrintEntity::getId)
                         .eq(AgentVoicePrintEntity::getAgentId, agentId));
 
-        // voiceprintcountas0，Descriptionstill没registervoiceprintnot need发生识别request
+        // voiceprintcountas0，Descriptionstillnoregistervoiceprintnot needoccuridentifyrequest
         if (agentVoicePrintList.isEmpty()) {
             return null;
         }
-        // processVoiceprint interface address，getbefore缀
+        // processVoiceprint interface address，getbeforefix
         URI uri = getVoicePrintURI();
         String baseUrl = getBaseUrl(uri);
         String requestUrl = baseUrl + "/voiceprint/identify";

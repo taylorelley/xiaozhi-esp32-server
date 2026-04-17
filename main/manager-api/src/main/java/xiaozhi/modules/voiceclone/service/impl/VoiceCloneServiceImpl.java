@@ -84,7 +84,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             throw new RenException(ErrorCode.VOICE_CLONE_MODEL_TYPE_NOT_FOUND);
         }
 
-        // checkVoice IDYesNoalready经isuse
+        // checkVoice IDYesNoalreadyisuse
         for (String voiceId : dto.getVoiceIds()) {
             if (StringUtils.isBlank(voiceId)) {
                 continue;
@@ -106,7 +106,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
 
         // batchsave
         List<VoiceCloneEntity> batchInsertList = new ArrayList<>();
-        // 遍历select Voice ID，as每Voice IDcreateoneitemsrecord
+        // iterateselect Voice ID，aseveryVoice IDcreateoneitemsrecord
         int index = 0;
         String namePrefix = DateUtils.format(new Date(), "MMddHHmm");
         for (String voiceId : dto.getVoiceIds()) {
@@ -170,7 +170,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             dto.setUserName(sysUserService.getByUserId(entity.getUserId()).getUsername());
         }
         
-        // ensuretrainStatusfieldis确set，beforeendneedthisfield来determineYesNoascloneaudio
+        // ensuretrainStatusfieldisexactset，beforeendneedthisfieldcomedetermineYesNoascloneaudio
         dto.setTrainStatus(entity.getTrainStatus());
 
         return dto;
@@ -197,7 +197,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
         List<SysUserEntity> userList = sysUserDao.selectList(new QueryWrapper<SysUserEntity>().in("id", userIdList));
         Map<Long, String> userMap = userList.stream().collect(Collectors.toMap(SysUserEntity::getId, SysUserEntity::getUsername));
 
-        // convert每entityasDTO
+        // converteveryentityasDTO
         for (VoiceCloneEntity entity : entityList) {
             VoiceCloneResponseDTO dto = ConvertUtils.sourceToTarget(entity, VoiceCloneResponseDTO.class);
 
@@ -211,7 +211,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
                 dto.setUserName(userMap.get(entity.getUserId()));
             }
             
-            // ensuretrainStatusfieldis确set，beforeendneedthisfield来determineYesNoascloneaudio
+            // ensuretrainStatusfieldisexactset，beforeendneedthisfieldcomedetermineYesNoascloneaudio
             dto.setTrainStatus(entity.getTrainStatus());
 
             // setYesNohasaudio data
@@ -232,7 +232,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             throw new RenException(ErrorCode.VOICE_CLONE_RECORD_NOT_EXIST);
         }
 
-        // read取audio fileand转asbytearray
+        // readgetaudio fileandconvertasbytearray
         byte[] voiceData = voiceFile.getBytes();
 
         // updatevoicefield
@@ -307,7 +307,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
     }
 
     /**
-     * call火山引擎performvoice复刻training
+     * callHuoshan Engineperformvoicere-momenttraining
      * 
      * @param config Model configuration
      * @param entity voiceclonerecordentity

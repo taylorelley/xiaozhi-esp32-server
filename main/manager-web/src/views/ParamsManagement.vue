@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        <!-- 新增/编辑参数对话框 -->
+        <!-- Add/EditParameterDialog -->
         <param-dialog ref="paramDialog" :title="dialogTitle" :visible.sync="dialogVisible" :form="paramForm"
             @submit="handleSubmit" @cancel="dialogVisible = false" />
         <el-footer>
@@ -223,7 +223,7 @@ export default {
         },
         handleSubmit(form) {
             if (form.id) {
-                // 更新参数
+                // UpdateParameter
                 Api.admin.updateParam(form, ({ data }) => {
                     this.dialogVisible = false;
                     this.fetchParams();
@@ -236,13 +236,13 @@ export default {
                         message: data.msg || this.$t('paramManagement.updateFailed'),
                         showClose: true
                     });
-                    // 调用ParamDialog的resetSaving方法重置保存状态
+ // CallParamDialog of resetSavingMethodResetSaveStatus
                     if (this.$refs.paramDialog && typeof this.$refs.paramDialog.resetSaving === 'function') {
                         this.$refs.paramDialog.resetSaving();
                     }
                 });
             } else {
-                // 新增参数
+                // AddParameter
                 Api.admin.addParam(form, ({ data }) => {
                     if (data.code === 0) {
                         this.dialogVisible = false;
@@ -256,7 +256,7 @@ export default {
                             message: data.msg || this.$t('paramManagement.addFailed'),
                             showClose: true
                         });
-                        // 调用ParamDialog的resetSaving方法重置保存状态
+ // CallParamDialog of resetSavingMethodResetSaveStatus
                         if (this.$refs.paramDialog && typeof this.$refs.paramDialog.resetSaving === 'function') {
                             this.$refs.paramDialog.resetSaving();
                         }
@@ -381,7 +381,7 @@ export default {
 }
 
 .main-wrapper {
-    // 顶部 63px 底部 35px 查询72px
+ // Top 63px Bottom 35px Query72px
     height: calc(100vh - 63px - 35px - 72px);
     margin: 0 22px;
     border-radius: 15px;

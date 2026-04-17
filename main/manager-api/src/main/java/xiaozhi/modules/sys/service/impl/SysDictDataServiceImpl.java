@@ -132,14 +132,14 @@ public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysD
      * @param sysDictDataList Dictionary typecollection
      */
     private void setUserName(List<SysDictDataVO> sysDictDataList) {
-        // 收collectionalluser ID
+        // receivecollectionalluser ID
         Set<Long> userIds = sysDictDataList.stream().flatMap(vo -> Stream.of(vo.getCreator(), vo.getUpdater()))
                 .filter(Objects::nonNull).collect(Collectors.toSet());
 
         // setupdateandCreatorname
         if (!userIds.isEmpty()) {
             List<SysUserEntity> sysUserEntities = sysUserDao.selectBatchIds(userIds);
-            // List转成Map，Map<Long, String>
+            // ListconvertMap，Map<Long, String>
             Map<Long, String> userNameMap = sysUserEntities.stream().collect(Collectors.toMap(SysUserEntity::getId,
                     SysUserEntity::getUsername, (existing, replacement) -> existing));
 

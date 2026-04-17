@@ -37,7 +37,7 @@ public class DataFilterInterceptor implements InnerInterceptor {
             return;
         }
 
-        // 拼接newSQL
+        // concatenatenewSQL
         String buildSql = getSelect(boundSql.getSql(), scope);
 
         // re-writeSQL

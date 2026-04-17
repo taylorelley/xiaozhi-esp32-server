@@ -26,7 +26,7 @@ public class SysParamsEntity extends BaseEntity {
      */
     private String paramValue;
     /**
-     * valuetype：string-string，number-number，boolean-布尔，array-array
+     * valuetype：string-string，number-number，boolean-，array-array
      */
     private String valueType;
     /**

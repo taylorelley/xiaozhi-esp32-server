@@ -12,7 +12,7 @@ import xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapterFactory;
 public class KnowledgeBaseConfig {
 
     /**
-     * 提供KnowledgeBaseAdapterFactory Beanexample
+     * provideKnowledgeBaseAdapterFactory Beanexample
      * @return KnowledgeBaseAdapterFactoryexample
      */
     @Bean

@@ -60,9 +60,9 @@ public class DocumentDTO implements Serializable {
     @Schema(description = "updatetime")
     private Date updatedAt;
 
-    @Schema(description = "uploadprogress (虚拟field)")
+    @Schema(description = "uploadprogress (virtualfield)")
     private Double progress;
 
-    @Schema(description = "缩略图/预览图 (虚拟field)")
+    @Schema(description = "thumbnail/preview image (virtualfield)")
     private String thumbnail;
 }

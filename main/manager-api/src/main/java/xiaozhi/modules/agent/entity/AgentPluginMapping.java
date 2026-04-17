@@ -44,7 +44,7 @@ public class AgentPluginMapping implements Serializable {
     @Schema(description = "pluginparameter(Json)format")
     private String paramInfo;
 
-    // 冗余field，used for方便inaccording toidquerypluginwhen，foraccording to查出plugin Provider_code,详见daolayerxmlfile
+    // redundantfield，used forconvenientinaccording toidquerypluginwhen，foraccording toqueryoutplugin Provider_code,see detailsdaolayerxmlfile
     @TableField(exist = false)
     @Schema(description = "pluginprovider_code, correspondingtableai_model_provider")
     private String providerCode;

@@ -21,7 +21,7 @@ public interface AgentVoicePrintService {
     boolean insert(AgentVoicePrintSaveDTO dto);
 
     /**
-     * deleteagent 指 voiceprint
+     * deleteagent point voiceprint
      *
      * @param userId       current logged-in userid
      * @param voicePrintId voiceprintid
@@ -39,7 +39,7 @@ public interface AgentVoicePrintService {
     List<AgentVoicePrintVO> list(Long userId, String agentId);
 
     /**
-     * updateagent 指 voiceprintdata
+     * updateagent point voiceprintdata
      *
      * @param userId current logged-in userid
      * @param dto    update voiceprint data

@@ -35,7 +35,7 @@ public class ModelConfigDTO implements Serializable {
     @Schema(description = "Model configuration(JSONformat)")
     private JSONObject configJson;
 
-    @Schema(description = "官方documentlink")
+    @Schema(description = "officialdocumentlink")
     private String docLink;
 
     @Schema(description = "Remark")

@@ -3,7 +3,7 @@ package xiaozhi.common.constant;
 import lombok.Getter;
 
 /**
- * 常量
+ * constant
  * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
@@ -25,15 +25,15 @@ public interface Constant {
      */
     String USER_KEY = "userId";
     /**
-     * Menu根节点identifier
+     * Menurootnodeidentifier
      */
     Long MENU_ROOT = 0L;
     /**
-     * department根节点identifier
+     * departmentrootnodeidentifier
      */
     Long DEPT_ROOT = 0L;
     /**
-     * dataDictionary根节点identifier
+     * dataDictionaryrootnodeidentifier
      */
     Long DICT_ROOT = 0L;
     /**
@@ -77,7 +77,7 @@ public interface Constant {
     String ORDER = "order";
 
     /**
-     * requestheader授权identifier
+     * requestheadergrantpermissionidentifier
      */
     String AUTHORIZATION = "Authorization";
 
@@ -117,12 +117,12 @@ public interface Constant {
     String SERVER_ALLOW_USER_REGISTER = "server.allow_user_register";
 
     /**
-     * 下发六bitVerification codewhen显示 control面板Address
+     * belowsendsixbitVerification codewhendisplay controlsideboardAddress
      */
     String SERVER_FRONTED_URL = "server.fronted_url";
 
     /**
-     * path分割符
+     * pathcutsymbol
      */
     String FILE_EXTENSION_SEG = ".";
 
@@ -142,7 +142,7 @@ public interface Constant {
     String SERVER_MQTT_SECRET = "server.mqtt_signature_key";
 
     /**
-     * WebSocketauthentication开关
+     * WebSocketauthenticationopenrelated
      */
     String SERVER_AUTH_ENABLED = "server.auth.enabled";
 
@@ -152,7 +152,7 @@ public interface Constant {
     String MEMORY_NO_MEM = "Memory_nomem";
 
     /**
-     * only上报Chat history（not summary memory）
+     * onlyreportChat history（not summary memory）
      */
     String MEMORY_MEM_REPORT_ONLY = "Memory_mem_report_only";
 
@@ -167,7 +167,7 @@ public interface Constant {
     String MEMORY_POWERMEM = "Memory_powermem";
 
     /**
-     * 火山引擎双声道voiceclone
+     * Huoshan Enginedual channelvoiceclone
      */
     String VOICE_CLONE_HUOSHAN_DOUBLE_STREAM = "huoshan_double_stream";
 
@@ -178,11 +178,11 @@ public interface Constant {
 
     enum SysBaseParam {
         /**
-         * ICP备案number
+         * ICPrecordnumber
          */
         BEIAN_ICP_NUM("server.beian_icp_num"),
         /**
-         * GA备案number
+         * GArecordnumber
          */
         BEIAN_GA_NUM("server.beian_ga_num"),
         /**
@@ -238,19 +238,19 @@ public interface Constant {
      */
     enum SysMSMParam {
         /**
-         * 阿in云授权keyID
+         * incloudgrantpermissionkeyID
          */
         ALIYUN_SMS_ACCESS_KEY_ID("aliyun.sms.access_key_id"),
         /**
-         * 阿in云授权key
+         * incloudgrantpermissionkey
          */
         ALIYUN_SMS_ACCESS_KEY_SECRET("aliyun.sms.access_key_secret"),
         /**
-         * 阿in云SMSsignature
+         * incloudSMSsignature
          */
         ALIYUN_SMS_SIGN_NAME("aliyun.sms.sign_name"),
         /**
-         * 阿in云SMStemplate
+         * incloudSMStemplate
          */
         ALIYUN_SMS_SMS_CODE_TEMPLATE_CODE("aliyun.sms.sms_code_template_code"),
         /**
@@ -322,7 +322,7 @@ public interface Constant {
     public static final String VERSION = "0.9.2";
 
     /**
-     * no效firmwareURL
+     * noeffectivefirmwareURL
      */
     String INVALID_FIRMWARE_URL = "http://xiaozhi.server.com:8002/xiaozhi/otaMag/download/NOT_ACTIVATED_FIRMWARE_THIS_IS_A_INVALID_URL";
 
@@ -331,7 +331,7 @@ public interface Constant {
      */
     enum DictType {
         /**
-         * mobile区number
+         * mobileareanumber
          */
         MOBILE_AREA("MOBILE_AREA");
 

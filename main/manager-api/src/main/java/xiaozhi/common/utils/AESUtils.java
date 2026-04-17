@@ -59,10 +59,10 @@ public class AESUtils {
     }
 
     /**
-     * 填充keytospecifiedlength（16、24or32bit）
+     * paddingkeytospecifiedlength（16、24or32bit）
      * 
      * @param keyBytes originalkeybytearray
-     * @return 填充after keybytearray
+     * @return paddingafter keybytearray
      */
     private static byte[] padKey(byte[] keyBytes) {
         int keyLength = keyBytes.length;
@@ -70,7 +70,7 @@ public class AESUtils {
             return keyBytes;
         }
 
-        // ifkeylengthnot 足，用0填充；if超，截取before32bit
+        // ifkeylengthnot enough，use0padding；ifexceed，cut offgetbefore32bit
         byte[] paddedKey = new byte[32];
         System.arraycopy(keyBytes, 0, paddedKey, 0, Math.min(keyLength, 32));
         return paddedKey;

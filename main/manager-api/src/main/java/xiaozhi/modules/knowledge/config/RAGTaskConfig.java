@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Knowledge basemodule定whentaskconfiguration
- * enable Spring Schedule can力
+ * Knowledge basemodulewhentaskconfiguration
+ * enable Spring Schedule canpower
  */
 @Configuration
 @EnableScheduling

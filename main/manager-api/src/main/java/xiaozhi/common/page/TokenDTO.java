@@ -6,12 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 令牌information
+ * tokeninformation
  *
  * @author Jack
  */
 @Data
-@Schema(description = "令牌information")
+@Schema(description = "tokeninformation")
 public class TokenDTO implements Serializable {
 
     @Schema(description = "Password")
@@ -20,6 +20,6 @@ public class TokenDTO implements Serializable {
     @Schema(description = "Expiration time")
     private int expire;
 
-    @Schema(description = "client指纹")
+    @Schema(description = "clientfingerprint")
     private String clientHash;
 }

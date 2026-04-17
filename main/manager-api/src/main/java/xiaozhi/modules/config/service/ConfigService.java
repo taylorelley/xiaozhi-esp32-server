@@ -15,7 +15,7 @@ public interface ConfigService {
      * getagentModel configuration
      * 
      * @param macAddress     MACAddress
-     * @param selectedModule clientalreadyexample化 model
+     * @param selectedModule clientalreadyexample model
      * @return Model configurationinformation
      */
     Map<String, Object> getAgentModels(String macAddress, Map<String, String> selectedModule);

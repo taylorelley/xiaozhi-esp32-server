@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * device解绑table
+ * deviceunbindtable
  */
 @Data
-@Schema(description = "device解绑table")
+@Schema(description = "deviceunbindtable")
 public class DeviceUnBindDTO implements Serializable {
 
     @Schema(description = "Device ID")
