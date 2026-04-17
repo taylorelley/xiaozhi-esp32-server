@@ -1,0 +1,22 @@
+# Test-only dependencies for the xiaozhi-server Python project.
+#
+# We deliberately avoid pulling in the full production requirements (torch,
+# funasr, sherpa_onnx, vosk, mem0ai, etc.) so that CI runs quickly and
+# stays reliable. The subset listed here is enough to exercise the
+# config loader, auth managers, text utilities, and related pure-Python
+# helpers under main/xiaozhi-server/tests/.
+
+pytest==8.3.3
+pytest-asyncio==0.23.8
+pytest-mock==3.14.0
+pytest-cov==5.0.0
+ruff==0.6.9
+respx==0.21.1
+
+# Minimal runtime deps needed to import the modules under test.
+PyYAML==6.0.2
+httpx==0.28.1
+PyJWT==2.10.1
+cryptography==43.0.1
+cnlunar==0.2.0
+loguru==0.7.3
