@@ -416,22 +416,22 @@ class TTSProvider(TTSProviderBase):
             self._monitor_task = None
 
     def to_tts(self, text: str) -> list:
-        """非流式TTS处理，用于测试及保存音频文件的场景"""
+        """Non-streaming TTS processing, used for testing and saving audio file scenarios."""
         try:
-            # 创建新的事件循环
+            # Create a new event loop
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
-            # 存储音频数据
+            # Store audio data
             audio_data = []
 
             async def _generate_audio():
-                # 生成认证URL
+                # Generate authentication URL
                 auth_url = XunfeiWSAuth.create_auth_url(
                     self.api_key, self.api_secret, self.api_url
                 )
 
-                # 建立WebSocket连接
+                # Establish WebSocket connection
                 ws = await websockets.connect(
                     auth_url,
                     ping_interval=30,
@@ -469,17 +469,17 @@ class TTSProvider(TTSProviderBase):
                                             callback=lambda opus: audio_data.append(opus)
                                         )
                                     except Exception as e:
-                                        logger.bind(tag=TAG).error(f"处理音频数据失败: {e}")
+                                        logger.bind(tag=TAG).error(f"Failed to process audio data: {e}")
                                 elif status == 2:
                                     task_finished = True
-                                    logger.bind(tag=TAG).debug("TTS任务完成")
+                                    logger.bind(tag=TAG).debug("TTS task complete")
 
                         else:
-                            message = header.get("message", "未知错误")
-                            raise Exception(f"合成失败: {code} - {message}")
+                            message = header.get("message", "Unknown error")
+                            raise Exception(f"Synthesis failed: {code} - {message}")
 
                 finally:
-                    # 清理资源
+                    # Clean up resources
                     try:
                         await ws.close()
                     except:
@@ -490,16 +490,16 @@ class TTSProvider(TTSProviderBase):
 
             return audio_data
         except Exception as e:
-            logger.bind(tag=TAG).error(f"生成音频数据失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to generate audio data: {str(e)}")
             return []
 
     def audio_to_opus_data_stream(
         self, audio_file_path, callback: Callable[[Any], Any] = None
     ):
-        """重写父类方法：使用独立的临时编码器处理音频文件，避免与TTS流式编码器并发冲突。
-        双流式TTS中，monitor任务在event loop线程接收TTS音频并使用self.opus_encoder编码，
-        同时tts_text_priority_thread处理音乐文件也使用self.opus_encoder，
-        共享的encoder.buffer非线程安全，并发访问会导致SILK resampler断言失败。
+        """Override parent method: use an independent temporary encoder to process audio files, avoiding concurrency conflicts with the TTS streaming encoder.
+        In dual-stream TTS, the monitor task on the event loop thread receives TTS audio and uses self.opus_encoder to encode,
+        while tts_text_priority_thread also uses self.opus_encoder to handle music files.
+        The shared encoder.buffer is not thread-safe, and concurrent access would cause SILK resampler assertion failures.
         """
         from core.utils.util import audio_to_data_stream
 
@@ -512,7 +512,7 @@ class TTSProvider(TTSProviderBase):
         )
 
     def _build_base_request(self, status, text=" "):
-        """构建基础请求结构"""
+        """Build the base request structure."""
         return {
             "header": {
                 "app_id": self.app_id,

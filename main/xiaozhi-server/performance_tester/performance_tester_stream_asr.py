@@ -17,7 +17,7 @@ import hashlib
 from datetime import datetime
 from wsgiref.handlers import format_date_time
 from time import mktime
-description = "流式ASR首词延迟测试"
+description = "Streaming ASR first-word latency test"
 try:
     import dashscope
 except ImportError:
@@ -50,15 +50,15 @@ class BaseASRTester:
         raise NotImplementedError
 
     def _calculate_result(self, service_name, latencies, test_count):
-        """计算测试结果（修复：正确处理None值，剔除失败测试）"""
-        # 剔除None值（失败的测试）和无效延迟，只统计有效延迟
+        """Calculate the test result (fix: properly handles None values, excludes failed runs)"""
+        # Exclude None values (failed runs) and invalid latencies; only tally valid latencies
         valid_latencies = [l for l in latencies if l is not None and l > 0]
         if valid_latencies:
             avg_latency = sum(valid_latencies) / len(valid_latencies)
-            status = f"成功（{len(valid_latencies)}/{test_count}次有效）"
+            status = f"Success ({len(valid_latencies)}/{test_count} runs valid)"
         else:
             avg_latency = 0
-            status = "失败: 所有测试均失败"
+            status = "Failure: all runs failed"
         return {"name": service_name, "latency": avg_latency, "status": status}
 
 
@@ -76,7 +76,7 @@ class DoubaoStreamASRTester(BaseASRTester):
         reserved_data=0x00,
         extension_header: bytes = b"",
     ):
-        """生成协议头（修复：使用正确的Header格式）"""
+        """Generate the protocol header (fix: use the correct header format)"""
         header = bytearray()
         header_size = int(len(extension_header) / 4) + 1
         header.append((version << 4) | header_size)
@@ -87,21 +87,21 @@ class DoubaoStreamASRTester(BaseASRTester):
         return header
 
     def _generate_audio_default_header(self):
-        """生成音频数据Header"""
+        """Generate the audio data header"""
         return self._generate_header(
             version=0x01,
             message_type=0x02,
-            message_type_specific_flags=0x00,  # 普通音频帧
+            message_type_specific_flags=0x00,  # normal audio frame
             serial_method=0x01,
             compression_type=0x01,
         )
 
     def _generate_last_audio_header(self):
-        """生成最后一帧音频的Header（标记音频结束）"""
+        """Generate the last audio frame header (marks end of audio)"""
         return self._generate_header(
             version=0x01,
             message_type=0x02,
-            message_type_specific_flags=0x02,  # 0x02表示这是最后一帧
+            message_type_specific_flags=0x02,  # 0x02 indicates this is the last frame
             serial_method=0x01,
             compression_type=0x01,
         )
@@ -109,7 +109,7 @@ class DoubaoStreamASRTester(BaseASRTester):
     def _parse_response(self, res: bytes) -> dict:
         try:
             if len(res) < 4:
-                return {"error": "响应数据长度不足"}
+                return {"error": "Response data length is insufficient"}
             header = res[:4]
             message_type = header[1] >> 4
             if message_type == 0x0F:
@@ -125,15 +125,15 @@ class DoubaoStreamASRTester(BaseASRTester):
                 json_data = res[12:].decode("utf-8")
                 return {"payload_msg": json.loads(json_data)}
             except (UnicodeDecodeError, json.JSONDecodeError):
-                return {"error": "JSON解析失败"}
+                return {"error": "JSON parsing failed"}
         except Exception:
-            return {"error": "解析响应失败"}
+            return {"error": "Failed to parse response"}
 
     async def test(self, test_count=5):
         if not self.test_audio_files:
-            return {"name": "豆包流式ASR", "latency": 0, "status": "失败: 未找到测试音频"}
+            return {"name": "Doubao streaming ASR", "latency": 0, "status": "Failure: no test audio found"}
         if not self.asr_config:
-            return {"name": "豆包流式ASR", "latency": 0, "status": "失败: 未配置"}
+            return {"name": "Doubao streaming ASR", "latency": 0, "status": "Failure: not configured"}
 
         latencies = []
         for i in range(test_count):
@@ -192,15 +192,15 @@ class DoubaoStreamASRTester(BaseASRTester):
                     init_res = await ws.recv()
                     result = self._parse_response(init_res)
                     if "code" in result and result["code"] != 1000:
-                        raise Exception(f"初始化失败: {result.get('payload_msg', {}).get('error', '未知错误')}")
+                        raise Exception(f"Initialization failed: {result.get('payload_msg', {}).get('error', 'Unknown error')}")
 
                     audio_data = self.test_audio_files[0]['data']
                     if audio_data.startswith(b'RIFF'):
                         audio_data = audio_data[44:]
 
-                    # 发送音频数据（使用最后一帧标记，告诉服务端音频已结束）
+                    # Send audio data (using the last-frame marker to signal end-of-audio to the server)
                     payload = gzip.compress(audio_data)
-                    audio_request = bytearray(self._generate_last_audio_header())  # 修复：使用最后一帧Header
+                    audio_request = bytearray(self._generate_last_audio_header())  # fix: use the last-frame header
                     audio_request.extend(len(payload).to_bytes(4, "big"))
                     audio_request.extend(payload)
                     await ws.send(audio_request)
@@ -208,14 +208,14 @@ class DoubaoStreamASRTester(BaseASRTester):
                     first_chunk = await ws.recv()
                     latency = time.time() - start_time
                     latencies.append(latency)
-                    print(f"[豆包ASR] 第{i+1}次 首词延迟: {latency:.3f}s")
+                    print(f"[Doubao ASR] Run {i+1} first-word latency: {latency:.3f}s")
                     await ws.close()
 
             except Exception as e:
-                print(f"[豆包ASR] 第{i+1}次测试失败: {str(e)}")
+                print(f"[Doubao ASR] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
 
-        return self._calculate_result("豆包流式ASR", latencies, test_count)
+        return self._calculate_result("Doubao streaming ASR", latencies, test_count)
 
 
 class QwenASRFlashTester(BaseASRTester):

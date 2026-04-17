@@ -225,12 +225,12 @@ class ASRPerformanceTester:
         except Exception as e:
             error_msg = str(e).lower()
             if "502" in error_msg or "bad gateway" in error_msg:
-                error_type = "502网络错误"
+                error_type = "502 network error"
             elif "timeout" in error_msg:
-                error_type = "超时连接"
+                error_type = "Connection timeout"
             else:
-                error_type = "网络错误"
-            print(f"⚠️ {stt_name} 测试失败: {str(e)}")
+                error_type = "Network error"
+            print(f"WARNING {stt_name} test failed: {str(e)}")
             return {
                 "name": stt_name,
                 "type": "stt",
@@ -239,32 +239,32 @@ class ASRPerformanceTester:
             }
 
     def _print_results(self):
-        """打印测试结果，按响应时间排序"""
+        """Print the test results, sorted by response time"""
         print("\n" + "=" * 50)
-        print("ASR 性能测试结果")
+        print("ASR performance test results")
         print("=" * 50)
 
         if not self.results.get("stt"):
-            print("没有可用的测试结果")
+            print("No test results available")
             return
 
-        headers = ["模型名称", "平均耗时(s)", "成功率", "状态"]
+        headers = ["Model name", "Avg time (s)", "Success rate", "Status"]
         table_data = []
 
-        # 收集所有数据并分类
+        # Collect and categorize all data
         valid_results = []
         error_results = []
 
         for name, data in self.results["stt"].items():
             if data["errors"] == 0:
-                # 正常结果
+                # Normal result
                 avg_time = f"{data['avg_time']:.3f}"
                 success_rate = data.get("success_rate", "N/A")
-                status = "✅ 正常"
-                
-                # 保存用于排序的值
+                status = "OK"
+
+                # Save the value used for sorting
                 sort_key = data["avg_time"]
-                
+
                 valid_results.append({
                     "name": name,
                     "avg_time": avg_time,
@@ -273,20 +273,20 @@ class ASRPerformanceTester:
                     "sort_key": sort_key,
                 })
             else:
-                # 错误结果
+                # Error result
                 avg_time = "-"
                 success_rate = "0/N"
-                
-                # 获取具体错误类型
-                error_type = data.get("error_type", "网络错误")
-                status = f"❌ {error_type}"
-                
+
+                # Get the specific error type
+                error_type = data.get("error_type", "Network error")
+                status = f"FAIL {error_type}"
+
                 error_results.append([name, avg_time, success_rate, status])
 
-        # 按响应时间升序排序（从快到慢）
+        # Sort by response time ascending (fastest to slowest)
         valid_results.sort(key=lambda x: x["sort_key"])
 
-        # 将排序后的有效结果转换为表格数据
+        # Convert sorted valid results into table data
         for result in valid_results:
             table_data.append([
                 result["name"],
@@ -295,53 +295,53 @@ class ASRPerformanceTester:
                 result["status"],
             ])
 
-        # 将错误结果添加到表格数据末尾
+        # Append error results to the end of the table
         table_data.extend(error_results)
 
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
-        print("\n测试说明:")
-        print("- 超时控制：单个音频最大等待时间为10秒")
-        print("- 错误处理：自动跳过502错误、超时和网络异常的模型")
-        print("- 成功率：成功识别的音频数量/总测试音频数量")
-        print("- 排序规则：按平均耗时从快到慢排序，错误模型排最后")
-        print("\n测试完成！")
+        print("\nNotes:")
+        print("- Timeout control: each audio sample waits at most 10 seconds")
+        print("- Error handling: models with 502 errors, timeouts, or network exceptions are skipped automatically")
+        print("- Success rate: number of successfully recognized audio files / total test audio files")
+        print("- Sort rule: by average latency from fastest to slowest; failed models go last")
+        print("\nTest complete!")
 
     async def run(self):
-        """执行全量异步测试""" 
-        print("开始筛选可用ASR模块...")
+        """Run the full async test suite"""
+        print("Filtering available ASR modules...")
         if not self.config.get("ASR"):
-            print("配置中未找到 ASR 模块")
+            print("No ASR module found in config")
             return
 
         all_tasks = []
         for stt_name, config in self.config["ASR"].items():
-            # 检查配置有效性
+            # Check config validity
             token_fields = ["access_token", "api_key", "token"]
             if any(
                 field in config
-                and str(config[field]).lower() in ["你的", "placeholder", "none", "null", ""]
+                and str(config[field]).lower() in ["your", "placeholder", "none", "null", ""]
                 for field in token_fields
             ):
-                print(f"ASR {stt_name} 未配置有效access_token/api_key，已跳过")
+                print(f"ASR {stt_name} has no valid access_token/api_key, skipping")
                 continue
-            
-            print(f"添加 ASR 测试任务: {stt_name}")
+
+            print(f"Adding ASR test task: {stt_name}")
             all_tasks.append(self._test_stt_with_timeout(stt_name, config))
 
         if not all_tasks:
-            print("没有可用的ASR模块进行测试。")
+            print("No ASR modules available for testing.")
             return
 
-        print(f"\n找到 {len(all_tasks)} 个可用ASR模块")
-        print("\n开始并发测试所有ASR模块...")
+        print(f"\nFound {len(all_tasks)} available ASR module(s)")
+        print("\nStarting concurrent tests on all ASR modules...")
         all_results = await asyncio.gather(*all_tasks, return_exceptions=True)
 
-        # 处理结果
+        # Process results
         for result in all_results:
             if isinstance(result, dict) and result.get("type") == "stt":
                 self.results["stt"][result["name"]] = result
 
-        # 打印结果
+        # Print results
         self._print_results()
 
 

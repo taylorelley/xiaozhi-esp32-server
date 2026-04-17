@@ -1,4 +1,4 @@
-"""MCP接入点客户端定义"""
+"""MCP endpoint client definition"""
 
 import asyncio
 from concurrent.futures import Future

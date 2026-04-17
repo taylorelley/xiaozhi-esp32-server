@@ -321,75 +321,75 @@ class TTSProvider(TTSProviderBase):
             self.last_active_time = None
 
     async def _start_monitor_tts_response(self):
-        """监听TTS响应 - 长期运行"""
+        """Listen to TTS responses - long-running"""
         try:
             while not self.conn.stop_event.is_set():
                 try:
                     msg = await self.ws.recv()
                     self.last_active_time = time.time()
 
-                    if isinstance(msg, str):  # JSON控制消息
+                    if isinstance(msg, str):  # JSON control message
                         try:
                             data = json.loads(msg)
                             header = data.get("header", {})
                             event = header.get("event")
                             task_id = header.get("task_id")
 
-                            # 只处理当前活跃会话的响应
+                            # Only process responses from the current active session
                             if task_id and self.conn.sentence_id != task_id:
                                 if event in ["task-finished", "task-failed"]:
-                                    logger.bind(tag=TAG).debug(f"收到残余下行结束响应重置会话状态～～")
+                                    logger.bind(tag=TAG).debug(f"Received residual downstream end response, resetting session state~~")
                                     self.activate_session = False
                                 continue
 
                             if event == "task-started":
-                                logger.bind(tag=TAG).debug("TTS任务启动成功~")
+                                logger.bind(tag=TAG).debug("TTS task started successfully~")
                                 self.tts_audio_queue.put((SentenceType.FIRST, [], None))
                             elif event == "result-generated":
-                                # 发送缓存的数据
+                                # Send cached data
                                 tts_text = self.get_tts_text(self.conn.sentence_id)
                                 if tts_text:
                                     logger.bind(tag=TAG).info(
-                                        f"句子语音生成成功： {tts_text}"
+                                        f"Sentence voice generated successfully: {tts_text}"
                                     )
                                     self.tts_audio_queue.put(
                                         (SentenceType.FIRST, [], tts_text)
                                     )
                                     self.clear_tts_text(self.conn.sentence_id)
                             elif event == "task-finished":
-                                logger.bind(tag=TAG).debug("TTS任务完成~")
+                                logger.bind(tag=TAG).debug("TTS task completed~")
                                 self.activate_session = False
                                 self._process_before_stop_play_files()
                             elif event == "task-failed":
                                 error_code = header.get("error_code", "unknown")
-                                error_message = header.get("error_message", "未知错误")
+                                error_message = header.get("error_message", "Unknown error")
                                 logger.bind(tag=TAG).error(
-                                    f"TTS任务失败: {error_code} - {error_message}"
+                                    f"TTS task failed: {error_code} - {error_message}"
                                 )
                                 break
                         except json.JSONDecodeError:
-                            logger.bind(tag=TAG).warning("收到无效的JSON消息")
+                            logger.bind(tag=TAG).warning("Received invalid JSON message")
                     elif isinstance(msg, (bytes, bytearray)):
                         self.opus_encoder.encode_pcm_to_opus_stream(
                             msg, False, callback=self.handle_opus
                         )
                 except websockets.ConnectionClosed:
-                    logger.bind(tag=TAG).warning("WebSocket连接已关闭")
+                    logger.bind(tag=TAG).warning("WebSocket connection closed")
                     break
                 except Exception as e:
                     logger.bind(tag=TAG).error(
-                        f"处理TTS响应时出错: {e}\n{traceback.format_exc()}"
+                        f"Error processing TTS response: {e}\n{traceback.format_exc()}"
                     )
                     break
 
-            # 连接异常时关闭WebSocket
+            # Close WebSocket on connection error
             if self.ws:
                 try:
                     await self.ws.close()
                 except:
                     pass
                 self.ws = None
-        # 监听任务退出时清理引用
+        # Clean up references when the listener task exits
         finally:
             self.activate_session = False
             self._monitor_task = None
@@ -397,10 +397,10 @@ class TTSProvider(TTSProviderBase):
     def audio_to_opus_data_stream(
         self, audio_file_path, callback: Callable[[Any], Any] = None
     ):
-        """重写父类方法：使用独立的临时编码器处理音频文件，避免与TTS流式编码器并发冲突。
-        双流式TTS中，monitor任务在event loop线程接收TTS音频并使用self.opus_encoder编码，
-        同时tts_text_priority_thread处理音乐文件也使用self.opus_encoder，
-        共享的encoder.buffer非线程安全，并发访问会导致SILK resampler断言失败。
+        """Override parent method: use a separate temporary encoder to handle audio files, avoiding concurrency conflicts with the TTS streaming encoder.
+        In dual-stream TTS, the monitor task receives TTS audio on the event loop thread and encodes using self.opus_encoder,
+        while tts_text_priority_thread processes music files also using self.opus_encoder.
+        The shared encoder.buffer is not thread-safe, and concurrent access would cause SILK resampler assertion failure.
         """
         from core.utils.util import audio_to_data_stream
 
@@ -413,15 +413,15 @@ class TTSProvider(TTSProviderBase):
         )
 
     def to_tts(self, text: str) -> list:
-        """非流式生成音频数据，用于生成音频及测试场景"""
+        """Non-streaming audio data generation, used for generating audio and testing scenarios"""
         try:
-            # 创建事件循环
+            # Create event loop
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
-            # 生成会话ID
+            # Generate session ID
             session_id = uuid.uuid4().hex
-            # 存储音频数据
+            # Store audio data
             audio_data = []
 
             async def _generate_audio():
@@ -435,7 +435,7 @@ class TTSProvider(TTSProviderBase):
                 )
 
                 try:
-                    # 发送run-task消息启动会话
+                    # Send run-task message to start the session
                     run_task_message = {
                         "header": {
                             "action": "run-task",
@@ -461,7 +461,7 @@ class TTSProvider(TTSProviderBase):
                     }
                     await ws.send(json.dumps(run_task_message))
 
-                    # 等待任务启动
+                    # Wait for task to start
                     task_started = False
                     while not task_started:
                         msg = await ws.recv()
@@ -470,17 +470,17 @@ class TTSProvider(TTSProviderBase):
                             header = data.get("header", {})
                             if header.get("event") == "task-started":
                                 task_started = True
-                                logger.bind(tag=TAG).debug("TTS任务已启动")
+                                logger.bind(tag=TAG).debug("TTS task started")
                             elif header.get("event") == "task-failed":
                                 error_code = header.get("error_code", "unknown")
-                                error_message = header.get("error_message", "未知错误")
+                                error_message = header.get("error_message", "Unknown error")
                                 raise Exception(
-                                    f"启动任务失败: {error_code} - {error_message}"
+                                    f"Failed to start task: {error_code} - {error_message}"
                                 )
 
-                    # 发送文本
+                    # Send text
                     filtered_text = MarkdownCleaner.clean_markdown(text)
-                    # 发送continue-task消息
+                    # Send continue-task message
                     continue_task_message = {
                         "header": {
                             "action": "continue-task",
@@ -491,7 +491,7 @@ class TTSProvider(TTSProviderBase):
                     }
                     await ws.send(json.dumps(continue_task_message))
 
-                    # 发送finish-task消息
+                    # Send finish-task message
                     finish_task_message = {
                         "header": {
                             "action": "finish-task",
@@ -504,7 +504,7 @@ class TTSProvider(TTSProviderBase):
                     }
                     await ws.send(json.dumps(finish_task_message))
 
-                    # 接收音频数据
+                    # Receive audio data
                     task_finished = False
                     while not task_finished:
                         msg = await ws.recv()
@@ -519,27 +519,27 @@ class TTSProvider(TTSProviderBase):
                             header = data.get("header", {})
                             if header.get("event") == "task-finished":
                                 task_finished = True
-                                logger.bind(tag=TAG).debug("TTS任务完成")
+                                logger.bind(tag=TAG).debug("TTS task completed")
                             elif header.get("event") == "task-failed":
                                 error_code = header.get("error_code", "unknown")
-                                error_message = header.get("error_message", "未知错误")
+                                error_message = header.get("error_message", "Unknown error")
                                 raise Exception(
-                                    f"合成失败: {error_code} - {error_message}"
+                                    f"Synthesis failed: {error_code} - {error_message}"
                                 )
 
                 finally:
-                    # 清理资源
+                    # Clean up resources
                     try:
                         await ws.close()
                     except:
                         pass
 
-            # 运行异步任务
+            # Run async task
             loop.run_until_complete(_generate_audio())
             loop.close()
 
             return audio_data
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"生成音频数据失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"Failed to generate audio data: {str(e)}")
             return []

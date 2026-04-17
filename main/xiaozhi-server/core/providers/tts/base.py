@@ -426,18 +426,18 @@ class TTSProviderBase(ABC):
         pass
 
     async def close(self):
-        """资源清理方法"""
+        """Resource cleanup method"""
         self._sentence_text_map.clear()
         if hasattr(self, "ws") and self.ws:
             await self.ws.close()
 
     def _get_segment_text(self):
-        # 合并当前全部文本并处理未分割部分
+        # Merge all current text and process the unsplit portion
         full_text = "".join(self.tts_text_buff)
-        current_text = full_text[self.processed_chars :]  # 从未处理的位置开始
+        current_text = full_text[self.processed_chars :]  # start from the unprocessed position
         last_punct_pos = -1
 
-        # 根据是否是第一句话选择不同的标点符号集合
+        # Choose a different set of punctuation depending on whether this is the first sentence
         punctuations_to_use = (
             self.first_sentence_punctuations
             if self.is_first_sentence
@@ -456,16 +456,16 @@ class TTSProviderBase(ABC):
             segment_text = textUtils.get_string_no_punctuation_or_emoji(
                 segment_text_raw
             )
-            self.processed_chars += len(segment_text_raw)  # 更新已处理字符位置
+            self.processed_chars += len(segment_text_raw)  # update processed character position
 
-            # 如果是第一句话，在找到第一个逗号后，将标志设置为False
+            # If it is the first sentence, set the flag to False after finding the first comma
             if self.is_first_sentence:
                 self.is_first_sentence = False
 
             return segment_text
         elif self.tts_stop_request and current_text:
             segment_text = current_text
-            self.is_first_sentence = True  # 重置标志
+            self.is_first_sentence = True  # reset flag
             return segment_text
         else:
             return None
@@ -473,11 +473,11 @@ class TTSProviderBase(ABC):
     def _process_audio_file_stream(
         self, tts_file, callback: Callable[[Any], Any]
     ) -> None:
-        """处理音频文件并转换为指定格式
+        """Process the audio file and convert it to the specified format
 
         Args:
-            tts_file: 音频文件路径
-            callback: 文件处理函数
+            tts_file: audio file path
+            callback: file processing function
         """
         if tts_file.endswith(".p3"):
             p3.decode_opus_from_file_stream(tts_file, callback=callback)
@@ -503,10 +503,10 @@ class TTSProviderBase(ABC):
     def _process_remaining_text_stream(
         self, opus_handler: Callable[[bytes], None] = None
     ):
-        """处理剩余的文本并生成语音
+        """Process the remaining text and generate speech
 
         Returns:
-            bool: 是否成功处理了文本
+            bool: whether the text was successfully processed
         """
         full_text = "".join(self.tts_text_buff)
         remaining_text = full_text[self.processed_chars :]
@@ -519,7 +519,7 @@ class TTSProviderBase(ABC):
         return False
 
     def _apply_percentage_params(self, config):
-        """根据子类定义的 TTS_PARAM_CONFIG 批量应用百分比参数"""
+        """Batch-apply percentage parameters based on the TTS_PARAM_CONFIG defined by the subclass"""
         for config_key, attr_name, min_val, max_val, base_val, transform in self.TTS_PARAM_CONFIG:
             if config_key in config:
                 val = convert_percentage_to_range(config[config_key], min_val, max_val, base_val)

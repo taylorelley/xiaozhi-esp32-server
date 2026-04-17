@@ -812,24 +812,24 @@ class ConnectionHandler:
         ]["type"]
         if self.intent_type == "function_call" or self.intent_type == "intent_llm":
             self.load_function_plugin = True
-        """初始化意图识别模块"""
-        # 获取意图识别配置
+        """Initialize the intent recognition module"""
+        # Obtain intent recognition configuration
         intent_config = self.config["Intent"]
         intent_type = self.config["Intent"][self.config["selected_module"]["Intent"]][
             "type"
         ]
 
-        # 如果使用 nointent，直接返回
+        # If using nointent, return directly
         if intent_type == "nointent":
             return
-        # 使用 intent_llm 模式
+        # Use intent_llm mode
         elif intent_type == "intent_llm":
             intent_llm_name = intent_config[self.config["selected_module"]["Intent"]][
                 "llm"
             ]
 
             if intent_llm_name and intent_llm_name in self.config["LLM"]:
-                # 如果配置了专用LLM，则创建独立的LLM实例
+                # If a dedicated LLM is configured, create an independent LLM instance
                 from core.utils import llm as llm_utils
 
                 intent_llm_config = self.config["LLM"][intent_llm_name]
@@ -838,37 +838,37 @@ class ConnectionHandler:
                     intent_llm_type, intent_llm_config
                 )
                 self.logger.bind(tag=TAG).info(
-                    f"为意图识别创建了专用LLM: {intent_llm_name}, 类型: {intent_llm_type}"
+                    f"Created a dedicated LLM for intent recognition: {intent_llm_name}, type: {intent_llm_type}"
                 )
                 self.intent.set_llm(intent_llm)
             else:
-                # 否则使用主LLM
+                # Otherwise, use the main LLM
                 self.intent.set_llm(self.llm)
-                self.logger.bind(tag=TAG).info("使用主LLM作为意图识别模型")
+                self.logger.bind(tag=TAG).info("Using the main LLM as the intent recognition model")
 
-        """加载统一工具处理器"""
+        """Load the unified tool handler"""
         self.func_handler = UnifiedToolHandler(self)
 
-        # 异步初始化工具处理器
+        # Asynchronously initialize the tool handler
         if hasattr(self, "loop") and self.loop:
             asyncio.run_coroutine_threadsafe(self.func_handler._initialize(), self.loop)
 
     def change_system_prompt(self, prompt):
         self.prompt = prompt
-        # 更新系统prompt至上下文
+        # Update the system prompt in the context
         self.dialogue.update_system_message(self.prompt)
 
     def chat(self, query, depth=0):
-        # 保存当前任务的sentence_id到局部变量，避免被新任务覆盖
+        # Save the current task's sentence_id to a local variable to avoid being overwritten by a new task
         current_sentence_id = None
 
         if query is not None:
-            self.logger.bind(tag=TAG).info(f"大模型收到用户消息: {query}")
+            self.logger.bind(tag=TAG).info(f"LLM received user message: {query}")
 
-        # 为最顶层时新建会话ID和发送FIRST请求
+        # At the top level, create a new session ID and send a FIRST request
         if depth == 0:
             current_sentence_id = str(uuid.uuid4().hex)
-            self.sentence_id = current_sentence_id  # 更新共享属性
+            self.sentence_id = current_sentence_id  # Update the shared attribute
             self.dialogue.put(Message(role="user", content=query))
             self.tts.tts_text_queue.put(
                 TTSMessageDTO(
@@ -878,55 +878,55 @@ class ConnectionHandler:
                 )
             )
         else:
-            # 递归调用时，使用当前的sentence_id
+            # For recursive calls, use the current sentence_id
             current_sentence_id = self.sentence_id
 
-        # 设置最大递归深度，避免无限循环，可根据实际需求调整
+        # Set the maximum recursion depth to avoid infinite loops; adjust as needed
         MAX_DEPTH = 5
-        force_final_answer = False  # 标记是否强制最终回答
+        force_final_answer = False  # Marks whether to force the final answer
 
         if depth >= MAX_DEPTH:
             self.logger.bind(tag=TAG).debug(
-                f"已达到最大工具调用深度 {MAX_DEPTH}，将强制基于现有信息回答"
+                f"Reached the maximum tool call depth {MAX_DEPTH}, will force an answer based on existing information"
             )
             force_final_answer = True
-            # 添加系统指令，要求 LLM 基于现有信息回答
+            # Add a system instruction requiring the LLM to answer based on existing information
             self.dialogue.put(
                 Message(
                     role="user",
-                    content="[系统提示] 已达到最大工具调用次数限制，请你基于目前已经获取的所有信息，直接给出最终答案。不要再尝试调用任何工具。",
+                    content="[System prompt] The maximum tool-call limit has been reached. Please provide the final answer directly based on all the information already obtained. Do not attempt to call any more tools.",
                 )
             )
 
-        # 长对话工具调用提醒：当对话轮数较多时，提醒模型正确使用工具
-        force_reminder = False  # 是否强制提醒
+        # Long-conversation tool call reminder: when the conversation has many turns, remind the model to use tools correctly
+        force_reminder = False  # Whether to force a reminder
 
         if depth == 0 and query is not None:
             dialogue_length = len(self.dialogue.dialogue)
             current_turn = dialogue_length // 2
 
-            # 检测距离上一次连续未调用工具的情况
+            # Detect consecutive rounds with no tool calls since the last one
             if self.tool_call_stats['last_call_turn'] >= 0:
                 turns_since_last = current_turn - self.tool_call_stats['last_call_turn']
-                if turns_since_last > 3:  # 超过3轮未调用
+                if turns_since_last > 3:  # More than 3 rounds without a call
                     self.logger.bind(tag=TAG).warning(
-                        f"检测到{turns_since_last}轮未调用工具，可能进入偷懒模式，将强制注入提醒"
+                        f"Detected {turns_since_last} rounds without a tool call, may be entering laziness mode; will force inject a reminder"
                     )
                     force_reminder = True
 
-            # 对话历史截断：防止历史过长导致模型"偷懒模式"扩散
-            # 当对话历史超过阈值时，保留最近的 10 轮对话
+            # Dialogue history truncation: prevent history from becoming too long and spreading the model's "laziness mode"
+            # When the dialogue history exceeds a threshold, retain the most recent 10 rounds
             # max_dialogue_turns = 10
             # if dialogue_length > max_dialogue_turns * 2:
             #     removed = self.dialogue.trim_history(max_turns=max_dialogue_turns)
             #     if removed > 0:
             #         self.logger.bind(tag=TAG).info(
-            #             f"对话历史过长({dialogue_length}条)，已智能截断保留最近{max_dialogue_turns}轮，移除{removed}条消息"
+            #             f"Dialogue history too long ({dialogue_length} items), intelligently truncated to keep the latest {max_dialogue_turns} rounds, removed {removed} messages"
             #         )
 
         # Define intent functions
         functions = None
-        # 达到最大深度时，禁用工具调用，强制 LLM 直接回答
+        # When the maximum depth is reached, disable tool calls and force the LLM to answer directly
         if (
                 self.intent_type == "function_call"
                 and hasattr(self, "func_handler")
@@ -934,45 +934,45 @@ class ConnectionHandler:
         ):
             functions = self.func_handler.get_functions()
 
-        # 长对话工具调用规则强化：动态生成基于当前可用工具的提醒
+        # Long-conversation tool call rule reinforcement: dynamically generate a reminder based on currently available tools
         tool_call_reminder = None
         if depth == 0 and query is not None and functions is not None:
             dialogue_length = len(self.dialogue.dialogue)
-            # 当对话历史超过4条消息时，注入规则强化
+            # When the dialogue history exceeds 4 messages, inject rule reinforcement
             if dialogue_length > 4:
                 tool_summary = self._get_tool_summary(functions)
                 if tool_summary:
-                    # 根据对话长度和偷懒检测，使用不同强度的提醒
+                    # Use different reminder strengths based on dialogue length and laziness detection
                     if force_reminder:
-                        # 强提醒 - 包含完整规则前缀
+                        # Strong reminder - includes the full rule prefix
                         tool_call_reminder = (
                             TOOL_CALLING_RULES +
-                            f"[重要提醒] 多轮未使用工具，检查回复是否遗漏了必要的工具调用！上一轮未使用工具，本轮必须重新判断是否需要工具。"
-                            f"当前可用工具: {tool_summary}。"
+                            f"[Important reminder] Multiple rounds without tool usage; check whether the reply missed any necessary tool calls! The previous round did not use a tool, so this round must re-evaluate whether a tool is needed."
+                            f"Currently available tools: {tool_summary}."
                         )
-                        reminder_level = "强"
+                        reminder_level = "strong"
                     else:
-                        # 中等提醒 - 包含规则前缀
+                        # Medium reminder - includes the rule prefix
                         tool_call_reminder = (
                             TOOL_CALLING_RULES +
-                            f"当前可用工具: {tool_summary}。"
-                            f"仅当用户请求涉及实时信息查询或执行操作时调用，日常对话无需调用。"
+                            f"Currently available tools: {tool_summary}."
+                            f"Only call when the user's request involves real-time information queries or performing actions; routine conversation does not require calls."
                         )
-                        reminder_level = "中"
+                        reminder_level = "medium"
                     self.logger.bind(tag=TAG).debug(
-                        f"对话历史较长({dialogue_length}条)，已注入{reminder_level}等级工具调用规则强化，当前可用工具：{tool_summary}"
+                        f"Dialogue history is long ({dialogue_length} items); injected {reminder_level}-level tool calling rule reinforcement, currently available tools: {tool_summary}"
                     )
 
         response_message = []
 
-        # 如果有工具调用提醒，临时添加到对话中（标记为临时消息）
+        # If there is a tool call reminder, temporarily add it to the dialogue (marked as a temporary message)
         if tool_call_reminder:
             self.dialogue.put(Message(role="user", content=tool_call_reminder, is_temporary=True))
 
         try:
-            # 使用带记忆的对话
+            # Use dialogue with memory
             memory_str = None
-            # 仅当query非空（代表用户询问）时查询记忆
+            # Only query memory when query is non-empty (indicating a user query)
             if self.memory is not None and query:
                 future = asyncio.run_coroutine_threadsafe(
                     self.memory.query_memory(query), self.loop
@@ -980,7 +980,7 @@ class ConnectionHandler:
                 memory_str = future.result()
 
             if self.intent_type == "function_call" and functions is not None:
-                # 使用支持functions的streaming接口
+                # Use the streaming interface that supports functions
                 llm_responses = self.llm.response_with_functions(
                     self.session_id,
                     self.dialogue.get_llm_dialogue_with_memory(
@@ -996,13 +996,13 @@ class ConnectionHandler:
                     ),
                 )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"LLM 处理出错 {query}: {e}")
+            self.logger.bind(tag=TAG).error(f"LLM processing error {query}: {e}")
             return None
 
-        # 处理流式响应
+        # Handle the streaming response
         tool_call_flag = False
-        # 支持多个并行工具调用 - 使用列表存储
-        tool_calls_list = []  # 格式: [{"id": "", "name": "", "arguments": ""}]
+        # Support multiple parallel tool calls - use a list for storage
+        tool_calls_list = []  # Format: [{"id": "", "name": "", "arguments": ""}]
         content_arguments = ""
         emotion_flag = True
         try:
@@ -1027,7 +1027,7 @@ class ConnectionHandler:
                 else:
                     content = response
 
-                # 在llm回复中获取情绪表情，一轮对话只在开头获取一次
+                # Obtain an emotion emoji within the LLM reply; only fetch once at the beginning of a conversation round
                 if emotion_flag and content is not None and content.strip():
                     asyncio.run_coroutine_threadsafe(
                         textUtils.get_emotion(self, content),
@@ -1065,10 +1065,10 @@ class ConnectionHandler:
                     )
                 )
             return
-        # 处理function call
+        # Handle function call
         if tool_call_flag:
             bHasError = False
-            # 处理基于文本的工具调用格式
+            # Handle text-based tool call format
             if len(tool_calls_list) == 0 and content_arguments:
                 a = extract_json_from_string(content_arguments)
                 if a is not None:

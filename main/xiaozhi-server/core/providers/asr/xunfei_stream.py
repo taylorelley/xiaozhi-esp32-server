@@ -21,10 +21,10 @@ from core.providers.asr.dto.dto import InterfaceType
 TAG = __name__
 logger = setup_logging()
 
-# 帧状态常量
-STATUS_FIRST_FRAME = 0  # 第一帧的标识
-STATUS_CONTINUE_FRAME = 1  # 中间帧标识
-STATUS_LAST_FRAME = 2  # 最后一帧的标识
+# Frame status constants
+STATUS_FIRST_FRAME = 0  # First frame indicator
+STATUS_CONTINUE_FRAME = 1  # Intermediate frame indicator
+STATUS_LAST_FRAME = 2  # Last frame indicator
 
 
 class ASRProvider(ASRProviderBase):
@@ -39,15 +39,15 @@ class ASRProvider(ASRProviderBase):
         self.is_processing = False
         self.server_ready = False
 
-        # 讯飞配置
+        # Xunfei configuration
         self.app_id = config.get("app_id")
         self.api_key = config.get("api_key")
         self.api_secret = config.get("api_secret")
 
         if not all([self.app_id, self.api_key, self.api_secret]):
-            raise ValueError("必须提供app_id、api_key和api_secret")
+            raise ValueError("Must provide app_id, api_key, and api_secret")
 
-        # 识别参数
+        # Recognition parameters
         self.iat_params = {
             "domain": config.get("domain", "slm"),
             "language": config.get("language", "zh_cn"),
