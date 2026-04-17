@@ -368,241 +368,241 @@ ASR:
     api_key: none
     output_dir: tmp/
   SherpaASR:
-    # Sherpa-ONNX 本地语音识别（需手动下载模型）
+    # Sherpa-ONNX local speech recognition (models must be downloaded manually)
     type: sherpa_onnx_local
     model_dir: models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17
     output_dir: tmp/
-    # 模型类型：sense_voice (多语言) 或 paraformer (中文专用)
+    # Model type: sense_voice (multilingual) or paraformer (Chinese only)
     model_type: sense_voice
   SherpaParaformerASR:
-    # 中文语音识别模型，可以运行在低性能设备（需手动下载模型，例如RK3566-2g）
-    # 详细配置说明请参考：docs/sherpa-paraformer-guide.md
+    # Chinese speech recognition model; can run on low-performance devices (models must be downloaded manually, e.g. RK3566-2g)
+    # For detailed configuration instructions, see: docs/sherpa-paraformer-guide.md
     type: sherpa_onnx_local
     model_dir: models/sherpa-onnx-paraformer-zh-small-2024-03-09
     output_dir: tmp/
     model_type: paraformer
   DoubaoASR:
-    # 可以在这里申请相关Key等信息
+    # You can apply for the related keys and info here
     # https://console.volcengine.com/speech/app
-    # DoubaoASR和DoubaoStreamASR的区别是：DoubaoASR是按次收费，DoubaoStreamASR是按时收费
-    # 一般来说按次收费的更便宜，但是DoubaoStreamASR使用了大模型技术，效果更好
+    # The difference between DoubaoASR and DoubaoStreamASR: DoubaoASR is billed per call, DoubaoStreamASR is billed by time
+    # Generally, per-call billing is cheaper, but DoubaoStreamASR uses large-model technology and performs better
     type: doubao
-    appid: 你的火山引擎语音合成服务appid
-    access_token: 你的火山引擎语音合成服务access_token
+    appid: your Volcengine TTS service appid
+    access_token: your Volcengine TTS service access_token
     cluster: volcengine_input_common
-    # 热词、替换词使用流程：https://www.volcengine.com/docs/6561/155738
-    boosting_table_name: （选填）你的热词文件名称
-    correct_table_name: （选填）你的替换词文件名称
+    # Hot words / replacement words usage guide: https://www.volcengine.com/docs/6561/155738
+    boosting_table_name: (optional) your hot-word file name
+    correct_table_name: (optional) your replacement-word file name
     output_dir: tmp/
   DoubaoStreamASR:
-    # 可以在这里申请相关Key等信息
+    # You can apply for the related keys and info here
     # https://console.volcengine.com/speech/app
-    # DoubaoASR和DoubaoStreamASR的区别是：DoubaoASR是按次收费，DoubaoStreamASR是按时收费
-    # 开通地址https://console.volcengine.com/speech/service/10011
-    # 一般来说按次收费的更便宜，但是DoubaoStreamASR使用了大模型技术，效果更好
+    # The difference between DoubaoASR and DoubaoStreamASR: DoubaoASR is billed per call, DoubaoStreamASR is billed by time
+    # Activation page: https://console.volcengine.com/speech/service/10011
+    # Generally, per-call billing is cheaper, but DoubaoStreamASR uses large-model technology and performs better
     type: doubao_stream
-    appid: 你的火山引擎语音合成服务appid
-    access_token: 你的火山引擎语音合成服务access_token
+    appid: your Volcengine TTS service appid
+    access_token: your Volcengine TTS service access_token
     cluster: volcengine_input_common
-    # 热词、替换词使用流程：https://www.volcengine.com/docs/6561/155738
-    boosting_table_name: （选填）你的热词文件名称
-    correct_table_name: （选填）你的替换词文件名称
-    # 是否开启多语种识别模式
+    # Hot words / replacement words usage guide: https://www.volcengine.com/docs/6561/155738
+    boosting_table_name: (optional) your hot-word file name
+    correct_table_name: (optional) your replacement-word file name
+    # Whether to enable multilingual recognition mode
     enable_multilingual: False
-    # 多语种识别当该键为空时，该模型支持中英文、上海话、闽南语，四川、陕西、粤语识别。当将其设置为特定键时，它可以识别指定语言。
-    # 详细语言列表参考 https://www.volcengine.com/docs/6561/1354869
+    # For multilingual recognition: when this key is empty, the model supports Mandarin/English, Shanghainese, Hokkien, Sichuanese, Shaanxi, and Cantonese. When set to a specific key, it recognizes the specified language.
+    # For the full language list, see https://www.volcengine.com/docs/6561/1354869
     # language: zh-cn
-    # 静音判定时长(ms)，默认200ms
+    # Silence detection duration (ms); default 200 ms
     end_window_size: 200
     output_dir: tmp/
   TencentASR:
-    # token申请地址：https://console.cloud.tencent.com/cam/capi
-    # 免费领取资源：https://console.cloud.tencent.com/asr/resourcebundle
+    # Token application page: https://console.cloud.tencent.com/cam/capi
+    # Claim free resources: https://console.cloud.tencent.com/asr/resourcebundle
     type: tencent
-    appid: 你的腾讯语音合成服务appid
-    secret_id: 你的腾讯语音合成服务secret_id
-    secret_key: 你的腾讯语音合成服务secret_key
+    appid: your Tencent TTS service appid
+    secret_id: your Tencent TTS service secret_id
+    secret_key: your Tencent TTS service secret_key
     output_dir: tmp/
   AliyunASR:
-    # 阿里云智能语音交互服务，需要先在阿里云平台开通服务，然后获取验证信息
-    # HTTP POST请求，一次性处理完整音频
-    # 平台地址：https://nls-portal.console.aliyun.com/
-    # appkey地址：https://nls-portal.console.aliyun.com/applist
-    # token地址：https://nls-portal.console.aliyun.com/overview
-    # AliyunASR和AliyunStreamASR的区别是：AliyunASR是批量处理场景，AliyunStreamASR是实时交互场景
-    # 一般来说非流式ASR更便宜（0.004元/秒，¥0.24/分钟）
-    # 但是AliyunStreamASR实时性更好（0.005元/秒，¥0.3/分钟）
-    # 定义ASR API类型
+    # Alibaba Cloud Intelligent Speech Interaction service; activate the service on the Alibaba Cloud platform first, then obtain the credentials
+    # HTTP POST request, processes the complete audio in one shot
+    # Platform: https://nls-portal.console.aliyun.com/
+    # Appkey page: https://nls-portal.console.aliyun.com/applist
+    # Token page: https://nls-portal.console.aliyun.com/overview
+    # The difference between AliyunASR and AliyunStreamASR: AliyunASR is for batch processing, AliyunStreamASR is for real-time interaction
+    # Generally, non-streaming ASR is cheaper (0.004 yuan/sec, 0.24 yuan/minute)
+    # But AliyunStreamASR has better real-time performance (0.005 yuan/sec, 0.3 yuan/minute)
+    # Defines the ASR API type
     type: aliyun
-    appkey: 你的阿里云智能语音交互服务项目Appkey
-    token: 你的阿里云智能语音交互服务AccessToken，临时的24小时，要长期用下方的access_key_id，access_key_secret
-    access_key_id: 你的阿里云账号access_key_id
-    access_key_secret: 你的阿里云账号access_key_secret
+    appkey: your Alibaba Cloud Intelligent Speech Interaction service project Appkey
+    token: your Alibaba Cloud Intelligent Speech Interaction service AccessToken (temporary, valid for 24 hours; for long-term use, fill in the access_key_id and access_key_secret below)
+    access_key_id: your Alibaba Cloud account access_key_id
+    access_key_secret: your Alibaba Cloud account access_key_secret
     output_dir: tmp/
   AliyunStreamASR:
-    # 阿里云智能语音交互服务 - 实时流式语音识别
-    # WebSocket连接，实时处理音频流
-    # 平台地址：https://nls-portal.console.aliyun.com/
-    # appkey地址：https://nls-portal.console.aliyun.com/applist
-    # token地址：https://nls-portal.console.aliyun.com/overview
-    # AliyunASR和AliyunStreamASR的区别是：AliyunASR是批量处理场景，AliyunStreamASR是实时交互场景
-    # 一般来说非流式ASR更便宜（0.004元/秒，¥0.24/分钟）
-    # 但是AliyunStreamASR实时性更好（0.005元/秒，¥0.3/分钟）
-    # 定义ASR API类型
+    # Alibaba Cloud Intelligent Speech Interaction service - real-time streaming speech recognition
+    # WebSocket connection, processes audio streams in real time
+    # Platform: https://nls-portal.console.aliyun.com/
+    # Appkey page: https://nls-portal.console.aliyun.com/applist
+    # Token page: https://nls-portal.console.aliyun.com/overview
+    # The difference between AliyunASR and AliyunStreamASR: AliyunASR is for batch processing, AliyunStreamASR is for real-time interaction
+    # Generally, non-streaming ASR is cheaper (0.004 yuan/sec, 0.24 yuan/minute)
+    # But AliyunStreamASR has better real-time performance (0.005 yuan/sec, 0.3 yuan/minute)
+    # Defines the ASR API type
     type: aliyun_stream
-    appkey: 你的阿里云智能语音交互服务项目Appkey
-    token: 你的阿里云智能语音交互服务AccessToken，临时的24小时，要长期用下方的access_key_id，access_key_secret
-    access_key_id: 你的阿里云账号access_key_id
-    access_key_secret: 你的阿里云账号access_key_secret
-    # 服务器地域选择，可选择距离更近的服务器以减少延迟，如nls-gateway-cn-hangzhou.aliyuncs.com(杭州)等
+    appkey: your Alibaba Cloud Intelligent Speech Interaction service project Appkey
+    token: your Alibaba Cloud Intelligent Speech Interaction service AccessToken (temporary, valid for 24 hours; for long-term use, fill in the access_key_id and access_key_secret below)
+    access_key_id: your Alibaba Cloud account access_key_id
+    access_key_secret: your Alibaba Cloud account access_key_secret
+    # Server region; choose a closer server to reduce latency, such as nls-gateway-cn-hangzhou.aliyuncs.com (Hangzhou)
     host: nls-gateway-cn-shanghai.aliyuncs.com
-    # 断句检测时间(毫秒)，控制静音多长时间后进行断句，默认800毫秒
+    # Sentence-break detection time (ms); controls how long the silence must be before a sentence break is emitted; default 800 ms
     max_sentence_silence: 800
     output_dir: tmp/
   BaiduASR:
-    # 获取AppID、API Key、Secret Key：https://console.bce.baidu.com/ai-engine/old/#/ai/speech/app/list
-    # 查看资源额度：https://console.bce.baidu.com/ai-engine/old/#/ai/speech/overview/resource/list
+    # Get AppID, API Key, Secret Key: https://console.bce.baidu.com/ai-engine/old/#/ai/speech/app/list
+    # Check resource quota: https://console.bce.baidu.com/ai-engine/old/#/ai/speech/overview/resource/list
     type: baidu
-    app_id: 你的百度语音技术AppID
-    api_key: 你的百度语音技术APIKey
-    secret_key: 你的百度语音技术SecretKey
-    # 语言参数，1537为普通话，具体参考：https://ai.baidu.com/ai-doc/SPEECH/0lbxfnc9b
+    app_id: your Baidu Speech Technology AppID
+    api_key: your Baidu Speech Technology APIKey
+    secret_key: your Baidu Speech Technology SecretKey
+    # Language parameter; 1537 is Mandarin; see: https://ai.baidu.com/ai-doc/SPEECH/0lbxfnc9b
     dev_pid: 1537
     output_dir: tmp/
   OpenaiASR:
-    # OpenAI语音识别服务，需要先在OpenAI平台创建组织并获取api_key
-    # 支持中、英、日、韩等多种语音识别，具体参考文档https://platform.openai.com/docs/guides/speech-to-text
-    # 需要网络连接
-    # 申请步骤：
-    # 1.登录OpenAI Platform。https://auth.openai.com/log-in
-    # 2.创建api-key  https://platform.openai.com/settings/organization/api-keys
-    # 3.模型可以选择gpt-4o-transcribe或GPT-4o mini Transcribe
+    # OpenAI speech recognition service; create an organization on the OpenAI platform and obtain an api_key first
+    # Supports Chinese, English, Japanese, Korean and more. Docs: https://platform.openai.com/docs/guides/speech-to-text
+    # Internet connection required
+    # Steps to apply:
+    # 1. Log in to OpenAI Platform. https://auth.openai.com/log-in
+    # 2. Create api-key  https://platform.openai.com/settings/organization/api-keys
+    # 3. You can choose gpt-4o-transcribe or GPT-4o mini Transcribe as the model
     type: openai
-    api_key: 你的OpenAI API密钥
+    api_key: your OpenAI API key
     base_url: https://api.openai.com/v1/audio/transcriptions
     model_name: gpt-4o-mini-transcribe
     output_dir: tmp/
   GroqASR:
-    # Groq语音识别服务，需要先在Groq Console创建API密钥
-    # 申请步骤：
-    # 1.登录groq Console。https://console.groq.com/home
-    # 2.创建api-key  https://console.groq.com/keys
-    # 3.模型可以选择whisper-large-v3-turbo或whisper-large-v3（distil-whisper-large-v3-en仅支持英语转录）
+    # Groq speech recognition service; create an API key in the Groq Console first
+    # Steps to apply:
+    # 1. Log in to groq Console. https://console.groq.com/home
+    # 2. Create api-key  https://console.groq.com/keys
+    # 3. You can choose whisper-large-v3-turbo or whisper-large-v3 as the model (distil-whisper-large-v3-en only supports English transcription)
     type: openai
-    api_key: 你的Groq API密钥
+    api_key: your Groq API key
     base_url: https://api.groq.com/openai/v1/audio/transcriptions
     model_name: whisper-large-v3-turbo
     output_dir: tmp/
   VoskASR:
-    # 官方网站：https://alphacephei.com/vosk/
-    # 配置说明：
-    # 1. VOSK是一个离线语音识别库，支持多种语言
-    # 2. 需要先下载模型文件：https://alphacephei.com/vosk/models
-    # 3. 中文模型推荐使用vosk-model-small-cn-0.22或vosk-model-cn-0.22
-    # 4. 完全离线运行，无需网络连接
-    # 5. 输出文件保存在tmp/目录
-    # 使用步骤：
-    # 1. 访问 https://alphacephei.com/vosk/models 下载对应的模型
-    # 2. 解压模型文件到项目目录下的models/vosk/文件夹
-    # 3. 在配置中指定正确的模型路径
-    # 4. 注意：VOSK中文模型输出不带标点符号，词与词之间会有空格
+    # Official website: https://alphacephei.com/vosk/
+    # Configuration notes:
+    # 1. VOSK is an offline speech recognition library that supports multiple languages
+    # 2. You must download a model file first: https://alphacephei.com/vosk/models
+    # 3. For Chinese, vosk-model-small-cn-0.22 or vosk-model-cn-0.22 is recommended
+    # 4. Runs fully offline; no internet connection required
+    # 5. Output files are saved in the tmp/ directory
+    # Usage steps:
+    # 1. Visit https://alphacephei.com/vosk/models and download the appropriate model
+    # 2. Extract the model file into the models/vosk/ folder in your project directory
+    # 3. Specify the correct model path in the configuration
+    # 4. Note: VOSK's Chinese models output no punctuation and insert spaces between words
     type: vosk
-    model_path: 你的模型路径，如：models/vosk/vosk-model-small-cn-0.22
+    model_path: your model path, e.g. models/vosk/vosk-model-small-cn-0.22
     output_dir: tmp/
   Qwen3ASRFlash:
-    # 通义千问Qwen3-ASR-Flash语音识别服务，需要先在阿里云百炼平台创建API密钥
-    # 申请步骤：
-    # 1.登录阿里云百炼平台。https://bailian.console.aliyun.com/
-    # 2.创建API-KEY  https://bailian.console.aliyun.com/#/api-key
-    # 3.Qwen3-ASR-Flash基于通义千问多模态基座，支持多语言识别、歌唱识别、噪声拒识等功能
+    # Tongyi Qianwen Qwen3-ASR-Flash speech recognition service; create an API key on the Alibaba Cloud Bailian platform first
+    # Steps to apply:
+    # 1. Log in to the Alibaba Cloud Bailian platform. https://bailian.console.aliyun.com/
+    # 2. Create an API-KEY  https://bailian.console.aliyun.com/#/api-key
+    # 3. Qwen3-ASR-Flash is based on the Tongyi Qianwen multimodal foundation and supports multilingual recognition, singing recognition, noise rejection, and more
     type: qwen3_asr_flash
-    api_key: 你的阿里云百炼API密钥
+    api_key: your Alibaba Cloud Bailian API key
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
     model_name: qwen3-asr-flash
     output_dir: tmp/
-    # ASR选项配置
-    enable_lid: true  # 自动语种检测
-    enable_itn: true  # 逆文本归一化
-    #language: "zh"  # 语种，支持zh、en、ja、ko等
-    context: ""  # 上下文信息，用于提高识别准确率，不超过10000 Token
+    # ASR option configuration
+    enable_lid: true  # Automatic language detection
+    enable_itn: true  # Inverse text normalization
+    #language: "zh"  # Language; supports zh, en, ja, ko, etc.
+    context: ""  # Context information to improve recognition accuracy; up to 10000 tokens
   XunfeiStreamASR:
-    # 讯飞流式语音识别服务
-    # 需要先在讯飞开放平台创建应用，获取以下认证信息
-    # 讯飞开放平台地址：https://www.xfyun.cn/
-    # 创建应用后，在"我的应用"中获取：
+    # iFlytek streaming speech recognition service
+    # Create an application on the iFlytek Open Platform first and obtain the following credentials
+    # iFlytek Open Platform: https://www.xfyun.cn/
+    # After creating the app, get the following from "My Applications":
     # - APPID
-    # - APISecret  
+    # - APISecret
     # - APIKey
     type: xunfei_stream
-    # 必填参数 - 讯飞开放平台应用信息
-    app_id: 你的APPID
-    api_key: 你的APIKey
-    api_secret: 你的APISecret
-    # 识别参数配置
-    domain: slm # 识别领域，iat:日常用语，medical:医疗，finance:金融等
-    language: zh_cn # 语言，zh_cn:中文，en_us:英文
-    accent: mandarin # 方言，mandarin:普通话
-    # 调整音频处理参数以提高长语音识别质量
+    # Required parameters - iFlytek Open Platform application info
+    app_id: your APPID
+    api_key: your APIKey
+    api_secret: your APISecret
+    # Recognition parameter configuration
+    domain: slm # Recognition domain; iat: everyday, medical: medical, finance: finance, etc.
+    language: zh_cn # Language; zh_cn: Chinese, en_us: English
+    accent: mandarin # Accent; mandarin: standard Mandarin
+    # Tune audio processing parameters to improve long-speech recognition quality
     output_dir: tmp/
   AliyunBLStreamASR:
-    # 阿里百炼Paraformer实时语音识别服务
-    # WebSocket实时流式语音识别，支持多语言、热词定制、语义断句等高级功能
-    # 平台地址：https://bailian.console.aliyun.com/
-    # API Key地址：https://bailian.console.aliyun.com/#/api-key
-    # 文档地址：https://help.aliyun.com/zh/model-studio/websocket-for-paraformer-real-time-service
-    # 支持模型：paraformer-realtime-v2(推荐), paraformer-realtime-8k-v2, paraformer-realtime-v1, paraformer-realtime-8k-v1
+    # Alibaba Bailian Paraformer real-time speech recognition service
+    # WebSocket real-time streaming speech recognition; supports multiple languages, custom hot words, semantic sentence breaking, and other advanced features
+    # Platform: https://bailian.console.aliyun.com/
+    # API Key page: https://bailian.console.aliyun.com/#/api-key
+    # Documentation: https://help.aliyun.com/zh/model-studio/websocket-for-paraformer-real-time-service
+    # Supported models: paraformer-realtime-v2 (recommended), paraformer-realtime-8k-v2, paraformer-realtime-v1, paraformer-realtime-8k-v1
     type: aliyunbl_stream
-    # 必填参数
-    api_key: 你的阿里云百炼API密钥
-    # 模型选择，推荐使用v2版本
+    # Required parameters
+    api_key: your Alibaba Cloud Bailian API key
+    # Model selection; v2 is recommended
     model: paraformer-realtime-v2
-    # 音频格式和采样率
+    # Audio format and sample rate
     format: pcm
-    sample_rate: 16000  # v2支持任意采样率，v1仅支持16000，8k版本仅支持8000
-    # 可选参数
-    disfluency_removal_enabled: false  # 是否过滤语气词(如"嗯"、"啊"等)
-    semantic_punctuation_enabled: false  # 语义断句(true:会议场景,准确;false:VAD断句,交互场景,低延迟)
-    max_sentence_silence: 200  # VAD断句静音时长阈值(ms)，范围200-6000，仅VAD断句时生效
-    multi_threshold_mode_enabled: false  # 防止VAD断句切割过长，仅VAD断句时生效
-    punctuation_prediction_enabled: true  # 是否自动添加标点符号
-    inverse_text_normalization_enabled: true  # 是否开启ITN(中文数字转阿拉伯数字)
-    # 热词定制文档地址：https://help.aliyun.com/zh/model-studio/custom-hot-words?
-    # vocabulary_id: vocab-xxx-24ee19fa8cfb4d52902170a0xxxxxxxx  # 热词ID(可选)
-    # language_hints: ["zh", "en"]  # 指定语言(可选)，支持zh、en、ja、yue、ko、de、fr、ru
-    output_dir: tmp/  
+    sample_rate: 16000  # v2 supports any sample rate; v1 only supports 16000; 8k versions only support 8000
+    # Optional parameters
+    disfluency_removal_enabled: false  # Whether to filter filler words (e.g. "um", "ah")
+    semantic_punctuation_enabled: false  # Semantic sentence breaking (true: meeting scenario, accurate; false: VAD sentence breaking, interactive scenario, low latency)
+    max_sentence_silence: 200  # VAD sentence-break silence duration threshold (ms); range 200-6000; only takes effect with VAD sentence breaking
+    multi_threshold_mode_enabled: false  # Prevents VAD sentence breaking from cutting too long; only takes effect with VAD sentence breaking
+    punctuation_prediction_enabled: true  # Whether to add punctuation automatically
+    inverse_text_normalization_enabled: true  # Whether to enable ITN (converts Chinese numerals to Arabic numerals)
+    # Hot-word customization documentation: https://help.aliyun.com/zh/model-studio/custom-hot-words?
+    # vocabulary_id: vocab-xxx-24ee19fa8cfb4d52902170a0xxxxxxxx  # Hot-word ID (optional)
+    # language_hints: ["zh", "en"]  # Specify language (optional); supports zh, en, ja, yue, ko, de, fr, ru
+    output_dir: tmp/
 VAD:
   SileroVAD:
     type: silero
     threshold: 0.5
     threshold_low: 0.3
     model_dir: models/snakers4_silero-vad
-    min_silence_duration_ms: 200  # 如果说话停顿比较长，可以把这个值设置大一些
+    min_silence_duration_ms: 200  # If speech pauses are relatively long, set this value larger
 
 LLM:
-  # 所有openai类型均可以修改超参，以AliLLM为例
-  # 当前支持的type为openai、dify、ollama，可自行适配
+  # All openai-type configs can tune hyperparameters; AliLLM is used as an example
+  # Currently supported types: openai, dify, ollama; you can adapt others
   AliLLM:
-    # 定义LLM API类型
+    # Defines the LLM API type
     type: openai
-    # 可在这里找到你的 api_key https://bailian.console.aliyun.com/?apiKey=1#/api-key
+    # You can find your api_key here: https://bailian.console.aliyun.com/?apiKey=1#/api-key
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
     model_name: qwen-flash
-    api_key: 你的deepseek web key
-    temperature: 0.7  # 温度值
-    max_tokens: 500   # 最大生成token数
+    api_key: your deepseek web key
+    temperature: 0.7  # Temperature
+    max_tokens: 500   # Maximum generated tokens
     top_p: 1
-    frequency_penalty: 0  # 频率惩罚
+    frequency_penalty: 0  # Frequency penalty
   AliAppLLM:
-    # 定义LLM API类型
+    # Defines the LLM API type
     type: AliBL
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
-    app_id: 你的app_id
-    # 可在这里找到你的 api_key https://bailian.console.aliyun.com/?apiKey=1#/api-key
-    api_key: 你的api_key
-    # 是否不使用本地prompt：true|false (默不用请在百练应用中设置prompt)
+    app_id: your app_id
+    # You can find your api_key here: https://bailian.console.aliyun.com/?apiKey=1#/api-key
+    api_key: your api_key
+    # Whether to skip the local prompt: true|false (by default, set the prompt in the Bailian app)
     is_no_prompt: true
-    # Ali_memory_id：false（不使用）|你的memory_id（请在百练应用中设置中获取）
-    # Tips！：Ali_memory未实现多用户存储记忆(记忆按id调用)
+    # Ali_memory_id: false (do not use) | your memory_id (get it from the Bailian app settings)
+    # Tip! Ali_memory does not support multi-user memory storage (memory is keyed by id)
     ali_memory_id: false
   DoubaoLLM:
     # 定义LLM API类型
