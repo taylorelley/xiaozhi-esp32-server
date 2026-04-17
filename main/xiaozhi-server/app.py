@@ -55,10 +55,10 @@ async def main():
     auth_key = config["server"].get("auth_key", "")
 
     # Validate auth_key; if invalid, try to use manager-api.secret
-    if not auth_key or len(auth_key) == 0 or "你" in auth_key:
+    if not auth_key or len(auth_key) == 0 or "your" in auth_key:
         auth_key = config.get("manager-api", {}).get("secret", "")
         # Validate secret; if invalid, generate a random key
-        if not auth_key or len(auth_key) == 0 or "你" in auth_key:
+        if not auth_key or len(auth_key) == 0 or "your" in auth_key:
             auth_key = str(uuid.uuid4().hex)
 
     config["server"]["auth_key"] = auth_key
@@ -91,7 +91,7 @@ async def main():
         port,
     )
     mcp_endpoint = config.get("mcp_endpoint", None)
-    if mcp_endpoint is not None and "你" not in mcp_endpoint:
+    if mcp_endpoint is not None and "your" not in mcp_endpoint:
         # Validate MCP endpoint format
         if validate_mcp_endpoint(mcp_endpoint):
             logger.bind(tag=TAG).info("MCP endpoint is\t{}", mcp_endpoint)
