@@ -134,7 +134,7 @@ async def process_intent_result(
                 function_args = intent_data["function_call"]["arguments"]
                 if function_args is None:
                     function_args = {}
-            # 确保参数是字符串格式的JSON
+            # Ensure arguments are JSON in string form
             if isinstance(function_args, dict):
                 function_args = json.dumps(function_args)
 
@@ -147,7 +147,7 @@ async def process_intent_result(
             await send_stt_message(conn, original_text)
             conn.client_abort = False
 
-            # 准备工具调用参数
+            # Prepare tool call arguments
             tool_input = {}
             if function_args:
                 if isinstance(function_args, str):
@@ -155,16 +155,16 @@ async def process_intent_result(
                 elif isinstance(function_args, dict):
                     tool_input = function_args
 
-            # 上报工具调用
+            # Report tool call
             enqueue_tool_report(conn, function_name, tool_input)
 
-            # 使用executor执行函数调用和结果处理
+            # Use executor to run the function call and handle the result
             def process_function_call():
                 conn.dialogue.put(Message(role="user", content=original_text))
-                
-                # 工具调用超时时间
+
+                # Tool call timeout
                 tool_call_timeout = int(conn.config.get("tool_call_timeout", 30))
-                # 使用统一工具处理器处理所有工具调用
+                # Use the unified tool handler for all tool calls
                 try:
                     result = asyncio.run_coroutine_threadsafe(
                         conn.func_handler.handle_llm_function_call(
@@ -173,20 +173,20 @@ async def process_intent_result(
                         conn.loop,
                     ).result(timeout=tool_call_timeout)
                 except Exception as e:
-                    conn.logger.bind(tag=TAG).error(f"工具调用失败: {e}")
+                    conn.logger.bind(tag=TAG).error(f"Tool call failed: {e}")
                     result = ActionResponse(
-                        action=Action.ERROR, result="工具调用超时，请一会再试下哈", response="工具调用超时，请一会再试下哈"
+                        action=Action.ERROR, result="Tool call timed out, please try again later", response="Tool call timed out, please try again later"
                     )
 
-                # 上报工具调用结果
+                # Report tool call result
                 if result:
                     enqueue_tool_report(conn, function_name, tool_input, str(result.result) if result.result else None, report_tool_call=False)
 
-                    if result.action == Action.RESPONSE:  # 直接回复前端
+                    if result.action == Action.RESPONSE:  # Reply directly to the frontend
                         text = result.response
                         if text is not None:
                             speak_txt(conn, text)
-                    elif result.action == Action.REQLLM:  # 调用函数后再请求llm生成回复
+                    elif result.action == Action.REQLLM:  # Call the function, then request the LLM to generate a reply
                         text = result.result
                         conn.dialogue.put(Message(role="tool", content=text))
                         llm_result = conn.intent.replyResult(text, original_text)
@@ -202,24 +202,24 @@ async def process_intent_result(
                             speak_txt(conn, text)
                     elif function_name != "play_music":
                         # For backward compatibility with original code
-                        # 获取当前最新的文本索引
+                        # Get the current latest text index
                         text = result.response
                         if text is None:
                             text = result.result
                         if text is not None:
                             speak_txt(conn, text)
 
-            # 将函数执行放在线程池中
+            # Run the function execution in the thread pool
             conn.executor.submit(process_function_call)
             return True
         return False
     except json.JSONDecodeError as e:
-        conn.logger.bind(tag=TAG).error(f"处理意图结果时出错: {e}")
+        conn.logger.bind(tag=TAG).error(f"Error processing intent result: {e}")
         return False
 
 
 def speak_txt(conn: "ConnectionHandler", text):
-    # 记录文本到 sentence_id 映射
+    # Record text-to-sentence_id mapping
     conn.tts.store_tts_text(conn.sentence_id, text)
 
     conn.tts.tts_text_queue.put(
