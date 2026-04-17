@@ -46,35 +46,35 @@ from core.utils import textUtils
 
 TAG = __name__
 
-# 工具调用规则 - 用于动态注入提醒
+# Tool calling rules - used for dynamically injecting reminders
 TOOL_CALLING_RULES = """
 <tool_calling>
-【核心原则】你是拥有工具能力的智能助手。当用户请求需要实时信息或执行操作时，调用相应工具获取数据，禁止凭空编造答案。
+[Core Principle] You are an intelligent assistant with tool capabilities. When a user request requires real-time information or performing an action, call the corresponding tool to obtain data, and do not fabricate answers.
 
-- **何时必须调用工具：**
-  1. 实时信息查询（新闻、非本地天气、股价、汇率等）
-  2. 执行操作（播放音乐、控制设备、拍照、设置闹钟等）
-  3. 知识库检索（当工具列表包含 search_from_ragflow 时，结合用户意图判断是否需要调用）
-  4. 查询非今天的农历信息（明天农历、某日宜忌、节气等）
-  5. 用户说"拍照"时调用 self_camera_take_photo，默认 question 参数为"描述一下看到的物品"
+- **When tools MUST be called:**
+  1. Real-time information queries (news, non-local weather, stock prices, exchange rates, etc.)
+  2. Performing actions (playing music, controlling devices, taking photos, setting alarms, etc.)
+  3. Knowledge base retrieval (when the tool list contains search_from_ragflow, judge whether to call it based on user intent)
+  4. Querying non-today lunar calendar information (tomorrow's lunar date, auspicious/inauspicious events, solar terms, etc.)
+  5. When the user says "take a photo", call self_camera_take_photo, with the default question parameter being "describe the object seen"
 
-- **何时无需调用工具：**
-  1. `<context>` 中已提供的信息（当前时间、今天日期、今天农历、本地天气等）
-  2. 普通对话、问候、闲聊、情感交流、讲故事
-  3. 通用知识问答（非实时信息）
+- **When tools are NOT needed:**
+  1. Information already provided in `<context>` (current time, today's date, today's lunar date, local weather, etc.)
+  2. Normal conversation, greetings, chitchat, emotional exchange, storytelling
+  3. General knowledge Q&A (non-real-time information)
 
-- **调用规范：**
-  1. 每次请求独立判断，不复用历史工具结果，需重新获取最新数据
-  2. 多任务时依次调用所有需要的工具，并依次总结每个工具的结果，不得遗漏
-  3. 严格遵循工具的参数要求，提供所有必要参数
-  4. 不确定时引导用户澄清或告知能力限制，切勿猜测或编造
-  5. 不调用未提供的工具，对话中提及的旧工具若不可用则忽略或说明
+- **Calling conventions:**
+  1. Evaluate each request independently, do not reuse historical tool results - the latest data must be re-fetched
+  2. For multi-task requests, call all required tools in sequence and summarize each tool's result in order, do not omit any
+  3. Strictly follow the parameter requirements of the tools and provide all necessary parameters
+  4. When uncertain, guide the user to clarify or inform them of capability limitations, do not guess or fabricate
+  5. Do not call tools that are not provided. Ignore or explain old tools mentioned in the conversation if they are unavailable
 
-- **反偷懒机制（最高优先级）：**
-  1. **每次独立判断：** 无论对话历史中是否调用过工具，当前请求必须根据当前需求独立判断是否需要调用
-  2. **禁止模式模仿：** 即使之前的回复没有调用工具，也不代表本次可以不调用
-  3. **自我检查：** 回复前必须自问："这个请求是否涉及实时信息或执行操作？如果是，我调用工具了吗？"
-  4. **历史不等于现在：** 对话历史中的行为模式不影响当前判断，每个用户请求都是全新的开始
+- **Anti-laziness mechanism (highest priority):**
+  1. **Evaluate each time independently:** Regardless of whether tools were called in conversation history, the current request must independently evaluate whether a call is needed based on the current demand
+  2. **No pattern imitation:** Even if previous replies did not call tools, it does not mean the current reply can skip calling
+  3. **Self-check:** Before replying, ask yourself: "Does this request involve real-time information or performing an action? If so, did I call the tool?"
+  4. **History does not equal present:** Behavior patterns in conversation history do not affect current judgment - each user request is a fresh start
 </tool_calling>
 """
 
@@ -100,13 +100,13 @@ class ConnectionHandler:
         self.config = copy.deepcopy(config)
         self.session_id = str(uuid.uuid4())
         self.logger = setup_logging()
-        self.server = server  # 保存server实例的引用
+        self.server = server  # Save the reference to the server instance
 
-        self.need_bind = False  # 是否需要绑定设备
+        self.need_bind = False  # Whether device binding is required
         self.bind_completed_event = asyncio.Event()
-        self.bind_code = None  # 绑定设备的验证码
-        self.last_bind_prompt_time = 0  # 上次播放绑定提示的时间戳(秒)
-        self.bind_prompt_interval = 60  # 绑定提示播放间隔(秒)
+        self.bind_code = None  # Verification code for device binding
+        self.last_bind_prompt_time = 0  # Timestamp of the last bind prompt playback (seconds)
+        self.bind_prompt_interval = 60  # Bind prompt playback interval (seconds)
 
         self.read_config_from_api = self.config.get("read_config_from_api", False)
 
@@ -119,26 +119,26 @@ class ConnectionHandler:
         self.max_output_size = 0
         self.chat_history_conf = 0
         self.audio_format = "opus"
-        self.sample_rate = 24000  # 默认采样率，从客户端 hello 消息中动态更新
+        self.sample_rate = 24000  # Default sample rate, dynamically updated from the client hello message
 
-        # 客户端状态相关
+        # Client state related
         self.client_abort = False
         self.client_is_speaking = False
         self.client_listen_mode = "auto"
 
-        # 线程任务相关
-        self.loop = None  # 在 handle_connection 中获取运行中的事件循环
+        # Thread/task related
+        self.loop = None  # Obtain the running event loop in handle_connection
         self.stop_event = threading.Event()
         self.executor = ThreadPoolExecutor(max_workers=5)
 
-        # 添加上报线程池
+        # Add report thread pool
         self.report_queue = queue.Queue()
         self.report_thread = None
-        # 未来可以通过修改此处，调节asr的上报和tts的上报，目前默认都开启
+        # This can be modified in the future to adjust ASR and TTS reporting; both are enabled by default
         self.report_asr_enable = self.read_config_from_api
         self.report_tts_enable = self.read_config_from_api
 
-        # 依赖的组件
+        # Dependent components
         self.vad = None
         self.asr = None
         self.tts = None
@@ -148,73 +148,73 @@ class ConnectionHandler:
         self.memory = _memory
         self.intent = _intent
 
-        self.is_exiting = False  # 标记是否正在执行退出流程
+        self.is_exiting = False  # Marks whether the exit flow is currently running
 
-        # 为每个连接单独管理声纹识别
+        # Manage voiceprint recognition separately for each connection
         self.voiceprint_provider = None
 
-        # vad相关变量
+        # VAD-related variables
         self.client_audio_buffer = bytearray()
         self.client_have_voice = False
         self.client_voice_window = deque(maxlen=5)
-        self.first_activity_time = 0.0  # 记录首次活动的时间（毫秒）
-        self.last_activity_time = 0.0  # 统一的活动时间戳（毫秒）
-        self.vad_last_voice_time = 0.0  # 记录用户最后一次说话的时间（毫秒）
+        self.first_activity_time = 0.0  # Records the time of the first activity (milliseconds)
+        self.last_activity_time = 0.0  # Unified activity timestamp (milliseconds)
+        self.vad_last_voice_time = 0.0  # Records the time the user last spoke (milliseconds)
         self.client_voice_stop = False
         self.last_is_voice = False
 
-        # asr相关变量
-        # 因为实际部署时可能会用到公共的本地ASR，不能把变量暴露给公共ASR
-        # 所以涉及到ASR的变量，需要在这里定义，属于connection的私有变量
+        # ASR-related variables
+        # Because the public local ASR may be used in actual deployments, these variables cannot be exposed to the public ASR
+        # Therefore, variables related to ASR must be defined here as private to the connection
         self.asr_audio = []
         self.asr_audio_queue = queue.Queue()
-        self.current_speaker = None  # 存储当前说话人
+        self.current_speaker = None  # Stores the current speaker
 
-        # llm相关变量
+        # LLM-related variables
         self.dialogue = Dialogue()
 
-        # 工具调用统计（用于监控和自动恢复）
+        # Tool call statistics (used for monitoring and auto-recovery)
         self.tool_call_stats = {
-            'last_call_turn': -1,  # 上次调用工具的轮数
-            'consecutive_no_call': 0,  # 连续未调用次数
+            'last_call_turn': -1,  # Turn number when the tool was last called
+            'consecutive_no_call': 0,  # Consecutive no-call count
         }
 
-        # tts相关变量
+        # TTS-related variables
         self.sentence_id = None
-        # 处理TTS响应没有文本返回
+        # Handle the case where the TTS response returns no text
         self.tts_MessageText = ""
 
-        # iot相关变量
+        # IoT-related variables
         self.iot_descriptors = {}
         self.func_handler = None
 
         self.cmd_exit = self.config["exit_commands"]
 
-        # 是否在聊天结束后关闭连接
+        # Whether to close the connection after the chat ends
         self.close_after_chat = False
         self.load_function_plugin = False
         self.intent_type = "nointent"
 
         self.timeout_seconds = (
                 int(self.config.get("close_connection_no_voice_time", 120)) + 60
-        )  # 在原来第一道关闭的基础上加60秒，进行二道关闭
+        )  # Add 60 seconds on top of the original first-stage close to perform a second-stage close
         self.timeout_task = None
 
-        # {"mcp":true} 表示启用MCP功能
+        # {"mcp":true} indicates MCP functionality is enabled
         self.features = None
 
-        # 标记连接是否来自MQTT
+        # Marks whether the connection comes from MQTT
         self.conn_from_mqtt_gateway = False
 
-        # 初始化提示词管理器
+        # Initialize the prompt manager
         self.prompt_manager = PromptManager(self.config, self.logger)
 
     async def handle_connection(self, ws: websockets.ServerConnection):
         try:
-            # 获取运行中的事件循环（必须在异步上下文中）
+            # Obtain the running event loop (must be in an async context)
             self.loop = asyncio.get_running_loop()
 
-            # 获取并验证headers
+            # Obtain and validate headers
             self.headers = dict(ws.request.headers)
             real_ip = self.headers.get("x-real-ip") or self.headers.get(
                 "x-forwarded-for"
@@ -229,37 +229,37 @@ class ConnectionHandler:
 
             self.device_id = self.headers.get("device-id", None)
 
-            # 认证通过,继续处理
+            # Authentication passed, continue processing
             self.websocket = ws
 
-            # 检查是否来自MQTT连接
+            # Check if the connection is from MQTT
             request_path = ws.request.path
             self.conn_from_mqtt_gateway = request_path.endswith("?from=mqtt_gateway")
             if self.conn_from_mqtt_gateway:
-                self.logger.bind(tag=TAG).info("连接来自:MQTT网关")
+                self.logger.bind(tag=TAG).info("Connection from: MQTT gateway")
 
-            # 初始化活动时间戳
+            # Initialize the activity timestamps
             self.first_activity_time = time.time() * 1000
             self.last_activity_time = time.time() * 1000
 
-            # 启动超时检查任务
+            # Start the timeout check task
             self.timeout_task = asyncio.create_task(self._check_timeout())
 
             self.welcome_msg = self.config["xiaozhi"]
             self.welcome_msg["session_id"] = self.session_id
 
-            # 从配置中读取采样率
+            # Read the sample rate from the configuration
             self.sample_rate = self.welcome_msg["audio_params"]["sample_rate"]
-            self.logger.bind(tag=TAG).info(f"配置输出音频采样率为: {self.sample_rate}")
+            self.logger.bind(tag=TAG).info(f"Configured output audio sample rate: {self.sample_rate}")
 
-            # 在后台初始化配置和组件（完全不阻塞主循环）
+            # Initialize configuration and components in the background (completely non-blocking to the main loop)
             asyncio.create_task(self._background_initialize())
 
             try:
                 async for message in self.websocket:
                     await self._route_message(message)
             except websockets.exceptions.ConnectionClosed:
-                self.logger.bind(tag=TAG).info("客户端断开连接")
+                self.logger.bind(tag=TAG).info("Client disconnected")
 
         except AuthenticationError as e:
             self.logger.bind(tag=TAG).error(f"Authentication failed: {str(e)}")

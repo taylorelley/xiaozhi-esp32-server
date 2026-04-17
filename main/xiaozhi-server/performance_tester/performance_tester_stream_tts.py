@@ -12,17 +12,17 @@ from urllib.parse import urlparse, urlencode
 from tabulate import tabulate
 from config.settings import load_config
 
-description = "流式TTS语音合成首词耗时测试"
+description = "Streaming TTS speech synthesis first-word latency test"
 class StreamTTSPerformanceTester:
     def __init__(self):
         self.config = load_config()
         self.test_texts = [
-            "你好，这是一句话。"
+            "Hello, this is a sentence."
         ]
         self.results = []
-    
+
     async def test_aliyun_tts(self, text=None, test_count=5):
-        """测试阿里云流式TTS首词延迟（测试多次取平均）"""
+        """Test Aliyun streaming TTS first-word latency (multiple runs, averaged)"""
         text = text or self.test_texts[0]
         latencies = []
         
@@ -35,7 +35,7 @@ class StreamTTSPerformanceTester:
                 host = tts_config["host"]
                 ws_url = f"wss://{host}/ws/v1"
 
-                # 统一计时起点：在建立连接前开始计时
+                # Unified timing start: begin timing before establishing the connection
                 start_time = time.time()
                 async with websockets.connect(ws_url, extra_headers={"X-NLS-Token": token}) as ws:
                     task_id = str(uuid.uuid4())
@@ -63,7 +63,7 @@ class StreamTTSPerformanceTester:
 
                     start_response = json.loads(await ws.recv())
                     if start_response["header"]["name"] != "SynthesisStarted":
-                        raise Exception("启动合成失败")
+                        raise Exception("Failed to start synthesis")
 
                     run_request = {
                         "header": {
@@ -82,21 +82,21 @@ class StreamTTSPerformanceTester:
                         if isinstance(response, bytes):
                             latency = time.time() - start_time
                             latencies.append(latency)
-                            print(f"[阿里云TTS] 第{i+1}次 首词延迟: {latency:.3f}s")
+                            print(f"[Aliyun TTS] Run {i+1} first-word latency: {latency:.3f}s")
                             break
                         elif isinstance(response, str):
                             data = json.loads(response)
                             if data["header"]["name"] == "TaskFailed":
-                                raise Exception(f"合成失败: {data['payload']['error_info']}")
+                                raise Exception(f"Synthesis failed: {data['payload']['error_info']}")
 
             except Exception as e:
-                print(f"[阿里云TTS] 第{i+1}次测试失败: {str(e)}")
+                print(f"[Aliyun TTS] Run {i+1} test failed: {str(e)}")
                 latencies.append(None)
-        
-        return self._calculate_result("阿里云TTS", latencies, test_count)
+
+        return self._calculate_result("Aliyun TTS", latencies, test_count)
 
     async def test_alibl_tts(self, text=None, test_count=5):
-        """测试阿里云百炼CosyVoice流式TTS首词延迟"""
+        """Test Aliyun Bailian CosyVoice streaming TTS first-word latency"""
         text = text or self.test_texts[0]
         latencies = []
 
@@ -127,7 +127,7 @@ class StreamTTSPerformanceTester:
                 ) as ws:
                     session_id = uuid.uuid4().hex
 
-                    # 1. 发送 run-task（启动任务）
+                    # 1. Send run-task (start the task)
                     run_task_message = {
                         "header": {
                             "action": "run-task",
@@ -153,7 +153,7 @@ class StreamTTSPerformanceTester:
                     }
                     await ws.send(json.dumps(run_task_message))
 
-                    # 2. 等待 task-started 事件（关键！必须等这个再发文本）
+                    # 2. Wait for the task-started event (critical! must wait before sending text)
                     task_started = False
                     while not task_started:
                         msg = await ws.recv()
@@ -163,14 +163,14 @@ class StreamTTSPerformanceTester:
                             event = header.get("event")
                             if event == "task-started":
                                 task_started = True
-                                print(f"[阿里云百炼TTS] 第{i+1}次 任务启动成功")
+                                print(f"[Aliyun Bailian TTS] Run {i+1} task started successfully")
                             elif event == "task-failed":
-                                raise Exception(f"启动失败: {header.get('error_message', '未知错误')}")
+                                raise Exception(f"Start failed: {header.get('error_message', 'Unknown error')}")
 
-                    # 3. 发送 continue-task（发送文本！这是正确动作）
+                    # 3. Send continue-task (send the text! This is the correct action)
                     continue_task_message = {
                         "header": {
-                            "action": "continue-task",  # 改回 continue-task
+                            "action": "continue-task",  # changed back to continue-task
                             "task_id": session_id,
                             "streaming": "duplex",
                         },
@@ -178,7 +178,7 @@ class StreamTTSPerformanceTester:
                     }
                     await ws.send(json.dumps(continue_task_message))
 
-                    # 4. 发送 finish-task（结束任务）
+                    # 4. Send finish-task (end the task)
                     finish_task_message = {
                         "header": {
                             "action": "finish-task",
@@ -189,31 +189,31 @@ class StreamTTSPerformanceTester:
                     }
                     await ws.send(json.dumps(finish_task_message))
 
-                    # 5. 等待第一个音频数据块
+                    # 5. Wait for the first audio chunk
                     while True:
                         msg = await asyncio.wait_for(ws.recv(), timeout=15.0)
                         if isinstance(msg, (bytes, bytearray)) and len(msg) > 0:
                             latency = time.time() - start_time
-                            print(f"[阿里云百炼TTS] 第{i+1}次 首词延迟: {latency:.3f}s")
+                            print(f"[Aliyun Bailian TTS] Run {i+1} first-word latency: {latency:.3f}s")
                             latencies.append(latency)
                             break
                         elif isinstance(msg, str):
                             data = json.loads(msg)
                             event = data.get("header", {}).get("event")
                             if event == "task-failed":
-                                raise Exception(f"合成失败: {data}")
+                                raise Exception(f"Synthesis failed: {data}")
                             elif event == "task-finished":
                                 if not latencies or latencies[-1] is None:
-                                    raise Exception("任务结束但未收到音频")
+                                    raise Exception("Task finished but no audio received")
 
             except Exception as e:
-                print(f"[阿里云百炼TTS] 第{i+1}次失败: {str(e)}")
+                print(f"[Aliyun Bailian TTS] Run {i+1} failed: {str(e)}")
                 latencies.append(None)
 
-        return self._calculate_result("阿里云百炼TTS", latencies, test_count)
+        return self._calculate_result("Aliyun Bailian TTS", latencies, test_count)
 
     async def test_doubao_tts(self, text=None, test_count=5):
-        """测试火山引擎流式TTS首词延迟（测试多次取平均）"""
+        """Test Volcengine streaming TTS first-word latency (multiple runs, averaged)"""
         text = text or self.test_texts[0]
         latencies = []
         
