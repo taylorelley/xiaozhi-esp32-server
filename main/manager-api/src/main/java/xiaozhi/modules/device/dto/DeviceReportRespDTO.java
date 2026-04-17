@@ -6,32 +6,32 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Schema(description = "设备OTA检测版本返回体，包含激活码要求")
+@Schema(description = "deviceOTAdetectversionreturn，containActivation codeneed to求")
 public class DeviceReportRespDTO {
-    @Schema(description = "服务器时间")
+    @Schema(description = "servicetime")
     private ServerTime server_time;
 
-    @Schema(description = "激活码")
+    @Schema(description = "Activation code")
     private Activation activation;
 
-    @Schema(description = "错误信息")
+    @Schema(description = "errorinformation")
     private String error;
 
-    @Schema(description = "固件版本信息")
+    @Schema(description = "firmwareversioninformation")
     private Firmware firmware;
 
-    @Schema(description = "WebSocket配置")
+    @Schema(description = "WebSocketconfiguration")
     private Websocket websocket;
 
-    @Schema(description = "MQTT Gateway配置")
+    @Schema(description = "MQTT Gatewayconfiguration")
     private MQTT mqtt;
 
     @Getter
     @Setter
     public static class Firmware {
-        @Schema(description = "版本号")
+        @Schema(description = "versionnumber")
         private String version;
-        @Schema(description = "下载地址")
+        @Schema(description = "downloadAddress")
         private String url;
     }
 
@@ -44,52 +44,52 @@ public class DeviceReportRespDTO {
     @Setter
     @Getter
     public static class Activation {
-        @Schema(description = "激活码")
+        @Schema(description = "Activation code")
         private String code;
 
-        @Schema(description = "激活码信息: 激活地址")
+        @Schema(description = "Activation codeinformation: activationAddress")
         private String message;
 
-        @Schema(description = "挑战码")
+        @Schema(description = "挑战code")
         private String challenge;
     }
 
     @Getter
     @Setter
     public static class ServerTime {
-        @Schema(description = "时间戳")
+        @Schema(description = "timestamp")
         private Long timestamp;
 
         @Schema(description = "时区")
         private String timeZone;
 
-        @Schema(description = "时区偏移量，单位为分钟")
+        @Schema(description = "时区偏移量，unitas分钟")
         private Integer timezone_offset;
     }
 
     @Getter
     @Setter
     public static class Websocket {
-        @Schema(description = "WebSocket服务器地址")
+        @Schema(description = "WebSocketserviceAddress")
         private String url;
-        @Schema(description = "WebSocket 认证 token")
+        @Schema(description = "WebSocket authentication token")
         private String token;
     }
 
     @Getter
     @Setter
     public static class MQTT {
-        @Schema(description = "MQTT 配置网址")
+        @Schema(description = "MQTT configuration网址")
         private String endpoint;
-        @Schema(description = "MQTT 客户端唯一标识符")
+        @Schema(description = "MQTT clientunique identifier符")
         private String client_id;
-        @Schema(description = "MQTT 认证用户名")
+        @Schema(description = "MQTT authenticationUsername")
         private String username;
-        @Schema(description = "MQTT 认证密码")
+        @Schema(description = "MQTT authenticationPassword")
         private String password;
-        @Schema(description = "ESP32 发布消息的主题")
+        @Schema(description = "ESP32 发布message 主题")
         private String publish_topic;
-        @Schema(description = "ESP32 订阅的主题")
+        @Schema(description = "ESP32 订阅 主题")
         private String subscribe_topic;
     }
 }

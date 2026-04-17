@@ -11,59 +11,59 @@ import xiaozhi.modules.sys.vo.SysDictDataItem;
 import xiaozhi.modules.sys.vo.SysDictDataVO;
 
 /**
- * 数据字典
+ * dataDictionary
  */
 public interface SysDictDataService extends BaseService<SysDictDataEntity> {
 
     /**
-     * 分页查询数据字典信息
+     * paginationQuery dataDictionaryinformation
      *
-     * @param params 查询参数，包含分页信息和查询条件
-     * @return 返回数据字典的分页查询结果
+     * @param params queryparameter，containpaginationinformationandqueryitems件
+     * @return returndataDictionary paginationqueryresult
      */
     PageData<SysDictDataVO> page(Map<String, Object> params);
 
     /**
-     * 根据ID获取数据字典实体
+     * according toIDgetdataDictionaryentity
      *
-     * @param id 数据字典实体的唯一标识
-     * @return 返回数据字典实体的详细信息
+     * @param id dataDictionaryentity unique identifier
+     * @return returndataDictionaryentity 详细information
      */
     SysDictDataVO get(Long id);
 
     /**
-     * 保存新的数据字典项
+     * savenew dataDictionaryitem
      *
-     * @param dto 数据字典项的保存数据传输对象
+     * @param dto dataDictionaryitem Save datatransfer object
      */
     void save(SysDictDataDTO dto);
 
     /**
-     * 更新数据字典项
+     * updatedataDictionaryitem
      *
-     * @param dto 数据字典项的更新数据传输对象
+     * @param dto dataDictionaryitem updatedatatransfer object
      */
     void update(SysDictDataDTO dto);
 
     /**
-     * 删除数据字典项
+     * Delete dataDictionaryitem
      *
-     * @param ids 要删除的数据字典项的ID数组
+     * @param ids need todelete dataDictionaryitem IDarray
      */
     void delete(Long[] ids);
 
     /**
-     * 根据字典类型ID删除对应的字典数据
+     * according toDictionary type IDdeletecorresponding Dictionary data
      *
-     * @param dictTypeId 字典类型ID
+     * @param dictTypeId Dictionary type ID
      */
     void deleteByTypeId(Long dictTypeId);
 
     /**
-     * 根据字典类型获取字典数据列表
+     * according toDictionary typegetDictionary datalist
      *
-     * @param dictType 字典类型
-     * @return 返回字典数据列表
+     * @param dictType Dictionary type
+     * @return returnDictionary datalist
      */
     List<SysDictDataItem> getDictDataByType(String dictType);
 

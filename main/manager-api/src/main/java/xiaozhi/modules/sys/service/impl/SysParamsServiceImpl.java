@@ -29,7 +29,7 @@ import xiaozhi.modules.sys.redis.SysParamsRedis;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * 参数管理
+ * Parameter management
  */
 @AllArgsConstructor
 @Service
@@ -94,7 +94,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     }
 
     /**
-     * 校验参数值类型
+     * validateParameter valuetype
      */
     private void validateParamValue(SysParamsDTO dto) {
         if (dto == null) {
@@ -131,12 +131,12 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                 break;
             case "json":
                 try {
-                    // 首先检查是否以 { 开头，以 } 结尾
+                    // 首first检查YesNo以 { 开header，以 } 结尾
                     String trimmedValue = paramValue.trim();
                     if (!trimmedValue.startsWith("{") || !trimmedValue.endsWith("}")) {
                         throw new RenException(ErrorCode.PARAM_JSON_INVALID);
                     }
-                    // 然后尝试解析JSON
+                    // 然后尝试parseJSON
                     JsonUtils.parseObject(paramValue, Object.class);
                 } catch (Exception e) {
                     throw new RenException(ErrorCode.PARAM_JSON_INVALID);
@@ -150,14 +150,14 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(String[] ids) {
-        // 删除Redis数据
+        // deleteRedisdata
         List<String> paramCodeList = baseDao.getParamCodeList(ids);
         String[] paramCodes = paramCodeList.toArray(new String[paramCodeList.size()]);
         if (paramCodes.length > 0) {
             sysParamsRedis.delete(paramCodes);
         }
 
-        // 删除
+        // delete
         deleteBatchIds(Arrays.asList(ids));
     }
 
@@ -201,56 +201,56 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
 
     @Override
     public void initServerSecret() {
-        // 获取服务器密钥
+        // getservicekey
         String secretParam = getValue(Constant.SERVER_SECRET, false);
         if (StringUtils.isBlank(secretParam) || "null".equals(secretParam)) {
             String newSecret = UUID.randomUUID().toString();
             updateValueByCode(Constant.SERVER_SECRET, newSecret);
         }
 
-        // 初始化SM2密钥对
+        // initializeSM2keyfor
         initSM2KeyPair();
     }
 
     /**
-     * 初始化SM2密钥对
+     * initializeSM2keyfor
      */
     private void initSM2KeyPair() {
-        // 获取SM2公钥
+        // getSM2public key
         String publicKey = getValue(Constant.SM2_PUBLIC_KEY, false);
-        // 获取SM2私钥
+        // getSM2private key
         String privateKey = getValue(Constant.SM2_PRIVATE_KEY, false);
 
-        // 如果公钥或私钥为空，则生成新的密钥对
+        // ifpublic keyorprivate keyasempty，thengeneratenew keyfor
         if (StringUtils.isBlank(publicKey) || StringUtils.isBlank(privateKey) || 
             "null".equals(publicKey) || "null".equals(privateKey)) {
             Map<String, String> keyPair = SM2Utils.createKey();
             String newPublicKey = keyPair.get(SM2Utils.KEY_PUBLIC_KEY);
             String newPrivateKey = keyPair.get(SM2Utils.KEY_PRIVATE_KEY);
 
-            // 更新数据库中的密钥对
+            // updatedatalibrary keyfor
             updateValueByCode(Constant.SM2_PUBLIC_KEY, newPublicKey);
             updateValueByCode(Constant.SM2_PRIVATE_KEY, newPrivateKey);
         }
     }
 
     /**
-     * 检测短信参数是否符合要求
+     * detectSMSparameterYesNomatchingneed to求
      * 
-     * @param paramCode  参数编码
-     * @param paramValue 参数值
-     * @return 是否通过
+     * @param paramCode  Parameter code
+     * @param paramValue Parameter value
+     * @return YesNovia
      */
     private boolean detectingSMSParameters(String paramCode, String paramValue) {
-        // 判断是否是开启手机注册的参数编码，如果不是参数编码，着不需要检测其他短信参数，直接返回true
+        // determineYesNoYesenableMobile registration Parameter code，ifnot YesParameter code，not needdetect其他SMSparameter，directlyreturntrue
         if (!Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue().equals(paramCode)) {
             return true;
         }
-        // 判断是否为关闭，如果是关闭短信注册，着不需要检测其他短信参数，直接返回true
+        // determineYesNoasclose，ifYescloseSMSregister，not needdetect其他SMSparameter，directlyreturntrue
         if ("false".equalsIgnoreCase(paramValue)) {
             return true;
         }
-        // 检测短信关联参数是否为空
+        // detectSMSassociatedparameterYesNoasempty
         ArrayList<String> list = new ArrayList<String>();
         list.add(Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue());
         list.add(Constant.SysMSMParam.ALIYUN_SMS_ACCESS_KEY_ID.getValue());
@@ -264,7 +264,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             }
         });
         if (!str.isEmpty()) {
-            String promptStr = "%s这些参数不可以为空";
+            String promptStr = "%stheseparameternot 可以asempty";
             String substring = str.substring(1, str.length());
             throw new RenException(promptStr.formatted(substring));
         }

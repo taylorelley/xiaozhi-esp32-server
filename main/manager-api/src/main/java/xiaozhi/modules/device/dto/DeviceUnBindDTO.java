@@ -7,14 +7,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 设备解绑表单
+ * device解绑table单
  */
 @Data
-@Schema(description = "设备解绑表单")
+@Schema(description = "device解绑table单")
 public class DeviceUnBindDTO implements Serializable {
 
-    @Schema(description = "设备ID")
-    @NotBlank(message = "设备ID不能为空")
+    @Schema(description = "Device ID")
+    @NotBlank(message = "Device ID cannot be empty")
     private String deviceId;
 
 }

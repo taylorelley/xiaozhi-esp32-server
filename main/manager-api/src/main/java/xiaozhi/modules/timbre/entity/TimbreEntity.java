@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 音色表实体类
+ * voicetableentityclass
  * 
  * @author zjy
  * @since 2025-3-21
@@ -19,52 +19,52 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("ai_tts_voice")
-@Schema(description = "音色信息")
+@Schema(description = "voiceinformation")
 public class TimbreEntity {
 
     @Schema(description = "id")
     private String id;
 
-    @Schema(description = "语言")
+    @Schema(description = "Language")
     private String languages;
 
-    @Schema(description = "音色名称")
+    @Schema(description = "voicename")
     private String name;
 
-    @Schema(description = "备注")
+    @Schema(description = "Remark")
     private String remark;
 
-    @Schema(description = "参考音频路径")
+    @Schema(description = "referenceaudiopath")
     private String referenceAudio;
 
-    @Schema(description = "參考文本")
+    @Schema(description = "參考text")
     private String referenceText;
 
-    @Schema(description = "排序")
+    @Schema(description = "Sort order")
     private long sort;
 
-    @Schema(description = "对应 TTS 模型主键")
+    @Schema(description = "corresponding TTS modelPrimary key")
     private String ttsModelId;
 
-    @Schema(description = "音色编码")
+    @Schema(description = "voicecode")
     private String ttsVoice;
 
-    @Schema(description = "音频播放地址")
+    @Schema(description = "audioplayAddress")
     private String voiceDemo;
 
-    @Schema(description = "更新者")
+    @Schema(description = "update")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "updatetime")
     @TableField(fill = FieldFill.UPDATE)
     private Date updateDate;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Creator")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 

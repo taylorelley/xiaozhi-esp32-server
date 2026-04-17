@@ -6,23 +6,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 智能体聊天记录DTO
+ * agentChat historyDTO
  */
 @Data
-@Schema(description = "智能体聊天记录")
+@Schema(description = "agentChat history")
 public class AgentChatHistoryDTO {
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     private Date createdAt;
 
-    @Schema(description = "消息类型: 1-用户, 2-智能体")
+    @Schema(description = "messagetype: 1-user, 2-agent")
     private Byte chatType;
 
-    @Schema(description = "聊天内容")
+    @Schema(description = "chatcontent")
     private String content;
 
-    @Schema(description = "音频ID")
+    @Schema(description = "audioID")
     private String audioId;
 
-    @Schema(description = "MAC地址")
+    @Schema(description = "MACAddress")
     private String macAddress;
 }

@@ -95,7 +95,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 redisUtils.set(RedisKeys.getAgentDeviceLastConnectedAtById(agentId), new Date());
             }
         } catch (Exception e) {
-            log.error("异步更新设备连接信息失败", e);
+            log.error("asynchronousupdatedeviceconnectioninformationfailed", e);
         }
     }
 
@@ -120,7 +120,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         if (!activationCode.equals(cachedCode)) {
             throw new RenException(ErrorCode.ACTIVATION_CODE_ERROR);
         }
-        // 检查设备有没有被激活
+        // 检查device有noisactivation
         if (selectById(deviceId) != null) {
             throw new RenException(ErrorCode.DEVICE_ALREADY_ACTIVATED);
         }
@@ -149,51 +149,51 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         deviceEntity.setLastConnectedAt(currentTime);
         deviceDao.insert(deviceEntity);
 
-        // 清理redis缓存、清除智能体设备数量缓存
+        // 清理rediscache、clearAgent devicecountcache
         redisUtils.delete(List.of(cacheDeviceKey, deviceKey, RedisKeys.getAgentDeviceCountById(agentId)));
         return true;
     }
 
     /**
-     * 获取设备在线数据
+     * getdevicein线data
      */
     @Override
     public String getDeviceOnlineData(String agentId) {
-        // 从系统参数中获取MQTT网关地址
+        // fromsystemparametergetMQTTgatewayAddress
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return "";
         }
-        // 构建完整的URL
+        // buildcomplete URL
         String url = StrUtil.format("http://{}/api/devices/status", mqttGatewayUrl);
 
-        // 获取当前用户的设备列表
+        // get currentuser Device list
         UserDetail user = SecurityUser.getUser();
         List<DeviceEntity> devices = getUserDevices(user.getId(), agentId);
 
-        // 构建deviceIds数组
+        // builddeviceIdsarray
         Set<String> deviceIds = devices.stream().map(o -> {
             String macAddress = Optional.ofNullable(o.getMacAddress()).orElse("unknown").replace(":", "_");
             String groupId = Optional.ofNullable(o.getBoard()).orElse("GID_default").replace(":", "_");
             return StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
         }).collect(Collectors.toSet());
 
-        // 构建请求入参
+        // buildrequest入参
         Map<String, Set<String>> params = MapUtil
                 .builder(new HashMap<String, Set<String>>())
                 .put("clientIds", deviceIds).build();
 
         if (ToolUtil.isNotEmpty(deviceIds)) {
-            // 发送请求
+            // sendrequest
             String resultMessage = HttpRequest.post(url)
                     .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                     .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                     .body(JSONUtil.toJsonStr(params))
-                    .timeout(10000) // 超时，毫秒
+                    .timeout(10000) // timeout，milliseconds
                     .execute().body();
             return resultMessage;
         }
-        // 返回响应
+        // returnresponse
         return "";
     }
 
@@ -204,14 +204,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         DeviceEntity deviceById = getDeviceByMacAddress(macAddress);
 
-        // 设备未绑定，则返回当前上传的固件信息（不更新）以此兼容旧固件版本
+        // devicenotbind，thenreturncurrentupload firmwareinformation（not update）以this兼容旧firmwareversion
         if (deviceById == null) {
             DeviceReportRespDTO.Firmware firmware = new DeviceReportRespDTO.Firmware();
             firmware.setVersion(deviceReport.getApplication().getVersion());
             firmware.setUrl(Constant.INVALID_FIRMWARE_URL);
             response.setFirmware(firmware);
         } else {
-            // 只有在设备已绑定且autoUpdate不为0的情况下才返回固件升级信息
+            // only有indevicealreadybindandautoUpdatenot as0 情况下才returnfirmwareupgradeinformation
             if (deviceById.getAutoUpdate() != 0) {
                 String type = deviceReport.getBoard() == null ? null : deviceReport.getBoard().getType();
                 DeviceReportRespDTO.Firmware firmware = buildFirmwareInfo(type,
@@ -220,20 +220,20 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             }
         }
 
-        // 添加WebSocket配置
+        // addWebSocketconfiguration
         DeviceReportRespDTO.Websocket websocket = new DeviceReportRespDTO.Websocket();
-        // 从系统参数获取WebSocket URL，如果未配置则使用默认值
+        // fromsystemparametergetWebSocket URL，ifnotconfigurationthenusedefaultvalue
         String wsUrl = sysParamsService.getValue(Constant.SERVER_WEBSOCKET, true);
 
-        // 检查是否启用认证并生成token
+        // 检查YesNoenableauthentication并generatetoken
         String authEnabled = sysParamsService.getValue(Constant.SERVER_AUTH_ENABLED, true);
         if ("true".equalsIgnoreCase(authEnabled)) {
             try {
-                // 生成token
+                // generatetoken
                 String token = generateWebSocketToken(clientId, macAddress);
                 websocket.setToken(token);
             } catch (Exception e) {
-                log.error("生成WebSocket token失败: {}", e.getMessage());
+                log.error("generateWebSocket tokenfailed: {}", e.getMessage());
                 websocket.setToken("");
             }
         } else {
@@ -241,7 +241,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         }
 
         if (StringUtils.isBlank(wsUrl) || wsUrl.equals("null")) {
-            log.error("WebSocket地址未配置，请登录智控台，在参数管理找到【server.websocket】配置");
+            log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.websocket】configuration");
             wsUrl = "ws://xiaozhi.server.com:8000/xiaozhi/v1/";
             websocket.setUrl(wsUrl);
         } else {
@@ -250,15 +250,15 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 // 随机选择一个WebSocket URL
                 websocket.setUrl(wsUrls[RandomUtil.randomInt(0, wsUrls.length)]);
             } else {
-                log.error("WebSocket地址未配置，请登录智控台，在参数管理找到【server.websocket】配置");
+                log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.websocket】configuration");
                 websocket.setUrl("ws://xiaozhi.server.com:8000/xiaozhi/v1/");
             }
         }
 
         response.setWebsocket(websocket);
 
-        // 添加MQTT UDP配置
-        // 从系统参数获取MQTT Gateway地址，仅在配置有效时使用
+        // addMQTT UDPconfiguration
+        // fromsystemparametergetMQTT GatewayAddress，onlyinconfigurationvalid时use
         String mqttUdpConfig = sysParamsService.getValue(Constant.SERVER_MQTT_GATEWAY, true);
         if (mqttUdpConfig != null && !mqttUdpConfig.equals("null") && !mqttUdpConfig.isEmpty()) {
             try {
@@ -270,19 +270,19 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                     response.setMqtt(mqtt);
                 }
             } catch (Exception e) {
-                log.error("生成MQTT配置失败: {}", e.getMessage());
+                log.error("generateMQTTconfigurationfailed: {}", e.getMessage());
             }
         }
 
         if (deviceById != null) {
-            // 如果设备存在，则异步更新上次连接时间和版本信息
+            // ifdevice存in，thenasynchronousupdate上timesconnectiontimeandversioninformation
             String appVersion = deviceReport.getApplication() != null ? deviceReport.getApplication().getVersion()
                     : null;
-            // 通过Spring代理调用异步方法
+            // viaSpring代理callasynchronous方法
             ((DeviceServiceImpl) AopContext.currentProxy()).updateDeviceConnectionInfo(deviceById.getAgentId(),
                     deviceById.getId(), appVersion);
         } else {
-            // 如果设备不存在，则生成激活码
+            // ifDevice does not exist，thengenerateActivation code
             DeviceReportRespDTO.Activation code = buildActivation(macAddress, deviceReport);
             response.setActivation(code);
         }
@@ -300,13 +300,13 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public void unbindDevice(Long userId, String deviceId) {
-        // 先查询设备信息，获取agentId
+        // firstqueryDevice information，getagentId
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return;
         }
         if (StringUtils.isNotBlank(device.getAgentId())) {
-            // 清除智能体设备数量缓存
+            // clearAgent devicecountcache
             redisUtils.delete(RedisKeys.getAgentDeviceCountById(device.getAgentId()));
         }
 
@@ -344,21 +344,21 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<DeviceEntity> page = baseDao.selectPage(
                 getPage(params, "mac_address", true),
-                // 定义查询条件
+                // definequeryitems件
                 new QueryWrapper<DeviceEntity>()
-                        // 必须设备关键词查找
+                        // 必须devicekeywordfind
                         .like(StringUtils.isNotBlank(dto.getKeywords()), "alias", dto.getKeywords()));
-        // 循环处理page获取回来的数据，返回需要的字段
+        // 循环processpageget回来 data，returnneed field
         List<UserShowDeviceListVO> list = page.getRecords().stream().map(device -> {
             UserShowDeviceListVO vo = ConvertUtils.sourceToTarget(device, UserShowDeviceListVO.class);
-            // 把最后修改的时间，改为简短描述的时间
+            // lastupdate time，改as简短Description time
             vo.setRecentChatTime(DateUtils.getShortTime(device.getUpdateDate()));
             sysUserUtilService.assignUsername(device.getUserId(),
                     vo::setBindUserName);
             vo.setDeviceType(device.getBoard());
             return vo;
         }).toList();
-        // 计算页数
+        // 计算page count
         return new PageData<>(list, page.getTotal());
     }
 
@@ -395,7 +395,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Date getLatestLastConnectionTime(String agentId) {
-        // 查询是否有缓存时间，有则返回
+        // queryYesNo有cachetime，有thenreturn
         Date cachedDate = (Date) redisUtils.get(RedisKeys.getAgentDeviceLastConnectedAtById(agentId));
         if (cachedDate != null) {
             return cachedDate;
@@ -443,11 +443,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             dataMap.put("deviceId", deviceId);
             dataMap.put("activation_code", newCode);
 
-            // 写入主数据 key
+            // write入主data key
             String dataKey = getDeviceCacheKey(deviceId);
             redisUtils.set(dataKey, dataMap);
 
-            // 写入反查激活码 key
+            // write入反查Activation code key
             String codeKey = RedisKeys.getOtaActivationCode(newCode);
             redisUtils.set(codeKey, deviceId);
         }
@@ -467,18 +467,18 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         String downloadUrl = null;
 
         if (ota != null) {
-            // 如果设备没有版本信息，或者OTA版本比设备版本新，则返回下载地址
+            // ifdevicenoversioninformation，orOTAversion比deviceversionnew，thenreturndownloadAddress
             if (compareVersions(ota.getVersion(), currentVersion) > 0) {
                 String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
                 if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
-                    log.error("OTA地址未配置，请登录智控台，在参数管理找到【server.ota】配置");
-                    // 尝试从请求中获取
+                    log.error("OTAAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.ota】configuration");
+                    // 尝试fromrequestget
                     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                             .getRequestAttributes())
                             .getRequest();
                     otaUrl = request.getRequestURL().toString();
                 }
-                // 将URL中的/ota/替换为/otaMag/download/
+                // willURL /ota/替换as/otaMag/download/
                 String uuid = UUID.randomUUID().toString();
                 redisUtils.set(RedisKeys.getOtaIdKey(uuid), ota.getId());
                 downloadUrl = otaUrl.replace("/ota/", "/otaMag/download/") + uuid;
@@ -491,11 +491,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 比较两个版本号
+     * compare twoversionnumber
      * 
-     * @param version1 版本1
-     * @param version2 版本2
-     * @return 如果version1 > version2返回1，version1 < version2返回-1，相等返回0
+     * @param version1 version1
+     * @param version2 version2
+     * @return ifversion1 > version2return1，version1 < version2return-1，相etc.return0
      */
     private static int compareVersions(String version1, String version2) {
         if (version1 == null || version2 == null) {
@@ -521,7 +521,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public void manualAddDevice(Long userId, DeviceManualAddDTO dto) {
-        // 检查mac是否已存在
+        // 检查macYesNoalready exists
         QueryWrapper<DeviceEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("mac_address", dto.getMacAddress());
         DeviceEntity exist = baseDao.selectOne(wrapper);
@@ -544,7 +544,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         entity.setAutoUpdate(1);
         baseDao.insert(entity);
 
-        // 添加：清除智能体设备数量缓存
+        // add：clearAgent devicecountcache
         redisUtils.delete(RedisKeys.getAgentDeviceCountById(dto.getAgentId()));
     }
 
@@ -557,11 +557,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成MQTT密码签名
+     * generateMQTTPasswordsignature
      * 
-     * @param content   签名内容 (clientId + '|' + username)
-     * @param secretKey 密钥
-     * @return Base64编码的HMAC-SHA256签名
+     * @param content   signaturecontent (clientId + '|' + username)
+     * @param secretKey key
+     * @return Base64code HMAC-SHA256signature
      */
     private String generatePasswordSignature(String content, String secretKey) throws Exception {
         Mac hmac = Mac.getInstance("HmacSHA256");
@@ -572,63 +572,63 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成WebSocket认证token 遵循Python端AuthManager的实现逻辑：token = signature.timestamp
+     * generateWebSocketauthenticationtoken 遵循PythonendAuthManager implement逻辑：token = signature.timestamp
      * 
-     * @param clientId 客户端ID
-     * @param username 用户名 (通常为deviceId/macAddress)
-     * @return 认证token字符串
+     * @param clientId clientID
+     * @param username Username (usually deviceId/macAddress)
+     * @return authenticationtokenstring
      */
     public String generateWebSocketToken(String clientId, String username)
             throws NoSuchAlgorithmException, InvalidKeyException {
-        // 从系统参数获取密钥
+        // fromsystemparameterget key
         String secretKey = sysParamsService.getValue(Constant.SERVER_SECRET, false);
         if (StringUtils.isBlank(secretKey)) {
-            throw new IllegalStateException("WebSocket认证密钥未配置(server.secret)");
+            throw new IllegalStateException("WebSocketauthenticationkeynotconfiguration(server.secret)");
         }
 
-        // 获取当前时间戳(秒)
+        // get currenttimestamp(seconds)
         long timestamp = System.currentTimeMillis() / 1000;
 
-        // 构建签名内容: clientId|username|timestamp
+        // buildsignaturecontent: clientId|username|timestamp
         String content = String.format("%s|%s|%d", clientId, username, timestamp);
 
-        // 生成HMAC-SHA256签名
+        // generateHMAC-SHA256signature
         Mac hmac = Mac.getInstance("HmacSHA256");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         hmac.init(keySpec);
         byte[] signature = hmac.doFinal(content.getBytes(StandardCharsets.UTF_8));
 
-        // Base64 URL-safe编码签名(去除填充符=)
+        // Base64 URL-safecodesignature(去除填充符=)
         String signatureBase64 = Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
 
-        // 返回格式: signature.timestamp
+        // returnformat: signature.timestamp
         return String.format("%s.%d", signatureBase64, timestamp);
     }
 
     /**
-     * 构建MQTT配置信息
+     * buildMQTTconfigurationinformation
      * 
-     * @param macAddress MAC地址
-     * @param groupId    分组ID
-     * @return MQTT配置对象
+     * @param macAddress MACAddress
+     * @param groupId    分groupID
+     * @return MQTTconfigurationobject
      */
     private DeviceReportRespDTO.MQTT buildMqttConfig(String macAddress, String groupId)
             throws Exception {
-        // 从环境变量或系统参数获取签名密钥
+        // from环境变量orsystemparametergetsignaturekey
         String signatureKey = sysParamsService.getValue("server.mqtt_signature_key", true);
         if (StringUtils.isBlank(signatureKey)) {
-            log.warn("缺少MQTT_SIGNATURE_KEY，跳过MQTT配置生成");
+            log.warn("missingMQTT_SIGNATURE_KEY，跳MQTTconfigurationgenerate");
             return null;
         }
 
-        // 构建客户端ID格式：groupId@@@macAddress@@@uuid
+        // buildclientIDformat：groupId@@@macAddress@@@uuid
         String groupIdSafeStr = groupId.replace(":", "_");
         String deviceIdSafeStr = macAddress.replace(":", "_");
         String mqttClientId = String.format("%s@@@%s@@@%s", groupIdSafeStr, deviceIdSafeStr, deviceIdSafeStr);
 
-        // 构建用户数据（包含IP等信息）
+        // builduserdata（containIPetc.information）
         Map<String, String> userData = new HashMap<>();
-        // 尝试获取客户端IP
+        // 尝试getclientIP
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
                     .getRequestAttributes();
@@ -641,14 +641,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             userData.put("ip", "unknown");
         }
 
-        // 将用户数据编码为Base64 JSON
+        // willuserdatacodeasBase64 JSON
         String userDataJson = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(userData);
         String username = Base64.getEncoder().encodeToString(userDataJson.getBytes(StandardCharsets.UTF_8));
 
-        // 生成密码签名
+        // generatePasswordsignature
         String password = generatePasswordSignature(mqttClientId + "|" + username, signatureKey);
 
-        // 构建MQTT配置
+        // buildMQTTconfiguration
         DeviceReportRespDTO.MQTT mqtt = new DeviceReportRespDTO.MQTT();
         mqtt.setClient_id(mqttClientId);
         mqtt.setUsername(username);
@@ -660,7 +660,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成BearerToken
+     * generateBearerToken
      */
     private String generateBearerToken() {
         try {
@@ -677,48 +677,48 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Object getDeviceTools(String deviceId) {
-        // 从系统参数中获取MQTT网关地址
+        // fromsystemparametergetMQTTgatewayAddress
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return null;
         }
 
-        // 获取设备信息
+        // getDevice information
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return null;
         }
 
-        // 检查设备是否属于当前用户
+        // 检查deviceYesNo属于currentuser
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;
         }
 
-        // 构建clientId
+        // buildclientId
         String macAddress = Optional.ofNullable(device.getMacAddress()).orElse("unknown").replace(":", "_");
         String groupId = Optional.ofNullable(device.getBoard()).orElse("GID_default").replace(":", "_");
         String clientId = StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
 
-        // 构建完整的URL
+        // buildcomplete URL
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // 存储所有工具列表
+        // 存储alltool list
         List<Object> allTools = new ArrayList<>();
         String cursor = null;
 
-        // 循环获取分页数据
+        // 循环getpaginationdata
         while (true) {
-            // 构建params
+            // buildparams
             Map<String, Object> paramsMap = MapUtil.builder(new HashMap<String, Object>())
                     .put("withUserTools", true)
                     .build();
-            // 如果有cursor，添加到请求参数中
+            // if有cursor，addtorequestparameter
             if (StringUtils.isNotBlank(cursor)) {
                 paramsMap.put("cursor", cursor);
             }
 
-            // 构建请求体
+            // buildrequest
             Map<String, Object> payload = MapUtil
                     .builder(new HashMap<String, Object>())
                     .put("jsonrpc", "2.0")
@@ -733,15 +733,15 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                     .put("payload", payload)
                     .build();
 
-            // 发送请求
+            // sendrequest
             String resultMessage = HttpRequest.post(url)
                     .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                     .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                     .body(JSONUtil.toJsonStr(requestBody))
-                    .timeout(10000) // 超时，毫秒
+                    .timeout(10000) // timeout，milliseconds
                     .execute().body();
 
-            // 解析响应
+            // parseresponse
             if (StringUtils.isBlank(resultMessage)) {
                 break;
             }
@@ -756,22 +756,22 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 break;
             }
 
-            // 获取当前页的工具列表
+            // get current页 tool list
             JSONArray tools = data.getJSONArray("tools");
             if (tools != null && !tools.isEmpty()) {
                 allTools.addAll(tools);
             }
 
-            // 获取下一页的cursor
+            // get下一页 cursor
             String nextCursor = data.getStr("nextCursor");
             if (StringUtils.isBlank(nextCursor)) {
-                // 没有下一页了
+                // no下一页了
                 break;
             }
             cursor = nextCursor;
         }
 
-        // 构建返回结果
+        // buildreturnresult
         if (allTools.isEmpty()) {
             return null;
         }
@@ -783,33 +783,33 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Object callDeviceTool(String deviceId, String toolName, Map<String, Object> arguments) {
-        // 从系统参数中获取MQTT网关地址
+        // fromsystemparametergetMQTTgatewayAddress
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return null;
         }
 
-        // 获取设备信息
+        // getDevice information
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return null;
         }
 
-        // 检查设备是否属于当前用户
+        // 检查deviceYesNo属于currentuser
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;
         }
 
-        // 构建clientId
+        // buildclientId
         String macAddress = Optional.ofNullable(device.getMacAddress()).orElse("unknown").replace(":", "_");
         String groupId = Optional.ofNullable(device.getBoard()).orElse("GID_default").replace(":", "_");
         String clientId = StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
 
-        // 构建完整的URL
+        // buildcomplete URL
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // 构建请求体
+        // buildrequest
         Map<String, Object> params = MapUtil
                 .builder(new HashMap<String, Object>())
                 .put("name", toolName)
@@ -830,15 +830,15 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 .put("payload", payload)
                 .build();
 
-        // 发送请求
+        // sendrequest
         String resultMessage = HttpRequest.post(url)
                 .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                 .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                 .body(JSONUtil.toJsonStr(requestBody))
-                .timeout(10000) // 超时，毫秒
+                .timeout(10000) // timeout，milliseconds
                 .execute().body();
 
-        // 解析响应
+        // parseresponse
         if (StringUtils.isNotBlank(resultMessage)) {
             cn.hutool.json.JSONObject jsonObject = JSONUtil.parseObj(resultMessage);
             if (jsonObject.getBool("success", false)) {

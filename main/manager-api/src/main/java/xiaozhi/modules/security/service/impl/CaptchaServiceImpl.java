@@ -25,7 +25,7 @@ import xiaozhi.modules.sms.service.SmsService;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * 验证码
+ * Verification code
  */
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
@@ -38,7 +38,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Value("${renren.redis.open}")
     private boolean open;
     /**
-     * Local Cache 5分钟过期
+     * Local Cache 5分钟期
      */
     Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000)
             .expireAfterAccess(5, TimeUnit.MINUTES).build();
@@ -50,13 +50,13 @@ public class CaptchaServiceImpl implements CaptchaService {
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
 
-        // 生成验证码
+        // generateVerification code
         SpecCaptcha captcha = new SpecCaptcha(150, 40);
         captcha.setLen(5);
         captcha.setCharType(Captcha.TYPE_DEFAULT);
         captcha.out(response.getOutputStream());
 
-        // 保存到缓存
+        // savetocache
         setCache(uuid, captcha.text());
     }
 
@@ -65,10 +65,10 @@ public class CaptchaServiceImpl implements CaptchaService {
         if (StringUtils.isBlank(code)) {
             return false;
         }
-        // 获取验证码
+        // getVerification code
         String captcha = getCache(uuid, delete);
 
-        // 效验成功
+        // validatesuccess
         if (code.equalsIgnoreCase(captcha)) {
             return true;
         }
@@ -78,9 +78,9 @@ public class CaptchaServiceImpl implements CaptchaService {
 
     @Override
     public void sendSMSValidateCode(String phone) {
-        // 检查发送间隔
+        // 检查send间隔
         String lastSendTimeKey = RedisKeys.getSMSLastSendTimeKey(phone);
-        // 获取是否发送过，如果没有设置最后发送时间（60秒）
+        // getYesNosend，ifnosetlastsendtime（60seconds）
         String lastSendTime = redisUtils
                 .getKeyOrCreate(lastSendTimeKey,
                         String.valueOf(System.currentTimeMillis()), 60L);
@@ -93,19 +93,19 @@ public class CaptchaServiceImpl implements CaptchaService {
             }
         }
 
-        // 检查今日发送次数
+        // 检查今日sendtimes
         String todayCountKey = RedisKeys.getSMSTodayCountKey(phone);
         Integer todayCount = (Integer) redisUtils.get(todayCountKey);
         if (todayCount == null) {
             todayCount = 0;
         }
 
-        // 获取最大发送次数限制
+        // get最largesendtimes限制
         Integer maxSendCount = sysParamsService.getValueObject(
                 Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue(),
                 Integer.class);
         if (maxSendCount == null) {
-            maxSendCount = 5; // 默认值
+            maxSendCount = 5; // defaultvalue
         }
 
         if (todayCount >= maxSendCount) {
@@ -115,17 +115,17 @@ public class CaptchaServiceImpl implements CaptchaService {
         String key = RedisKeys.getSMSValidateCodeKey(phone);
         String validateCodes = generateValidateCode(6);
 
-        // 设置验证码
+        // setVerification code
         setCache(key, validateCodes);
 
-        // 更新今日发送次数
+        // update今日sendtimes
         if (todayCount == 0) {
             redisUtils.increment(todayCountKey, RedisUtils.DEFAULT_EXPIRE);
         } else {
             redisUtils.increment(todayCountKey);
         }
 
-        // 发送验证码短信
+        // sendVerification codeSMS
         smsService.sendVerificationCodeSms(phone, validateCodes);
     }
 
@@ -136,13 +136,13 @@ public class CaptchaServiceImpl implements CaptchaService {
     }
 
     /**
-     * 生成指定数量的随机数验证码
+     * generatespecifiedcount 随机numberVerification code
      * 
-     * @param length 数量
-     * @return 随机码
+     * @param length count
+     * @return 随机code
      */
     private String generateValidateCode(Integer length) {
-        String chars = "0123456789"; // 字符范围可以自定义：数字
+        String chars = "0123456789"; // 字符范围可以自define：number
         Random random = new Random();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -154,7 +154,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     private void setCache(String key, String value) {
         if (open) {
             key = RedisKeys.getCaptchaKey(key);
-            // 设置5分钟过期
+            // set5分钟期
             redisUtils.set(key, value, 300);
         } else {
             localCache.put(key, value);
@@ -165,7 +165,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         if (open) {
             key = RedisKeys.getCaptchaKey(key);
             String captcha = (String) redisUtils.get(key);
-            // 删除验证码
+            // deleteVerification code
             if (captcha != null && delete) {
                 redisUtils.delete(key);
             }
@@ -174,7 +174,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         }
 
         String captcha = localCache.getIfPresent(key);
-        // 删除验证码
+        // deleteVerification code
         if (captcha != null) {
             localCache.invalidate(key);
         }

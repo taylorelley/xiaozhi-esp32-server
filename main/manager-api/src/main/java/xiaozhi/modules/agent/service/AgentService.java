@@ -12,7 +12,7 @@ import xiaozhi.modules.agent.entity.AgentEntity;
 import xiaozhi.modules.agent.vo.AgentInfoVO;
 
 /**
- * 智能体表处理service
+ * agenttableprocessservice
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -20,84 +20,84 @@ import xiaozhi.modules.agent.vo.AgentInfoVO;
  */
 public interface AgentService extends BaseService<AgentEntity> {
     /**
-     * 获取管理员智能体列表
+     * getadministratorAgent list
      *
-     * @param params 查询参数
-     * @return 分页数据
+     * @param params queryparameter
+     * @return paginationdata
      */
     PageData<AgentEntity> adminAgentList(Map<String, Object> params);
 
     /**
-     * 根据ID获取智能体
+     * according toIDgetagent
      *
-     * @param id 智能体ID
-     * @return 智能体实体
+     * @param id Agent ID
+     * @return agententity
      */
     AgentInfoVO getAgentById(String id);
 
     /**
-     * 插入智能体
+     * insertagent
      *
-     * @param entity 智能体实体
-     * @return 是否成功
+     * @param entity agententity
+     * @return YesNosuccess
      */
     boolean insert(AgentEntity entity);
 
     /**
-     * 根据用户ID删除智能体
+     * according toUser IDdeleteagent
      *
-     * @param userId 用户ID
+     * @param userId User ID
      */
     void deleteAgentByUserId(Long userId);
 
     /**
-     * 获取用户智能体列表
+     * getuserAgent list
      *
-     * @param userId 用户ID
-     * @param keyword 搜索关键词
-     * @param searchType 搜索类型（name - 按名称搜索，mac - 按MAC地址搜索）
-     * @return 智能体列表
+     * @param userId User ID
+     * @param keyword searchkeyword
+     * @param searchType searchtype（name - bynamesearch，mac - byMACAddresssearch）
+     * @return Agent list
      */
     List<AgentDTO> getUserAgents(Long userId, String keyword, String searchType);
 
     /**
-     * 根据智能体ID获取设备数量
+     * according toAgent IDgetDevice count
      *
-     * @param agentId 智能体ID
-     * @return 设备数量
+     * @param agentId Agent ID
+     * @return Device count
      */
     Integer getDeviceCountByAgentId(String agentId);
 
     /**
-     * 根据设备MAC地址查询对应设备的默认智能体信息
+     * according todeviceMACAddressquerycorrespondingdevice defaultAgent information
      *
-     * @param macAddress 设备MAC地址
-     * @return 默认智能体信息，不存在时返回null
+     * @param macAddress deviceMACAddress
+     * @return defaultAgent information，does not exist时returnnull
      */
     AgentEntity getDefaultAgentByMacAddress(String macAddress);
 
     /**
-     * 检查用户是否有权限访问智能体
+     * 检查userYesNo有Permission访问agent
      *
-     * @param agentId 智能体ID
-     * @param userId  用户ID
-     * @return 是否有权限
+     * @param agentId Agent ID
+     * @param userId  User ID
+     * @return YesNo有Permission
      */
     boolean checkAgentPermission(String agentId, Long userId);
 
     /**
-     * 更新智能体
+     * updateagent
      *
-     * @param agentId 智能体ID
-     * @param dto     更新智能体所需的信息
+     * @param agentId Agent ID
+     * @param dto     updateagent所需 information
      */
     void updateAgentById(String agentId, AgentUpdateDTO dto);
 
     /**
-     * 创建智能体
+     * createagent
      *
-     * @param dto 创建智能体所需的信息
-     * @return 创建的智能体ID
+     * @param dto createagent所需 information
+     * @return create Agent ID
      */
     String createAgent(AgentCreateDTO dto);
 

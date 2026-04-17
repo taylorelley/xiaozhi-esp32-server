@@ -50,7 +50,7 @@ import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.enums.SuperAdminEnum;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@Tag(name = "固件升级管理", description = "OTA 相关接口")
+@Tag(name = "firmwareupgrademanagement", description = "OTA relatedinterface")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -62,10 +62,10 @@ public class OTAMagController {
     private final SysParamsService sysParamsService;
 
     @GetMapping
-    @Operation(summary = "分页查询 OTA 固件信息")
+    @Operation(summary = "paginationquery OTA firmwareinformation")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true)
+            @Parameter(name = Constant.PAGE, description = "currentpage number，from1start", required = true),
+            @Parameter(name = Constant.LIMIT, description = "per pagerecordnumber", required = true)
     })
     @RequiresPermissions("sys:role:superAdmin")
     public Result<PageData<OtaEntity>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -75,7 +75,7 @@ public class OTAMagController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息 OTA 固件信息")
+    @Operation(summary = "information OTA firmwareinformation")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<OtaEntity> get(@PathVariable("id") String id) {
         OtaEntity data = otaService.selectById(id);
@@ -83,20 +83,20 @@ public class OTAMagController {
     }
 
     @PostMapping
-    @Operation(summary = "保存 OTA 固件信息")
+    @Operation(summary = "save OTA firmwareinformation")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> save(@RequestBody OtaEntity entity) {
         if (entity == null) {
-            return new Result<Void>().error("固件信息不能为空");
+            return new Result<Void>().error("firmwareinformationcannot be empty");
         }
         if (StringUtils.isBlank(entity.getFirmwareName())) {
-            return new Result<Void>().error("固件名称不能为空");
+            return new Result<Void>().error("firmwarenamecannot be empty");
         }
         if (StringUtils.isBlank(entity.getType())) {
-            return new Result<Void>().error("固件类型不能为空");
+            return new Result<Void>().error("firmwaretypecannot be empty");
         }
         if (StringUtils.isBlank(entity.getVersion())) {
-            return new Result<Void>().error("版本号不能为空");
+            return new Result<Void>().error("versionnumbercannot be empty");
         }
         try {
             otaService.save(entity);
@@ -107,22 +107,22 @@ public class OTAMagController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "OTA 删除")
+    @Operation(summary = "OTA delete")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@PathVariable("id") String[] ids) {
         if (ids == null || ids.length == 0) {
-            return new Result<Void>().error("删除的固件ID不能为空");
+            return new Result<Void>().error("delete firmwareIDcannot be empty");
         }
         otaService.delete(ids);
         return new Result<Void>();
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "修改 OTA 固件信息")
+    @Operation(summary = "update OTA firmwareinformation")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<?> update(@PathVariable("id") String id, @RequestBody OtaEntity entity) {
         if (entity == null) {
-            return new Result<>().error("固件信息不能为空");
+            return new Result<>().error("firmwareinformationcannot be empty");
         }
         entity.setId(id);
         try {
@@ -134,7 +134,7 @@ public class OTAMagController {
     }
 
     @GetMapping("/getDownloadUrl/{id}")
-    @Operation(summary = "获取 OTA 固件下载链接")
+    @Operation(summary = "get OTA firmwaredownloadlink")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> getDownloadUrl(@PathVariable("id") String id) {
         String uuid = UUID.randomUUID().toString();
@@ -143,18 +143,18 @@ public class OTAMagController {
     }
 
     @GetMapping("/download/{uuid}")
-    @Operation(summary = "下载固件文件")
+    @Operation(summary = "downloadfirmwarefile")
     public ResponseEntity<byte[]> downloadFirmware(@PathVariable("uuid") String uuid) {
         String id = (String) redisUtils.get(RedisKeys.getOtaIdKey(uuid));
         if (StringUtils.isBlank(id)) {
             return ResponseEntity.notFound().build();
         }
 
-        // 检查下载次数
+        // 检查downloadtimes
         String downloadCountKey = RedisKeys.getOtaDownloadCountKey(uuid);
         Integer downloadCount = (Integer) Optional.ofNullable(redisUtils.get(downloadCountKey)).orElse(0);
 
-        // 如果下载次数超过3次，返回404
+        // ifdownloadtimes超3times，return404
         if (downloadCount >= 3) {
             redisUtils.delete(List.of(downloadCountKey, RedisKeys.getOtaIdKey(uuid)));
             logger.warn("Download limit exceeded for UUID: {}", uuid);
@@ -164,7 +164,7 @@ public class OTAMagController {
         redisUtils.set(downloadCountKey, downloadCount + 1);
 
         try {
-            // 获取固件信息
+            // getfirmwareinformation
             OtaEntity otaEntity = null;
             if (id.indexOf("file:") == 0) {
                 id = id.substring(5);
@@ -181,16 +181,16 @@ public class OTAMagController {
                 return ResponseEntity.notFound().build();
             }
 
-            // 获取文件路径 - 确保路径是绝对路径或正确的相对路径
+            // getfilepath - ensurepathYes绝forpathor正确 相forpath
             String firmwarePath = otaEntity.getFirmwarePath();
             String originalFilename = otaEntity.getType() + "_" + otaEntity.getVersion();
             Path path;
 
-            // 检查是否是绝对路径
+            // 检查YesNoYes绝forpath
             if (Paths.get(firmwarePath).isAbsolute()) {
                 path = Paths.get(firmwarePath);
             } else {
-                // 如果是相对路径，则从当前工作目录解析
+                // ifYes相forpath，thenfromcurrent工作目录parse
                 path = Paths.get(System.getProperty("user.dir"), firmwarePath);
             }
 
@@ -198,7 +198,7 @@ public class OTAMagController {
                     id, firmwarePath, path.toAbsolutePath());
 
             if (!Files.exists(path) || !Files.isRegularFile(path)) {
-                // 尝试直接从firmware目录下查找文件名
+                // 尝试directlyfromfirmware目录下findFile name
                 String fileName = new File(firmwarePath).getName();
                 Path altPath = Paths.get(System.getProperty("user.dir"), "firmware", fileName);
 
@@ -213,17 +213,17 @@ public class OTAMagController {
                 }
             }
 
-            // 读取文件内容
+            // read取File content
             byte[] fileContent = Files.readAllBytes(path);
 
-            // 设置响应头
+            // setresponseheader
 
             if (firmwarePath.contains(".")) {
                 String extension = firmwarePath.substring(firmwarePath.lastIndexOf("."));
                 originalFilename += extension;
             }
 
-            // 清理文件名，移除不安全字符
+            // 清理File name，移除not 安全字符
             String safeFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
 
             logger.info("Providing download for firmware ID: {}, filename: {}, size: {} bytes",
@@ -243,58 +243,58 @@ public class OTAMagController {
     }
 
     @PostMapping("/upload")
-    @Operation(summary = "上传固件文件")
+    @Operation(summary = "uploadfirmwarefile")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> uploadFirmware(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return new Result<String>().error("上传文件不能为空");
+            return new Result<String>().error("uploadfilecannot be empty");
         }
 
-        // 检查文件扩展名
+        // 检查fileextension
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
-            return new Result<String>().error("文件名不能为空");
+            return new Result<String>().error("File namecannot be empty");
         }
 
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
         if (!extension.equals(".bin") && !extension.equals(".apk")) {
-            return new Result<String>().error("只允许上传.bin和.apk格式的文件");
+            return new Result<String>().error("onlyallowupload.binand.apkformat file");
         }
 
         try {
-            // 计算文件的MD5值
+            // 计算file MD5value
             String md5 = calculateMD5(file);
 
-            // 设置存储路径
+            // set存储path
             String uploadDir = "uploadfile";
             Path uploadPath = Paths.get(uploadDir);
 
-            // 如果目录不存在，创建目录
+            // if目录does not exist，create目录
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // 使用MD5作为文件名，固定使用.bin扩展名
+            // useMD5asFile name，固定use.binextension
             String uniqueFileName = md5 + extension;
             Path filePath = uploadPath.resolve(uniqueFileName);
 
-            // 检查文件是否已存在
+            // 检查fileYesNoalready exists
             if (Files.exists(filePath)) {
                 return new Result<String>().ok(filePath.toString());
             }
 
-            // 保存文件
+            // savefile
             Files.copy(file.getInputStream(), filePath);
 
-            // 返回文件路径
+            // returnfilepath
             return new Result<String>().ok(filePath.toString());
         } catch (IOException | NoSuchAlgorithmException e) {
-            return new Result<String>().error("文件上传失败：" + e.getMessage());
+            return new Result<String>().error("fileuploadfailed：" + e.getMessage());
         }
     }
 
     @PostMapping("/uploadAssetsBin")
-    @Operation(summary = "上传资源固件文件")
+    @Operation(summary = "upload资sourcefirmwarefile")
     @RequiresPermissions("sys:role:normal")
     public Result<String> uploadAssetsBin(@RequestParam("file") MultipartFile file) {
         String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
@@ -302,24 +302,24 @@ public class OTAMagController {
             return new Result<String>().error(ErrorCode.OTA_URL_EMPTY);
         }
         logger.info("username:{},uploadAssetsBin size: {}", SecurityUser.getUser().getUsername(), file.getSize());
-        // 验证文件大小 (资源固件最大20MB)
+        // verificationFile size (资sourcefirmware最large20MB)
         if (file.getSize() > 20 * 1024 * 1024) {
             return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
         }
-        // 普通用户只能每天上传50次
+        // Normal useronly能每天upload50times
         if (SecurityUser.getUser().getSuperAdmin() == SuperAdminEnum.NO.value()) {
             String uploadCountKey = RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId());
             Integer uploadCount = (Integer) Optional.ofNullable(redisUtils.get(uploadCountKey)).orElse(0);
             if (uploadCount >= 50) {
                 return new Result<String>().error(ErrorCode.OTA_UPLOAD_COUNT_EXCEED);
             }
-            // 增加上传次数
+            // 增加uploadtimes
             redisUtils.increment(RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId()),
                     RedisUtils.DEFAULT_EXPIRE);
         }
         Result<String> result = uploadFirmware(file);
 
-        // 生成资源文件路径
+        // generate资sourcefilepath
         if (StringUtils.isNotBlank(result.getData())) {
             String uuid = UUID.randomUUID().toString();
             redisUtils.set(RedisKeys.getOtaIdKey(uuid), "file:" + result.getData());

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 管理员分页展示用户的VO
+ * administratorpagination展示user VO
  * @ zjy
  * 
  * @since 2025-3-25
@@ -14,18 +14,18 @@ import lombok.Data;
 @Data
 public class AdminPageUserVO {
 
-    @Schema(description = "设备数量")
+    @Schema(description = "Device count")
     private String deviceCount;
 
-    @Schema(description = "手机号码")
+    @Schema(description = "Mobile phone number")
     private String mobile;
 
-    @Schema(description = "状态")
+    @Schema(description = "status")
     private Integer status;
 
-    @Schema(description = "用户id")
+    @Schema(description = "userid")
     private String userid;
 
-    @Schema(description = "注册时间")
+    @Schema(description = "registertime")
     private Date createDate;
 }

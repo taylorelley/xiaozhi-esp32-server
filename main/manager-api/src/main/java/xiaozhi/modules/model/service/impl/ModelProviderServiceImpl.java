@@ -40,28 +40,28 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
 
     @Override
     public List<ModelProviderDTO> getPluginList() {
-        // 1. 获取插件列表
+        // 1. getpluginlist
         LambdaQueryWrapper<ModelProviderEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ModelProviderEntity::getModelType, "Plugin");
         List<ModelProviderEntity> providerEntities = modelProviderDao.selectList(queryWrapper);
         List<ModelProviderDTO> resultList = ConvertUtils.sourceToTarget(providerEntities, ModelProviderDTO.class);
 
-        // 2. 获取当前用户的知识库列表并追加到结果中
+        // 2. get currentuser Knowledge baselist并追加toresult
         UserDetail userDetail = SecurityUser.getUser();
         if (userDetail != null && userDetail.getId() != null) {
-            // 查询当前用户的知识库
+            // querycurrentuser Knowledge base
             LambdaQueryWrapper<KnowledgeBaseEntity> kbQueryWrapper = new LambdaQueryWrapper<>();
             kbQueryWrapper.eq(KnowledgeBaseEntity::getCreator, userDetail.getId());
-            kbQueryWrapper.eq(KnowledgeBaseEntity::getStatus, 1); // 只获取启用状态的知识库
+            kbQueryWrapper.eq(KnowledgeBaseEntity::getStatus, 1); // onlygetenablestatus Knowledge base
             List<KnowledgeBaseEntity> knowledgeBases = knowledgeBaseDao.selectList(kbQueryWrapper);
 
-            // 将知识库转换为ModelProviderDTO格式并添加到结果列表
+            // willKnowledge baseconvert toModelProviderDTOformat并addtoresultlist
             for (KnowledgeBaseEntity kb : knowledgeBases) {
                 ModelProviderDTO dto = new ModelProviderDTO();
                 dto.setId(kb.getId());
                 dto.setModelType("Rag");
-                dto.setName("[知识库]" + kb.getName());
-                dto.setProviderCode("ragflow"); // 假设所有RAG都使用ragflow
+                dto.setName("[Knowledge base]" + kb.getName());
+                dto.setProviderCode("ragflow"); // 假设allRAG都useragflow
                 dto.setFields("[]");
                 dto.setSort(0);
                 dto.setCreateDate(kb.getCreatedAt());
@@ -132,7 +132,7 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
         modelProviderDTO.setUpdater(user.getId());
         modelProviderDTO.setCreateDate(new Date());
         modelProviderDTO.setUpdateDate(new Date());
-        // 去除Fields左右的双引号
+        // 去除Fields左右 双引number
 
         modelProviderDTO.setFields(modelProviderDTO.getFields());
         ModelProviderEntity entity = ConvertUtils.sourceToTarget(modelProviderDTO, ModelProviderEntity.class);

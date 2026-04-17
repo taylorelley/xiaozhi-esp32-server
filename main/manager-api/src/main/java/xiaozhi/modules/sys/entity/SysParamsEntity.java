@@ -11,39 +11,39 @@ import lombok.EqualsAndHashCode;
 import xiaozhi.common.entity.BaseEntity;
 
 /**
- * 参数管理
+ * Parameter management
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("sys_params")
 public class SysParamsEntity extends BaseEntity {
     /**
-     * 参数编码
+     * Parameter code
      */
     private String paramCode;
     /**
-     * 参数值
+     * Parameter value
      */
     private String paramValue;
     /**
-     * 值类型：string-字符串，number-数字，boolean-布尔，array-数组
+     * valuetype：string-string，number-number，boolean-布尔，array-array
      */
     private String valueType;
     /**
-     * 类型 0：系统参数 1：非系统参数
+     * type 0：systemparameter 1：非systemparameter
      */
     private Integer paramType;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
     /**
-     * 更新者
+     * update
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updater;
     /**
-     * 更新时间
+     * updatetime
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateDate;

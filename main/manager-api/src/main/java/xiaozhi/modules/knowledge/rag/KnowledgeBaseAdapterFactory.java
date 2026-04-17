@@ -10,115 +10,115 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * 知识库适配器工厂类
- * 负责创建和管理不同类型的知识库API适配器
+ * Knowledge baseadapter工厂class
+ * 负责createandmanagementnot 同type Knowledge baseAPIadapter
  */
 @Slf4j
 public class KnowledgeBaseAdapterFactory {
 
-    // 注册的适配器类型映射
+    // register adaptertypemapping
     private static final Map<String, Class<? extends KnowledgeBaseAdapter>> adapterRegistry = new HashMap<>();
 
-    // 适配器实例缓存
+    // adapter实examplecache
     private static final Map<String, KnowledgeBaseAdapter> adapterCache = new ConcurrentHashMap<>();
 
-    // 最大缓存实例数，防止内存泄露 (Issue 9)
+    // 最largecache实examplenumber，prevent内存泄露 (Issue 9)
     private static final int MAX_CACHE_SIZE = 50;
 
     static {
-        // 注册内置适配器类型
+        // register内置adaptertype
         registerAdapter("ragflow", xiaozhi.modules.knowledge.rag.impl.RAGFlowAdapter.class);
-        // 可以在这里注册更多适配器类型
+        // 可以inthis里register更多adaptertype
     }
 
     /**
-     * 注册新的适配器类型
+     * registernew adaptertype
      * 
-     * @param adapterType  适配器类型标识
-     * @param adapterClass 适配器类
+     * @param adapterType  adaptertypeidentifier
+     * @param adapterClass adapterclass
      */
     public static void registerAdapter(String adapterType, Class<? extends KnowledgeBaseAdapter> adapterClass) {
         if (adapterRegistry.containsKey(adapterType)) {
-            log.warn("适配器类型 '{}' 已存在，将被覆盖", adapterType);
+            log.warn("adaptertype '{}' already exists，willis覆盖", adapterType);
         }
         adapterRegistry.put(adapterType, adapterClass);
-        log.info("注册适配器类型: {} -> {}", adapterType, adapterClass.getSimpleName());
+        log.info("registeradaptertype: {} -> {}", adapterType, adapterClass.getSimpleName());
     }
 
     /**
-     * 获取适配器实例
+     * getadapter实example
      * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 适配器实例
+     * @param adapterType adaptertype
+     * @param config      configurationparameter
+     * @return adapter实example
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType, Map<String, Object> config) {
         String cacheKey = buildCacheKey(adapterType, config);
 
-        // 检查缓存中是否已存在实例
+        // 检查cacheYesNoalready exists实example
         if (adapterCache.containsKey(cacheKey)) {
-            log.debug("从缓存获取适配器实例: {}", cacheKey);
+            log.debug("fromcachegetadapter实example: {}", cacheKey);
             return adapterCache.get(cacheKey);
         }
 
-        // 创建新的适配器实例
+        // createnew adapter实example
         KnowledgeBaseAdapter adapter = createAdapter(adapterType, config);
 
-        // 缓存适配器实例 (带容量限制检查)
+        // cacheadapter实example (with容量限制检查)
         if (adapterCache.size() >= MAX_CACHE_SIZE) {
-            log.warn("适配器缓存已达上限 ({})，执行内存保护性清除", MAX_CACHE_SIZE);
-            // 简单处理：直接清空，生产环境下建议使用 LRU
+            log.warn("adaptercachealready达上限 ({})，execute内存保护clear", MAX_CACHE_SIZE);
+            // 简单process：directly清empty，production环境下建议use LRU
             adapterCache.clear();
         }
 
         adapterCache.put(cacheKey, adapter);
-        log.info("创建并缓存适配器实例: {}", cacheKey);
+        log.info("create并cacheadapter实example: {}", cacheKey);
 
         return adapter;
     }
 
     /**
-     * 获取适配器实例（无配置）
+     * getadapter实example（无configuration）
      * 
-     * @param adapterType 适配器类型
-     * @return 适配器实例
+     * @param adapterType adaptertype
+     * @return adapter实example
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType) {
         return getAdapter(adapterType, null);
     }
 
     /**
-     * 获取所有已注册的适配器类型
+     * get allalreadyregister adaptertype
      * 
-     * @return 适配器类型集合
+     * @return adaptertypecollection
      */
     public static Set<String> getRegisteredAdapterTypes() {
         return adapterRegistry.keySet();
     }
 
     /**
-     * 检查适配器类型是否已注册
+     * 检查adaptertypeYesNoalreadyregister
      * 
-     * @param adapterType 适配器类型
-     * @return 是否已注册
+     * @param adapterType adaptertype
+     * @return YesNoalreadyregister
      */
     public static boolean isAdapterTypeRegistered(String adapterType) {
         return adapterRegistry.containsKey(adapterType);
     }
 
     /**
-     * 清除适配器缓存
+     * clearadaptercache
      */
     public static void clearCache() {
         int cacheSize = adapterCache.size();
         adapterCache.clear();
-        log.info("清除适配器缓存，共清除 {} 个实例", cacheSize);
+        log.info("clearadaptercache，共clear {} 个实example", cacheSize);
     }
 
     /**
-     * 移除特定适配器类型的缓存
+     * 移除特定adaptertype cache
      * 
-     * @param adapterType 适配器类型
+     * @param adapterType adaptertype
      */
     public static void removeCacheByType(String adapterType) {
         int removedCount = 0;
@@ -128,13 +128,13 @@ public class KnowledgeBaseAdapterFactory {
                 removedCount++;
             }
         }
-        log.info("移除适配器类型 '{}' 的缓存，共移除 {} 个实例", adapterType, removedCount);
+        log.info("移除adaptertype '{}'  cache，共移除 {} 个实example", adapterType, removedCount);
     }
 
     /**
-     * 获取适配器工厂状态信息
+     * getadapter工厂statusinformation
      * 
-     * @return 状态信息
+     * @return statusinformation
      */
     public static Map<String, Object> getFactoryStatus() {
         Map<String, Object> status = new HashMap<>();
@@ -145,59 +145,59 @@ public class KnowledgeBaseAdapterFactory {
     }
 
     /**
-     * 创建适配器实例
+     * createadapter实example
      * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 适配器实例
+     * @param adapterType adaptertype
+     * @param config      configurationparameter
+     * @return adapter实example
      */
     private static KnowledgeBaseAdapter createAdapter(String adapterType, Map<String, Object> config) {
         if (!adapterRegistry.containsKey(adapterType)) {
             throw new RenException(ErrorCode.RAG_ADAPTER_TYPE_NOT_SUPPORTED,
-                    "不支持的适配器类型: " + adapterType);
+                    "not support adaptertype: " + adapterType);
         }
 
         try {
             Class<? extends KnowledgeBaseAdapter> adapterClass = adapterRegistry.get(adapterType);
             KnowledgeBaseAdapter adapter = adapterClass.getDeclaredConstructor().newInstance();
 
-            // 初始化适配器
+            // initializeadapter
             if (config != null) {
                 adapter.initialize(config);
 
-                // 验证配置
+                // verificationconfiguration
                 if (!adapter.validateConfig(config)) {
                     throw new RenException(ErrorCode.RAG_CONFIG_VALIDATION_FAILED,
-                            "适配器配置验证失败: " + adapterType);
+                            "adapterconfigurationverificationfailed: " + adapterType);
                 }
             }
 
-            log.info("成功创建适配器实例: {}", adapterType);
+            log.info("successcreateadapter实example: {}", adapterType);
             return adapter;
 
         } catch (Exception e) {
-            log.error("创建适配器实例失败: {}", adapterType, e);
+            log.error("createadapter实examplefailed: {}", adapterType, e);
             throw new RenException(ErrorCode.RAG_ADAPTER_CREATION_FAILED,
-                    "创建适配器失败: " + adapterType + ", 错误: " + e.getMessage());
+                    "createadapterfailed: " + adapterType + ", error: " + e.getMessage());
         }
     }
 
     /**
-     * 构建缓存键
+     * buildcache键
      * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 缓存键
+     * @param adapterType adaptertype
+     * @param config      configurationparameter
+     * @return cache键
      */
     private static String buildCacheKey(String adapterType, Map<String, Object> config) {
         if (config == null || config.isEmpty()) {
             return adapterType + "@default";
         }
 
-        // 基于配置参数生成缓存键
+        // 基于configurationparametergeneratecache键
         StringBuilder keyBuilder = new StringBuilder(adapterType + "@");
 
-        // 使用配置的哈希值作为缓存键的一部分
+        // useconfiguration 哈希valueascache键 一部分
         int configHash = config.hashCode();
         keyBuilder.append(configHash);
 

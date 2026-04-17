@@ -11,31 +11,31 @@ import lombok.Data;
 
 @Data
 @TableName("ai_agent_tag_relation")
-@Schema(description = "智能体标签关联")
+@Schema(description = "agentTagassociated")
 public class AgentTagRelationEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "主键")
+    @Schema(description = "Primary key")
     private String id;
 
-    @Schema(description = "智能体ID")
+    @Schema(description = "Agent ID")
     private String agentId;
 
-    @Schema(description = "标签ID")
+    @Schema(description = "TagID")
     private String tagId;
 
-    @Schema(description = "排序")
+    @Schema(description = "Sort order")
     private Integer sort;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Creator")
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     private Date createdAt;
 
-    @Schema(description = "更新者")
+    @Schema(description = "update")
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "updatetime")
     private Date updatedAt;
 }

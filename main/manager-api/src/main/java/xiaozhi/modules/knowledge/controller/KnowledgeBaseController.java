@@ -33,40 +33,40 @@ import xiaozhi.modules.security.user.SecurityUser;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/datasets")
-@Tag(name = "知识库管理")
+@Tag(name = "Knowledge basemanagement")
 public class KnowledgeBaseController {
 
     private final KnowledgeBaseService knowledgeBaseService;
     private final KnowledgeManagerService knowledgeManagerService;
 
     @GetMapping
-    @Operation(summary = "分页查询知识库列表")
+    @Operation(summary = "paginationqueryKnowledge baselist")
     @RequiresPermissions("sys:role:normal")
     public Result<PageData<KnowledgeBaseDTO>> getPageList(
             @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer page_size) {
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
         KnowledgeBaseDTO knowledgeBaseDTO = new KnowledgeBaseDTO();
         knowledgeBaseDTO.setName(name);
-        knowledgeBaseDTO.setCreator(currentUserId); // 设置创建者ID，用于权限过滤
+        knowledgeBaseDTO.setCreator(currentUserId); // setCreatorID，used forPermissionfilter
 
         PageData<KnowledgeBaseDTO> pageData = knowledgeBaseService.getPageList(knowledgeBaseDTO, page, page_size);
         return new Result<PageData<KnowledgeBaseDTO>>().ok(pageData);
     }
 
     @GetMapping("/{dataset_id}")
-    @Operation(summary = "根据知识库ID获取知识库详情")
+    @Operation(summary = "according toKnowledge baseIDgetKnowledge basedetails")
     @RequiresPermissions("sys:role:normal")
     public Result<KnowledgeBaseDTO> getByDatasetId(@PathVariable("dataset_id") String datasetId) {
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
         KnowledgeBaseDTO knowledgeBaseDTO = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查权限：用户只能查看自己创建的知识库
+        // 检查Permission：useronly能查看自己create Knowledge base
         if (knowledgeBaseDTO.getCreator() == null || !knowledgeBaseDTO.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
@@ -75,7 +75,7 @@ public class KnowledgeBaseController {
     }
 
     @PostMapping
-    @Operation(summary = "创建知识库")
+    @Operation(summary = "createKnowledge base")
     @RequiresPermissions("sys:role:normal")
     public Result<KnowledgeBaseDTO> save(@RequestBody @Validated KnowledgeBaseDTO knowledgeBaseDTO) {
         KnowledgeBaseDTO resp = knowledgeBaseService.save(knowledgeBaseDTO);
@@ -83,22 +83,22 @@ public class KnowledgeBaseController {
     }
 
     @PutMapping("/{dataset_id}")
-    @Operation(summary = "更新知识库")
+    @Operation(summary = "updateKnowledge base")
     @RequiresPermissions("sys:role:normal")
     public Result<KnowledgeBaseDTO> update(@PathVariable("dataset_id") String datasetId,
             @RequestBody @Validated KnowledgeBaseDTO knowledgeBaseDTO) {
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // 先获取现有知识库信息以检查权限
+        // firstget现有Knowledge baseinformation以检查Permission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查权限：用户只能更新自己创建的知识库
+        // 检查Permission：useronly能update自己create Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [FIX] 注入 ID，防止 Service 层找不到记录
+        // [FIX] 注入 ID，prevent Service 层找not torecord
         knowledgeBaseDTO.setId(existingKnowledgeBase.getId());
         knowledgeBaseDTO.setDatasetId(datasetId);
         KnowledgeBaseDTO resp = knowledgeBaseService.update(knowledgeBaseDTO);
@@ -106,47 +106,47 @@ public class KnowledgeBaseController {
     }
 
     @DeleteMapping("/{dataset_id}")
-    @Operation(summary = "删除单个知识库")
-    @Parameter(name = "dataset_id", description = "知识库ID", required = true)
+    @Operation(summary = "delete单个Knowledge base")
+    @Parameter(name = "dataset_id", description = "Knowledge baseID", required = true)
     @RequiresPermissions("sys:role:normal")
     public Result<Void> delete(@PathVariable("dataset_id") String datasetId) {
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // 先获取现有知识库信息以检查权限
+        // firstget现有Knowledge baseinformation以检查Permission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查权限：用户只能删除自己创建的知识库
+        // 检查Permission：useronly能delete自己create Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [Architecture Fix] 通过编排层级联删除，防止孤儿数据并解决循环依赖
+        // [Architecture Fix] via编排层cascadedelete，prevent孤儿data并解决循环依赖
         knowledgeManagerService.deleteDatasetWithFiles(datasetId);
         return new Result<>();
     }
 
     @DeleteMapping("/batch")
-    @Operation(summary = "批量删除知识库")
-    @Parameter(name = "ids", description = "知识库ID列表，用逗号分隔", required = true)
+    @Operation(summary = "batchdeleteKnowledge base")
+    @Parameter(name = "ids", description = "Knowledge baseIDlist，用逗number分隔", required = true)
     @RequiresPermissions("sys:role:normal")
     public Result<Void> deleteBatch(@RequestParam("ids") String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new RenException(ErrorCode.PARAMS_GET_ERROR);
         }
 
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
         List<String> idList = Arrays.asList(ids.split(","));
         List<KnowledgeBaseDTO> knowledgeBaseDTOs = Optional.ofNullable(knowledgeBaseService.getByDatasetIdList(idList))
                 .orElseGet(ArrayList::new);
         if (ToolUtil.isNotEmpty(knowledgeBaseDTOs)) {
             knowledgeBaseDTOs.forEach(item -> {
-                // 检查权限：用户只能删除自己创建的知识库
+                // 检查Permission：useronly能delete自己create Knowledge base
                 if (item.getCreator() == null || !item.getCreator().equals(currentUserId)) {
                     throw new RenException(ErrorCode.NO_PERMISSION);
                 }
-                // [Architecture Fix] 通过编排层级联删除
+                // [Architecture Fix] via编排层cascadedelete
                 knowledgeManagerService.deleteDatasetWithFiles(item.getDatasetId());
             });
         }
@@ -154,7 +154,7 @@ public class KnowledgeBaseController {
     }
 
     @GetMapping("/rag-models")
-    @Operation(summary = "获取RAG模型列表")
+    @Operation(summary = "getRAGmodellist")
     @RequiresPermissions("sys:role:normal")
     public Result<List<ModelConfigEntity>> getRAGModels() {
         List<ModelConfigEntity> result = knowledgeBaseService.getRAGModels();

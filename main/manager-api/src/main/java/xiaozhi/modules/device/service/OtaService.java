@@ -7,7 +7,7 @@ import xiaozhi.common.service.BaseService;
 import xiaozhi.modules.device.entity.OtaEntity;
 
 /**
- * OTA固件管理
+ * OTAfirmwaremanagement
  */
 public interface OtaService extends BaseService<OtaEntity> {
     PageData<OtaEntity> page(Map<String, Object> params);

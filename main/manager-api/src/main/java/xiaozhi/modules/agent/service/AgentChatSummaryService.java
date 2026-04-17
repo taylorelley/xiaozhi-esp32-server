@@ -1,23 +1,23 @@
 package xiaozhi.modules.agent.service;
 
 /**
- * 智能体聊天记录总结服务接口
+ * agentChat historysummaryserviceinterface
  */
 public interface AgentChatSummaryService {
 
     /**
-     * 根据会话ID生成聊天记录总结并保存到智能体记忆
+     * according toSession IDgenerateChat historysummary并savetoAgent memory
      * 
-     * @param sessionId 会话ID
-     * @return 保存结果
+     * @param sessionId Session ID
+     * @return saveresult
      */
     boolean generateAndSaveChatSummary(String sessionId);
 
     /**
-     * 根据会话ID生成聊天标题并保存
+     * according toSession IDgeneratechattitle并save
      *
-     * @param sessionId 会话ID
-     * @return 是否成功
+     * @param sessionId Session ID
+     * @return YesNosuccess
      */
     boolean generateAndSaveChatTitle(String sessionId);
 }

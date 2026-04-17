@@ -6,13 +6,13 @@ import xiaozhi.modules.sys.enums.ServerActionEnum;
 import java.util.Map;
 
 /**
- * 服务端动作DTO
+ * serviceend动作DTO
  */
 @Data
 public class ServerActionPayloadDTO
 {
     /**
-    * 类型（智控台发往服务端的都是server）
+    * type（智控台发往serviceend 都Yesserver）
     */
     private String type;
     /**
@@ -20,7 +20,7 @@ public class ServerActionPayloadDTO
     */
     private ServerActionEnum action;
     /**
-    * 内容
+    * content
     */
     private Map<String, Object> content;
 

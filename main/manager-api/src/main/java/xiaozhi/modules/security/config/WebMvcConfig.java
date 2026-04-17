@@ -48,15 +48,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 特殊用途的转换器
+        // 特殊用途 convert
         converters.add(new ByteArrayHttpMessageConverter());
         converters.add(new ResourceHttpMessageConverter());
 
-        // 通用转换器
+        // 通用convert
         converters.add(new StringHttpMessageConverter());
         converters.add(new AllEncompassingFormHttpMessageConverter());
 
-        // JSON 转换器
+        // JSON convert
         converters.add(jackson2HttpMessageConverter());
     }
 
@@ -65,13 +65,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper mapper = new ObjectMapper();
 
-        // 忽略未知属性
+        // 忽略Unknown属
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // 设置时区
+        // set时区
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
-        // 配置Java8日期时间序列化
+        // configurationJava8datetimeserialize
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(java.time.LocalDateTime.class, new LocalDateTimeSerializer(
                 java.time.format.DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_PATTERN)));
@@ -87,11 +87,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 new LocalTimeDeserializer(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
         mapper.registerModule(javaTimeModule);
 
-        // 配置java.util.Date的序列化和反序列化
+        // configurationjava.util.Date serializeanddeserialize
         SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN);
         mapper.setDateFormat(dateFormat);
 
-        // Long类型转String类型
+        // Longtype转Stringtype
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
@@ -102,7 +102,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 国际化配置 - 根据请求头中的Accept-Language设置语言环境
+     * 国际化configuration - according torequestheader Accept-LanguagesetLanguage环境
      */
     @Bean
     public LocaleResolver localeResolver() {
@@ -114,14 +114,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     return Locale.getDefault();
                 }
 
-                // 解析Accept-Language请求头中的首选语言
+                // parseAccept-Languagerequestheader 首选Language
                 String[] languages = acceptLanguage.split(",");
                 if (languages.length > 0) {
-                    // 提取第一个语言代码，去除可能的质量值(q=...)
+                    // extract第一个Language代code，去除可能 质量value(q=...)
                     String[] parts = languages[0].split(";" + "\\s*");
                     String primaryLanguage = parts[0].trim();
 
-                    // 根据前端发送的语言代码直接创建Locale对象
+                    // according to前endsend Language代codedirectlycreateLocaleobject
                     if (primaryLanguage.equals("zh-CN")) {
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.equals("zh-TW")) {
@@ -133,21 +133,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     } else if (primaryLanguage.equals("vi-VN")) {
                         return Locale.forLanguageTag("vi-VN");
                     } else if (primaryLanguage.startsWith("zh")) {
-                        // 对于其他中文变体，默认使用简体中文
+                        // for于其他Chinese变，defaultuse简Chinese
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.startsWith("en")) {
-                        // 对于其他英文变体，默认使用美式英语
+                        // for于其他English变，defaultuse美式英语
                         return Locale.US;
                     } else if (primaryLanguage.startsWith("de")) {
-                        // 对于其他德语变体，默认使用德语
+                        // for于其他德语变，defaultuse德语
                         return Locale.GERMANY;
                     } else if (primaryLanguage.startsWith("vi")) {
-                        // 对于其他越南语变体，默认使用越南语
+                        // for于其他越南语变，defaultuse越南语
                         return Locale.forLanguageTag("vi-VN");
                     }
                 }
 
-                // 如果没有匹配的语言，使用默认语言
+                // ifno匹配 Language，usedefaultLanguage
                 return Locale.getDefault();
             }
         };

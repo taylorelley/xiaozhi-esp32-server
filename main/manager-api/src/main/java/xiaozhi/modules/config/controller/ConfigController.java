@@ -15,28 +15,28 @@ import xiaozhi.modules.config.dto.AgentModelsDTO;
 import xiaozhi.modules.config.service.ConfigService;
 
 /**
- * xiaozhi-server 配置获取
+ * xiaozhi-server configurationget
  *
  * @since 1.0.0
  */
 @RestController
 @RequestMapping("config")
-@Tag(name = "参数管理")
+@Tag(name = "Parameter management")
 @AllArgsConstructor
 public class ConfigController {
     private final ConfigService configService;
 
     @PostMapping("server-base")
-    @Operation(summary = "服务端获取配置接口")
+    @Operation(summary = "serviceendgetconfigurationinterface")
     public Result<Object> getConfig() {
         Object config = configService.getConfig(true);
         return new Result<Object>().ok(config);
     }
 
     @PostMapping("agent-models")
-    @Operation(summary = "获取智能体模型")
+    @Operation(summary = "getagentmodel")
     public Result<Object> getAgentModels(@Valid @RequestBody AgentModelsDTO dto) {
-        // 效验数据
+        // validatedata
         ValidatorUtils.validateEntity(dto);
         Object models = configService.getAgentModels(dto.getMacAddress(), dto.getSelectedModule());
         return new Result<Object>().ok(models);

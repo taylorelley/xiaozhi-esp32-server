@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
 
 /**
- * RestTemplate配置
+ * RestTemplateconfiguration
  */
 @Configuration
 public class RestTemplateConfig {

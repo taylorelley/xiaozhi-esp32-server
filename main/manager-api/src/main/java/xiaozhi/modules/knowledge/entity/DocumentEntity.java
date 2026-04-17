@@ -13,85 +13,85 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 文档表 (Shadow DB for RAGFlow Documents)
- * 对应表名: ai_knowledge_document
+ * documenttable (Shadow DB for RAGFlow Documents)
+ * correspondingtable名: ai_knowledge_document
  */
 @Data
 @TableName(value = "ai_rag_knowledge_document", autoResultMap = true)
-@Schema(description = "知识库文档表")
+@Schema(description = "Knowledge basedocumenttable")
 public class DocumentEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "本地唯一ID")
+    @Schema(description = "this地唯一ID")
     private String id;
 
-    @Schema(description = "知识库ID (关联 ai_rag_dataset.dataset_id)")
+    @Schema(description = "Knowledge baseID (associated ai_rag_dataset.dataset_id)")
     private String datasetId;
 
-    @Schema(description = "RAGFlow文档ID (远程ID)")
+    @Schema(description = "RAGFlowdocumentID (remoteID)")
     private String documentId;
 
-    @Schema(description = "文档名称")
+    @Schema(description = "documentname")
     private String name;
 
-    @Schema(description = "文件大小(Bytes)")
+    @Schema(description = "File size(Bytes)")
     private Long size;
 
-    @Schema(description = "文件类型(pdf/doc/txt等)")
+    @Schema(description = "File type(pdf/doc/txtetc.)")
     private String type;
 
-    @Schema(description = "分块方法")
+    @Schema(description = "chunk方法")
     private String chunkMethod;
 
-    @Schema(description = "解析配置(JSON String)")
+    @Schema(description = "parseconfiguration(JSON String)")
     private String parserConfig;
 
-    @Schema(description = "可用状态 (1: 启用/正常, 0: 禁用/失效)")
+    @Schema(description = "availablestatus (1: enable/normal, 0: disable/invalid)")
     private String status;
 
-    @Schema(description = "运行状态 (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
+    @Schema(description = "runstatus (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
     private String run;
 
-    @Schema(description = "解析进度 (0.0 ~ 1.0)")
+    @Schema(description = "parse进度 (0.0 ~ 1.0)")
     private Double progress;
 
-    @Schema(description = "缩略图 (Base64 或 URL)")
+    @Schema(description = "缩略图 (Base64 or URL)")
     private String thumbnail;
 
-    @Schema(description = "解析耗时 (单位: 秒)")
+    @Schema(description = "parse耗时 (unit: seconds)")
     private Double processDuration;
 
-    @Schema(description = "自定义元数据 (JSON 格式)")
+    @Schema(description = "custom metadata (JSON format)")
     private String metaFields;
 
-    @Schema(description = "来源类型 (local, s3, url 等)")
+    @Schema(description = "sourcetype (local, s3, url etc.)")
     private String sourceType;
 
-    @Schema(description = "解析错误信息")
+    @Schema(description = "parseerrorinformation")
     private String error;
 
-    @Schema(description = "分块数量")
+    @Schema(description = "chunkcount")
     private Integer chunkCount;
 
-    @Schema(description = "Token数量")
+    @Schema(description = "Tokencount")
     private Long tokenCount;
 
-    @Schema(description = "是否启用 (0:禁用 1:启用)")
+    @Schema(description = "YesNoenable (0:disable 1:enable)")
     private Integer enabled;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Creator")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "updatetime")
     @TableField(fill = FieldFill.UPDATE)
     private Date updatedAt;
 
-    @Schema(description = "最新同步时间")
+    @Schema(description = "最newsynchronoustime")
     private Date lastSyncAt;
 }

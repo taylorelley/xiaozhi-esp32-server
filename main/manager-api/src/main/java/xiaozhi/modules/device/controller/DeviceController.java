@@ -32,7 +32,7 @@ import xiaozhi.modules.device.service.DeviceService;
 import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@Tag(name = "设备管理")
+@Tag(name = "Device management")
 @RestController
 @RequestMapping("/device")
 public class DeviceController {
@@ -47,7 +47,7 @@ public class DeviceController {
     }
 
     @PostMapping("/bind/{agentId}/{deviceCode}")
-    @Operation(summary = "绑定设备")
+    @Operation(summary = "binddevice")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> bindDevice(@PathVariable String agentId, @PathVariable String deviceCode) {
         deviceService.deviceActivation(agentId, deviceCode);
@@ -55,13 +55,13 @@ public class DeviceController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "注册设备")
+    @Operation(summary = "registerdevice")
     public Result<String> registerDevice(@RequestBody DeviceRegisterDTO deviceRegisterDTO) {
         String macAddress = deviceRegisterDTO.getMacAddress();
         if (StringUtils.isBlank(macAddress)) {
             return new Result<String>().error(ErrorCode.MCA_NOT_NULL);
         }
-        // 生成六位验证码
+        // generate六bitVerification code
         String code;
         String key;
         String existsMac = null;
@@ -76,7 +76,7 @@ public class DeviceController {
     }
 
     @GetMapping("/bind/{agentId}")
-    @Operation(summary = "获取已绑定设备")
+    @Operation(summary = "getalreadybinddevice")
     @RequiresPermissions("sys:role:normal")
     public Result<List<DeviceEntity>> getUserDevices(@PathVariable String agentId) {
         UserDetail user = SecurityUser.getUser();
@@ -85,18 +85,18 @@ public class DeviceController {
     }
 
     @PostMapping("/bind/{agentId}")
-    @Operation(summary = "设备在线接口")
+    @Operation(summary = "devicein线interface")
     @RequiresPermissions("sys:role:normal")
     public Result<String> forwardToMqttGateway(@PathVariable String agentId, @RequestBody String requestBody) {
         try {
             return new Result<String>().ok(deviceService.getDeviceOnlineData(agentId));
         } catch (Exception e) {
-            return new Result<String>().error("转发请求失败: " + e.getMessage());
+            return new Result<String>().error("转发requestfailed: " + e.getMessage());
         }
     }
 
     @PostMapping("/unbind")
-    @Operation(summary = "解绑设备")
+    @Operation(summary = "解绑device")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> unbindDevice(@RequestBody DeviceUnBindDTO unDeviveBind) {
         UserDetail user = SecurityUser.getUser();
@@ -105,16 +105,16 @@ public class DeviceController {
     }
 
     @PutMapping("/update/{id}")
-    @Operation(summary = "更新设备信息")
+    @Operation(summary = "updateDevice information")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> updateDeviceInfo(@PathVariable String id, @Valid @RequestBody DeviceUpdateDTO deviceUpdateDTO) {
         DeviceEntity entity = deviceService.selectById(id);
         if (entity == null) {
-            return new Result<Void>().error("设备不存在");
+            return new Result<Void>().error("Device does not exist");
         }
         UserDetail user = SecurityUser.getUser();
         if (!entity.getUserId().equals(user.getId())) {
-            return new Result<Void>().error("设备不存在");
+            return new Result<Void>().error("Device does not exist");
         }
         BeanUtils.copyProperties(deviceUpdateDTO, entity);
         deviceService.updateById(entity);
@@ -122,7 +122,7 @@ public class DeviceController {
     }
 
     @PostMapping("/manual-add")
-    @Operation(summary = "手动添加设备")
+    @Operation(summary = "手动adddevice")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> manualAddDevice(@RequestBody @Valid DeviceManualAddDTO dto) {
         UserDetail user = SecurityUser.getUser();
@@ -131,7 +131,7 @@ public class DeviceController {
     }
 
     @PostMapping("/tools/list/{deviceId}")
-    @Operation(summary = "获取设备工具列表")
+    @Operation(summary = "getdevicetool list")
     @RequiresPermissions("sys:role:normal")
     public Result<Object> getDeviceTools(@PathVariable String deviceId) {
         Object toolsData = deviceService.getDeviceTools(deviceId);
@@ -143,7 +143,7 @@ public class DeviceController {
     }
 
     @PostMapping("/tools/call/{deviceId}")
-    @Operation(summary = "调用设备工具")
+    @Operation(summary = "calldevicetool")
     @RequiresPermissions("sys:role:normal")
     public Result<Object> callDeviceTool(@PathVariable String deviceId,
             @Valid @RequestBody DeviceToolsCallReqDTO request) {

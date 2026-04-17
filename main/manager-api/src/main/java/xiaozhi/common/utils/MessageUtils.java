@@ -5,7 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * 国际化
- * Copyright (c) 人人开源 All rights reserved.
+ * Copyright (c) 人人开source All rights reserved.
  * Website: https://www.renren.io
  */
 public class MessageUtils {
@@ -17,7 +17,7 @@ public class MessageUtils {
 
     public static String getMessage(int code, String... params) {
         if (messageSource == null) {
-            // 延迟初始化，确保Spring上下文已完全初始化
+            // 延迟initialize，ensureSpringcontextalready完全initialize
             messageSource = (MessageSource) SpringContextUtils.getBean("messageSource");
         }
         return messageSource.getMessage(code + "", params, LocaleContextHolder.getLocale());

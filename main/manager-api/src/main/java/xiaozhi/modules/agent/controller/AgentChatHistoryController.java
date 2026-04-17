@@ -42,7 +42,7 @@ import xiaozhi.modules.agent.service.AgentService;
 import xiaozhi.modules.agent.service.biz.AgentChatHistoryBizService;
 import xiaozhi.modules.security.user.SecurityUser;
 
-@Tag(name = "智能体聊天历史管理")
+@Tag(name = "Agent chat historymanagement")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/agent/chat-history")
@@ -53,13 +53,13 @@ public class AgentChatHistoryController {
     private final RedisUtils redisUtils;
 
     /**
-     * 小智服务聊天上报请求
+     * LittleWiseservicechat reportingrequest
      * <p>
-     * 小智服务聊天上报请求，包含Base64编码的音频数据和相关信息。
+     * LittleWiseservicechat reportingrequest，containBase64code audio dataandrelatedinformation。
      *
-     * @param request 包含上传文件及相关信息的请求对象
+     * @param request containuploadfile及relatedinformation requestobject
      */
-    @Operation(summary = "小智服务聊天上报请求")
+    @Operation(summary = "LittleWiseservicechat reportingrequest")
     @PostMapping("/report")
     public Result<Boolean> uploadFile(@Valid @RequestBody AgentChatHistoryReportDTO request) {
         Boolean result = agentChatHistoryBizService.report(request);
@@ -67,50 +67,50 @@ public class AgentChatHistoryController {
     }
 
     /**
-     * 获取聊天记录下载链接
+     * getChat historydownloadlink
      * 
-     * @param agentId   智能体ID
-     * @param sessionId 会话ID
-     * @return UUID作为下载标识
+     * @param agentId   Agent ID
+     * @param sessionId Session ID
+     * @return UUIDasdownloadidentifier
      */
-    @Operation(summary = "获取聊天记录下载链接")
+    @Operation(summary = "getChat historydownloadlink")
     @RequiresPermissions("sys:role:normal")
     @PostMapping("/getDownloadUrl/{agentId}/{sessionId}")
     public Result<String> getDownloadUrl(@PathVariable("agentId") String agentId,
             @PathVariable("sessionId") String sessionId) {
-        // 获取当前用户
+        // get currentuser
         UserDetail user = SecurityUser.getUser();
-        // 检查权限
+        // 检查Permission
         if (!agentService.checkAgentPermission(agentId, user.getId())) {
             throw new RenException(ErrorCode.CHAT_HISTORY_NO_PERMISSION);
         }
 
-        // 生成UUID
+        // generateUUID
         String uuid = UUID.randomUUID().toString();
-        // 存储agentId和sessionId到Redis，格式为agentId:sessionId
+        // 存储agentIdandsessionIdtoRedis，formatasagentId:sessionId
         redisUtils.set(RedisKeys.getChatHistoryKey(uuid), agentId + ":" + sessionId);
 
         return new Result<String>().ok(uuid);
     }
 
     /**
-     * 下载本会话聊天记录
+     * downloadthissessionChat history
      * 
-     * @param uuid     下载标识
-     * @param response HTTP响应
+     * @param uuid     downloadidentifier
+     * @param response HTTPresponse
      */
-    @Operation(summary = "下载本会话聊天记录")
+    @Operation(summary = "downloadthissessionChat history")
     @GetMapping("/download/{uuid}/current")
     public void downloadCurrentSession(@PathVariable("uuid") String uuid,
             HttpServletResponse response) {
-        // 从Redis获取agentId和sessionId
+        // fromRedisgetagentIdandsessionId
         String agentSessionInfo = (String) redisUtils.get(RedisKeys.getChatHistoryKey(uuid));
         if (StringUtils.isBlank(agentSessionInfo)) {
             throw new RenException(ErrorCode.DOWNLOAD_LINK_EXPIRED);
         }
 
         try {
-            // 解析agentId和sessionId
+            // parseagentIdandsessionId
             String[] parts = agentSessionInfo.split(":");
             if (parts.length != 2) {
                 throw new RenException(ErrorCode.DOWNLOAD_LINK_INVALID);
@@ -118,32 +118,32 @@ public class AgentChatHistoryController {
             String agentId = parts[0];
             String sessionId = parts[1];
 
-            // 执行下载
+            // executedownload
             downloadChatHistory(agentId, List.of(sessionId), response);
         } finally {
-            // 下载完成后删除UUID，防止盗刷
+            // downloadcomplete后deleteUUID，prevent盗刷
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
 
     /**
-     * 下载本会话及前20条会话聊天记录
+     * downloadthissession及前20itemssessionChat history
      * 
-     * @param uuid     下载标识
-     * @param response HTTP响应
+     * @param uuid     downloadidentifier
+     * @param response HTTPresponse
      */
-    @Operation(summary = "下载本会话及前20条会话聊天记录")
+    @Operation(summary = "downloadthissession及前20itemssessionChat history")
     @GetMapping("/download/{uuid}/previous")
     public void downloadCurrentSessionWithPrevious(@PathVariable("uuid") String uuid,
             HttpServletResponse response) {
-        // 从Redis获取agentId和sessionId
+        // fromRedisgetagentIdandsessionId
         String agentSessionInfo = (String) redisUtils.get(RedisKeys.getChatHistoryKey(uuid));
         if (StringUtils.isBlank(agentSessionInfo)) {
             throw new RenException(ErrorCode.DOWNLOAD_LINK_EXPIRED);
         }
 
         try {
-            // 解析agentId和sessionId
+            // parseagentIdandsessionId
             String[] parts = agentSessionInfo.split(":");
             if (parts.length != 2) {
                 throw new RenException(ErrorCode.DOWNLOAD_LINK_INVALID);
@@ -151,16 +151,16 @@ public class AgentChatHistoryController {
             String agentId = parts[0];
             String sessionId = parts[1];
 
-            // 获取所有会话列表
+            // get allsessionlist
             Map<String, Object> params = Map.of(
                     "agentId", agentId,
                     Constant.PAGE, 1,
-                    Constant.LIMIT, 1000 // 获取足够多的会话
+                    Constant.LIMIT, 1000 // get足够多 session
             );
             PageData<AgentChatSessionDTO> sessionPage = agentChatHistoryService.getSessionListByAgentId(params);
             List<AgentChatSessionDTO> allSessions = sessionPage.getList();
 
-            // 查找当前会话在列表中的位置
+            // findcurrentsessioninlist bit置
             int currentIndex = -1;
             for (int i = 0; i < allSessions.size(); i++) {
                 if (allSessions.get(i).getSessionId().equals(sessionId)) {
@@ -169,50 +169,50 @@ public class AgentChatHistoryController {
                 }
             }
 
-            // 如果找到了当前会话，收集当前会话及前20条会话ID
+            // if找to了currentsession，收集currentsession及前20itemsSession ID
             List<String> sessionIdsToDownload = new ArrayList<>();
             if (currentIndex != -1) {
-                // 从当前会话开始，向后（数组后面）取最多20条会话（包括当前会话）
-                int endIndex = Math.min(allSessions.size() - 1, currentIndex + 20); // 确保不越界
+                // fromcurrentsessionstart，向后（array后面）取最多20itemssession（包括currentsession）
+                int endIndex = Math.min(allSessions.size() - 1, currentIndex + 20); // ensurenot 越界
                 for (int i = currentIndex; i <= endIndex; i++) {
                     sessionIdsToDownload.add(allSessions.get(i).getSessionId());
                 }
             }
 
-            // 如果没有找到当前会话，至少下载当前会话
+            // ifno找tocurrentsession，至少downloadcurrentsession
             if (sessionIdsToDownload.isEmpty()) {
                 sessionIdsToDownload.add(sessionId);
             }
             downloadChatHistory(agentId, sessionIdsToDownload, response);
         } finally {
-            // 下载完成后删除UUID，防止盗刷
+            // downloadcomplete后deleteUUID，prevent盗刷
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
 
     /**
-     * 下载指定会话的聊天记录
+     * downloadspecifiedsession Chat history
      * 
-     * @param agentId    智能体ID
-     * @param sessionIds 会话ID列表
-     * @param response   HTTP响应
+     * @param agentId    Agent ID
+     * @param sessionIds Session IDlist
+     * @param response   HTTPresponse
      */
     private void downloadChatHistory(String agentId, List<String> sessionIds, HttpServletResponse response) {
         try {
-            // 设置响应头
+            // setresponseheader
             response.setContentType("text/plain;charset=UTF-8");
             String fileName = URLEncoder.encode("history.txt", StandardCharsets.UTF_8.toString());
             response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 
-            // 获取聊天记录并写入响应流
+            // getChat history并write入response流
             try (OutputStream out = response.getOutputStream()) {
-                // 为每个会话生成聊天记录
+                // as每个sessiongenerateChat history
                 for (String sessionId : sessionIds) {
-                    // 获取该会话的所有聊天记录
+                    // get该session allChat history
                     List<AgentChatHistoryDTO> chatHistoryList = agentChatHistoryService
                             .getChatHistoryBySessionId(agentId, sessionId);
 
-                    // 从聊天记录中获取第一条消息的创建时间作为会话时间
+                    // fromChat historyget第一itemsmessage Create timeassessiontime
                     if (!chatHistoryList.isEmpty()) {
                         Date firstMessageTime = chatHistoryList.get(0).getCreatedAt();
                         String sessionTimeStr = DateUtils.format(firstMessageTime, DateUtils.DATE_TIME_PATTERN);
@@ -231,7 +231,7 @@ public class AgentChatHistoryController {
                         out.write(line.getBytes(StandardCharsets.UTF_8));
                     }
 
-                    // 会话之间添加空行分隔
+                    // session之间addempty行分隔
                     if (sessionIds.indexOf(sessionId) < sessionIds.size() - 1) {
                         out.write("\n".getBytes(StandardCharsets.UTF_8));
                     }

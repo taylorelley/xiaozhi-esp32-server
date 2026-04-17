@@ -11,42 +11,42 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * Agent与插件的唯一映射表
+ * Agentandplugin unique mapping table
  * 
  * @TableName ai_agent_plugin_mapping
  */
 @Data
 @TableName(value = "ai_agent_plugin_mapping")
-@Schema(description = "Agent与插件的唯一映射表")
+@Schema(description = "Agentandplugin unique mapping table")
 public class AgentPluginMapping implements Serializable {
     /**
-     * 主键
+     * Primary key
      */
     @TableId(type = IdType.ASSIGN_ID)
-    @Schema(description = "映射信息主键ID")
+    @Schema(description = "mappinginformationPrimary keyID")
     private Long id;
 
     /**
-     * 智能体ID
+     * Agent ID
      */
-    @Schema(description = "智能体ID")
+    @Schema(description = "Agent ID")
     private String agentId;
 
     /**
-     * 插件ID
+     * pluginID
      */
-    @Schema(description = "插件ID")
+    @Schema(description = "pluginID")
     private String pluginId;
 
     /**
-     * 插件参数(Json)格式
+     * pluginparameter(Json)format
      */
-    @Schema(description = "插件参数(Json)格式")
+    @Schema(description = "pluginparameter(Json)format")
     private String paramInfo;
 
-    // 冗余字段，用于方便在根据id查询插件时，对照查出插件的Provider_code,详见dao层xml文件
+    // 冗余field，used for方便inaccording toidqueryplugin时，for照查出plugin Provider_code,详见dao层xmlfile
     @TableField(exist = false)
-    @Schema(description = "插件provider_code, 对应表ai_model_provider")
+    @Schema(description = "pluginprovider_code, correspondingtableai_model_provider")
     private String providerCode;
 
     @TableField(exist = false)

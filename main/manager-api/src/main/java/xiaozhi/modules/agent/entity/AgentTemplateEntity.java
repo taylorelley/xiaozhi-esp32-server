@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 智能体配置模板表
+ * Agent configurationtemplatetable
  * 
  * @TableName ai_agent_template
  */
@@ -20,58 +20,58 @@ import lombok.Data;
 @Data
 public class AgentTemplateEntity implements Serializable {
     /**
-     * 智能体唯一标识
+     * agentunique identifier
      */
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     /**
-     * 智能体编码
+     * Agent code
      */
     private String agentCode;
 
     /**
-     * 智能体名称
+     * Agent name
      */
     private String agentName;
 
     /**
-     * 语音识别模型标识
+     * voice识别modelidentifier
      */
     private String asrModelId;
 
     /**
-     * 语音活动检测标识
+     * voice活动detectidentifier
      */
     private String vadModelId;
 
     /**
-     * 大语言模型标识
+     * largeLanguagemodelidentifier
      */
     private String llmModelId;
 
     /**
-     * VLLM模型标识
+     * VLLMmodelidentifier
      */
     private String vllmModelId;
 
     /**
-     * 语音合成模型标识
+     * text-to-speechmodelidentifier
      */
     private String ttsModelId;
 
     /**
-     * 音色标识
+     * voiceidentifier
      */
     private String ttsVoiceId;
 
     /**
-     * 音色语言
+     * voiceLanguage
      */
     private String ttsLanguage;
 
     /**
-     * TTS音量
+     * TTSvolume
      */
     private Integer ttsVolume;
 
@@ -86,31 +86,31 @@ public class AgentTemplateEntity implements Serializable {
     private Integer ttsPitch;
 
     /**
-     * 记忆模型标识
+     * memorymodelidentifier
      */
     private String memModelId;
 
     /**
-     * 意图模型标识
+     * Intentmodelidentifier
      */
     private String intentModelId;
 
     /**
-     * 聊天记录配置（0不记录 1仅记录文本 2记录文本和语音）
+     * Chat historyconfiguration（0not record 1onlyrecordtext 2recordtext and voice）
      */
     private Integer chatHistoryConf;
 
     /**
-     * 角色设定参数
+     * Rolesetparameter
      */
     private String systemPrompt;
 
     /**
-     * 总结记忆
+     * summary memory
      */
     private String summaryMemory;
     /**
-     * 语言编码
+     * Languagecode
      */
     private String langCode;
 
@@ -120,27 +120,27 @@ public class AgentTemplateEntity implements Serializable {
     private String language;
 
     /**
-     * 排序权重
+     * Sort order权重
      */
     private Integer sort;
 
     /**
-     * 创建者 ID
+     * Creator ID
      */
     private Long creator;
 
     /**
-     * 创建时间
+     * Create time
      */
     private Date createdAt;
 
     /**
-     * 更新者 ID
+     * update ID
      */
     private Long updater;
 
     /**
-     * 更新时间
+     * updatetime
      */
     private Date updatedAt;
 

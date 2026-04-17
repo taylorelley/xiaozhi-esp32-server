@@ -4,28 +4,28 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "用户显示设备列表VO")
+@Schema(description = "user显示Device listVO")
 public class UserShowDeviceListVO {
 
-    @Schema(description = "app版本")
+    @Schema(description = "appversion")
     private String appVersion;
 
-    @Schema(description = "绑定用户名称")
+    @Schema(description = "bindUsername称")
     private String bindUserName;
 
-    @Schema(description = "设备型号")
+    @Schema(description = "device型number")
     private String deviceType;
 
-    @Schema(description = "设备唯一标识符")
+    @Schema(description = "deviceunique identifier符")
     private String id;
 
-    @Schema(description = "mac地址")
+    @Schema(description = "macAddress")
     private String macAddress;
 
-    @Schema(description = "开启OTA")
+    @Schema(description = "enableOTA")
     private Integer otaUpgrade;
 
-    @Schema(description = "最近对话时间")
+    @Schema(description = "最近conversationtime")
     private String recentChatTime;
 
 }
