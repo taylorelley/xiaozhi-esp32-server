@@ -67,8 +67,8 @@ class ListenTextMessageHandler(TextMessageHandler):
                 elif is_wakeup_words:
                     conn.just_woken_up = True
                     # Report plain text (reuses the ASR reporting flow, no audio data)
-                    enqueue_asr_report(conn, "嘿，你好呀", [])
-                    await startToChat(conn, "嘿，你好呀")
+                    enqueue_asr_report(conn, "Hey, hello!", [])
+                    await startToChat(conn, "Hey, hello!")
                 else:
                     conn.just_woken_up = True
                     # Report plain text (reuses the ASR reporting flow, no audio data)

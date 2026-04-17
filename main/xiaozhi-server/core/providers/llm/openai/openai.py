@@ -20,7 +20,7 @@ class LLMProvider(LLMProviderBase):
         
         timeout_config = config.get("timeout")
         if isinstance(timeout_config, dict):
-            # 细粒度超时配置
+            # Fine-grained timeout configuration
             custom_timeout = httpx.Timeout(
                 pool=timeout_config.get("pool", 2.0),
                 connect=timeout_config.get("connect", 3.0),
@@ -28,10 +28,10 @@ class LLMProvider(LLMProviderBase):
                 read=timeout_config.get("read", 60.0)
             )
         elif isinstance(timeout_config, (int, float)) and timeout_config > 0:
-            # 兼容旧的单一超时配置（整数或浮点数）
+            # Compatible with the legacy single timeout configuration (int or float)
             custom_timeout = httpx.Timeout(timeout_config)
         else:
-            # 未配置或配置无效，使用默认值
+            # Not configured or invalid, use the default value
             custom_timeout = httpx.Timeout(300)
 
         param_defaults = {
@@ -53,7 +53,7 @@ class LLMProvider(LLMProviderBase):
                 setattr(self, param, None)
 
         logger.debug(
-            f"意图识别参数初始化: {self.temperature}, {self.max_tokens}, {self.top_p}, {self.frequency_penalty}"
+            f"Intent recognition parameter initialization: {self.temperature}, {self.max_tokens}, {self.top_p}, {self.frequency_penalty}"
         )
 
         model_key_msg = check_model_key("LLM", self.api_key)
@@ -63,7 +63,7 @@ class LLMProvider(LLMProviderBase):
 
     @staticmethod
     def normalize_dialogue(dialogue):
-        """自动修复 dialogue 中缺失 content 的消息"""
+        """Automatically fix messages in dialogue that are missing `content`"""
         for msg in dialogue:
             if "role" in msg and "content" not in msg:
                 msg["content"] = ""
@@ -78,7 +78,7 @@ class LLMProvider(LLMProviderBase):
             "stream": True,
         }
 
-        # 添加可选参数,只有当参数不为None时才添加
+        # Add optional parameters; only include them when not None
         optional_params = {
             "max_tokens": kwargs.get("max_tokens", self.max_tokens),
             "temperature": kwargs.get("temperature", self.temperature),
@@ -141,7 +141,7 @@ class LLMProvider(LLMProviderBase):
             elif isinstance(getattr(chunk, "usage", None), CompletionUsage):
                 usage_info = getattr(chunk, "usage", None)
                 logger.bind(tag=TAG).info(
-                    f"Token 消耗：输入 {getattr(usage_info, 'prompt_tokens', '未知')}，"
-                    f"输出 {getattr(usage_info, 'completion_tokens', '未知')}，"
-                    f"共计 {getattr(usage_info, 'total_tokens', '未知')}"
+                    f"Token usage: input {getattr(usage_info, 'prompt_tokens', 'unknown')}, "
+                    f"output {getattr(usage_info, 'completion_tokens', 'unknown')}, "
+                    f"total {getattr(usage_info, 'total_tokens', 'unknown')}"
                 )
