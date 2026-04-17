@@ -88,7 +88,7 @@ class VADProvider(VADProviderBase):
                 conn._vad_context = audio_input[:, -64:]
                 speech_prob = out.item()
 
-                # 双阈值判断
+                # Dual-threshold decision
                 if speech_prob >= self.vad_threshold:
                     is_voice = True
                 elif speech_prob <= self.vad_threshold_low:
@@ -96,16 +96,16 @@ class VADProvider(VADProviderBase):
                 else:
                     is_voice = conn.last_is_voice
 
-                # 声音没低于最低值则延续前一个状态，判断为有声音
+                # If the sound did not drop below the minimum value, continue the previous state and consider it as voice
                 conn.last_is_voice = is_voice
 
-                # 更新滑动窗口
+                # Update the sliding window
                 conn.client_voice_window.append(is_voice)
                 client_have_voice = (
                     conn.client_voice_window.count(True) >= self.frame_window_threshold
                 )
 
-                # 如果之前有声音，但本次没有声音，且与上次有声音的时间差已经超过了静默阈值，则认为已经说完一句话
+                # If there was voice previously but not this time, and the time since the last voice exceeds the silence threshold, consider the sentence finished
                 if conn.client_have_voice and not client_have_voice:
                     stop_duration = time.time() * 1000 - conn.vad_last_voice_time
                     if stop_duration >= self.silence_threshold_ms:
@@ -116,6 +116,6 @@ class VADProvider(VADProviderBase):
 
             return client_have_voice
         except opuslib_next.OpusError as e:
-            logger.bind(tag=TAG).info(f"解码错误: {e}")
+            logger.bind(tag=TAG).info(f"Decoding error: {e}")
         except Exception as e:
             logger.bind(tag=TAG).error(f"Error processing audio packet: {e}")

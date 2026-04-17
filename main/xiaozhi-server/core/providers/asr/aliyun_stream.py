@@ -78,19 +78,19 @@ class ASRProvider(ASRProviderBase):
         self.asr_ws = None
         self.forward_task = None
         self.is_processing = False
-        self.server_ready = False  # 服务器准备状态
+        self.server_ready = False  # Server ready state
 
-        # 基础配置
+        # Basic configuration
         self.access_key_id = config.get("access_key_id")
         self.access_key_secret = config.get("access_key_secret")
         self.appkey = config.get("appkey")
         self.token = config.get("token")
         self.host = config.get("host", "nls-gateway-cn-shanghai.aliyuncs.com")
-        # 如果配置的是内网地址（包含-internal.aliyuncs.com），则使用ws协议，默认是wss协议
+        # If the configured address is an intranet address (contains -internal.aliyuncs.com), use ws protocol; default is wss
         if "-internal." in self.host:
             self.ws_url = f"ws://{self.host}/ws/v1"
         else:
-            # 默认使用wss协议
+            # Default to wss protocol
             self.ws_url = f"wss://{self.host}/ws/v1"
 
         self.max_sentence_silence = config.get("max_sentence_silence")

@@ -262,68 +262,68 @@ class TTSProviderBase(ABC):
     async def open_audio_channels(self, conn):
         self.conn = conn
 
-        # 根据conn的sample_rate创建编码器，如果子类已经创建则不覆盖（IndexTTS接口返回为24kHZ-待重采样处理）
+        # Create the encoder based on conn.sample_rate. If the subclass already created one, do not overwrite it (IndexTTS returns 24kHz - requires resampling)
         if not hasattr(self, 'opus_encoder') or self.opus_encoder is None:
             self.opus_encoder = opus_encoder_utils.OpusEncoderUtils(
                 sample_rate=conn.sample_rate, channels=1, frame_size_ms=60
             )
 
-        # tts 消化线程
+        # TTS consumer thread
         self.tts_priority_thread = threading.Thread(
             target=self.tts_text_priority_thread, daemon=True
         )
         self.tts_priority_thread.start()
 
-        # 音频播放 消化线程
+        # Audio playback consumer thread
         self.audio_play_priority_thread = threading.Thread(
             target=self._audio_play_priority_thread, daemon=True
         )
         self.audio_play_priority_thread.start()
 
     def store_tts_text(self, sentence_id, text):
-        """存储指定 sentence_id 对应的文本，用于流式TTS获取正确的字幕文本
+        """Store the text associated with the given sentence_id, used by streaming TTS to obtain the correct subtitle text
 
         Args:
-            sentence_id: 会话ID
-            text: 要存储的文本
+            sentence_id: session ID
+            text: text to store
         """
         if sentence_id and text:
             self._sentence_text_map[sentence_id] = text
-            # 只保留最近 5 个，防止内存泄漏
+            # Keep only the most recent 5 entries to prevent memory leaks
             if len(self._sentence_text_map) > 5:
                 oldest = next(iter(self._sentence_text_map))
                 del self._sentence_text_map[oldest]
 
     def get_tts_text(self, sentence_id):
-        """获取指定 sentence_id 对应的文本
+        """Get the text associated with the given sentence_id
 
         Args:
-            sentence_id: 会话ID
+            sentence_id: session ID
 
         Returns:
-            str: 对应的文本，如果不存在返回 None
+            str: the corresponding text, or None if it does not exist
         """
         return self._sentence_text_map.get(sentence_id)
 
     def clear_tts_text(self, sentence_id):
-        """清除指定 sentence_id 的文本
+        """Clear the text for the given sentence_id
 
         Args:
-            sentence_id: 会话ID
+            sentence_id: session ID
         """
         if sentence_id in self._sentence_text_map:
             del self._sentence_text_map[sentence_id]
 
-    # 这里默认是非流式的处理方式
-    # 流式处理方式请在子类中重写
+    # The default here is non-streaming processing
+    # Subclasses should override for streaming processing
     def tts_text_priority_thread(self):
         while not self.conn.stop_event.is_set():
             try:
                 message = self.tts_text_queue.get(timeout=1)
                 if self.conn.client_abort:
-                    logger.bind(tag=TAG).info("收到打断信息，终止TTS文本处理线程")
+                    logger.bind(tag=TAG).info("Received abort signal; terminating TTS text processing thread")
                     continue
-                # 过滤旧消息：检查sentence_id是否匹配
+                # Filter out old messages: check whether sentence_id matches
                 if message.sentence_id != self.conn.sentence_id:
                     continue
                 if message.sentence_type == SentenceType.FIRST:
@@ -355,12 +355,12 @@ class TTSProviderBase(ABC):
                 continue
             except Exception as e:
                 logger.bind(tag=TAG).error(
-                    f"处理TTS文本失败: {str(e)}, 类型: {type(e).__name__}, 堆栈: {traceback.format_exc()}"
+                    f"Failed to process TTS text: {str(e)}, type: {type(e).__name__}, stack: {traceback.format_exc()}"
                 )
                 continue
 
     def _audio_play_priority_thread(self):
-        # 需要上报的文本和音频列表
+        # Text and audio list to be reported
         enqueue_text = None
         enqueue_audio = []
         while not self.conn.stop_event.is_set():
@@ -379,15 +379,15 @@ class TTSProviderBase(ABC):
                     continue
 
                 if self.conn.client_abort:
-                    logger.bind(tag=TAG).debug("收到打断信号，跳过当前音频数据")
+                    logger.bind(tag=TAG).debug("Received abort signal; skipping current audio data")
                     enqueue_text, enqueue_audio = None, []
                     continue
 
-                # 收到下一个文本开始或会话结束时进行上报
+                # Report when the next text starts or the session ends
                 if sentence_type is not SentenceType.MIDDLE:
                     if self.report_on_last:
-                        # 累积模式：适用于全程只有一个语音流的TTS（如seed-tts-2.0）
-                        # FIRST时只记录文本，音频持续累积，仅在LAST时统一上报
+                        # Accumulation mode: for TTS providers with a single voice stream throughout (e.g. seed-tts-2.0)
+                        # On FIRST only record text; audio continues to accumulate; only report once on LAST
                         if text:
                             enqueue_text = text
                         if sentence_type == SentenceType.LAST:
@@ -395,24 +395,24 @@ class TTSProviderBase(ABC):
                             enqueue_audio = []
                             enqueue_text = None
                     else:
-                        # 非累积模式：每个句子分别上报
+                        # Non-accumulation mode: report each sentence separately
                         if enqueue_text is not None:
                             enqueue_tts_report(self.conn, enqueue_text, enqueue_audio)
                         enqueue_audio = []
                         enqueue_text = text
 
-                # 收集上报音频数据
+                # Collect audio data for reporting
                 if isinstance(audio_datas, bytes):
                     enqueue_audio.append(audio_datas)
 
-                # 发送音频
+                # Send audio
                 future = asyncio.run_coroutine_threadsafe(
                     sendAudioMessage(self.conn, sentence_type, audio_datas, text, sentence_id),
                     self.conn.loop,
                 )
                 future.result()
 
-                # 记录输出和报告
+                # Record output and report
                 if self.conn.max_output_size > 0 and text:
                     add_device_output(self.conn.headers.get("device-id"), len(text))
 

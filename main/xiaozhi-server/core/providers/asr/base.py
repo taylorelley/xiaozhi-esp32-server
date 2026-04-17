@@ -289,7 +289,7 @@ class ASRProviderBase(ABC):
 
             free_space = shutil.disk_usage(self.output_dir).free
             if free_space < len(combined_pcm_data) * 2:
-                raise OSError("磁盘空间不足")
+                raise OSError("Insufficient disk space")
 
             if self.requires_file() and self.prefers_temp_file():
                 temp_path = self.build_temp_file(combined_pcm_data)
@@ -314,10 +314,10 @@ class ASRProviderBase(ABC):
             )
             return text, file_path
         except OSError as e:
-            logger.bind(tag=TAG).error(f"文件操作错误: {e}")
+            logger.bind(tag=TAG).error(f"File operation error: {e}")
             return None, None
         except Exception as e:
-            logger.bind(tag=TAG).error(f"语音识别失败: {e}")
+            logger.bind(tag=TAG).error(f"Speech recognition failed: {e}")
             return None, None
         finally:
             try:
@@ -331,7 +331,7 @@ class ASRProviderBase(ABC):
                 ):
                     os.remove(file_path)
             except Exception as e:
-                logger.bind(tag=TAG).error(f"文件清理失败: {e}")
+                logger.bind(tag=TAG).error(f"File cleanup failed: {e}")
 
     @abstractmethod
     async def speech_to_text(
@@ -341,24 +341,24 @@ class ASRProviderBase(ABC):
         audio_format="opus",
         artifacts: Optional[AudioArtifacts] = None,
     ) -> Tuple[Optional[str], Optional[str]]:
-        """将语音数据转换为文本
+        """Convert speech data to text
 
-        :param opus_data: 输入的Opus音频数据
-        :param session_id: 会话ID
-        :param audio_format: 音频格式，默认"opus"
-        :param artifacts: 音频工件，包含PCM数据、文件路径等
-        :return: 识别结果文本和文件路径（如果有）
+        :param opus_data: Input Opus audio data
+        :param session_id: Session ID
+        :param audio_format: Audio format, defaults to "opus"
+        :param artifacts: Audio artifacts, including PCM data, file path, etc.
+        :return: Recognized text and file path (if any)
         """
         pass
 
     @staticmethod
     def decode_opus(opus_data: List[bytes]) -> List[bytes]:
-        """将Opus音频数据解码为PCM数据"""
+        """Decode Opus audio data to PCM data"""
         decoder = None
         try:
             decoder = opuslib_next.Decoder(16000, 1)
             pcm_data = []
-            buffer_size = 960  # 每次处理960个采样点 (60ms at 16kHz)
+            buffer_size = 960  # Process 960 samples per call (60ms at 16kHz)
 
             for i, opus_packet in enumerate(opus_data):
                 try:
@@ -370,18 +370,18 @@ class ASRProviderBase(ABC):
                         pcm_data.append(pcm_frame)
 
                 except opuslib_next.OpusError as e:
-                    logger.bind(tag=TAG).warning(f"Opus解码错误，跳过数据包 {i}: {e}")
+                    logger.bind(tag=TAG).warning(f"Opus decoding error, skipping packet {i}: {e}")
                 except Exception as e:
-                    logger.bind(tag=TAG).error(f"音频处理错误，数据包 {i}: {e}")
+                    logger.bind(tag=TAG).error(f"Audio processing error, packet {i}: {e}")
 
             return pcm_data
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"音频解码过程发生错误: {e}")
+            logger.bind(tag=TAG).error(f"Error during audio decoding: {e}")
             return []
         finally:
             if decoder is not None:
                 try:
                     del decoder
                 except Exception as e:
-                    logger.bind(tag=TAG).debug(f"释放decoder资源时出错: {e}")
+                    logger.bind(tag=TAG).debug(f"Error releasing decoder resources: {e}")

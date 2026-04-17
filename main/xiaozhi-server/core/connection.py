@@ -732,10 +732,10 @@ class ConnectionHandler:
         if private_config.get("context_providers", None) is not None:
             self.config["context_providers"] = private_config["context_providers"]
 
-        # 使用 run_in_executor 在线程池中执行 initialize_modules，避免阻塞主循环
+        # Use run_in_executor to execute initialize_modules in the thread pool to avoid blocking the main loop
         try:
             modules = await self.loop.run_in_executor(
-                None,  # 使用默认线程池
+                None,  # Use the default thread pool
                 initialize_modules,
                 self.logger,
                 private_config,
@@ -747,7 +747,7 @@ class ConnectionHandler:
                 init_intent,
             )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"初始化组件失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Failed to initialize components: {e}")
             modules = {}
         if modules.get("tts", None) is not None:
             self.tts = modules["tts"]
@@ -765,7 +765,7 @@ class ConnectionHandler:
     def _initialize_memory(self):
         if self.memory is None:
             return
-        """初始化记忆模块"""
+        """Initialize the memory module"""
         self.memory.init_memory(
             role_id=self.device_id,
             llm=self.llm,
@@ -773,21 +773,21 @@ class ConnectionHandler:
             save_to_file=not self.read_config_from_api,
         )
 
-        # 获取记忆总结配置
+        # Obtain memory summarization configuration
         memory_config = self.config["Memory"]
         memory_type = self.config["Memory"][self.config["selected_module"]["Memory"]][
             "type"
         ]
-        # 如果使用 nomen 或 mem_report_only，直接返回
+        # If using nomem or mem_report_only, return directly
         if memory_type == "nomem" or memory_type == "mem_report_only":
             return
-        # 使用 mem_local_short 模式
+        # Use mem_local_short mode
         elif memory_type == "mem_local_short":
             memory_llm_name = memory_config[self.config["selected_module"]["Memory"]][
                 "llm"
             ]
             if memory_llm_name and memory_llm_name in self.config["LLM"]:
-                # 如果配置了专用LLM，则创建独立的LLM实例
+                # If a dedicated LLM is configured, create an independent LLM instance
                 from core.utils import llm as llm_utils
 
                 memory_llm_config = self.config["LLM"][memory_llm_name]
@@ -796,13 +796,13 @@ class ConnectionHandler:
                     memory_llm_type, memory_llm_config
                 )
                 self.logger.bind(tag=TAG).info(
-                    f"为记忆总结创建了专用LLM: {memory_llm_name}, 类型: {memory_llm_type}"
+                    f"Created a dedicated LLM for memory summarization: {memory_llm_name}, type: {memory_llm_type}"
                 )
                 self.memory.set_llm(memory_llm)
             else:
-                # 否则使用主LLM
+                # Otherwise, use the main LLM
                 self.memory.set_llm(self.llm)
-                self.logger.bind(tag=TAG).info("使用主LLM作为意图识别模型")
+                self.logger.bind(tag=TAG).info("Using the main LLM as the intent recognition model")
 
     def _initialize_intent(self):
         if self.intent is None:
