@@ -1,23 +1,23 @@
-# get_news_from_newsnow 插件新闻源配置指南
+# get_news_from_newsnow Plugin News Source Configuration Guide
 
-## 概述
+## Overview
 
-`get_news_from_newsnow` 插件现在支持通过Web管理界面动态配置新闻源，不再需要修改代码。用户可以在智控台中为每个智能体配置不同的新闻源。
+The `get_news_from_newsnow` plugin now supports dynamic configuration of news sources via the web management interface, and no longer requires code changes. Users can configure different news sources for each agent in the control console.
 
-## 配置方式
+## Configuration methods
 
-### 1. 通过Web管理界面配置（推荐）
+### 1. Configure via the web management interface (recommended)
 
-1. 登录智控台
-2. 进入"角色配置"页面
-3. 选择要配置的智能体
-4. 点击"编辑功能"按钮
-5. 在右侧参数配置区域找到"newsnow新闻聚合"插件
-6. 在"新闻源配置"字段中输入分号分隔的中文名称
+1. Log in to the control console.
+2. Go to the "Role Configuration" page.
+3. Select the agent to configure.
+4. Click the "Edit Features" button.
+5. In the parameter configuration area on the right, find the "newsnow news aggregation" plugin.
+6. In the "News source configuration" field, enter semicolon-separated Chinese names.
 
-### 2. 配置文件方式
+### 2. Configuration file method
 
-在 `config.yaml` 中配置：
+Configure in `config.yaml`:
 
 ```yaml
 plugins:
@@ -26,80 +26,80 @@ plugins:
     news_sources: "澎湃新闻;百度热搜;财联社;微博;抖音"
 ```
 
-## 新闻源配置格式
+## News source configuration format
 
-新闻源配置使用分号分隔的中文名称，格式为：
+The news source configuration uses semicolon-separated Chinese names, in the format:
 
 ```
-中文名称1;中文名称2;中文名称3
+Chinese name 1;Chinese name 2;Chinese name 3
 ```
 
-### 配置示例
+### Configuration example
 
 ```
 澎湃新闻;百度热搜;财联社;微博;抖音;知乎;36氪
 ```
 
-## 支持的新闻源
+## Supported news sources
 
-插件支持以下新闻源的中文名称：
+The plugin supports the following Chinese-named news sources:
 
-- 澎湃新闻
-- 百度热搜
-- 财联社
-- 微博
-- 抖音
-- 知乎
-- 36氪
-- 华尔街见闻
-- IT之家
-- 今日头条
-- 虎扑
-- 哔哩哔哩
-- 快手
-- 雪球
-- 格隆汇
-- 法布财经
-- 金十数据
-- 牛客
-- 少数派
-- 稀土掘金
-- 凤凰网
-- 虫部落
-- 联合早报
-- 酷安
-- 远景论坛
-- 参考消息
-- 卫星通讯社
-- 百度贴吧
-- 靠谱新闻
-- 以及更多...
+- 澎湃新闻 (The Paper)
+- 百度热搜 (Baidu Hot Search)
+- 财联社 (Cailian Press)
+- 微博 (Weibo)
+- 抖音 (Douyin)
+- 知乎 (Zhihu)
+- 36氪 (36Kr)
+- 华尔街见闻 (Wall Street CN)
+- IT之家 (IThome)
+- 今日头条 (Toutiao)
+- 虎扑 (Hupu)
+- 哔哩哔哩 (Bilibili)
+- 快手 (Kuaishou)
+- 雪球 (Xueqiu)
+- 格隆汇 (Gelonghui)
+- 法布财经 (Fastbull)
+- 金十数据 (Jin10)
+- 牛客 (Nowcoder)
+- 少数派 (Sspai)
+- 稀土掘金 (Juejin)
+- 凤凰网 (IFeng)
+- 虫部落 (Chongbuluo)
+- 联合早报 (Zaobao)
+- 酷安 (Coolapk)
+- 远景论坛 (PCBeta)
+- 参考消息 (Cankaoxiaoxi)
+- 卫星通讯社 (Sputnik News)
+- 百度贴吧 (Baidu Tieba)
+- 靠谱新闻 (Kaopu News)
+- And more...
 
-## 默认配置
+## Default configuration
 
-如果未配置新闻源，插件将使用以下默认配置：
+If no news source is configured, the plugin will use the following default:
 
 ```
 澎湃新闻;百度热搜;财联社
 ```
 
-## 使用说明
+## Usage
 
-1. **配置新闻源**：在Web界面或配置文件中设置新闻源的中文名称，用分号分隔
-2. **调用插件**：用户可以说"播报新闻"或"获取新闻"
-3. **指定新闻源**：用户可以说"播报澎湃新闻"或"获取百度热搜"
-4. **获取详情**：用户可以说"详细介绍这条新闻"
+1. **Configure news sources**: Set the Chinese names of news sources in the web interface or configuration file, separated by semicolons.
+2. **Invoke the plugin**: The user can say "play news" or "get the news".
+3. **Specify a news source**: The user can say "play news from The Paper" or "get Baidu Hot Search".
+4. **Get details**: The user can say "give me more details on this news".
 
-## 工作原理
+## How it works
 
-1. 插件接受中文名称作为参数（如"澎湃新闻"）
-2. 根据配置的新闻源列表，将中文名称转换为对应的英文ID（如"thepaper"）
-3. 使用英文ID调用API获取新闻数据
-4. 返回新闻内容给用户
+1. The plugin accepts a Chinese name as a parameter (e.g., "澎湃新闻").
+2. Based on the configured news source list, it converts the Chinese name into the corresponding English ID (e.g., "thepaper").
+3. It calls the API with the English ID to fetch news data.
+4. It returns the news content to the user.
 
-## 注意事项
+## Notes
 
-1. 配置的中文名称必须与 CHANNEL_MAP 中定义的名称完全一致
-2. 配置更改后需要重启服务或重新加载配置
-3. 如果配置的新闻源无效，插件会自动使用默认新闻源
-4. 多个新闻源之间使用英文分号(;)分隔，不要使用中文分号(；)
+1. Configured Chinese names must exactly match the names defined in `CHANNEL_MAP`.
+2. After changing the configuration, restart the service or reload the configuration.
+3. If a configured news source is invalid, the plugin will fall back to the default news sources.
+4. Use the ASCII semicolon (`;`) between multiple news sources, not the full-width Chinese semicolon (`；`).

@@ -17,12 +17,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits(['update-refresher-enabled'])
 
-// 接收props
+// props
 interface Props {
   agentId?: string
 }
 
-// 获取屏幕边界到安全区域距离
+// Getscreen boundary toSecurityregion distance
 let safeAreaInsets: any
 let systemInfo: any
 
@@ -46,25 +46,25 @@ safeAreaInsets = systemInfo.safeAreaInsets
 const message = useMessage()
 const toast = useToast()
 
-// 页面数据
+// PageData
 const voicePrintList = ref<VoicePrint[]>([])
 const chatHistoryList = ref<ChatHistory[]>([])
 const chatHistoryActions = ref<any[]>([])
 const swipeStates = ref<Record<string, 'left' | 'close' | 'right'>>({})
 const loading = ref(false)
 
-// 音频播放相关
+// AudioPlay
 const audioRef = ref<UniApp.InnerAudioContext | null>(null)
 const playingAudioId = ref<string>('')
 
-// 使用传入的智能体ID
+// Use of AgentID
 const currentAgentId = computed(() => {
   return props.agentId
 })
 
-// 智能体选择相关功能已移除
+// AgentSelectalreadyRemove
 
-// 弹窗相关
+// Dialog
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
 const showChatHistoryDialog = ref(false)
@@ -82,12 +82,11 @@ const editForm = ref<VoicePrint>({
   createDate: '',
 })
 
-// 获取声纹列表
+// GetVoiceprint list
 async function loadVoicePrintList() {
   try {
-    console.log('获取声纹列表')
-
-    // 检查是否有当前选中的智能体
+    console.log('GetVoiceprint list')
+ // CheckWhether tohascurrentSelected of Agent
     if (!currentAgentId.value) {
       console.warn(t('voiceprint.noSelectedAgent'))
       voicePrintList.value = []
@@ -96,8 +95,7 @@ async function loadVoicePrintList() {
 
     loading.value = true
     const data = await getVoicePrintList(currentAgentId.value)
-
-    // 初始化滑动状态
+ // InitializeStatus
     const list = data || []
     list.forEach((item) => {
       if (!swipeStates.value[item.id]) {
@@ -108,7 +106,7 @@ async function loadVoicePrintList() {
     voicePrintList.value = list
   }
   catch (error) {
-    console.error('获取声纹列表失败:', error)
+    console.error('GetVoiceprint listfailed:', error)
     voicePrintList.value = []
   }
   finally {
@@ -116,12 +114,12 @@ async function loadVoicePrintList() {
   }
 }
 
-// 暴露给父组件的刷新方法
+// Component of RefreshMethod
 async function refresh() {
   await loadVoicePrintList()
 }
 
-// 获取语音对话记录
+// Get
 async function loadChatHistory() {
   try {
     if (!currentAgentId.value) {
@@ -131,7 +129,7 @@ async function loadChatHistory() {
 
     const data = await getChatHistory(currentAgentId.value)
     chatHistoryList.value = data || []
-    // 转换为ActionSheet格式
+ // Convert toActionSheetFormat
     chatHistoryActions.value = chatHistoryList.value.map((item, index) => ({
       name: item.content,
       audioId: item.audioId,
@@ -139,23 +137,22 @@ async function loadChatHistory() {
     }))
   }
   catch (error) {
-    console.error('获取对话记录失败:', error)
+    console.error('Getfailed:', error)
     toast.error(t('voiceprint.fetchHistoryFailed'))
   }
 }
 
-// 打开添加弹窗
+// OpenAddDialog
 function openAddDialog() {
   if (!currentAgentId.value) {
     toast.error(t('voiceprint.pleaseSelectAgent'))
     return
   }
-
-  // 检查声纹接口是否配置（通过尝试获取声纹列表来检测）
+ // CheckVoiceprintAPIWhether toConfiguration（GetVoiceprint listDetect）
   const checkVoicePrintConfig = async () => {
     try {
       await getVoicePrintList(currentAgentId.value)
-      // 接口正常，继续打开添加弹窗
+      // APINormal，ContinueOpenAddDialog
       addForm.value = {
         agentId: currentAgentId.value,
         audioId: '',
@@ -165,12 +162,12 @@ function openAddDialog() {
       showAddDialog.value = true
     }
     catch (error: any) {
-      // 捕捉声纹接口未配置错误
-      if (error.message && error.message.includes('请求错误[10054]')) {
+ // VoiceprintAPIConfigurationError
+      if (error.message && error.message.includes('Request error [10054]')) {
         toast.error(t('voiceprint.voiceprintInterfaceNotConfigured'))
       }
       else {
-        // 其他错误，继续打开弹窗
+ // Error，ContinueOpenDialog
         addForm.value = {
           agentId: currentAgentId.value,
           audioId: '',
@@ -185,21 +182,21 @@ function openAddDialog() {
   checkVoicePrintConfig()
 }
 
-// 打开编辑弹窗
+// OpenEditDialog
 function openEditDialog(item: VoicePrint) {
   editForm.value = { ...item }
   showEditDialog.value = true
 }
 
-// 获取选中音频的显示内容
+// GetSelectedAudio of ShowContent
 function getSelectedAudioContent(audioId: string) {
   if (!audioId)
     return t('voiceprint.clickToSelectVector')
   const chatItem = chatHistoryList.value.find(item => item.audioId === audioId)
-  return chatItem ? chatItem.content : `已选择: ${audioId.substring(0, 8)}...`
+  return chatItem ? chatItem.content : `Selected: ${audioId.substring(0, 8)}...`
 }
 
-// 选择声纹向量
+// SelectVoiceprint
 function selectAudioId({ item }: { item: any }) {
   if (showAddDialog.value) {
     addForm.value.audioId = item.audioId
@@ -210,12 +207,12 @@ function selectAudioId({ item }: { item: any }) {
   showChatHistoryDialog.value = false
 }
 
-// 点击选择
+// Select
 function handleItemClick(item: any) {
   selectAudioId({ item })
 }
 
-// 提交添加说话人
+// SubmitAddspeaker
 async function submitAdd() {
   if (!addForm.value.sourceName.trim()) {
     toast.error(t('voiceprint.pleaseInputName'))
@@ -233,12 +230,12 @@ async function submitAdd() {
     await loadVoicePrintList()
   }
   catch (error) {
-    console.error('添加说话人失败:', error)
+    console.error('Addspeakerfailed:', error)
     toast.error(t('voiceprint.addFailed'))
   }
 }
 
-// 提交编辑说话人
+// SubmitEditspeaker
 async function submitEdit() {
   if (!editForm.value.sourceName.trim()) {
     toast.error(t('voiceprint.pleaseInputName'))
@@ -262,18 +259,18 @@ async function submitEdit() {
     await loadVoicePrintList()
   }
   catch (error) {
-    console.error('编辑说话人失败:', error)
+    console.error('Editspeakerfailed:', error)
     toast.error(t('voiceprint.editFailed'))
   }
 }
 
-// 处理编辑操作
+// ProcessEditAction
 function handleEdit(item: VoicePrint) {
   openEditDialog(item)
   swipeStates.value[item.id] = 'close'
 }
 
-// 删除声纹
+// DeleteVoiceprint
 async function handleDelete(id: string) {
   message.confirm({
     msg: t('voiceprint.deleteConfirmMsg'),
@@ -283,30 +280,28 @@ async function handleDelete(id: string) {
     toast.success(t('voiceprint.deleteSuccess'))
     await loadVoicePrintList()
   }).catch(() => {
-    console.log('点击了取消按钮')
+    console.log('CancelButton')
   })
 }
 
-// 播放音频
+// PlayAudio
 async function playAudio(audioId: string, event: Event) {
-  event.stopPropagation() // 阻止事件冒泡，防止关闭下拉框
+  event.stopPropagation() // Stop event bubbling to prevent the dropdown from closing
 
   if (!audioId) {
     toast.warning(t('voiceprint.audioNotExist'))
     return
   }
-
-  // 如果正在播放同一个音频，则停止
+ // IfatPlayAudio，thenStop
   if (playingAudioId.value === audioId) {
     stopAudio()
     return
   }
-
-  // 停止之前的音频
+ // Stop of Audio
   stopAudio()
 
   try {
-    // 先获取音频下载ID
+ // firstGetAudioDownloadID
     playingAudioId.value = audioId
     const downloadId = await getAudioDownloadId(audioId)
 
@@ -316,35 +311,32 @@ async function playAudio(audioId: string, event: Event) {
       return
     }
 
-    // 获取baseURL
+    // GetbaseURL
     const baseURL = getEnvBaseUrl()
     const audioUrl = `${baseURL}/agent/play/${downloadId}`
-
-    // 创建新的音频实例
+ // Createnew of Audioinstance
     audioRef.value = uni.createInnerAudioContext()
     audioRef.value.src = audioUrl
     audioRef.value.autoplay = true
-
-    // 监听播放结束
+ // Listen to playbackEnd
     audioRef.value.onEnded(() => {
       playingAudioId.value = ''
     })
-
-    // 监听播放错误
+ // Listen to playbackError
     audioRef.value.onError((error) => {
-      console.error('音频播放错误:', error)
+      console.error('AudioPlayError:', error)
       toast.error(t('voiceprint.audioPlayFailed'))
       playingAudioId.value = ''
     })
   }
   catch (error) {
-    console.error('播放音频失败:', error)
+    console.error('PlayAudiofailed:', error)
     toast.error(t('voiceprint.audioPlayFailed'))
     playingAudioId.value = ''
   }
 }
 
-// 停止音频
+// StopAudio
 function stopAudio() {
   if (audioRef.value) {
     audioRef.value.stop()
@@ -364,13 +356,13 @@ watch(() => [showAddDialog.value, showEditDialog.value], (newValues) => {
 })
 
 onMounted(async () => {
-  // 智能体已简化为默认
+ // AgentalreadyisDefault
 
   loadVoicePrintList()
   loadChatHistory()
 })
 
-// 暴露方法给父组件
+// MethodComponent
 defineExpose({
   showAddDialog,
   showEditDialog,
@@ -380,7 +372,7 @@ defineExpose({
 
 <template>
   <view class="voiceprint-container" style="background: #f5f7fb; min-height: 100%;">
-    <!-- 加载状态 -->
+    <!-- LoadStatus -->
     <view v-if="loading && voicePrintList.length === 0" class="loading-container">
       <wd-loading color="#336cff" />
       <text class="loading-text">
@@ -388,9 +380,9 @@ defineExpose({
       </text>
     </view>
 
-    <!-- 声纹列表 -->
+    <!-- Voiceprint list -->
     <view v-else-if="voicePrintList.length > 0" class="voiceprint-list">
-      <!-- 声纹卡片列表 -->
+      <!-- Voiceprintcardlist -->
       <view class="box-border flex flex-col gap-[24rpx] p-[20rpx]">
         <view v-for="item in voicePrintList" :key="item.id">
           <wd-swipe-action
@@ -403,7 +395,7 @@ defineExpose({
                   {{ item.sourceName }}
                 </text>
                 <text class="mb-[12rpx] block text-[28rpx] text-[#65686f] leading-[1.4]">
-                  {{ item.introduce || '暂无描述' }}
+                  {{ item.introduce || 'No description' }}
                 </text>
                 <text class="block text-[24rpx] text-[#9d9ea3]">
                   {{ item.createDate }}
@@ -427,7 +419,7 @@ defineExpose({
       </view>
     </view>
 
-    <!-- 空状态 -->
+    <!-- Status -->
     <view v-else-if="!loading" class="empty-container">
       <view class="flex flex-col items-center justify-center p-[100rpx_40rpx] text-center">
         <wd-icon name="voice" custom-class="text-[120rpx] text-[#d9d9d9] mb-[32rpx]" />
@@ -440,16 +432,16 @@ defineExpose({
       </view>
     </view>
 
-    <!-- 浮动操作按钮 -->
+    <!-- ActionButton -->
     <wd-fab custom-style="z-index:10" type="primary" size="small" :draggable="true" :expandable="false" @click="openAddDialog">
       <wd-icon name="add" />
     </wd-fab>
 
-    <!-- MessageBox 组件 -->
+    <!-- MessageBox Component -->
     <wd-message-box />
   </view>
 
-  <!-- 添加说话人弹窗 -->
+  <!-- AddspeakerDialog -->
   <wd-popup
     v-model="showAddDialog"
     position="center"
@@ -458,7 +450,7 @@ defineExpose({
   >
     <view>
       <view class="p-[32rpx]">
-        <!-- 声纹向量选择 -->
+        <!-- VoiceprintSelect -->
         <view class="mb-[32rpx]">
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -480,7 +472,7 @@ defineExpose({
           </view>
         </view>
 
-        <!-- 姓名 -->
+        <!-- -->
         <view class="mb-[32rpx]">
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -495,7 +487,7 @@ defineExpose({
           >
         </view>
 
-        <!-- 描述 -->
+        <!-- Description -->
         <view>
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -524,7 +516,7 @@ defineExpose({
     </view>
   </wd-popup>
 
-  <!-- 编辑说话人弹窗 -->
+  <!-- EditspeakerDialog -->
   <wd-popup
     v-model="showEditDialog" position="center" custom-style="width: 90%; max-width: 400px; border-radius: 16px;"
     safe-area-inset-bottom
@@ -537,7 +529,7 @@ defineExpose({
       </view>
 
       <view class="p-[32rpx]">
-        <!-- 声纹向量选择 -->
+        <!-- VoiceprintSelect -->
         <view class="mb-[32rpx]">
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -559,7 +551,7 @@ defineExpose({
           </view>
         </view>
 
-        <!-- 姓名 -->
+        <!-- -->
         <view class="mb-[32rpx]">
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -574,7 +566,7 @@ defineExpose({
           >
         </view>
 
-        <!-- 描述 -->
+        <!-- Description -->
         <view>
           <text class="mb-[16rpx] block text-[28rpx] text-[#232338] font-medium">
             <text class="text-red">
@@ -603,7 +595,7 @@ defineExpose({
     </view>
   </wd-popup>
 
-  <!-- 自定义语音对话记录选择弹出层 -->
+  <!-- customSelect -->
   <wd-popup v-model="showChatHistoryDialog" class="custom-popup" position="bottom" @close="stopAudio">
     <view class="rounded-[20rpx] bg-white pb-[20rpx] pt-[20rpx]">
       <view class="max-h-[600rpx] overflow-y-auto rounded-[20rpx]">

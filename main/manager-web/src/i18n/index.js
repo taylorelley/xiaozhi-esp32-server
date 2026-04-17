@@ -9,7 +9,7 @@ import ptBR from './pt_BR';
 
 Vue.use(VueI18n);
 
-// 从本地存储获取语言设置，如果没有则使用浏览器语言或默认语言
+// Get the language setting from local storage. If not set, use the browser language or the default language.
 const getDefaultLanguage = () => {
   const savedLang = localStorage.getItem('userLanguage');
   if (savedLang) {
@@ -36,7 +36,7 @@ const getDefaultLanguage = () => {
 
 const i18n = new VueI18n({
   locale: getDefaultLanguage(),
-  fallbackLocale: 'zh_CN',
+  fallbackLocale: 'en',
   messages: {
     'zh_CN': zhCN,
     'zh_TW': zhTW,
@@ -49,10 +49,10 @@ const i18n = new VueI18n({
 
 export default i18n;
 
-// 提供一个方法来切换语言
+// Provides a method to switch the language.
 export const changeLanguage = (lang) => {
   i18n.locale = lang;
   localStorage.setItem('userLanguage', lang);
-  // 通知组件语言已更改
+  // Notify components that the language has changed.
   Vue.prototype.$eventBus.$emit('languageChanged', lang);
 };

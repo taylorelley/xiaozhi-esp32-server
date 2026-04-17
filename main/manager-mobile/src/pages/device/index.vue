@@ -19,12 +19,12 @@ const actions = [
   { key: 'manual', name: t('manualAddDeviceDialog.title') },
 ]
 
-// 接收props
+// props
 interface Props {
   agentId?: string
 }
 
-// 获取屏幕边界到安全区域距离
+// Getscreen boundary toSecurityregion distance
 let safeAreaInsets: any
 let systemInfo: any
 
@@ -45,13 +45,13 @@ systemInfo = uni.getSystemInfoSync()
 safeAreaInsets = systemInfo.safeAreaInsets
 // #endif
 
-// 设备数据
+// DeviceData
 const deviceList = ref<Device[]>([])
 const firmwareTypes = ref<FirmwareType[]>([])
 const loading = ref(false)
 const isBindDevice = ref(false)
 
-// 手动绑定弹窗
+// manualBindDialog
 const isManualBindDialog = ref(false)
 const manualBindForm = ref({
   board: '',
@@ -59,14 +59,14 @@ const manualBindForm = ref({
   macAddress: '',
 })
 
-// 表单校验错误提示
+// FormValidateErrorNotice
 const formErrors = ref({
   board: '',
   appVersion: '',
   macAddress: '',
 })
 
-// MAC地址正则校验
+// MACAddressthenValidate
 const macRegex = /^(?:[0-9A-F]{2}[:-]){5}[0-9A-F]{2}$/i
 
 function selectBindMode(row) {
@@ -74,7 +74,7 @@ function selectBindMode(row) {
     openBindDialog()
   }
   else if (row.item.key === 'manual') {
-    // 打开弹窗前重置表单和错误提示
+ // OpenDialogResetFormandErrorNotice
     manualBindForm.value = {
       board: '',
       appVersion: '',
@@ -89,18 +89,18 @@ function selectBindMode(row) {
   }
 }
 
-// 消息组件
+// MessageComponent
 const message = useMessage()
 
-// 使用传入的智能体ID
+// Use of AgentID
 const currentAgentId = computed(() => {
   return props.agentId
 })
 
-// 获取设备列表
+// GetDevice list
 async function loadDeviceList() {
   try {
-    // 检查是否有当前选中的智能体
+ // CheckWhether tohascurrentSelected of Agent
     if (!currentAgentId.value) {
       deviceList.value = []
       return
@@ -111,7 +111,7 @@ async function loadDeviceList() {
     deviceList.value = response || []
   }
   catch (error) {
-    console.error('获取设备列表失败:', error)
+    console.error('GetDevice listfailed:', error)
     deviceList.value = []
   }
   finally {
@@ -119,18 +119,18 @@ async function loadDeviceList() {
   }
 }
 
-// 暴露给父组件的刷新方法
+// Component of RefreshMethod
 async function refresh() {
   await loadDeviceList()
 }
 
-// 获取设备类型名称
+// GetDeviceTypeName
 function getDeviceTypeName(boardKey: string): string {
   const firmwareType = firmwareTypes.value.find(type => type.key === boardKey)
   return firmwareType?.name || boardKey
 }
 
-// 格式化时间
+// Formatwhen
 function formatTime(timeStr: string) {
   if (!timeStr)
     return t('device.neverConnected')
@@ -150,7 +150,7 @@ function formatTime(timeStr: string) {
   return date.toLocaleDateString()
 }
 
-// 切换OTA自动更新
+// SwitchOTAUpdate
 async function toggleAutoUpdate(device: Device) {
   try {
     const newStatus = device.autoUpdate === 1 ? 0 : 1
@@ -159,12 +159,12 @@ async function toggleAutoUpdate(device: Device) {
     toast.success(newStatus === 1 ? t('device.otaAutoUpdateEnabled') : t('device.otaAutoUpdateDisabled'))
   }
   catch (error: any) {
-    console.error('更新设备OTA状态失败:', error)
+    console.error('UpdateDeviceOTAStatusfailed:', error)
     toast.error(t('device.operationFailed'))
   }
 }
 
-// 解绑设备
+// UnbindDevice
 async function handleUnbindDevice(device: Device) {
   try {
     await unbindDevice(device.id)
@@ -172,12 +172,12 @@ async function handleUnbindDevice(device: Device) {
     toast.success(t('device.deviceUnbound'))
   }
   catch (error: any) {
-    console.error('解绑设备失败:', error)
+    console.error('UnbindDevicefailed:', error)
     toast.error(t('device.unbindFailed'))
   }
 }
 
-// 确认解绑设备
+// ConfirmUnbindDevice
 function confirmUnbindDevice(device: Device) {
   message.confirm({
     title: t('device.unbindDevice'),
@@ -187,11 +187,11 @@ function confirmUnbindDevice(device: Device) {
   }).then(() => {
     handleUnbindDevice(device)
   }).catch(() => {
-    // 用户取消
+    // UserCancel
   })
 }
 
-// 绑定新设备
+// BindnewDevice
 async function handleBindDevice(code: string) {
   try {
     if (!currentAgentId.value) {
@@ -204,13 +204,13 @@ async function handleBindDevice(code: string) {
     toast.success(t('device.deviceBindSuccess'))
   }
   catch (error: any) {
-    console.error('绑定设备失败:', error)
+    console.error('BindDevicefailed:', error)
     const errorMessage = error?.message || t('device.bindFailed')
     toast.error(errorMessage)
   }
 }
 
-// 打开绑定设备对话框
+// OpenBindDeviceDialog
 function openBindDialog() {
   message
     .prompt({
@@ -227,14 +227,14 @@ function openBindDialog() {
       }
     })
     .catch(() => {
-      // 用户取消操作
+      // UserCancelAction
     })
 }
 
-// 手动绑定设备
+// manualBindDevice
 async function handleManualBind() {
   try {
-    // 先校验整个表单
+ // firstValidateForm
     const isValid = validateForm()
     if (!isValid) {
       return
@@ -254,7 +254,7 @@ async function handleManualBind() {
     await loadDeviceList()
     toast.success(t('manualAddDeviceDialog.addSuccess'))
     isManualBindDialog.value = false
-    // 重置表单和错误提示
+ // ResetFormandErrorNotice
     manualBindForm.value = {
       board: '',
       appVersion: '',
@@ -272,7 +272,7 @@ async function handleManualBind() {
   }
 }
 
-// 校验单个字段
+// ValidatesingleField
 function validateField(field: string) {
   switch (field) {
     case 'board':
@@ -305,21 +305,20 @@ function validateField(field: string) {
   }
 }
 
-// 清除字段错误提示
+// ClearFieldErrorNotice
 function clearFieldError(field: string) {
   formErrors.value[field] = ''
 }
 
-// 处理选择器变化
+// ProcessSelectchange
 function handlePickerChange() {
   clearFieldError('board')
 }
 
-// 校验整个表单
+// ValidateForm
 function validateForm(): boolean {
   let isValid = true
-
-  // 校验设备类型
+ // ValidateDeviceType
   if (!manualBindForm.value.board) {
     formErrors.value.board = t('manualAddDeviceDialog.deviceTypePlaceholder')
     isValid = false
@@ -327,8 +326,7 @@ function validateForm(): boolean {
   else {
     formErrors.value.board = ''
   }
-
-  // 校验固件版本
+ // ValidateFirmware
   if (!manualBindForm.value.appVersion) {
     formErrors.value.appVersion = t('manualAddDeviceDialog.firmwareVersionPlaceholder')
     isValid = false
@@ -336,8 +334,7 @@ function validateForm(): boolean {
   else {
     formErrors.value.appVersion = ''
   }
-
-  // 校验MAC地址
+ // ValidateMACAddress
   if (!manualBindForm.value.macAddress) {
     formErrors.value.macAddress = t('manualAddDeviceDialog.macAddressPlaceholder')
     isValid = false
@@ -353,25 +350,25 @@ function validateForm(): boolean {
   return isValid
 }
 
-// 获取设备类型列表
+// GetDeviceTypelist
 async function loadFirmwareTypes() {
   try {
     const response = await getFirmwareTypes()
     firmwareTypes.value = response
   }
   catch (error) {
-    console.error('获取设备类型失败:', error)
+    console.error('GetDeviceTypefailed:', error)
   }
 }
 
 onMounted(async () => {
-  // 智能体已简化为默认
+ // AgentalreadyisDefault
 
   loadFirmwareTypes()
   loadDeviceList()
 })
 
-// 暴露方法给父组件
+// MethodComponent
 defineExpose({
   refresh,
 })
@@ -379,7 +376,7 @@ defineExpose({
 
 <template>
   <view class="device-container" style="background: #f5f7fb; min-height: 100%;">
-    <!-- 加载状态 -->
+    <!-- LoadStatus -->
     <view v-if="loading && deviceList.length === 0" class="loading-container">
       <wd-loading color="#336cff" />
       <text class="loading-text">
@@ -387,9 +384,9 @@ defineExpose({
       </text>
     </view>
 
-    <!-- 设备列表 -->
+    <!-- Device list -->
     <view v-else-if="deviceList.length > 0" class="device-list">
-      <!-- 设备卡片列表 -->
+      <!-- Devicecardlist -->
       <view class="box-border flex flex-col gap-[24rpx] p-[20rpx]">
         <view v-for="device in deviceList" :key="device.id">
           <wd-swipe-action>
@@ -444,7 +441,7 @@ defineExpose({
       </view>
     </view>
 
-    <!-- 空状态 -->
+    <!-- Status -->
     <view v-else-if="!loading" class="empty-container">
       <view class="flex flex-col items-center justify-center p-[100rpx_40rpx] text-center">
         <wd-icon name="phone" custom-class="text-[120rpx] text-[#d9d9d9] mb-[32rpx]" />
@@ -457,14 +454,14 @@ defineExpose({
       </view>
     </view>
 
-    <!-- FAB 绑定设备按钮 -->
+    <!-- FAB BindDeviceButton -->
     <wd-fab type="primary" size="small" icon="add" :draggable="true" :expandable="false" @click="isBindDevice = true" />
 
-    <!-- MessageBox 组件 -->
+    <!-- MessageBox Component -->
     <wd-message-box />
     <wd-action-sheet v-model="isBindDevice" :actions="actions" @close="isBindDevice = false" @select="selectBindMode" />
 
-    <!-- 手动绑定设备弹窗 -->
+    <!-- manualBindDeviceDialog -->
     <wd-popup v-model="isManualBindDialog" position="bottom" :close-on-click-modal="false" custom-style="border-radius: 24rpx 24rpx 0 0;">
       <view class="manual-bind-dialog">
         <view class="dialog-header">

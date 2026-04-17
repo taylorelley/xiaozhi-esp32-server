@@ -15,47 +15,47 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("ai_ota")
-@Schema(description = "固件信息")
+@Schema(description = "firmwareinformation")
 public class OtaEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
     @Schema(description = "ID")
     private String id;
 
-    @Schema(description = "固件名称")
+    @Schema(description = "firmwarename")
     private String firmwareName;
 
-    @Schema(description = "固件类型")
+    @Schema(description = "firmwaretype")
     private String type;
 
-    @Schema(description = "版本号")
+    @Schema(description = "versionnumber")
     private String version;
 
-    @Schema(description = "文件大小(字节)")
+    @Schema(description = "File size(byte)")
     private Long size;
 
-    @Schema(description = "备注/说明")
+    @Schema(description = "Remark/Description")
     private String remark;
 
-    @Schema(description = "固件路径")
+    @Schema(description = "firmwarepath")
     private String firmwarePath;
 
-    @Schema(description = "排序")
+    @Schema(description = "Sort order")
     private Integer sort;
 
-    @Schema(description = "更新者")
+    @Schema(description = "update")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "updatetime")
     @TableField(fill = FieldFill.UPDATE)
     private Date updateDate;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Creator")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 }

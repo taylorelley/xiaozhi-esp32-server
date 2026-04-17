@@ -8,29 +8,29 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "外部机器人 (Bot) 聚合 DTO")
+@Schema(description = "externalrobot (Bot) aggregation DTO")
 public class BotDTO {
 
-    // ========== 1. SearchBot (检索机器人) ==========
+    // ========== 1. SearchBot (retrieverobot) ==========
 
-    // 对应 /api/v1/searchbots/ask
+    // corresponding /api/v1/searchbots/ask
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问请求")
+    @Schema(description = "SearchBot askrequest")
     public static class SearchAskReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is RAG?")
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is RAG?")
+        @NotBlank(message = "questioncannot be empty")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否返回引用", defaultValue = "false")
+        @Schema(description = "YesNoreturnreference", defaultValue = "false")
         @JsonProperty("quote")
         @Builder.Default
         private Boolean quote = false;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "YesNostreamingreturn", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
@@ -40,50 +40,50 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问响应")
+    @Schema(description = "SearchBot askresponse")
     public static class SearchAskVO implements Serializable {
-        @Schema(description = "回答内容")
+        @Schema(description = "returnanswercontent")
         @JsonProperty("answer")
         private String answer;
 
-        @Schema(description = "引用来源 (Value 结构通常对应 RetrievalDTO.HitVO)")
+        @Schema(description = "referencesource (Value resultconstructcommoncorresponding RetrievalDTO.HitVO)")
         @JsonProperty("reference")
         private Map<String, Object> reference;
     }
 
-    // 对应 /api/v1/searchbots/related_questions
+    // corresponding /api/v1/searchbots/related_questions
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "相关问题请求")
+    @Schema(description = "relatedquestionrequest")
     public static class RelatedQuestionReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "questioncannot be empty")
         @JsonProperty("question")
         private String question;
     }
 
-    // 对应 /api/v1/searchbots/mindmap
+    // corresponding /api/v1/searchbots/mindmap
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "思维导图请求")
+    @Schema(description = "mind maprequest")
     public static class MindMapReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "questioncannot be empty")
         @JsonProperty("question")
         private String question;
     }
 
-    // ========== 2. AgentBot (嵌入式 Agent) ==========
+    // ========== 2. AgentBot (embeddingstyle Agent) ==========
 
-    // 对应 /api/v1/agentbots/{id}/inputs
+    // corresponding /api/v1/agentbots/{id}/inputs
     @Data
     @Builder
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入参数请求")
+    @Schema(description = "AgentBot inputparameterrequest")
     public static class AgentInputsReq implements Serializable {
     }
 
@@ -91,35 +91,35 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入参数定义响应")
+    @Schema(description = "AgentBot inputparameterdefineresponse")
     public static class AgentInputsVO implements Serializable {
-        @Schema(description = "表单变量定义列表")
+        @Schema(description = "tablechangeamountdefinelist")
         @JsonProperty("variables")
         private List<Map<String, Object>> variables;
     }
 
-    // 对应 /api/v1/agentbots/{id}/completions
+    // corresponding /api/v1/agentbots/{id}/completions
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "AgentBot 对话请求")
+    @Schema(description = "AgentBot conversationrequest")
     public static class AgentCompletionReq implements Serializable {
-        @Schema(description = "输入参数值")
+        @Schema(description = "inputParameter value")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 
-        @Schema(description = "用户查询", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "查询内容不能为空")
+        @Schema(description = "userquery", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "querycontentcannot be empty")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "YesNostreamingreturn", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
 
-        @Schema(description = "会话 ID")
+        @Schema(description = "session ID")
         @JsonProperty("session_id")
         private String sessionId;
     }

@@ -112,18 +112,17 @@ export default {
     },
 
     handleOpen() {
-      // 对话框打开时加载平台列表
+ // DialogOpenwhenLoadlist
       this.fetchPlatformList();
-      // 重置音色ID列表
+      // ResetVoiceIDlist
       this.voiceIdList = [];
     },
 
     handlePlatformChange(modelId) {
-      // 清空音色ID选择
+      // ClearVoiceIDSelect
       this.form.voiceIds = [];
     },
-
-    // 获取TTS平台列表
+ // GetTTSlist
     fetchPlatformList() {
       Api.voiceResource.getTtsPlatformList((res) => {
         if (res.data.code === 0) {
@@ -132,7 +131,7 @@ export default {
       });
     },
 
-    // 远程搜索用户
+    // RemoteSearchUser
     remoteSearchUser(query) {
       if (query !== '') {
         this.userLoading = true;

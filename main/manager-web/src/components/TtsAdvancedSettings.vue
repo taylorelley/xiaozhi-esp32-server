@@ -15,7 +15,7 @@
 
     <div class="drawer-content">
       <el-form label-position="top">
-        <!-- 音量 -->
+        <!-- volume -->
         <el-form-item :label="$t('roleConfig.ttsVolume')">
           <div class="slider-container">
             <el-slider
@@ -30,7 +30,7 @@
           </div>
         </el-form-item>
 
-        <!-- 语速 -->
+        <!-- -->
         <el-form-item :label="$t('roleConfig.ttsRate')">
           <div class="slider-container">
             <el-slider
@@ -45,7 +45,7 @@
           </div>
         </el-form-item>
 
-        <!-- 音调 -->
+        <!-- -->
         <el-form-item :label="$t('roleConfig.ttsPitch')">
           <div class="slider-container">
             <el-slider
@@ -108,7 +108,7 @@ export default {
   watch: {
     visible(newVal) {
       if (newVal) {
-        // 当抽屉打开时，复制当前设置到本地
+ // Openwhen，CopycurrentSettingstoLocal
         this.localSettings = { ...this.settings };
       }
     }
@@ -118,11 +118,11 @@ export default {
       this.$emit('update:visible', false);
     },
     handleCancel() {
-      // 取消时不保存，直接关闭
+ // CancelwhenSave，directlyClose
       this.handleClose();
     },
     handleSave() {
-      // 保存设置并关闭
+ // SaveSettingsandClose
       this.$emit('save', { ...this.localSettings });
       this.handleClose();
     },

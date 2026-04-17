@@ -1,4 +1,4 @@
-// 全局要用的类型放到这里
+// Global of Typetothis
 
 declare global {
   interface IResData<T> {
@@ -7,7 +7,7 @@ declare global {
     data: T
   }
 
-  // uni.uploadFile文件上传参数
+  // uni.uploadFileFileUploadParameter
   interface IUniUploadFileOptions {
     file?: File
     files?: UniApp.UploadFileOptionFiles[]
@@ -19,10 +19,10 @@ declare global {
   interface IUserInfo {
     nickname?: string
     avatar?: string
-    /** 微信的 openid，非微信没有这个字段 */
+    /** of openid，hasthisField */
     openid?: string
     token?: string
   }
 }
 
-export {} // 防止模块污染
+export {} // Prevent module pollution

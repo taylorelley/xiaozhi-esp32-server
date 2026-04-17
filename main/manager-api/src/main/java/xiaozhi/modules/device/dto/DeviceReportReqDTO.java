@@ -10,139 +10,139 @@ import java.util.List;
 
 @Setter
 @Getter
-@Schema(description = "设备固件信息上报求请求体")
+@Schema(description = "devicefirmwareinformationreportrequestrequest")
 public class DeviceReportReqDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    // region 实体属性
-    @Schema(description = "板子固件版本号")
+    // region entity
+    @Schema(description = "boardfirmwareversionnumber")
     private Integer version;
 
-    @Schema(description = "闪存大小（单位：字节）")
+    @Schema(description = "flash storagelargesmall（unit：byte）")
     @JsonProperty("flash_size")
     private Integer flashSize;
 
-    @Schema(description = "最小空闲堆内存（字节）")
+    @Schema(description = "minimumemptyfree heapstore（byte）")
     @JsonProperty("minimum_free_heap_size")
     private Integer minimumFreeHeapSize;
 
-    @Schema(description = "设备 MAC 地址")
+    @Schema(description = "device MAC Address")
     @JsonProperty("mac_address")
     private String macAddress;
 
-    @Schema(description = "设备唯一标识 UUID")
+    @Schema(description = "deviceunique identifier UUID")
     private String uuid;
 
-    @Schema(description = "芯片型号名称")
+    @Schema(description = "chiptypenumbername")
     @JsonProperty("chip_model_name")
     private String chipModelName;
 
-    @Schema(description = "芯片详细信息")
+    @Schema(description = "chipdetailedinformation")
     @JsonProperty("chip_info")
     private ChipInfo chipInfo;
 
-    @Schema(description = "应用程序信息")
+    @Schema(description = "shoulduseprocessorderinformation")
     private Application application;
 
-    @Schema(description = "分区表列表")
+    @Schema(description = "partitiontablelist")
     @JsonProperty("partition_table")
     private List<Partition> partitionTable;
 
-    @Schema(description = "当前运行的 OTA 分区信息")
+    @Schema(description = "currentrun  OTA partitioninformation")
     private OtaInfo ota;
 
-    @Schema(description = "板子配置信息")
+    @Schema(description = "boardconfigurationinformation")
     private BoardInfo board;
 
     // endregion
 
     @Getter
     @Setter
-    @Schema(description = "芯片信息")
+    @Schema(description = "chipinformation")
     public static class ChipInfo {
-        @Schema(description = "芯片模型代码")
+        @Schema(description = "chipmodelcode")
         private Integer model;
 
-        @Schema(description = "核心数")
+        @Schema(description = "corenumber")
         private Integer cores;
 
-        @Schema(description = "硬件修订版本")
+        @Schema(description = "harditemmodifysubscribeversion")
         private Integer revision;
 
-        @Schema(description = "芯片功能标志位")
+        @Schema(description = "chipfunctionflagbit")
         private Integer features;
     }
 
     @Getter
     @Setter
-    @Schema(description = "板子编译信息")
+    @Schema(description = "boardcompileinformation")
     public static class Application {
-        @Schema(description = "名称")
+        @Schema(description = "name")
         private String name;
 
-        @Schema(description = "应用版本号")
+        @Schema(description = "shoulduseversionnumber")
         private String version;
 
-        @Schema(description = "编译时间（UTC ISO格式）")
+        @Schema(description = "compiletime（UTC ISOformat）")
         @JsonProperty("compile_time")
         private String compileTime;
 
-        @Schema(description = "ESP-IDF 版本号")
+        @Schema(description = "ESP-IDF versionnumber")
         @JsonProperty("idf_version")
         private String idfVersion;
 
-        @Schema(description = "ELF 文件 SHA256 校验")
+        @Schema(description = "ELF file SHA256 validate")
         @JsonProperty("elf_sha256")
         private String elfSha256;
     }
 
     @Getter
     @Setter
-    @Schema(description = "分区信息")
+    @Schema(description = "partitioninformation")
     public static class Partition {
-        @Schema(description = "分区标签名")
+        @Schema(description = "partitionTagname")
         private String label;
 
-        @Schema(description = "分区类型")
+        @Schema(description = "partitiontype")
         private Integer type;
 
-        @Schema(description = "子类型")
+        @Schema(description = "childtype")
         private Integer subtype;
 
-        @Schema(description = "起始地址")
+        @Schema(description = "startAddress")
         private Integer address;
 
-        @Schema(description = "分区大小")
+        @Schema(description = "partitionlargesmall")
         private Integer size;
     }
 
     @Getter
     @Setter
-    @Schema(description = "OTA信息")
+    @Schema(description = "OTAinformation")
     public static class OtaInfo {
-        @Schema(description = "当前OTA标签")
+        @Schema(description = "currentOTATag")
         private String label;
     }
 
     @Getter
     @Setter
-    @Schema(description = "板子连接和网络信息")
+    @Schema(description = "boardconnectionandnetworkinformation")
     public static class BoardInfo {
-        @Schema(description = "板子类型")
+        @Schema(description = "boardtype")
         private String type;
 
-        @Schema(description = "连接的 Wi-Fi SSID")
+        @Schema(description = "connection  Wi-Fi SSID")
         private String ssid;
 
-        @Schema(description = "Wi-Fi 信号强度（RSSI）")
+        @Schema(description = "Wi-Fi infonumberstrong（RSSI）")
         private Integer rssi;
 
-        @Schema(description = "Wi-Fi 信道")
+        @Schema(description = "Wi-Fi infochannel")
         private Integer channel;
 
-        @Schema(description = "IP 地址")
+        @Schema(description = "IP Address")
         private String ip;
 
-        @Schema(description = "MAC 地址")
+        @Schema(description = "MAC Address")
         private String mac;
     }
 }

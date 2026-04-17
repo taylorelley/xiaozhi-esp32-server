@@ -6,35 +6,35 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * SQL过滤
- * Copyright (c) 人人开源 All rights reserved.
+ * SQLfilter
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class SqlFilter {
 
     /**
-     * SQL注入过滤
+     * SQLnoteinfilter
      *
-     * @param str 待验证的字符串
+     * @param str pendingverification string
      */
     public static String sqlInject(String str) {
         if (StringUtils.isBlank(str)) {
             return null;
         }
-        // 去掉'|"|;|\字符
+        // remove'|"|;|\charactersymbol
         str = StringUtils.replace(str, "'", "");
         str = StringUtils.replace(str, "\"", "");
         str = StringUtils.replace(str, ";", "");
         str = StringUtils.replace(str, "\\", "");
 
-        // 转换成小写
+        // convertsmallwrite
         str = str.toLowerCase();
 
-        // 非法字符
+        // non-charactersymbol
         String[] keywords = { "master", "truncate", "insert", "select", "delete", "update", "declare", "alter",
                 "drop" };
 
-        // 判断是否包含非法字符
+        // determineYesNocontainnon-charactersymbol
         for (String keyword : keywords) {
             if (str.contains(keyword)) {
                 throw new RenException(ErrorCode.INVALID_SYMBOL);

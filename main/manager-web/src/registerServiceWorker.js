@@ -5,21 +5,19 @@ export const register = () => {
     window.addEventListener('load', () => {
       const swUrl = `${process.env.BASE_URL}service-worker.js`;
       
-      console.info(`[小智服务] 正在尝试注册Service Worker，URL: ${swUrl}`);
-      
-      // 先检查Service Worker是否已注册
+      console.info(`[LittleWise service] atRegisterService Worker，URL: ${swUrl}`);
+ // firstCheckService WorkerWhether toalreadyRegister
       navigator.serviceWorker.getRegistrations().then(registrations => {
         if (registrations.length > 0) {
-          console.info('[小智服务] 发现已有Service Worker注册，正在检查更新');
+          console.info('[LittleWise service] alreadyhasService WorkerRegister，atCheckUpdate');
         }
         
-        // 继续注册Service Worker
+        // ContinueRegisterService Worker
         navigator.serviceWorker
           .register(swUrl)
           .then(registration => {
-            console.info('[小智服务] Service Worker注册成功');
-            
-            // 更新处理
+            console.info('[LittleWise service] Service WorkerRegistersuccessful');
+ // UpdateProcess
             registration.onupdatefound = () => {
               const installingWorker = registration.installing;
               if (installingWorker == null) {
@@ -28,9 +26,9 @@ export const register = () => {
               installingWorker.onstatechange = () => {
                 if (installingWorker.state === 'installed') {
                   if (navigator.serviceWorker.controller) {
-                    // 内容已缓存更新，通知用户刷新
-                    console.log('[小智服务] 新内容可用，请刷新页面');
-                    // 可以在这里展示更新提示
+ // ContentalreadyCacheUpdate，UserRefresh
+                    console.log('[LittleWise service] newContent，RefreshPage');
+ // atthisUpdateNotice
                     const updateNotification = document.createElement('div');
                     updateNotification.style.cssText = `
                       position: fixed;
@@ -45,8 +43,8 @@ export const register = () => {
                     `;
                     updateNotification.innerHTML = `
                       <div style="display: flex; align-items: center;">
-                        <span style="margin-right: 10px;">发现新版本，点击刷新应用</span>
-                        <button style="background: white; color: #409EFF; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">刷新</button>
+                        <span style="margin-right: 10px;">new，Refreshapplication</span>
+                        <button style="background: white; color: #409EFF; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Refresh</button>
                       </div>
                     `;
                     document.body.appendChild(updateNotification);
@@ -54,12 +52,11 @@ export const register = () => {
                       window.location.reload();
                     });
                   } else {
-                    // 一切正常，Service Worker已成功安装
-                    console.log('[小智服务] 内容已缓存供离线使用');
-                    
-                    // 可以在这里初始化缓存
+ // Normal，Service Workeralreadysuccessful
+                    console.log('[LittleWise service] ContentalreadyCacheOfflineUse');
+ // atthisInitializeCache
                     setTimeout(() => {
-                      // 预热CDN缓存
+ // CDNCache
                       const cdnUrls = [
                         'https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css',
                         'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css',
@@ -70,11 +67,10 @@ export const register = () => {
                         'https://unpkg.com/axios@0.27.2/dist/axios.min.js',
                         'https://unpkg.com/opus-decoder@0.7.7/dist/opus-decoder.min.js'
                       ];
-                      
-                      // 预热缓存
+ // Cache
                       cdnUrls.forEach(url => {
                         fetch(url, { mode: 'no-cors' }).catch(err => {
-                          console.log(`预热缓存 ${url} 失败`, err);
+                          console.log(`Cache ${url} failed`, err);
                         });
                       });
                     }, 2000);
@@ -84,13 +80,13 @@ export const register = () => {
             };
           })
           .catch(error => {
-            console.error('Service Worker 注册失败:', error);
+            console.error('Service Worker Registerfailed:', error);
             
             if (error.name === 'TypeError' && error.message.includes('Failed to register a ServiceWorker')) {
-              console.warn('[小智服务] 注册Service Worker时出现网络错误，CDN资源可能无法缓存');
+              console.warn('[LittleWise service] RegisterService WorkerwhenNetwork error，CDNResourceCache');
               if (process.env.NODE_ENV === 'production') {
                 console.info(
-                  '可能原因：1. 服务器未配置正确的MIME类型 2. 服务器SSL证书问题 3. 服务器未返回service-worker.js文件'
+                  '：1. ServerConfiguration of MIMEType 2. ServerSSL 3. ServerBackservice-worker.jsFile'
                 );
               }
             }

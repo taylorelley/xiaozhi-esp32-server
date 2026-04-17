@@ -107,7 +107,7 @@ export default {
             isFirstLoad: true,
             playingAudioId: null,
             audioElement: null,
-            expandedToolResults: {} // 跟踪工具结果的展开状态
+            expandedToolResults: {} // Track expanded state of tool results
         };
     },
     watch: {
@@ -133,9 +133,8 @@ export default {
             if (!this.messages || this.messages.length === 0) return [];
 
             const result = [];
-            const TIME_INTERVAL = 60 * 1000; // 1分钟的时间间隔（毫秒）
-
-            // 添加第一条消息的时间标记
+            const TIME_INTERVAL = 60 * 1000; // 1-minute interval in milliseconds
+ // AdditemsMessage of when
             if (this.messages[0]) {
                 result.push({
                     type: 'time',
@@ -143,13 +142,11 @@ export default {
                     id: `time-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
                 });
             }
-
-            // 处理消息列表
+ // ProcessMessagelist
             for (let i = 0; i < this.messages.length; i++) {
                 const currentMessage = this.messages[i];
                 result.push(currentMessage);
-
-                // 检查是否需要添加时间标记
+ // CheckWhether toneedsAddwhen
                 if (i < this.messages.length - 1) {
                     const currentTime = new Date(currentMessage.createdAt).getTime();
                     const nextTime = new Date(this.messages[i + 1].createdAt).getTime();
@@ -168,51 +165,40 @@ export default {
         }
     },
     methods: {
-        /**
-         * 从 content 字段中提取聊天内容
-         * 如果 content 是 JSON 格式（如 {"speaker": "未知说话人", "content": "现在几点了。"}），则提取 content 字段
-         * 如果 content 是普通字符串，则直接返回
-         * 
-         * @param {string} content 原始内容
-         * @returns {string} 提取的聊天内容
-         */
+        /** * from content FieldinchatContent * If content is JSON Format（such as {"speaker": "Unknownspeaker", "content": "at。"}），then content Field * If content isString，thendirectlyBack * * @param {string} content Content * @returns {string} of chatContent */
         extractContentFromString(content) {
             if (!content || content.trim() === '') {
                 return content;
             }
-
-            // 尝试解析为 JSON
+ // Parseis JSON
             try {
                 const jsonObj = JSON.parse(content);
-
-                // 如果是数组格式（包含 text 和 tool）
+ // If it isArrayFormat（includes text and tool）
                 if (Array.isArray(jsonObj)) {
                     return jsonObj;
                 }
-
-                // 如果是对象且有 content 字段
+ // If it isObjecthas content Field
                 if (jsonObj && typeof jsonObj === 'object' && jsonObj.content) {
                     return jsonObj.content;
                 }
             } catch (e) {
-                // 如果不是有效的 JSON，直接返回原内容
+ // Ifishas of JSON，directlyBackContent
             }
-
-            // 如果不是 JSON 格式或没有 content 字段，直接返回原内容
+ // Ifis JSON Formatorhas content Field，directlyBackContent
             return content;
         },
-        // 切换工具结果的展开/折叠状态
+ // SwitchtoolResult of Expand/Status
         toggleToolResult(messageIndex, itemIndex) {
             const key = `${messageIndex}-${itemIndex}`;
             this.$set(this.expandedToolResults, key, !this.expandedToolResults[key]);
         },
-        // 判断工具结果是否处于折叠状态
+ // ChecktoolResultWhether toStatus
         isToolResultCollapsed(messageIndex, itemIndex) {
             const key = `${messageIndex}-${itemIndex}`;
-            // 默认折叠（true表示折叠）
+ // Default（true）
             return !this.expandedToolResults[key];
         },
-        // 获取截断的文本（只显示第一行）
+ // Get of Text（Show）
         getFirstLineText(text) {
             if (!text) return '';
             const firstLine = text.split('\n')[0];
@@ -277,7 +263,7 @@ export default {
 
             this.scrollTimer = setTimeout(() => {
                 const { scrollTop, scrollHeight, clientHeight } = e.target;
-                // 当滚动到底部时加载更多
+ // toBottomwhenLoad
                 if (scrollHeight - scrollTop <= clientHeight + 50) {
                     this.loadSessions();
                 }
@@ -312,7 +298,7 @@ export default {
         },
         playAudio: debounce(function(message) {
             if (this.playingAudioId === message.audioId) {
-                // 如果正在播放当前音频，则停止播放
+ // IfatPlaycurrentAudio，thenStopPlay
                 if (this.audioElement) {
                     this.audioElement.pause();
                     this.audioElement = null;
@@ -320,22 +306,19 @@ export default {
                 this.playingAudioId = null;
                 return;
             }
-
-            // 停止当前正在播放的音频
+ // StopcurrentatPlay of Audio
             if (this.audioElement) {
                 this.audioElement.pause();
                 this.audioElement = null;
             }
-
-            // 先获取音频下载ID
+ // firstGetAudioDownloadID
             this.playingAudioId = message.audioId;
             Api.agent.getAudioId(message.audioId, (res) => {
                 if (res.data && res.data.data) {
                     if (!this.audioElement) {
                         this.audioElement = new Audio();
                     }
-                    
-                    // 使用获取到的下载ID播放音频
+ // UseGetto of DownloadIDPlayAudio
                     this.audioElement.src = Api.getServiceUrl() + `/agent/play/${res.data.data}`;
                     this.audioElement.onended = () => {
                         this.playingAudioId = null;
@@ -347,21 +330,17 @@ export default {
             });
         }, 300),
         getUserAvatar(sessionId) {
-            // 从 sessionId 中提取所有数字
+ // from sessionId inallNumber
             const numbers = sessionId.match(/\d+/g);
             if (!numbers) return require('@/assets/user-avatar1.png');
-
-            // 将所有数字相加
+ // willallNumber
             const sum = numbers.reduce((acc, num) => acc + parseInt(num), 0);
-
-            // 计算模5并加1，得到1-5之间的数字
+ // calculate5and1，to1-5 of Number
             const avatarIndex = (sum % 5) + 1;
-
-            // 返回对应的头像图片
+ // BackcorrespondingImage
             return require(`@/assets/user-avatar${avatarIndex}.png`);
         },
-
-        // 下载本会话聊天记录
+ // DownloadSessionChat history
         downloadCurrentSession() {
             Api.agent.getDownloadUrl(this.agentId, this.currentSessionId, (res) => {
                 if (res && res.data && res.data.code === 0 && res.data.data) {
@@ -372,8 +351,7 @@ export default {
                 }
             });
         },
-
-        // 下载本会话及前20条会话聊天记录
+ // DownloadSession20itemsSessionChat history
         downloadCurrentSessionWithPrevious() {
             Api.agent.getDownloadUrl(this.agentId, this.currentSessionId, (res) => {
                 if (res && res.data && res.data.code === 0 && res.data.data) {
@@ -436,7 +414,7 @@ export default {
     height: 30px;
     line-height: 30px;
     width: calc(100% - 30px);
-    /* 为消息数量留出空间 */
+    /* isMessage */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -625,6 +603,6 @@ export default {
     padding: 0;
     overflow: hidden;
     height: calc(90vh - 54px);
-    /* 减去标题栏的高度 */
+    /* Titlebar of */
 }
 </style>

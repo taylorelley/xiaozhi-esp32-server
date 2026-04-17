@@ -26,41 +26,41 @@ public interface ModelConfigService extends BaseService<ModelConfigEntity> {
     void delete(String id);
 
     /**
-     * 根据ID获取模型名称
+     * according toIDgetModel name
      * 
-     * @param id 模型ID
-     * @return 模型名称
+     * @param id Model ID
+     * @return Model name
      */
     String getModelNameById(String id);
 
     /**
-     * 根据ID获取模型配置
+     * according toIDgetModel configuration
      * 
-     * @param id 模型ID
-     * @return 模型配置实体
+     * @param id Model ID
+     * @return Model configurationentity
      */
     ModelConfigEntity getModelByIdFromCache(String id);
 
     /**
-     * 设置默认模型
+     * setdefaultmodel
      *
-     * @param modelType 模型类型
-     * @param isDefault 是否默认（1:是，0:否）
+     * @param modelType Model type
+     * @param isDefault YesNodefault（1:Yes，0:No）
      */
     void setDefaultModel(String modelType, int isDefault);
 
     /**
-     * 获取符合条件的TTS平台列表
+     * getmatchingitemsitem TTSplatformlist
      *
-     * @return TTS平台列表(id和modelName)
+     * @return TTSplatformlist(idandmodelName)
      */
     List<Map<String, Object>> getTtsPlatformList();
 
     /**
-     * 根据模型类型获取所有启用的模型配置
+     * according toModel typeget allenable Model configuration
      *
-     * @param modelType 模型类型（如：LLM, TTS, ASR等）
-     * @return 启用的模型配置列表
+     * @param modelType Model type（For example: LLM, TTS, ASRetc.）
+     * @return enable Model configurationlist
      */
     List<ModelConfigEntity> getEnabledModelsByType(String modelType);
 }

@@ -5,7 +5,7 @@ import {
   getUserInfo as _getUserInfo,
 } from '@/api/auth'
 
-// 初始化状态
+// InitializeStatus
 const userInfoState: UserInfo & { avatar?: string, token?: string } = {
   id: 0,
   username: '',
@@ -21,12 +21,12 @@ const userInfoState: UserInfo & { avatar?: string, token?: string } = {
 export const useUserStore = defineStore(
   'userInfo',
   () => {
-    // 定义用户信息
+ // defineUser info
     const userInfo = ref<UserInfo & { avatar?: string, token?: string }>({ ...userInfoState })
-    // 设置用户信息
+    // SettingsUser info
     const setUserInfo = (val: UserInfo & { avatar?: string, token?: string }) => {
-      console.log('设置用户信息', val)
-      // 若头像为空 则使用默认头像
+      console.log('SettingsUser info', val)
+ // is thenUseDefault
       if (!val.avatar) {
         val.avatar = userInfoState.avatar
       }
@@ -37,26 +37,24 @@ export const useUserStore = defineStore(
     }
     const setUserAvatar = (avatar: string) => {
       userInfo.value.avatar = avatar
-      console.log('设置用户头像', avatar)
+      console.log('SettingsUser', avatar)
       console.log('userInfo', userInfo.value)
     }
-    // 删除用户信息
+    // DeleteUser info
     const removeUserInfo = () => {
       userInfo.value = { ...userInfoState }
       uni.removeStorageSync('userInfo')
       uni.removeStorageSync('token')
     }
     /**
-     * 获取用户信息
+     * GetUser info
      */
     const getUserInfo = async () => {
       const userData = await _getUserInfo()
       setUserInfo(userData)
       return userData
     }
-    /**
-     * 退出登录 并 删除用户信息
-     */
+    /** * Log outLog in and DeleteUser info */
     const logout = async () => {
       removeUserInfo()
     }

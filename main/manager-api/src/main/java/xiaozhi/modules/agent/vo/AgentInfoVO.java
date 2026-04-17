@@ -12,17 +12,17 @@ import xiaozhi.modules.agent.entity.AgentPluginMapping;
 import java.util.List;
 
 /**
- * Agent信息返回体VO
- * 这里直接extend了Agent实体类AgentEntity，后续需要规范返回字段可以copy字段出来
+ * AgentinformationreturnVO
+ * thisindirectlyextendAgententityclassAgentEntity，aftercontinueneedrulepatternreturnfieldcantocopyfieldoutcome
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AgentInfoVO extends AgentEntity
 {
-    @Schema(description = "插件列表Id")
+    @Schema(description = "pluginlistId")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<AgentPluginMapping> functions;
 
-    @Schema(description = "上下文源配置")
+    @Schema(description = "contextsourceconfiguration")
     private List<ContextProviderDTO> contextProviders;
 }

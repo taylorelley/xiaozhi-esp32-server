@@ -8,31 +8,31 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "智能体 (Agent) 管理聚合 DTO")
+@Schema(description = "agent (Agent) managementaggregation DTO")
 public class AgentDTO {
 
-    // ========== 1. Agent 管理 (CRUD) - 对应 RAGFlow_Agent接口详解 ==========
+    // ========== 1. Agent management (CRUD) - corresponding RAGFlow_Agentinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 创建请求")
+    @Schema(description = "Agent createrequest")
     public static class CreateReq implements Serializable {
-        @Schema(description = "Agent 标题", requiredMode = Schema.RequiredMode.REQUIRED, example = "My Agent")
-        @NotBlank(message = "Agent 标题不能为空")
+        @Schema(description = "Agent title", requiredMode = Schema.RequiredMode.REQUIRED, example = "My Agent")
+        @NotBlank(message = "Agent titlecannot be empty")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL 定义 (画布 JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "DSL 定义不能为空")
+        @Schema(description = "DSL define (canvas JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "DSL definecannot be empty")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "描述", example = "这是一个测试 Agent")
+        @Schema(description = "Description", example = "thisYesonetest Agent")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像 URL", example = "http://example.com/avatar.png")
+        @Schema(description = "avatar URL", example = "http://example.com/avatar.png")
         @JsonProperty("avatar")
         private String avatar;
     }
@@ -41,21 +41,21 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 更新请求")
+    @Schema(description = "Agent updaterequest")
     public static class UpdateReq implements Serializable {
-        @Schema(description = "Agent 标题", example = "Updated Agent")
+        @Schema(description = "Agent title", example = "Updated Agent")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL 定义 (画布 JSON)")
+        @Schema(description = "DSL define (canvas JSON)")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "描述")
+        @Schema(description = "Description")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像 URL")
+        @Schema(description = "avatar URL")
         @JsonProperty("avatar")
         private String avatar;
     }
@@ -64,33 +64,33 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 列表请求")
+    @Schema(description = "Agent listrequest")
     public static class ListReq implements Serializable {
-        @Schema(description = "页码", defaultValue = "1")
+        @Schema(description = "page number", defaultValue = "1")
         @JsonProperty("page")
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "每页大小", defaultValue = "10")
+        @Schema(description = "per pagelargesmall", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
 
-        @Schema(description = "排序字段", defaultValue = "update_time")
+        @Schema(description = "Sort orderfield", defaultValue = "update_time")
         @JsonProperty("orderby")
         @Builder.Default
         private String orderby = "update_time";
 
-        @Schema(description = "是否降序", defaultValue = "true")
+        @Schema(description = "YesNodescending", defaultValue = "true")
         @JsonProperty("desc")
         @Builder.Default
         private Boolean desc = true;
 
-        @Schema(description = "Agent ID 过滤")
+        @Schema(description = "Agent ID filter")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "标题模糊搜索")
+        @Schema(description = "titlefuzzysearch")
         @JsonProperty("title")
         private String title;
     }
@@ -99,58 +99,58 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 响应对象")
+    @Schema(description = "Agent responseobject")
     public static class AgentVO implements Serializable {
         @Schema(description = "Agent ID")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "标题")
+        @Schema(description = "title")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "描述")
+        @Schema(description = "Description")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像")
+        @Schema(description = "avatar")
         @JsonProperty("avatar")
         private String avatar;
 
-        @Schema(description = "DSL 定义")
+        @Schema(description = "DSL define")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "创建者 ID")
+        @Schema(description = "Creator ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "画布分类")
+        @Schema(description = "canvasCategory")
         @JsonProperty("canvas_category")
         private String canvasCategory;
 
-        @Schema(description = "创建时间 (时间戳)")
+        @Schema(description = "Create time (timestamp)")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "更新时间 (时间戳)")
+        @Schema(description = "updatetime (timestamp)")
         @JsonProperty("update_time")
         private Long updateTime;
     }
 
-    // ========== 2. Webhook 调试与追踪 - 对应 RAGFlow_Agent接口详解 ==========
+    // ========== 2. Webhook adjusttryandtrace - corresponding RAGFlow_Agentinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 触发请求 (参数动态)")
+    @Schema(description = "Webhook triggersendrequest (parameterdynamic)")
     public static class WebhookTriggerReq implements Serializable {
-        @Schema(description = "输入变量", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "输入变量不能为空")
+        @Schema(description = "inputchangeamount", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "inputchangeamountcannot be empty")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 
-        @Schema(description = "查询词", example = "Hello")
+        @Schema(description = "queryword", example = "Hello")
         @JsonProperty("query")
         private String query;
     }
@@ -159,9 +159,9 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 追踪请求")
+    @Schema(description = "Webhook tracerequest")
     public static class WebhookTraceReq implements Serializable {
-        @Schema(description = "时间戳游标", example = "1700000000.0")
+        @Schema(description = "timestampcursor", example = "1700000000.0")
         @JsonProperty("since_ts")
         private Double sinceTs;
 
@@ -174,21 +174,21 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 追踪响应")
+    @Schema(description = "Webhook traceresponse")
     public static class WebhookTraceVO implements Serializable {
         @Schema(description = "Webhook ID")
         @JsonProperty("webhook_id")
         private String webhookId;
 
-        @Schema(description = "是否结束")
+        @Schema(description = "YesNoend")
         @JsonProperty("finished")
         private Boolean finished;
 
-        @Schema(description = "下一次查询的时间戳游标")
+        @Schema(description = "belowonetimesquery timestampcursor")
         @JsonProperty("next_since_ts")
         private Double nextSinceTs;
 
-        @Schema(description = "事件列表")
+        @Schema(description = "eventitemlist")
         @JsonProperty("events")
         private List<TraceEvent> events;
 
@@ -196,30 +196,30 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "追踪事件项")
+        @Schema(description = "traceeventitemitem")
         public static class TraceEvent implements Serializable {
-            @Schema(description = "时间戳")
+            @Schema(description = "timestamp")
             @JsonProperty("ts")
             private Double ts;
 
-            @Schema(description = "事件类型")
+            @Schema(description = "eventitemtype")
             @JsonProperty("event")
             private String event;
 
-            @Schema(description = "事件数据")
+            @Schema(description = "eventitemdata")
             @JsonProperty("data")
             private Object data;
         }
     }
 
-    // ========== 3. Agent 会话 (Session) - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 3. Agent session (Session) - corresponding RAGFlow_Agent_Difyinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 创建请求")
+    @Schema(description = "Session createrequest")
     public static class SessionCreateReq implements Serializable {
-        @Schema(description = "用户 ID")
+        @Schema(description = "user ID")
         @JsonProperty("user_id")
         private String userId;
     }
@@ -228,24 +228,24 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 列表请求")
+    @Schema(description = "Session listrequest")
     public static class SessionListReq implements Serializable {
-        @Schema(description = "页码", defaultValue = "1")
+        @Schema(description = "page number", defaultValue = "1")
         @JsonProperty("page")
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "每页大小", defaultValue = "10")
+        @Schema(description = "per pagelargesmall", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
 
-        @Schema(description = "排序字段", defaultValue = "create_time")
+        @Schema(description = "Sort orderfield", defaultValue = "create_time")
         @JsonProperty("orderby")
         @Builder.Default
         private String orderby = "create_time";
 
-        @Schema(description = "是否降序", defaultValue = "true")
+        @Schema(description = "YesNodescending", defaultValue = "true")
         @JsonProperty("desc")
         @Builder.Default
         private Boolean desc = true;
@@ -254,11 +254,11 @@ public class AgentDTO {
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "用户 ID")
+        @Schema(description = "user ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "是否返回 DSL")
+        @Schema(description = "YesNoreturn DSL")
         @JsonProperty("dsl")
         @Builder.Default
         private Boolean dsl = false;
@@ -268,11 +268,11 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 批量删除请求")
+    @Schema(description = "Session batchdeleterequest")
     public static class SessionBatchDeleteReq implements Serializable {
-        @Schema(description = "会话 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "session ID list", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("ids")
-        @NotEmpty(message = "ID列表不能为空")
+        @NotEmpty(message = "IDlistcannot be empty")
         private List<String> ids;
     }
 
@@ -280,7 +280,7 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 响应对象")
+    @Schema(description = "Session responseobject")
     public static class SessionVO implements Serializable {
         @Schema(description = "Session ID")
         @JsonProperty("id")
@@ -290,45 +290,45 @@ public class AgentDTO {
         @JsonProperty("agent_id")
         private String agentId;
 
-        @Schema(description = "用户 ID")
+        @Schema(description = "user ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "来源")
+        @Schema(description = "source")
         @JsonProperty("source")
         private String source;
 
-        @Schema(description = "DSL 定义")
+        @Schema(description = "DSL define")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "消息列表")
+        @Schema(description = "messagelist")
         @JsonProperty("messages")
         private List<Map<String, Object>> messages;
     }
 
-    // ========== 4. Agent 对话 (Completion) - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 4. Agent conversation (Completion) - corresponding RAGFlow_Agent_Difyinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Completion 对话请求")
+    @Schema(description = "Completion conversationrequest")
     public static class CompletionReq implements Serializable {
-        @Schema(description = "会话 ID", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "会话 ID 不能为空")
+        @Schema(description = "session ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "session ID cannot be empty")
         @JsonProperty("session_id")
         private String sessionId;
 
-        @Schema(description = "用户问题")
+        @Schema(description = "userquestion")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "YesNostreamingreturn", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
 
-        @Schema(description = "是否返回追踪信息", defaultValue = "false")
+        @Schema(description = "YesNoreturntraceinformation", defaultValue = "false")
         @JsonProperty("return_trace")
         @Builder.Default
         private Boolean returnTrace = false;
@@ -338,49 +338,49 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Completion 对话响应")
+    @Schema(description = "Completion conversationresponse")
     public static class CompletionVO implements Serializable {
-        @Schema(description = "会话 ID")
+        @Schema(description = "session ID")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "回复内容")
+        @Schema(description = "returnre-content")
         @JsonProperty("content")
         private String content;
 
-        @Schema(description = "引用来源")
+        @Schema(description = "referencesource")
         @JsonProperty("reference")
         private Map<String, Object> reference;
 
-        @Schema(description = "追踪信息")
+        @Schema(description = "traceinformation")
         @JsonProperty("trace")
         private List<Object> trace;
     }
 
-    // ========== 5. Dify 兼容检索 - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 5. Dify compatibleretrieve - corresponding RAGFlow_Agent_Difyinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容检索请求")
+    @Schema(description = "Dify compatibleretrieverequest")
     public static class DifyRetrievalReq implements Serializable {
-        @Schema(description = "知识库 ID")
+        @Schema(description = "Knowledge base ID")
         @JsonProperty("knowledge_id")
         private String knowledgeId;
 
-        @Schema(description = "查询词")
+        @Schema(description = "queryword")
         @JsonProperty("query")
         private String query;
 
-        @Schema(description = "检索设置")
+        @Schema(description = "retrieveset")
         @JsonProperty("retrieval_setting")
         private Map<String, Object> retrievalSetting;
 
-        @Schema(description = "元数据过滤条件")
+        @Schema(description = "datafilteritemsitem")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
 
-        @Schema(description = "是否使用知识图谱")
+        @Schema(description = "YesNouseknowledge graph")
         @JsonProperty("use_kg")
         private Boolean useKg;
     }
@@ -389,9 +389,9 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容检索响应")
+    @Schema(description = "Dify compatibleretrieveresponse")
     public static class DifyRetrievalVO implements Serializable {
-        @Schema(description = "检索结果列表")
+        @Schema(description = "retrieveresultlist")
         @JsonProperty("records")
         private List<Record> records;
 
@@ -399,21 +399,21 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "检索记录")
+        @Schema(description = "retrieverecord")
         public static class Record implements Serializable {
-            @Schema(description = "内容")
+            @Schema(description = "content")
             @JsonProperty("content")
             private String content;
 
-            @Schema(description = "相似度分数")
+            @Schema(description = "similarnumber")
             @JsonProperty("score")
             private Double score;
 
-            @Schema(description = "标题")
+            @Schema(description = "title")
             @JsonProperty("title")
             private String title;
 
-            @Schema(description = "元数据")
+            @Schema(description = "data")
             @JsonProperty("metadata")
             private Map<String, Object> metadata;
         }

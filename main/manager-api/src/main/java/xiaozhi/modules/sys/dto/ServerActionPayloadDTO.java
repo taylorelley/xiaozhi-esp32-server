@@ -6,21 +6,21 @@ import xiaozhi.modules.sys.enums.ServerActionEnum;
 import java.util.Map;
 
 /**
- * 服务端动作DTO
+ * serviceendactionDTO
  */
 @Data
 public class ServerActionPayloadDTO
 {
     /**
-    * 类型（智控台发往服务端的都是server）
+    * type（intelligentcontrolconsolesendgoserviceend allYesserver）
     */
     private String type;
     /**
-    * 动作
+    * action
     */
     private ServerActionEnum action;
     /**
-    * 内容
+    * content
     */
     private Map<String, Object> content;
 
@@ -31,6 +31,6 @@ public class ServerActionPayloadDTO
         serverActionPayloadDTO.setType("server");
         return serverActionPayloadDTO;
     }
-    // 私有化
+    // privatehas
     private ServerActionPayloadDTO() {}
 }

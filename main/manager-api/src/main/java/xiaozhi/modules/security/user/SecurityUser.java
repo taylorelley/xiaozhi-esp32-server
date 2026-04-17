@@ -6,8 +6,8 @@ import org.apache.shiro.subject.Subject;
 import xiaozhi.common.user.UserDetail;
 
 /**
- * Shiro工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Shirotoolclass
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class SecurityUser {
@@ -21,7 +21,7 @@ public class SecurityUser {
     }
 
     /**
-     * 获取用户信息
+     * getUser information
      */
     public static UserDetail getUser() {
         Subject subject = getSubject();
@@ -42,7 +42,7 @@ public class SecurityUser {
     }
 
     /**
-     * 获取用户ID
+     * getUser ID
      */
     public static Long getUserId() {
         return getUser().getId();

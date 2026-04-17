@@ -32,7 +32,7 @@ import xiaozhi.modules.voiceclone.dao.VoiceCloneDao;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 
 /**
- * 音色的业务层的实现
+ * voice businesslayer implement
  * 
  * @author zjy
  * @since 2025-3-21
@@ -52,11 +52,11 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<TimbreEntity> page = baseDao.selectPage(
                 getPage(params, null, true),
-                // 定义查询条件
+                // definequeryitemsitem
                 new QueryWrapper<TimbreEntity>()
-                        // 必须按照ttsID查找
+                        // mustbyaccording tottsIDfind
                         .eq("tts_model_id", dto.getTtsModelId())
-                        // 如果有音色名字，按照音色名模糊查找
+                        // ifhasvoicenamecharacter，byaccording tovoicenamefuzzyfind
                         .like(StringUtils.isNotBlank(dto.getName()), "name", dto.getName()));
 
         return getPageData(page, TimbreDetailsVO.class);
@@ -68,23 +68,23 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
             return null;
         }
 
-        // 先从Redis获取缓存
+        // firstfromRedisgetcache
         String key = RedisKeys.getTimbreDetailsKey(timbreId);
         TimbreDetailsVO cachedDetails = (TimbreDetailsVO) redisUtils.get(key);
         if (cachedDetails != null) {
             return cachedDetails;
         }
 
-        // 如果缓存中没有，则从数据库获取
+        // ifcacheno，thenfromdatalibraryget
         TimbreEntity entity = baseDao.selectById(timbreId);
         if (entity == null) {
             return null;
         }
 
-        // 转换为VO对象
+        // convert toVOobject
         TimbreDetailsVO details = ConvertUtils.sourceToTarget(entity, TimbreDetailsVO.class);
 
-        // 存入Redis缓存
+        // storeRediscache
         if (details != null) {
             redisUtils.set(key, details);
         }
@@ -107,7 +107,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         TimbreEntity timbreEntity = ConvertUtils.sourceToTarget(dto, TimbreEntity.class);
         timbreEntity.setId(timbreId);
         baseDao.updateById(timbreEntity);
-        // 删除缓存
+        // deletecache
         redisUtils.delete(RedisKeys.getTimbreDetailsKey(timbreId));
     }
 
@@ -129,26 +129,26 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
                 .map(entity -> {
                     VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
                     dto.setVoiceDemo(entity.getVoiceDemo());
-                    dto.setLanguages(entity.getLanguages()); // 设置语言类型
-                    dto.setIsClone(false); // 设置为普通音色
+                    dto.setLanguages(entity.getLanguages()); // setLanguagetype
+                    dto.setIsClone(false); // setasordinaryvoice
                     return dto;
                 })
                 .collect(Collectors.toList());
 
-        // 获取当前登录用户ID
+        // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUser().getId();
         if (currentUserId != null) {
-            // 查询用户的所有克隆音色记录
+            // queryuser allclonevoicerecord
             List<VoiceDTO> cloneEntities = voiceCloneDao.getTrainSuccess(ttsModelId, currentUserId);
             for (VoiceDTO entity : cloneEntities) {
-                // 只添加训练成功的克隆音色，且模型ID匹配
+                // onlyaddtrainingsuccess clonevoice，andModel IDmatch
                 VoiceDTO voiceDTO = new VoiceDTO();
                 voiceDTO.setId(entity.getId());
                 voiceDTO.setName(MessageUtils.getMessage(ErrorCode.VOICE_CLONE_PREFIX) + entity.getName());
-                // 保留从数据库查询到的voiceDemo字段
+                // reservefromdatalibraryqueryto voiceDemofield
                 voiceDTO.setVoiceDemo(entity.getVoiceDemo());
                 voiceDTO.setLanguages(entity.getLanguages());
-                voiceDTO.setIsClone(true); // 设置为克隆音色
+                voiceDTO.setIsClone(true); // setasclonevoice
                 redisUtils.set(RedisKeys.getTimbreNameById(voiceDTO.getId()), voiceDTO.getName(),
                         RedisUtils.NOT_EXPIRE);
                 voiceDTOs.add(0, voiceDTO);
@@ -159,10 +159,10 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
     }
 
     /**
-     * 处理是不是tts模型的id
+     * processYesnot Yesttsmodel id
      */
     private void isTtsModelId(String ttsModelId) {
-        // 等模型配置那边写好调用方法判断
+        // etc.Model configurationthatedgewritegoodcallmethoddetermine
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         TimbreEntity entity = list.get(0);
         VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
         dto.setVoiceDemo(entity.getVoiceDemo());
-        dto.setIsClone(false); // 设置为普通音色
+        dto.setIsClone(false); // setasordinaryvoice
         return dto;
     }
 }

@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapterFactory;
 
 /**
- * 知识库配置类
- * 配置知识库相关的Bean
+ * Knowledge baseconfigurationclass
+ * configurationKnowledge baserelated Bean
  */
 @Configuration
 public class KnowledgeBaseConfig {
 
     /**
-     * 提供KnowledgeBaseAdapterFactory的Bean实例
-     * @return KnowledgeBaseAdapterFactory实例
+     * provideKnowledgeBaseAdapterFactory Beanexample
+     * @return KnowledgeBaseAdapterFactoryexample
      */
     @Bean
     public KnowledgeBaseAdapterFactory knowledgeBaseAdapterFactory() {

@@ -1,29 +1,29 @@
 package xiaozhi.modules.security.password;
 
 /**
- * 密码工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Passwordtoolclass
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class PasswordUtils {
     private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
-     * 加密
+     * encrypt
      *
-     * @param str 字符串
-     * @return 返回加密字符串
+     * @param str string
+     * @return returnencryptstring
      */
     public static String encode(String str) {
         return passwordEncoder.encode(str);
     }
 
     /**
-     * 比较密码是否相等
+     * comparePasswordYesNoetc.
      *
-     * @param str      明文密码
-     * @param password 加密后密码
-     * @return true：成功 false：失败
+     * @param str      plaintextPassword
+     * @param password encryptafterPassword
+     * @return true：success false：failed
      */
     public static boolean matches(String str, String password) {
         return passwordEncoder.matches(str, password);

@@ -76,7 +76,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['logout']), // 引入Vuex的logout action
+    ...mapActions(['logout']), // Import the Vuex logout action
     confirm() {
       if (!this.oldPassword.trim() || !this.newPassword.trim() || !this.confirmNewPassword.trim()) {
         this.$message.error(this.$t('changePassword.allFieldsRequired'));
@@ -90,8 +90,7 @@ export default {
         this.$message.error(this.$t('changePassword.newPasswordSameAsOld'));
         return;
       }
-
-      // 修改后的接口调用
+ // Modifyafter of APICall
       userApi.changePassword(this.oldPassword, this.newPassword, (res) => {
         if (res.data.code === 0) {
           this.$message.success({

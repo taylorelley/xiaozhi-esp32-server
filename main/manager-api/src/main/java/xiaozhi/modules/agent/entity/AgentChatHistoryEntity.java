@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 智能体聊天记录表
+ * agentChat historytable
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -26,55 +26,55 @@ import lombok.NoArgsConstructor;
 @TableName(value = "ai_agent_chat_history")
 public class AgentChatHistoryEntity {
     /**
-     * 主键ID
+     * Primary keyID
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * MAC地址
+     * MACAddress
      */
     @TableField(value = "mac_address")
     private String macAddress;
 
     /**
-     * 智能体id
+     * agentid
      */
     @TableField(value = "agent_id")
     private String agentId;
 
     /**
-     * 会话ID
+     * Session ID
      */
     @TableField(value = "session_id")
     private String sessionId;
 
     /**
-     * 消息类型: 1-用户, 2-智能体
+     * messagetype: 1-user, 2-agent
      */
     @TableField(value = "chat_type")
     private Byte chatType;
 
     /**
-     * 聊天内容
+     * chatcontent
      */
     @TableField(value = "content")
     private String content;
 
     /**
-     * 音频base64数据
+     * audiobase64data
      */
     @TableField(value = "audio_id")
     private String audioId;
 
     /**
-     * 创建时间
+     * Create time
      */
     @TableField(value = "created_at")
     private Date createdAt;
 
     /**
-     * 更新时间
+     * updatetime
      */
     @TableField(value = "updated_at")
     private Date updatedAt;

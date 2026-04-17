@@ -1,6 +1,6 @@
-# 规范约定：
-# id生成根据时间时分，文件名对应id，常变数据可以根据模块命名自定义
-# 每次对数据表进行改动时，只允许新建新对changeSet，不允许对上一个changeSet配置及文件进行修改
+# Convention:
+# id is generated based on date and time (hour:minute); the file name matches the id; frequently-changing data may be named after its module.
+# Each time the database schema changes, you may only create a new changeSet; you must not modify the configuration or file of a previous changeSet.
 databaseChangeLog:
   - changeSet:
       id: 202503141335
@@ -613,3 +613,10 @@ databaseChangeLog:
         - sqlFile:
             encoding: utf8
             path: classpath:db/changelog/202604161357.sql
+  - changeSet:
+      id: 202604171200
+      author: claude
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: classpath:db/changelog/202604171200_english_defaults.sql

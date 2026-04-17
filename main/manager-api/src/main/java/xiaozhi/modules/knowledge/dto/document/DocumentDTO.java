@@ -11,325 +11,325 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 
 /**
- * 文档管理聚合 DTO
+ * documentmanagementaggregation DTO
  */
-@Schema(description = "文档管理聚合 DTO")
+@Schema(description = "documentmanagementaggregation DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentDTO {
 
     /**
-     * 上传文档请求参数
+     * uploaddocumentrequestparameter
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "上传文档请求参数")
+    @Schema(description = "uploaddocumentrequestparameter")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UploadReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "知识库 ID (必须指定归属)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Knowledge base ID (mustspecified)", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_id")
-        @NotBlank(message = "知识库ID不能为空")
+        @NotBlank(message = "Knowledge baseIDcannot be empty")
         private String datasetId;
 
-        @Schema(description = "文件名 (如果指定，则覆盖原始文件名)")
+        @Schema(description = "File name (ifspecified，thenoverrideoriginalFile name)")
         private String name;
 
-        @Schema(description = "分块方法")
+        @Schema(description = "chunkmethod")
         @JsonProperty("chunk_method")
         private DocumentDTO.InfoVO.ChunkMethod chunkMethod;
 
-        @Schema(description = "解析参数配置")
+        @Schema(description = "parseParameter configuration")
         @JsonProperty("parser_config")
         private DocumentDTO.InfoVO.ParserConfig parserConfig;
 
-        @Schema(description = "虚拟文件夹路径 (默认为 /)")
+        @Schema(description = "virtualfilepath (defaultas /)")
         @JsonProperty("parent_path")
         private String parentPath;
 
-        @Schema(description = "元数据字段")
+        @Schema(description = "datafield")
         @JsonProperty("meta")
         private Map<String, Object> metaFields;
 
-        @Schema(description = "文件二进制流 (支持 PDF, DOCX, TXT, MD 等多种格式)", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "上传文件不能为空")
+        @Schema(description = "filebinary stream (support PDF, DOCX, TXT, MD etc.multiplekindformat)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "uploadfilecannot be empty")
         private org.springframework.web.multipart.MultipartFile file;
     }
 
     /**
-     * 更新文档请求参数
+     * updatedocumentrequestparameter
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "更新文档请求参数")
+    @Schema(description = "updatedocumentrequestparameter")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UpdateReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "新文档名称 (必须包含文件后缀，且不能更改原始类型)")
+        @Schema(description = "newdocumentname (mustcontainfileafterfix，andnot canchangeoriginaltype)")
         private String name;
 
-        @Schema(description = "启用/禁用状态 (true: 启用, false: 禁用; 禁用后不参与检索)")
+        @Schema(description = "enable/disablestatus (true: enable, false: disable; disableafternot parameterandretrieve)")
         private Boolean enabled;
 
-        @Schema(description = "新解析方法 (修改此项会重置解析状态)")
+        @Schema(description = "newparsemethod (updatethisitemwillre-setparsestatus)")
         @JsonProperty("chunk_method")
         private InfoVO.ChunkMethod chunkMethod;
 
-        @Schema(description = "新解析器详细配置 (应与 chunk_method 配套使用)")
+        @Schema(description = "newparserdetailedconfiguration (shouldand chunk_method setuse)")
         @JsonProperty("parser_config")
         private InfoVO.ParserConfig parserConfig;
     }
 
     /**
-     * 获取文档列表请求参数
+     * getdocumentlistrequestparameter
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "获取文档列表请求参数")
+    @Schema(description = "getdocumentlistrequestparameter")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "页码 (默认: 1)")
+        @Schema(description = "page number (default: 1)")
         private Integer page;
 
-        @Schema(description = "每页数量 (默认: 30)")
+        @Schema(description = "per pagecount (default: 30)")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "排序字段 (可选: create_time, name, size; 默认: create_time)")
+        @Schema(description = "Sort orderfield (canselect: create_time, name, size; default: create_time)")
         private String orderby;
 
-        @Schema(description = "是否降序排列 (true: 最新/最大在前; false: 最旧/最小在前; 默认: true)")
+        @Schema(description = "YesNodescendingsortcolumn (true: mostnew/mostlargeinbefore; false: mostold/minimuminbefore; default: true)")
         private Boolean desc;
 
-        @Schema(description = "精确筛选: 文档 ID")
+        @Schema(description = "precisionexactfilter: document ID")
         private String id;
 
-        @Schema(description = "精确筛选: 文档完整名称 (含后缀)")
+        @Schema(description = "precisionexactfilter: documentcompletename (containafterfix)")
         private String name;
 
-        @Schema(description = "模糊搜索: 文档名称关键词")
+        @Schema(description = "fuzzysearch: documentnamekeyword")
         private String keywords;
 
-        @Schema(description = "筛选: 文件后缀列表 (如 ['pdf', 'docx'])")
+        @Schema(description = "filter: fileafterfixlist (e.g. ['pdf', 'docx'])")
         private List<String> suffix;
 
-        @Schema(description = "筛选: 运行状态列表")
+        @Schema(description = "filter: runstatuslist")
         private List<InfoVO.RunStatus> run;
 
-        @Schema(description = "筛选: 起始创建时间 (时间戳, 毫秒)")
+        @Schema(description = "filter: startCreate time (timestamp, milliseconds)")
         @JsonProperty("create_time_from")
         private Long createTimeFrom;
 
-        @Schema(description = "筛选: 结束创建时间 (时间戳, 毫秒)")
+        @Schema(description = "filter: endCreate time (timestamp, milliseconds)")
         @JsonProperty("create_time_to")
         private Long createTimeTo;
     }
 
     /**
-     * 批量文档操作请求参数 (用于删除、解析等)
+     * batchdocumentoperationrequestparameter (used fordelete、parseetc.)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "批量文档操作请求参数")
+    @Schema(description = "batchdocumentoperationrequestparameter")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class BatchIdReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
-        @JsonProperty("ids") // 为了兼容性，也可以考虑支持 document_ids，但这里统一叫 ids
+        @Schema(description = "document ID list", requiredMode = Schema.RequiredMode.REQUIRED)
+        @JsonProperty("ids") // ascompatible，alsocantoconsidersupport document_ids，butthisinonecall ids
         @JsonAlias("document_ids")
-        @NotEmpty(message = "文档ID列表不能为空")
+        @NotEmpty(message = "documentIDlistcannot be empty")
         private List<String> ids;
     }
 
     /**
-     * 知识库文档信息 VO
+     * Knowledge basedocumentinformation VO
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "知识库文档信息")
+    @Schema(description = "Knowledge basedocumentinformation")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class InfoVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档 ID (唯一标识)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "document ID (unique identifier)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String id;
 
-        @Schema(description = "文档缩略图 URL (Base64 或 链接)")
+        @Schema(description = "documentthumbnail URL (Base64 or link)")
         private String thumbnail;
 
-        @Schema(description = "所属知识库 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "belonging toKnowledge base ID", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "文档解析方法 (决定了文档如何被切片)")
+        @Schema(description = "Document parsingmethod (decidedocumente.g.whatisslice)")
         @JsonProperty("chunk_method")
         private ChunkMethod chunkMethod;
 
-        @Schema(description = "关联的 ETL Pipeline ID (如有)")
+        @Schema(description = "associated  ETL Pipeline ID (e.g.has)")
         @JsonProperty("pipeline_id")
         private String pipelineId;
 
-        @Schema(description = "文档解析器的详细配置")
+        @Schema(description = "Document parsing detailedconfiguration")
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
-        @Schema(description = "来源类型 (如 local, s3, url 等)")
+        @Schema(description = "sourcetype (e.g. local, s3, url etc.)")
         @JsonProperty("source_type")
         private String sourceType;
 
-        @Schema(description = "文档文件类型 (如 pdf, docx, txt)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "documentFile type (e.g. pdf, docx, txt)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String type;
 
-        @Schema(description = "创建者用户 ID")
+        @Schema(description = "Creatoruser ID")
         @JsonProperty("created_by")
         private String createdBy;
 
-        @Schema(description = "文档名称 (包含扩展名)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "documentname (containextension)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String name;
 
-        @Schema(description = "文件存储路径或位置标识")
+        @Schema(description = "filestorestorepathorbitsetidentifier")
         private String location;
 
-        @Schema(description = "文件大小 (单位: Bytes)")
+        @Schema(description = "File size (unit: Bytes)")
         private Long size;
 
-        @Schema(description = "包含的 Token 总数 (解析后统计)")
+        @Schema(description = "contain  Token total (parseafterstatistics)")
         @JsonProperty("token_count")
         private Long tokenCount;
 
-        @Schema(description = "包含的切片 (Chunk) 总数")
+        @Schema(description = "contain slice (Chunk) total")
         @JsonProperty("chunk_count")
         private Long chunkCount;
 
-        @Schema(description = "解析进度 (0.0 ~ 1.0, 1.0 表示完成)")
+        @Schema(description = "parseprogress (0.0 ~ 1.0, 1.0 representscomplete)")
         private Double progress;
 
-        @Schema(description = "当前进度描述或错误信息")
+        @Schema(description = "currentprogressDescriptionorerrorinformation")
         @JsonProperty("progress_msg")
         private String progressMsg;
 
-        @Schema(description = "开始处理的时间戳 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "startprocess timestamp (RAGFlowreturnRFC1123format)")
         @JsonProperty("process_begin_at")
         private String processBeginAt;
 
-        @Schema(description = "处理总耗时 (单位: 秒)")
+        @Schema(description = "processtotalconsumptionwhen (unit: seconds)")
         @JsonProperty("process_duration")
         private Double processDuration;
 
-        @Schema(description = "自定义元数据字段 (Key-Value 键值对)")
+        @Schema(description = "custom metadatafield (Key-Value keyvaluefor)")
         @JsonProperty("meta_fields")
         private Map<String, Object> metaFields;
 
-        @Schema(description = "文件后缀名 (不含点)")
+        @Schema(description = "fileafterfixname (not containpoint)")
         private String suffix;
 
-        @Schema(description = "文档解析运行状态")
+        @Schema(description = "Document parsingrunstatus")
         private RunStatus run;
 
-        @Schema(description = "文档可用状态 (1: 启用/正常, 0: 禁用/失效)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "documentavailablestatus (1: enable/normal, 0: disable/invalid)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String status;
 
-        @Schema(description = "创建时间 (时间戳, 毫秒)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Create time (timestamp, milliseconds)", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "创建日期 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "createdate (RAGFlowreturnRFC1123format)")
         @JsonProperty("create_date")
         private String createDate;
 
-        @Schema(description = "最后更新时间 (时间戳, 毫秒)")
+        @Schema(description = "lastupdatetime (timestamp, milliseconds)")
         @JsonProperty("update_time")
         private Long updateTime;
 
-        @Schema(description = "最后更新日期 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "lastupdatedate (RAGFlowreturnRFC1123format)")
         @JsonProperty("update_date")
         private String updateDate;
 
         /**
-         * 解析方法枚举 (ChunkMethod)
+         * parsemethodenumeration (ChunkMethod)
          */
         public enum ChunkMethod {
-            @Schema(description = "通用模式: 适用于大多数纯文本或混合文档")
+            @Schema(description = "usemode: suitableused forlargemultiplenumberpuretextormixmergedocument")
             @JsonProperty("naive")
             NAIVE,
-            @Schema(description = "手动模式: 允许用户手动编辑切片")
+            @Schema(description = "manualmode: allowusermanualeditslice")
             @JsonProperty("manual")
             MANUAL,
-            @Schema(description = "问答模式: 专门优化 Q&A 格式的文档")
+            @Schema(description = "Q&Amode: specialdoorpriority Q&A format document")
             @JsonProperty("qa")
             QA,
-            @Schema(description = "表格模式: 专门优化 Excel 或 CSV 等表格数据")
+            @Schema(description = "tablemode: specialdoorpriority Excel or CSV etc.tabledata")
             @JsonProperty("table")
             TABLE,
-            @Schema(description = "论文模式: 针对学术论文排版优化")
+            @Schema(description = "papermode: foracademic papersortversionpriority")
             @JsonProperty("paper")
             PAPER,
-            @Schema(description = "书籍模式: 针对书籍章节结构优化")
+            @Schema(description = "bookmode: forbook chapterconstructpriority")
             @JsonProperty("book")
             BOOK,
-            @Schema(description = "法律法规模式: 针对法律条文结构优化")
+            @Schema(description = "rulerulemode: forruleitemstextresultconstructpriority")
             @JsonProperty("laws")
             LAWS,
-            @Schema(description = "演示文稿模式: 针对 PPT 等演示文件优化")
+            @Schema(description = "presentationmode: for PPT etc.demofilepriority")
             @JsonProperty("presentation")
             PRESENTATION,
-            @Schema(description = "图片模式: 针对图片内容进行 OCR 和描述")
+            @Schema(description = "imagemode: forimagecontentperform OCR andDescription")
             @JsonProperty("picture")
             PICTURE,
-            @Schema(description = "整体模式: 将整个文档作为一个切片")
+            @Schema(description = "wholemode: willwholedocumentasoneslice")
             @JsonProperty("one")
             ONE,
-            @Schema(description = "知识图谱模式: 提取实体关系构建图谱")
+            @Schema(description = "knowledge graphmode: extractentityrelatedsystembuildgraph")
             @JsonProperty("knowledge_graph")
             KNOWLEDGE_GRAPH,
-            @Schema(description = "邮件模式: 针对邮件格式优化")
+            @Schema(description = "mailitemmode: formailitemformatpriority")
             @JsonProperty("email")
             EMAIL;
         }
 
         /**
-         * 运行状态枚举 (RunStatus)
+         * runstatusenumeration (RunStatus)
          */
         public enum RunStatus {
-            @Schema(description = "未开始: 等待解析队列")
+            @Schema(description = "notstart: waitparsequeuecolumn")
             @JsonProperty("UNSTART")
             UNSTART,
-            @Schema(description = "进行中: 正在解析或索引")
+            @Schema(description = "perform: inparseorindex")
             @JsonProperty("RUNNING")
             RUNNING,
-            @Schema(description = "已取消: 用户手动取消")
+            @Schema(description = "alreadycancel: usermanualcancel")
             @JsonProperty("CANCEL")
             CANCEL,
-            @Schema(description = "已完成: 解析成功")
+            @Schema(description = "alreadycomplete: parsesuccess")
             @JsonProperty("DONE")
             DONE,
-            @Schema(description = "失败: 解析过程中出错")
+            @Schema(description = "failed: parseprocessoutwrong")
             @JsonProperty("FAIL")
             FAIL;
         }
 
         /**
-         * 布局识别模型枚举
+         * layoutidentifymodelenumeration
          */
         public enum LayoutRecognize {
-            @Schema(description = "深度文档理解模型: 适合复杂排版")
+            @Schema(description = "deepdocumentsolvemodel: suitablemergere-miscellaneoussortversion")
             @JsonProperty("DeepDOC")
             DeepDOC,
-            @Schema(description = "简单规则模型: 适合纯文本")
+            @Schema(description = "simplerulethenmodel: suitablemergepuretext")
             @JsonProperty("Simple")
             Simple;
         }
@@ -338,42 +338,42 @@ public class DocumentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "文档解析器参数配置")
+        @Schema(description = "Document parsingParameter configuration")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class ParserConfig implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "切片最大 Token 数 (建议值: 512, 1024, 2048)")
+            @Schema(description = "slicemostlarge Token number (suggestionvalue: 512, 1024, 2048)")
             @JsonProperty("chunk_token_num")
             private Integer chunkTokenNum;
 
-            @Schema(description = "分段分隔符 (支持转义字符, 如 \\n)")
+            @Schema(description = "segmentdelimitersymbol (supportconvertmeaningcharactersymbol, e.g. \\n)")
             private String delimiter;
 
-            @Schema(description = "布局识别模型 (DeepDOC/Simple)")
+            @Schema(description = "layoutidentifymodel (DeepDOC/Simple)")
             @JsonProperty("layout_recognize")
             private LayoutRecognize layoutRecognize;
 
-            @Schema(description = "是否将 Excel 转换为 HTML 表格")
+            @Schema(description = "YesNowill Excel convert to HTML table")
             @JsonProperty("html4excel")
             private Boolean html4excel;
 
-            @Schema(description = "自动提取关键词数量 (0 表示不提取)")
+            @Schema(description = "automaticextractkeywordcount (0 representsnot extract)")
             @JsonProperty("auto_keywords")
             private Integer autoKeywords;
 
-            @Schema(description = "自动生成问题数量 (0 表示不生成)")
+            @Schema(description = "automaticgeneratequestioncount (0 representsnot generate)")
             @JsonProperty("auto_questions")
             private Integer autoQuestions;
 
-            @Schema(description = "自动生成标签数量")
+            @Schema(description = "automaticgenerateTagcount")
             @JsonProperty("topn_tags")
             private Integer topnTags;
 
-            @Schema(description = "RAPTOR 高级索引配置")
+            @Schema(description = "RAPTOR highlevelindexconfiguration")
             private RaptorConfig raptor;
 
-            @Schema(description = "GraphRAG 知识图谱配置")
+            @Schema(description = "GraphRAG knowledge graphconfiguration")
             @JsonProperty("graphrag")
             private GraphRagConfig graphRag;
 
@@ -381,11 +381,11 @@ public class DocumentDTO {
             @Builder
             @NoArgsConstructor
             @AllArgsConstructor
-            @Schema(description = "RAPTOR (递归摘要索引) 配置")
+            @Schema(description = "RAPTOR (recursiveabstractneed toindex) configuration")
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class RaptorConfig implements Serializable {
                 private static final long serialVersionUID = 1L;
-                @Schema(description = "是否启用 RAPTOR 索引")
+                @Schema(description = "YesNoenable RAPTOR index")
                 @JsonProperty("use_raptor")
                 private Boolean useRaptor;
             }
@@ -394,11 +394,11 @@ public class DocumentDTO {
             @Builder
             @NoArgsConstructor
             @AllArgsConstructor
-            @Schema(description = "GraphRAG (图增强检索) 配置")
+            @Schema(description = "GraphRAG (pictureincreasestrongretrieve) configuration")
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class GraphRagConfig implements Serializable {
                 private static final long serialVersionUID = 1L;
-                @Schema(description = "是否启用 GraphRAG 索引")
+                @Schema(description = "YesNoenable GraphRAG index")
                 @JsonProperty("use_graphrag")
                 private Boolean useGraphRag;
             }
