@@ -8,14 +8,14 @@ TAG = __name__
 
 async def handleAbortMessage(conn: "ConnectionHandler"):
     if conn.close_after_chat or conn.is_exiting:
-        conn.logger.bind(tag=TAG).info("退出流程中被打断，直接关闭连接")
+        conn.logger.bind(tag=TAG).info("Interrupted during exit flow; closing the connection directly")
         return
-        
+
     conn.logger.bind(tag=TAG).info("Abort message received")
-    # 设置成打断状态，会自动打断llm、tts任务
+    # Set the abort flag; this automatically interrupts LLM/TTS tasks
     conn.client_abort = True
     conn.clear_queues()
-    # 打断客户端说话状态
+    # Interrupt the client's speaking state
     await conn.websocket.send(
         json.dumps({"type": "tts", "state": "stop", "session_id": conn.session_id})
     )

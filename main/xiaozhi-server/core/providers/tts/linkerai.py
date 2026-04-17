@@ -25,16 +25,16 @@ class TTSProvider(TTSProviderBase):
         self.audio_format = "pcm"
         self.before_stop_play_files = []
 
-        # PCM缓冲区
+        # PCM buffer
         self.pcm_buffer = bytearray()
 
     def tts_text_priority_thread(self):
-        """流式文本处理线程"""
+        """Streaming text processing thread"""
         while not self.conn.stop_event.is_set():
             try:
                 message = self.tts_text_queue.get(timeout=1)
                 if message.sentence_type == SentenceType.FIRST:
-                    # 初始化参数
+                    # Initialize parameters
                     self.tts_stop_request = False
                     self.processed_chars = 0
                     self.tts_text_buff = []
@@ -47,27 +47,27 @@ class TTSProvider(TTSProviderBase):
 
                 elif ContentType.FILE == message.content_type:
                     logger.bind(tag=TAG).info(
-                        f"添加音频文件到待播放列表: {message.content_file}"
+                        f"Adding audio file to the pending playback list: {message.content_file}"
                     )
                     if message.content_file and os.path.exists(message.content_file):
-                        # 先处理文件音频数据
+                        # First process the file's audio data
                         self._process_audio_file_stream(message.content_file, callback=lambda audio_data: self.handle_audio_file(audio_data, message.content_detail))
                 if message.sentence_type == SentenceType.LAST:
-                    # 处理剩余的文本
+                    # Process the remaining text
                     self._process_remaining_text_stream(True)
 
             except queue.Empty:
                 continue
             except Exception as e:
                 logger.bind(tag=TAG).error(
-                    f"处理TTS文本失败: {str(e)}, 类型: {type(e).__name__}, 堆栈: {traceback.format_exc()}"
+                    f"Failed to process TTS text: {str(e)}, type: {type(e).__name__}, stack: {traceback.format_exc()}"
                 )
 
     def _process_remaining_text_stream(self, is_last=False):
-        """处理剩余的文本并生成语音
+        """Process remaining text and generate speech
 
         Returns:
-            bool: 是否成功处理了文本
+            bool: whether the text was processed successfully
         """
         full_text = "".join(self.tts_text_buff)
         remaining_text = full_text[self.processed_chars :]
@@ -89,17 +89,17 @@ class TTSProvider(TTSProviderBase):
                 asyncio.run(self.text_to_speak(text, is_last))
             except Exception as e:
                 logger.bind(tag=TAG).warning(
-                    f"语音生成失败{5 - max_repeat_time + 1}次: {text}，错误: {e}"
+                    f"Speech generation failed {5 - max_repeat_time + 1} times: {text}, error: {e}"
                 )
                 max_repeat_time -= 1
 
             if max_repeat_time > 0:
                 logger.bind(tag=TAG).info(
-                    f"语音生成成功: {text}，重试{5 - max_repeat_time}次"
+                    f"Speech generation succeeded: {text}, retried {5 - max_repeat_time} times"
                 )
             else:
                 logger.bind(tag=TAG).error(
-                    f"语音生成失败: {text}，请检查网络或服务是否正常"
+                    f"Speech generation failed: {text}, please check the network or service status"
                 )
         except Exception as e:
             logger.bind(tag=TAG).error(f"Failed to generate TTS file: {e}")
@@ -107,11 +107,11 @@ class TTSProvider(TTSProviderBase):
             return None
 
     async def text_to_speak(self, text, is_last):
-        """流式处理TTS音频，每句只推送一次音频列表"""
+        """Stream TTS audio, pushing the audio list only once per sentence"""
         await self._tts_request(text, is_last)
 
     async def close(self):
-        """资源清理"""
+        """Resource cleanup"""
         await super().close()
         if hasattr(self, "opus_encoder"):
             self.opus_encoder.close()
@@ -124,14 +124,14 @@ class TTSProvider(TTSProviderBase):
             "stream": "true",
             "target_sr": self.conn.sample_rate,
             "audio_format": "pcm",
-            "instruct_text": "请生成一段自然流畅的语音",
+            "instruct_text": "Please generate a natural and fluent piece of speech",
         }
         headers = {
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json",
         }
 
-        # 一帧 PCM 所需字节数：60 ms × sample_rate × 1 ch × 2 B
+        # Bytes required for one PCM frame: 60 ms x sample_rate x 1 ch x 2 B
         frame_bytes = int(
             self.opus_encoder.sample_rate
             * self.opus_encoder.channels  # 1
@@ -148,7 +148,7 @@ class TTSProvider(TTSProviderBase):
 
                     if resp.status != 200:
                         logger.bind(tag=TAG).error(
-                            f"TTS请求失败: {resp.status}, {await resp.text()}"
+                            f"TTS request failed: {resp.status}, {await resp.text()}"
                         )
                         self.tts_audio_queue.put((SentenceType.LAST, [], None))
                         return
@@ -156,16 +156,16 @@ class TTSProvider(TTSProviderBase):
                     self.pcm_buffer.clear()
                     self.tts_audio_queue.put((SentenceType.FIRST, [], text))
 
-                    # 兼容 iter_chunked / iter_chunks / iter_any
+                    # Compatible with iter_chunked / iter_chunks / iter_any
                     async for chunk in resp.content.iter_any():
                         data = chunk[0] if isinstance(chunk, (list, tuple)) else chunk
                         if not data:
                             continue
 
-                        # 拼到 buffer
+                        # Append to buffer
                         self.pcm_buffer.extend(data)
 
-                        # 够一帧就编码
+                        # Encode once we have a full frame
                         while len(self.pcm_buffer) >= frame_bytes:
                             frame = bytes(self.pcm_buffer[:frame_bytes])
                             del self.pcm_buffer[:frame_bytes]
@@ -176,7 +176,7 @@ class TTSProvider(TTSProviderBase):
                                 callback=self.handle_opus
                             )
 
-                    # flush 剩余不足一帧的数据
+                    # Flush data remaining that is less than a frame
                     if self.pcm_buffer:
                         self.opus_encoder.encode_pcm_to_opus_stream(
                             bytes(self.pcm_buffer),
@@ -185,20 +185,20 @@ class TTSProvider(TTSProviderBase):
                         )
                         self.pcm_buffer.clear()
 
-                    # 如果是最后一段，输出音频获取完毕
+                    # If this is the last segment, audio fetching is complete
                     if is_last:
                         self._process_before_stop_play_files()
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"TTS请求异常: {e}")
+            logger.bind(tag=TAG).error(f"TTS request exception: {e}")
             self.tts_audio_queue.put((SentenceType.LAST, [], None))
 
     def to_tts(self, text: str) -> list:
-        """非流式TTS处理，用于测试及保存音频文件的场景
+        """Non-streaming TTS processing, used for testing and saving audio files
         Args:
-            text: 要转换的文本
+            text: text to convert
         Returns:
-            list: 返回opus编码后的音频数据列表
+            list: a list of opus-encoded audio data
         """
         start_time = time.time()
         text = MarkdownCleaner.clean_markdown(text)
@@ -210,7 +210,7 @@ class TTSProvider(TTSProviderBase):
             "stream": False,
             "target_sr": self.conn.sample_rate,
             "audio_format": self.audio_format,
-            "instruct_text": "请生成一段自然流畅的语音",
+            "instruct_text": "Please generate a natural and fluent piece of speech",
         }
         headers = {
             "Authorization": f"Bearer {self.access_token}",
@@ -223,17 +223,17 @@ class TTSProvider(TTSProviderBase):
             ) as response:
                 if response.status_code != 200:
                     logger.bind(tag=TAG).error(
-                        f"TTS请求失败: {response.status_code}, {response.text}"
+                        f"TTS request failed: {response.status_code}, {response.text}"
                     )
                     return []
 
-                logger.info(f"TTS请求成功: {text}, 耗时: {time.time() - start_time}秒")
+                logger.info(f"TTS request succeeded: {text}, elapsed: {time.time() - start_time}s")
 
-                # 使用opus编码器处理PCM数据
+                # Use the opus encoder to process PCM data
                 opus_datas = []
                 pcm_data = response.content
 
-                # 计算每帧的字节数
+                # Calculate the number of bytes per frame
                 frame_bytes = int(
                     self.opus_encoder.sample_rate
                     * self.opus_encoder.channels
@@ -242,11 +242,11 @@ class TTSProvider(TTSProviderBase):
                     * 2
                 )
 
-                # 分帧处理PCM数据
+                # Process PCM data frame by frame
                 for i in range(0, len(pcm_data), frame_bytes):
                     frame = pcm_data[i : i + frame_bytes]
                     if len(frame) < frame_bytes:
-                        # 最后一帧可能不足，用0填充
+                        # The last frame may be shorter; pad with zeros
                         frame = frame + b"\x00" * (frame_bytes - len(frame))
 
                     self.opus_encoder.encode_pcm_to_opus_stream(
@@ -258,5 +258,5 @@ class TTSProvider(TTSProviderBase):
                 return opus_datas
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"TTS请求异常: {e}")
+            logger.bind(tag=TAG).error(f"TTS request exception: {e}")
             return []
