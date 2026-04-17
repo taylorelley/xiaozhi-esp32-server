@@ -1229,13 +1229,13 @@ class ConnectionHandler:
                 Action.RESPONSE,
                 Action.NOTFOUND,
                 Action.ERROR,
-            ]:  # 直接回复前端
+            ]:  # Reply directly to the frontend
                 text = result.response if result.response else result.result
                 self.tts.tts_one_sentence(self, ContentType.TEXT, content_detail=text)
                 self.tts.store_tts_text(self.sentence_id, text)
                 self.dialogue.put(Message(role="assistant", content=text))
             elif result.action == Action.REQLLM:
-                # 收集需要 LLM 处理的工具
+                # Collect tools that need LLM processing
                 need_llm_tools.append((result, tool_call_data))
             else:
                 pass
@@ -1277,47 +1277,47 @@ class ConnectionHandler:
             self.chat(None, depth=depth + 1)
 
     def _report_worker(self):
-        """聊天记录上报工作线程"""
+        """Chat record reporting worker thread"""
         while not self.stop_event.is_set():
             try:
-                # 从队列获取数据，设置超时以便定期检查停止事件
+                # Fetch data from the queue, with a timeout to periodically check the stop event
                 item = self.report_queue.get(timeout=1)
-                if item is None:  # 检测毒丸对象
+                if item is None:  # Detect poison pill object
                     break
                 try:
-                    # 检查线程池状态
+                    # Check the thread pool state
                     if self.executor is None:
                         continue
-                    # 提交任务到线程池
+                    # Submit the task to the thread pool
                     self.executor.submit(self._process_report, *item)
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"聊天记录上报线程异常: {e}")
+                    self.logger.bind(tag=TAG).error(f"Chat record reporting thread exception: {e}")
             except queue.Empty:
                 continue
             except Exception as e:
-                self.logger.bind(tag=TAG).error(f"聊天记录上报工作线程异常: {e}")
+                self.logger.bind(tag=TAG).error(f"Chat record reporting worker thread exception: {e}")
 
-        self.logger.bind(tag=TAG).info("聊天记录上报线程已退出")
+        self.logger.bind(tag=TAG).info("Chat record reporting thread has exited")
 
     def _process_report(self, type, text, audio_data, report_time):
-        """处理上报任务"""
+        """Handle reporting task"""
         try:
-            # 执行异步上报（在事件循环中运行）
+            # Perform async reporting (runs in the event loop)
             asyncio.run(report(self, type, text, audio_data, report_time))
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"上报处理异常: {e}")
+            self.logger.bind(tag=TAG).error(f"Reporting handling exception: {e}")
         finally:
-            # 标记任务完成
+            # Mark the task as done
             self.report_queue.task_done()
 
     def clearSpeakStatus(self):
         self.client_is_speaking = False
-        self.logger.bind(tag=TAG).debug(f"清除服务端讲话状态")
+        self.logger.bind(tag=TAG).debug(f"Cleared server-side speaking status")
 
     async def close(self, ws=None):
-        """资源清理方法"""
+        """Resource cleanup method"""
         try:
-            # 清理 VAD 连接资源
+            # Clean up VAD connection resources
             if (
                     hasattr(self, "vad")
                     and self.vad
@@ -1325,11 +1325,11 @@ class ConnectionHandler:
             ):
                 self.vad.release_conn_resources(self)
 
-            # 清理音频缓冲区
+            # Clean up the audio buffer
             if hasattr(self, "audio_buffer"):
                 self.audio_buffer.clear()
 
-            # 取消超时任务
+            # Cancel the timeout task
             if self.timeout_task and not self.timeout_task.done():
                 self.timeout_task.cancel()
                 try:
@@ -1338,36 +1338,36 @@ class ConnectionHandler:
                     pass
                 self.timeout_task = None
 
-            # 清理工具处理器资源
+            # Clean up tool handler resources
             if hasattr(self, "func_handler") and self.func_handler:
                 try:
                     await self.func_handler.cleanup()
                 except Exception as cleanup_error:
                     self.logger.bind(tag=TAG).error(
-                        f"清理工具处理器时出错: {cleanup_error}"
+                        f"Error while cleaning up the tool handler: {cleanup_error}"
                     )
 
-            # 触发停止事件
+            # Trigger the stop event
             if self.stop_event:
                 self.stop_event.set()
 
-            # 清空任务队列
+            # Empty task queues
             self.clear_queues()
 
-            # 关闭WebSocket连接
+            # Close the WebSocket connection
             try:
                 if ws:
-                    # 安全地检查WebSocket状态并关闭
+                    # Safely check WebSocket state and close
                     try:
                         if hasattr(ws, "closed") and not ws.closed:
                             await ws.close()
                         elif hasattr(ws, "state") and ws.state.name != "CLOSED":
                             await ws.close()
                         else:
-                            # 如果没有closed属性，直接尝试关闭
+                            # If there is no closed attribute, attempt to close directly
                             await ws.close()
                     except Exception:
-                        # 如果关闭失败，忽略错误
+                        # If closing fails, ignore the error
                         pass
                 elif self.websocket:
                     try:
@@ -1382,44 +1382,44 @@ class ConnectionHandler:
                         ):
                             await self.websocket.close()
                         else:
-                            # 如果没有closed属性，直接尝试关闭
+                            # If there is no closed attribute, attempt to close directly
                             await self.websocket.close()
                     except Exception:
-                        # 如果关闭失败，忽略错误
+                        # If closing fails, ignore the error
                         pass
             except Exception as ws_error:
-                self.logger.bind(tag=TAG).error(f"关闭WebSocket连接时出错: {ws_error}")
+                self.logger.bind(tag=TAG).error(f"Error while closing the WebSocket connection: {ws_error}")
 
             if self.tts:
                 await self.tts.close()
             if self.asr:
                 await self.asr.close()
 
-            # 最后关闭线程池（避免阻塞）
+            # Finally close the thread pool (avoid blocking)
             if self.executor:
                 try:
                     self.executor.shutdown(wait=False)
                 except Exception as executor_error:
                     self.logger.bind(tag=TAG).error(
-                        f"关闭线程池时出错: {executor_error}"
+                        f"Error while closing the thread pool: {executor_error}"
                     )
                 self.executor = None
-            self.logger.bind(tag=TAG).info("连接资源已释放")
+            self.logger.bind(tag=TAG).info("Connection resources have been released")
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"关闭连接时出错: {e}")
+            self.logger.bind(tag=TAG).error(f"Error while closing the connection: {e}")
         finally:
-            # 确保停止事件被设置
+            # Ensure the stop event is set
             if self.stop_event:
                 self.stop_event.set()
 
     def clear_queues(self):
-        """清空所有任务队列"""
+        """Empty all task queues"""
         if self.tts:
             self.logger.bind(tag=TAG).debug(
-                f"开始清理: TTS队列大小={self.tts.tts_text_queue.qsize()}, 音频队列大小={self.tts.tts_audio_queue.qsize()}"
+                f"Starting cleanup: TTS queue size={self.tts.tts_text_queue.qsize()}, audio queue size={self.tts.tts_audio_queue.qsize()}"
             )
 
-            # 使用非阻塞方式清空队列
+            # Empty the queues in a non-blocking way
             for q in [
                 self.tts.tts_text_queue,
                 self.tts.tts_audio_queue,
@@ -1433,13 +1433,13 @@ class ConnectionHandler:
                     except queue.Empty:
                         break
 
-            # 重置音频流控器（取消后台任务并清空队列）
+            # Reset the audio rate controller (cancel background tasks and empty the queue)
             if hasattr(self, "audio_rate_controller") and self.audio_rate_controller:
                 self.audio_rate_controller.reset()
-                self.logger.bind(tag=TAG).debug("已重置音频流控器")
+                self.logger.bind(tag=TAG).debug("Audio rate controller has been reset")
 
             self.logger.bind(tag=TAG).debug(
-                f"清理结束: TTS队列大小={self.tts.tts_text_queue.qsize()}, 音频队列大小={self.tts.tts_audio_queue.qsize()}"
+                f"Cleanup finished: TTS queue size={self.tts.tts_text_queue.qsize()}, audio queue size={self.tts.tts_audio_queue.qsize()}"
             )
 
     def reset_audio_states(self):

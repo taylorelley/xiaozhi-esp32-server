@@ -424,51 +424,51 @@ class ASRPerformanceSuite:
         try:
             tester = tester_class()
             self.testers.append(tester)
-            print(f"已注册测试器: {tester.config_key}")
+            print(f"Registered tester: {tester.config_key}")
         except Exception as e:
             name_map = {
-                "DoubaoStreamASRTester": "豆包流式ASR",
-                "QwenASRFlashTester": "通义千问ASR",
-                "XunfeiStreamASRTester": "讯飞流式ASR"
+                "DoubaoStreamASRTester": "Doubao streaming ASR",
+                "QwenASRFlashTester": "Qwen ASR",
+                "XunfeiStreamASRTester": "Xunfei streaming ASR"
             }
             name = name_map.get(tester_class.__name__, tester_class.__name__)
-            print(f"跳过 {name}: {str(e)}")
+            print(f"Skipping {name}: {str(e)}")
 
     def _print_results(self, test_count):
         if not self.results:
-            print("没有有效的ASR测试结果")
+            print("No valid ASR test results")
             return
 
         print(f"\n{'='*60}")
-        print("流式ASR首词响应时间测试结果")
+        print("Streaming ASR first-word response time test results")
         print(f"{'='*60}")
-        print(f"测试次数: 每个ASR服务测试 {test_count} 次")
+        print(f"Test count: {test_count} runs per ASR service")
 
         success_results = sorted(
-            [r for r in self.results if "成功" in r["status"]],
+            [r for r in self.results if "Success" in r["status"]],
             key=lambda x: x["latency"]
         )
-        failed_results = [r for r in self.results if "成功" not in r["status"]]
+        failed_results = [r for r in self.results if "Success" not in r["status"]]
 
         table_data = [
             [r["name"], f"{r['latency']:.3f}s" if r['latency'] > 0 else "N/A", r["status"]]
             for r in success_results + failed_results
         ]
 
-        print(tabulate(table_data, headers=["ASR服务", "首词延迟", "状态"], tablefmt="grid"))
-        print("\n测试说明：")
-        print("- 计时起点: 建立连接前（包含握手、发送音频、接收首个识别结果全流程）")
-        print("- 通义千问优化: 临时文件准备在计时前完成，减少磁盘IO对测试的影响")
-        print("- 错误处理: 失败的测试不计入平均值，只统计成功测试的延迟")
-        print("- 排序规则: 成功的按延迟升序，失败的排在后面")
+        print(tabulate(table_data, headers=["ASR service", "First-word latency", "Status"], tablefmt="grid"))
+        print("\nNotes:")
+        print("- Timing start: before establishing the connection (covers handshake, sending audio, and receiving the first recognition result)")
+        print("- Qwen optimization: temp-file preparation is completed before timing to reduce disk IO impact on the test")
+        print("- Error handling: failed runs are excluded from the average; only successful runs are tallied")
+        print("- Sort rule: successful entries ascending by latency; failed entries go last")
 
     async def run(self, test_count=5):
-        print(f"开始流式ASR首词响应时间测试...")
-        print(f"每个ASR服务测试次数: {test_count}次\n")
+        print(f"Starting streaming ASR first-word response time test...")
+        print(f"Runs per ASR service: {test_count}\n")
 
         self.results = []
         for tester in self.testers:
-            print(f"\n--- 测试 {tester.config_key} ---")
+            print(f"\n--- Testing {tester.config_key} ---")
             result = await tester.test(test_count)
             self.results.append(result)
 
@@ -477,8 +477,8 @@ class ASRPerformanceSuite:
 
 async def main():
     import argparse
-    parser = argparse.ArgumentParser(description="流式ASR首词响应时间测试工具")
-    parser.add_argument("--count", type=int, default=5, help="测试次数")
+    parser = argparse.ArgumentParser(description="Streaming ASR first-word response time test tool")
+    parser.add_argument("--count", type=int, default=5, help="Number of test runs")
     args = parser.parse_args()
 
     suite = ASRPerformanceSuite()

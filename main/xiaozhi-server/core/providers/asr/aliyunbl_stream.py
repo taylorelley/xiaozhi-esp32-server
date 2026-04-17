@@ -26,16 +26,16 @@ class ASRProvider(ASRProviderBase):
         self.asr_ws = None
         self.forward_task = None
         self.is_processing = False
-        self.server_ready = False  # 服务器准备状态
-        self.task_id = None  # 当前任务ID
+        self.server_ready = False  # Server ready state
+        self.task_id = None  # Current task ID
 
-        # 阿里百炼配置
+        # Aliyun Bailian configuration
         self.api_key = config.get("api_key")
         self.model = config.get("model", "paraformer-realtime-v2")
         self.sample_rate = config.get("sample_rate", 16000)
         self.format = config.get("format", "pcm")
 
-        # 可选参数
+        # Optional parameters
         self.vocabulary_id = config.get("vocabulary_id")
         self.disfluency_removal_enabled = config.get("disfluency_removal_enabled", False)
         self.language_hints = config.get("language_hints")
