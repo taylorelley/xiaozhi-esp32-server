@@ -20,9 +20,9 @@ public interface KnowledgeBaseDao extends BaseDao<KnowledgeBaseEntity> {
     void deletePluginMappingByKnowledgeBaseId(@Param("knowledgeBaseId") String knowledgeBaseId);
 
     /**
-     * 通用维度原子updateKnowledge basestatisticsinformation
+     * 通用维度原childupdateKnowledge basestatisticsinformation
      * 
-     * @param datasetId  data集ID
+     * @param datasetId  datacollectionID
      * @param docDelta   documentnumber增量
      * @param chunkDelta chunknumber增量
      * @param tokenDelta Tokennumber增量

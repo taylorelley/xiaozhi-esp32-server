@@ -9,7 +9,7 @@ import xiaozhi.modules.agent.dto.AgentTagDTO;
 
 /**
  * agentdatatransfer object
- * used forinservice层andcontrol层之间传递agentrelated data
+ * used forinservicelayerandcontrollayer之间传递agentrelated data
  */
 @Data
 @Schema(description = "agentobject")
@@ -35,11 +35,11 @@ public class AgentDTO {
     @Schema(description = "memoryModel ID", example = "mem_model_01")
     private String memModelId;
 
-    @Schema(description = "Rolesetparameter", example = "youYes一个专业 customer serviceassistant，负责回答userquestion并提供帮助")
+    @Schema(description = "Rolesetparameter", example = "youYesone专业 customer serviceassistant，负责回答userquestionand提供帮助")
     private String systemPrompt;
 
-    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation 同时，Intelligently maintaininformationevolution trajectory\n" +
-            "according toconversationrecord，summaryuser 重need toinformation，so that in futureconversation to provide more personalized service", required = false)
+    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation simultaneously，Intelligently maintaininformationevolution trajectory\n" +
+            "according toconversationrecord，summaryuser re-need toinformation，so that in futureconversation to provide more personalized service", required = false)
     private String summaryMemory;
 
     @Schema(description = "lastconnectiontime", example = "2024-03-20 10:00:00")

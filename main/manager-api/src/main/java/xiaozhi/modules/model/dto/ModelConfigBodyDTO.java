@@ -13,7 +13,7 @@ public class ModelConfigBodyDTO {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "Model ID,not填writewill自动generate")
+    @Schema(description = "Model ID,not填writewillautomaticgenerate")
     private String id;
 
     @Schema(description = "Model code(e.g.AliLLM、DoubaoTTS)")

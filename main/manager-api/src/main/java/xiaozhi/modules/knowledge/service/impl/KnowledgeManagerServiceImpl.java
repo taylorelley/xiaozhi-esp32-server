@@ -23,12 +23,12 @@ public class KnowledgeManagerServiceImpl implements KnowledgeManagerService {
     public void deleteDatasetWithFiles(String datasetId) {
         log.info("=== cascadedeletestart: datasetId={} ===", datasetId);
 
-        // 1. firstcallfileservice，清理该data集下 alldocumentrecord (含 RAGFlow end)
-        log.info("Step 1: 清理associateddocument...");
+        // 1. firstcallfileservice，clean upthisdatacollection下 alldocumentrecord (含 RAGFlow end)
+        log.info("Step 1: clean upassociateddocument...");
         knowledgeFilesService.deleteDocumentsByDatasetId(datasetId);
 
-        // 2. 再callKnowledge baseservice，彻底注销data集 (含 RAGFlow end)
-        log.info("Step 2: Delete data集主...");
+        // 2. againcallKnowledge baseservice，彻底注销datacollection (含 RAGFlow end)
+        log.info("Step 2: Delete datacollection主...");
         knowledgeBaseService.deleteByDatasetId(datasetId);
 
         log.info("=== cascadedeletesuccess: datasetId={} ===", datasetId);

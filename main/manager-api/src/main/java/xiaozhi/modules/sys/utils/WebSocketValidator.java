@@ -15,7 +15,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 public class WebSocketValidator {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketValidator.class);
 
-    // WebSocket URL正thentable达式
+    // WebSocket URLthentable达式
     private static final Pattern WS_URL_PATTERN = Pattern
             .compile("^wss?://[\\w.-]+(?:\\.[\\w.-]+)*(?::\\d+)?(?:/[\\w.-]*)*$");
 
@@ -50,7 +50,7 @@ public class WebSocketValidator {
 
             client.execute(new WebSocketTestHandler(future), headers, URI.create(url));
 
-            // wait最多5secondsgetconnectionresult
+            // waitmost多5secondsgetconnectionresult
             return future.get(5, TimeUnit.SECONDS);
         } catch (Exception e) {
             logger.error("WebSocketconnectiontestfailed: {}", url, e);

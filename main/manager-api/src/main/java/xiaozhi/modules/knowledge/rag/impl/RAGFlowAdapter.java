@@ -34,9 +34,9 @@ import xiaozhi.modules.knowledge.rag.RAGFlowClient;
 /**
  * RAGFlowKnowledge baseadapterimplement
  * <p>
- * 重构Description (Refactoring Note):
- * thisclassalreadyupgradeasuse {@link RAGFlowClient} 统一process HTTP 通信。
- * 解决了旧代code Timeout 缺失、Error Handling 分散 question。
+ * re-构Description (Refactoring Note):
+ * thisclassalreadyupgradeasuse {@link RAGFlowClient} 统oneprocess HTTP 通信。
+ * 解决旧代code Timeout 缺失、Error Handling 分散 question。
  * </p>
  */
 @Slf4j
@@ -46,7 +46,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
 
     private Map<String, Object> config;
     private ObjectMapper objectMapper;
-    // Client 实example，initialize时create
+    // Client example，initializewhencreate
     private RAGFlowClient client;
 
     public RAGFlowAdapter() {
@@ -77,7 +77,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
         }
         this.client = new RAGFlowClient(baseUrl, apiKey, timeout);
-        log.info("RAGFlowadapterinitializecomplete，Clientalready就绪");
+        log.info("RAGFlowadapterinitializecomplete，Clientalreadythen绪");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * helper method：support多种键名getconfiguration（兼容 camelCase and snake_case）
+     * helper method：support多种key名getconfiguration（compatible camelCase and snake_case）
      */
     private String getConfigValue(Map<String, Object> config, String snakeKey, String camelKey) {
         if (config.containsKey(snakeKey)) {
@@ -126,11 +126,11 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
      */
     private RAGFlowClient getClient() {
         if (this.client == null) {
-            // 尝试重newinitialize
+            // 尝试re-newinitialize
             if (this.config != null) {
                 initialize(this.config);
             } else {
-                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "adapternotinitialize"); // 应该抛出 RuntimeException
+                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "adapternotinitialize"); // 应this抛出 RuntimeException
             }
         }
         return this.client;
@@ -210,7 +210,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 body.add("meta", objectMapper.writeValueAsString(req.getMetaFields()));
             }
             if (req.getChunkMethod() != null) {
-                // willenumerationvalue转as RAGFlow 期待 string（e.g. NAIVE -> naive）
+                // willenumerationvalue转as RAGFlow 期pending string（e.g. NAIVE -> naive）
                 body.add("chunk_method", req.getChunkMethod().name().toLowerCase());
             }
             if (req.getParserConfig() != null) {
@@ -296,7 +296,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public ChunkDTO.ListVO listChunks(String datasetId, String documentId, ChunkDTO.ListReq req) {
         try {
-            // [提灯重构] use objectMapper 动态convertqueryparameter，消除硬code
+            // [提灯re-构] use objectMapper 动态convertqueryparameter，消除硬code
             Map<String, Object> params = objectMapper.convertValue(req, new TypeReference<Map<String, Object>>() {
             });
 
@@ -337,7 +337,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             if (req.getTopK() != null && req.getTopK() < 1) {
                 req.setTopK(1024); // RAGFlow 内部default TopK
             }
-            // 相似度阈value归一化 (0.0 ~ 1.0)
+            // similar度阈value归one化 (0.0 ~ 1.0)
             if (req.getSimilarityThreshold() != null) {
                 if (req.getSimilarityThreshold() < 0f)
                     req.setSimilarityThreshold(0.2f);
@@ -345,7 +345,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     req.setSimilarityThreshold(1.0f);
             }
 
-            // [提灯重构] directly透传强type DTO，由 getClient processserialize
+            // [提灯re-构] directly透传strongtype DTO，by getClient processserialize
             Map<String, Object> response = getClient().post("/api/v1/retrieval", req);
 
             Object dataObj = response.get("data");
@@ -409,7 +409,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.InfoVO createDataset(DatasetDTO.CreateReq req) {
         try {
-            // [Production Fix] 强化defaultvalueprocess，prevent RAGFlow API 因emptystringor缺失field报错 (Code 101)
+            // [Production Fix] strong化defaultvalueprocess，prevent RAGFlow API 因emptystringor缺失field报错 (Code 101)
             // 解决 "Field: <avatar> - Message: <Missing MIME prefix>" etc.validatefailed
             if (StringUtils.isBlank(req.getPermission())) {
                 req.setPermission("me");
@@ -418,33 +418,33 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 req.setChunkMethod("naive");
             }
 
-            // 🤖 自动补全embeddingmodel：优firstuserequest传参，其timesuseconfiguration defaultmodel
+            // 🤖 automatic补全embeddingmodel：priorityfirstuserequest传参，其timesuseconfiguration defaultmodel
             if (StringUtils.isBlank(req.getEmbeddingModel())) {
                 String defaultModel = (String) getConfigValue(config, "embedding_model", "embeddingModel");
                 if (StringUtils.isNotBlank(defaultModel)) {
                     log.info("RAGFlow: useconfiguration defaultembeddingmodel: {}", defaultModel);
                     req.setEmbeddingModel(defaultModel);
                 }
-                // 若configuration也无defaultvalue，then留empty由 RAGFlow serviceend自行兜底（or抛出businessexception）
+                // 若configurationalsonodefaultvalue，then留emptyby RAGFlow serviceend自row兜底（or抛出businessexception）
             }
 
-            // 🖼️ 自动补全avatar：若asemptythen提供一个 1x1 透明像素，prevent RAGFlow validate MIME Prefix failed
+            // 🖼️ automatic补全avatar：若asemptythen提供one 1x1 透明像素，prevent RAGFlow validate MIME Prefix failed
             if (StringUtils.isBlank(req.getAvatar())) {
                 req.setAvatar(
                         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
             }
 
-            // directlywill强typerequestobject传to Client，Jackson 会process JsonProperty mapping
+            // directlywillstrongtyperequestobject传to Client，Jackson willprocess JsonProperty mapping
             Map<String, Object> response = getClient().post("/api/v1/datasets", req);
 
-            // 安全地get data 并via DatasetDTO.InfoVO perform全量mapping
+            // 安全get data andvia DatasetDTO.InfoVO perform全量mapping
             Object dataObj = response.get("data");
             if (dataObj != null) {
                 return objectMapper.convertValue(dataObj, DatasetDTO.InfoVO.class);
             }
             throw new RenException(ErrorCode.RAG_API_ERROR, "Invalid response from createDataset: missing data object");
         } catch (Exception e) {
-            log.error("createdata集failed", e);
+            log.error("createdatacollectionfailed", e);
             throw convertToRenException(e);
         }
     }
@@ -452,7 +452,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.InfoVO updateDataset(String datasetId, DatasetDTO.UpdateReq req) {
         try {
-            // RAGFlow API update建议pathwith ID
+            // RAGFlow API updatesuggestionpathwith ID
             Map<String, Object> response = getClient().put("/api/v1/datasets/" + datasetId, req);
 
             Object dataObj = response.get("data");
@@ -461,7 +461,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return null;
         } catch (Exception e) {
-            log.error("updatedata集failed", e);
+            log.error("updatedatacollectionfailed", e);
             throw convertToRenException(e);
         }
     }
@@ -478,7 +478,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return null;
         } catch (Exception e) {
-            log.error("batchDelete data集failed", e);
+            log.error("batchDelete datacollectionfailed", e);
             throw convertToRenException(e);
         }
     }
@@ -528,14 +528,14 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public Object postSearchBotAsk(Map<String, Object> config, Object body,
             Consumer<String> onData) {
-        // SearchBot 实际上Yes Dataset retrieve 一种封装，orYesnot公开  API？
-        // 假设 RAGFlow no显式  /searchbots interface供 SDK call，而Yes Dataset Retrieval or Chat。
-        // 但according to BotDTO，它Yes /api/v1/searchbots/ask (假设)
-        // this里  config 可能Yes覆盖用 ，orI们onlyYes用 adapter 实examplealready有  client。
-        // 但 Bot 可能usenot 同  API Key？通常 Adapter 实examplebind了一个 Key。
+        // SearchBot 际上Yes Dataset retrieve one种封装，orYesnot公开  API？
+        // 假设 RAGFlow no显式  /searchbots interface供 SDK call，whileYes Dataset Retrieval or Chat。
+        // butaccording to BotDTO，它Yes /api/v1/searchbots/ask (假设)
+        // thisin  config 可canYes覆盖用 ，orIsonlyYes用 adapter examplealreadyhas  client。
+        // but Bot 可canusenot 同  API Key？通常 Adapter examplebindone Key。
         // if Bot usesystem Key，thendirectly用 getClient()。
 
-        // 暂时假设 endpoint /api/v1/searchbots/ask 存in（orclass似 ）
+        // 暂when假设 endpoint /api/v1/searchbots/ask storein（orclass似 ）
         // ifYesstreaming:
         try {
             getClient().postStream("/api/v1/searchbots/ask", body, onData);
@@ -558,8 +558,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         }
     }
 
-    // 复用原有 辅助parse方法，保持兼容
-    // [Bug Fix] not 再吞掉deserializeexception，避免上层误判"documentalreadydelete"
+    // 复用原has 辅助parsemethod，保持compatible
+    // [Bug Fix] not again吞掉deserializeexception，避免上layer误判"documentalreadydelete"
     private PageData<KnowledgeFilesDTO> parseDocumentListResponse(Object dataObj, long curPage, long pageSize) {
         if (dataObj == null) {
             return new PageData<>(new ArrayList<>(), 0);
@@ -568,18 +568,18 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         Map<String, Object> dataMap = (Map<String, Object>) dataObj;
         List<Map<String, Object>> documents = (List<Map<String, Object>>) dataMap.get("docs");
         if (documents == null || documents.isEmpty()) {
-            // RAGFlow 明确return了emptydocumentlist，thisYes合法 "真empty"
+            // RAGFlow 明确returnemptydocumentlist，thisYes合法 "真empty"
             return new PageData<>(new ArrayList<>(), 0);
         }
 
         List<KnowledgeFilesDTO> list = new ArrayList<>();
         for (Object docObj : documents) {
             try {
-                // 单documentconvert容错：一个documentdeserializefailednot 影响其他document
+                // documentconvert容错：onedocumentdeserializefailednot 影响otherdocument
                 DocumentDTO.InfoVO info = objectMapper.convertValue(docObj, DocumentDTO.InfoVO.class);
                 list.add(mapToKnowledgeFilesDTO(info, null));
             } catch (Exception e) {
-                log.warn("[RAGFlow] 单document DTO convertfailed，跳该document: {}", e.getMessage());
+                log.warn("[RAGFlow] document DTO convertfailed，skipthisdocument: {}", e.getMessage());
             }
         }
 
@@ -616,8 +616,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         }
 
         if (result == null) {
-            log.error("not能fromRAGFlowresponseextracttodocumentId，responsecontent: {}", dataObj);
-            // this里应该return一个minimum化 containbaseinformation  DTO 而not Yes null，prevent上游 NPE
+            log.error("notcanfromRAGFlowresponseextracttodocumentId，responsecontent: {}", dataObj);
+            // thisin应thisreturnoneminimum化 containbaseinformation  DTO whilenot Yes null，prevent上游 NPE
             result = new KnowledgeFilesDTO();
             result.setDatasetId(datasetId);
             result.setName(file.getOriginalFilename());
@@ -629,8 +629,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * will RAGFlow  强type InfoVO mappingto内部use  KnowledgeFilesDTO
-     * ensureallavailablefield（name、large小、status、configurationetc.）都得to全量synchronous
+     * will RAGFlow  strongtype InfoVO mappingto内部use  KnowledgeFilesDTO
+     * ensureallavailablefield（name、largesmall、status、configurationetc.）all得to全量synchronous
      */
     private KnowledgeFilesDTO mapToKnowledgeFilesDTO(DocumentDTO.InfoVO info, String datasetId) {
         KnowledgeFilesDTO dto = new KnowledgeFilesDTO();
@@ -669,7 +669,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         dto.setSourceType(info.getSourceType());
         dto.setChunkCount(info.getChunkCount() != null ? info.getChunkCount().intValue() : 0);
         dto.setTokenCount(info.getTokenCount());
-        dto.setError(info.getProgressMsg()); // will进度Descriptionmappingaserrorinformation提示
+        dto.setError(info.getProgressMsg()); // willprogressDescriptionmappingaserrorinformationhint
 
         // 扩展fieldsynchronous
         dto.setMetaFields(info.getMetaFields());

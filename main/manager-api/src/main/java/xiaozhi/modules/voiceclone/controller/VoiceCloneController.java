@@ -83,20 +83,20 @@ public class VoiceCloneController {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_NOT_AUDIO_FILE);
             }
 
-            // 加强verificationfileextension
+            // 加strongverificationfileextension
             String originalFilename = voiceFile.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
             if (!extension.equals(".mp3") && !extension.equals(".wav")) {
                 return new Result<String>().error("onlyallowupload.mp3and.wavformat file");
             }
 
-            // verificationFile size (最large10MB)
+            // verificationFile size (mostlarge10MB)
             if (voiceFile.getSize() > 10 * 1024 * 1024) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
             }
-            // 检查Permission
+            // checkPermission
             checkPermission(id);
-            // callservice层process
+            // callservicelayerprocess
             voiceCloneService.uploadVoice(id, voiceFile);
 
             return new Result<String>();
@@ -119,7 +119,7 @@ public class VoiceCloneController {
             if (name == null || name.isEmpty()) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_NAME_NOT_NULL);
             }
-            // 检查Permission
+            // checkPermission
             checkPermission(id);
 
             voiceCloneService.updateName(id, name);
@@ -134,7 +134,7 @@ public class VoiceCloneController {
     @Operation(summary = "getaudiodownloadID")
     @RequiresPermissions("sys:role:normal")
     public Result<String> getAudioId(@PathVariable("id") String id) {
-        // 检查Permission
+        // checkPermission
         checkPermission(id);
         byte[] audioData = voiceCloneService.getVoiceData(id);
         if (audioData == null) {
@@ -183,7 +183,7 @@ public class VoiceCloneController {
     public Result<String> cloneAudio(@RequestBody Map<String, String> params) {
         String cloneId = params.get("cloneId");
         checkPermission(cloneId);
-        // callservice层performvoice克隆training
+        // callservicelayerperformvoiceclonetraining
         voiceCloneService.cloneAudio(cloneId);
         return new Result<String>();
     }

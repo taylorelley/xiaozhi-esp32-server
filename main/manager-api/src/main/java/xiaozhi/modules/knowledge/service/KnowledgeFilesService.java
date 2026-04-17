@@ -19,7 +19,7 @@ public interface KnowledgeFilesService {
         /**
          * paginationquerydocumentlist
          * 
-         * @param knowledgeFilesDTO queryitems件
+         * @param knowledgeFilesDTO queryitemsitem
          * @param page              page number
          * @param limit             per pagecount
          * @return paginationdata
@@ -31,7 +31,7 @@ public interface KnowledgeFilesService {
          * 
          * @param documentId documentID
          * @param datasetId  Knowledge baseID
-         * @return documentdetails (强type InfoVO)
+         * @return documentdetails (strongtype InfoVO)
          */
         DocumentDTO.InfoVO getByDocumentId(String documentId, String datasetId);
 
@@ -42,7 +42,7 @@ public interface KnowledgeFilesService {
          * @param file         upload file
          * @param name         documentname
          * @param metaFields   datafield
-         * @param chunkMethod  chunk方法
+         * @param chunkMethod  chunkmethod
          * @param parserConfig parserconfiguration
          * @return upload documentinformation
          */
@@ -76,7 +76,7 @@ public interface KnowledgeFilesService {
         boolean parseDocuments(String datasetId, List<String> documentIds);
 
         /**
-         * 列出specifieddocument slice
+         * listspecifieddocument slice
          * 
          * @param datasetId  Knowledge baseID
          * @param documentId documentID
@@ -94,30 +94,30 @@ public interface KnowledgeFilesService {
         RetrievalDTO.ResultVO retrievalTest(RetrievalDTO.TestReq req);
 
         /**
-         * savedocument影子record
+         * savedocumentshadowrecord
          */
         void saveDocumentShadow(String datasetId, KnowledgeFilesDTO result, String originalName, String chunkMethod,
                         Map<String, Object> parserConfig);
 
         /**
-         * batchdeletedocument影子record并synchronousstatisticsdata
+         * batchdeletedocumentshadowrecordandsynchronousstatisticsdata
          * 
          * @param documentIds documentIDlist
-         * @param datasetId   data集ID
-         * @param chunkDelta  待扣减 totalchunknumber
-         * @param tokenDelta  待扣减 totalTokennumber
+         * @param datasetId   datacollectionID
+         * @param chunkDelta  pending扣减 totalchunknumber
+         * @param tokenDelta  pending扣减 totalTokennumber
          */
         void deleteDocumentShadows(List<String> documentIds, String datasetId, Long chunkDelta, Long tokenDelta);
 
         /**
-         * according todata集ID清理allassociateddocument (cascadedelete专用)
+         * according todatacollectionIDclean upallassociateddocument (cascadedelete专用)
          * 
-         * @param datasetId data集ID
+         * @param datasetId datacollectionID
          */
         void deleteDocumentsByDatasetId(String datasetId);
 
         /**
-         * synchronousall处于 RUNNING status document (供定时taskcall)
+         * synchronousall处于 RUNNING status document (供定whentaskcall)
          */
         void syncRunningDocuments();
 }

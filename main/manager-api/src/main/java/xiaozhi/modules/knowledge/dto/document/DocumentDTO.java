@@ -29,15 +29,15 @@ public class DocumentDTO {
     public static class UploadReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "Knowledge base ID (必须specified归属)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Knowledge base ID (mustspecified归)", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_id")
         @NotBlank(message = "Knowledge baseIDcannot be empty")
         private String datasetId;
 
-        @Schema(description = "File name (ifspecified，then覆盖原始File name)")
+        @Schema(description = "File name (ifspecified，then覆盖originalFile name)")
         private String name;
 
-        @Schema(description = "chunk方法")
+        @Schema(description = "chunkmethod")
         @JsonProperty("chunk_method")
         private DocumentDTO.InfoVO.ChunkMethod chunkMethod;
 
@@ -70,13 +70,13 @@ public class DocumentDTO {
     public static class UpdateReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "newdocumentname (必须containfile后缀，andnot 能更改原始type)")
+        @Schema(description = "newdocumentname (mustcontainfileafter缀，andnot canchangeoriginaltype)")
         private String name;
 
-        @Schema(description = "enable/disablestatus (true: enable, false: disable; disable后not 参andretrieve)")
+        @Schema(description = "enable/disablestatus (true: enable, false: disable; disableafternot 参andretrieve)")
         private Boolean enabled;
 
-        @Schema(description = "newparse方法 (updatethisitem会重置parsestatus)")
+        @Schema(description = "newparsemethod (updatethisitemwillre-置parsestatus)")
         @JsonProperty("chunk_method")
         private InfoVO.ChunkMethod chunkMethod;
 
@@ -104,22 +104,22 @@ public class DocumentDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "Sort orderfield (可选: create_time, name, size; default: create_time)")
+        @Schema(description = "Sort orderfield (可select: create_time, name, size; default: create_time)")
         private String orderby;
 
-        @Schema(description = "YesNodescending排列 (true: 最new/最largein前; false: 最旧/minimumin前; default: true)")
+        @Schema(description = "YesNodescending排column (true: mostnew/mostlargeinbefore; false: most旧/minimuminbefore; default: true)")
         private Boolean desc;
 
         @Schema(description = "精确filter: document ID")
         private String id;
 
-        @Schema(description = "精确filter: documentcompletename (含后缀)")
+        @Schema(description = "精确filter: documentcompletename (含after缀)")
         private String name;
 
         @Schema(description = "模糊search: documentnamekeyword")
         private String keywords;
 
-        @Schema(description = "filter: file后缀list (e.g. ['pdf', 'docx'])")
+        @Schema(description = "filter: fileafter缀list (e.g. ['pdf', 'docx'])")
         private List<String> suffix;
 
         @Schema(description = "filter: runstatuslist")
@@ -147,7 +147,7 @@ public class DocumentDTO {
         private static final long serialVersionUID = 1L;
 
         @Schema(description = "document ID list", requiredMode = Schema.RequiredMode.REQUIRED)
-        @JsonProperty("ids") // as了兼容，也可以考虑support document_ids，但this里统一叫 ids
+        @JsonProperty("ids") // ascompatible，also可to考虑support document_ids，butthisin统one叫 ids
         @JsonAlias("document_ids")
         @NotEmpty(message = "documentIDlistcannot be empty")
         private List<String> ids;
@@ -175,11 +175,11 @@ public class DocumentDTO {
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "Document parsing方法 (决定了documente.g.何isslice)")
+        @Schema(description = "Document parsingmethod (决定documente.g.何isslice)")
         @JsonProperty("chunk_method")
         private ChunkMethod chunkMethod;
 
-        @Schema(description = "associated  ETL Pipeline ID (e.g.有)")
+        @Schema(description = "associated  ETL Pipeline ID (e.g.has)")
         @JsonProperty("pipeline_id")
         private String pipelineId;
 
@@ -201,13 +201,13 @@ public class DocumentDTO {
         @Schema(description = "documentname (containextension)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String name;
 
-        @Schema(description = "file存储pathorbit置identifier")
+        @Schema(description = "filestore储pathorbit置identifier")
         private String location;
 
         @Schema(description = "File size (unit: Bytes)")
         private Long size;
 
-        @Schema(description = "contain  Token total (parse后statistics)")
+        @Schema(description = "contain  Token total (parseafterstatistics)")
         @JsonProperty("token_count")
         private Long tokenCount;
 
@@ -215,10 +215,10 @@ public class DocumentDTO {
         @JsonProperty("chunk_count")
         private Long chunkCount;
 
-        @Schema(description = "parse进度 (0.0 ~ 1.0, 1.0 representscomplete)")
+        @Schema(description = "parseprogress (0.0 ~ 1.0, 1.0 representscomplete)")
         private Double progress;
 
-        @Schema(description = "current进度Descriptionorerrorinformation")
+        @Schema(description = "currentprogressDescriptionorerrorinformation")
         @JsonProperty("progress_msg")
         private String progressMsg;
 
@@ -226,15 +226,15 @@ public class DocumentDTO {
         @JsonProperty("process_begin_at")
         private String processBeginAt;
 
-        @Schema(description = "processtotal耗时 (unit: seconds)")
+        @Schema(description = "processtotal耗when (unit: seconds)")
         @JsonProperty("process_duration")
         private Double processDuration;
 
-        @Schema(description = "custom metadatafield (Key-Value 键valuefor)")
+        @Schema(description = "custom metadatafield (Key-Value keyvaluefor)")
         @JsonProperty("meta_fields")
         private Map<String, Object> metaFields;
 
-        @Schema(description = "file后缀名 (not 含点)")
+        @Schema(description = "fileafter缀名 (not 含点)")
         private String suffix;
 
         @Schema(description = "Document parsingrunstatus")
@@ -260,43 +260,43 @@ public class DocumentDTO {
         private String updateDate;
 
         /**
-         * parse方法enumeration (ChunkMethod)
+         * parsemethodenumeration (ChunkMethod)
          */
         public enum ChunkMethod {
             @Schema(description = "通用mode: 适used forlarge多number纯textor混合document")
             @JsonProperty("naive")
             NAIVE,
-            @Schema(description = "手动mode: allowuser手动编辑slice")
+            @Schema(description = "manualmode: allowusermanual编辑slice")
             @JsonProperty("manual")
             MANUAL,
-            @Schema(description = "问答mode: 专门优化 Q&A format document")
+            @Schema(description = "问答mode: 专门priority化 Q&A format document")
             @JsonProperty("qa")
             QA,
-            @Schema(description = "table格mode: 专门优化 Excel or CSV etc.table格data")
+            @Schema(description = "table格mode: 专门priority化 Excel or CSV etc.table格data")
             @JsonProperty("table")
             TABLE,
-            @Schema(description = "论文mode: 针for学术论文排版优化")
+            @Schema(description = "论文mode: 针for学术论文排版priority化")
             @JsonProperty("paper")
             PAPER,
-            @Schema(description = "书籍mode: 针for书籍章节结构优化")
+            @Schema(description = "书籍mode: 针for书籍章节结构priority化")
             @JsonProperty("book")
             BOOK,
-            @Schema(description = "法律法规mode: 针for法律items文结构优化")
+            @Schema(description = "法律法规mode: 针for法律items文结构priority化")
             @JsonProperty("laws")
             LAWS,
-            @Schema(description = "演示文稿mode: 针for PPT etc.演示file优化")
+            @Schema(description = "演示文稿mode: 针for PPT etc.演示filepriority化")
             @JsonProperty("presentation")
             PRESENTATION,
             @Schema(description = "图片mode: 针for图片contentperform OCR andDescription")
             @JsonProperty("picture")
             PICTURE,
-            @Schema(description = "整mode: will整个documentas一个slice")
+            @Schema(description = "整mode: will整documentasoneslice")
             @JsonProperty("one")
             ONE,
             @Schema(description = "知识图谱mode: extractentity关系build图谱")
             @JsonProperty("knowledge_graph")
             KNOWLEDGE_GRAPH,
-            @Schema(description = "邮件mode: 针for邮件format优化")
+            @Schema(description = "邮itemmode: 针for邮itemformatpriority化")
             @JsonProperty("email")
             EMAIL;
         }
@@ -305,13 +305,13 @@ public class DocumentDTO {
          * runstatusenumeration (RunStatus)
          */
         public enum RunStatus {
-            @Schema(description = "notstart: waitparse队列")
+            @Schema(description = "notstart: waitparse队column")
             @JsonProperty("UNSTART")
             UNSTART,
-            @Schema(description = "perform: 正inparseorindex")
+            @Schema(description = "perform: inparseorindex")
             @JsonProperty("RUNNING")
             RUNNING,
-            @Schema(description = "already取消: user手动取消")
+            @Schema(description = "alreadycancel: usermanualcancel")
             @JsonProperty("CANCEL")
             CANCEL,
             @Schema(description = "alreadycomplete: parsesuccess")
@@ -329,7 +329,7 @@ public class DocumentDTO {
             @Schema(description = "深度document理解model: 适合复杂排版")
             @JsonProperty("DeepDOC")
             DeepDOC,
-            @Schema(description = "简单规thenmodel: 适合纯text")
+            @Schema(description = "简规thenmodel: 适合纯text")
             @JsonProperty("Simple")
             Simple;
         }
@@ -343,7 +343,7 @@ public class DocumentDTO {
         public static class ParserConfig implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "slice最large Token number (建议value: 512, 1024, 2048)")
+            @Schema(description = "slicemostlarge Token number (suggestionvalue: 512, 1024, 2048)")
             @JsonProperty("chunk_token_num")
             private Integer chunkTokenNum;
 
@@ -358,15 +358,15 @@ public class DocumentDTO {
             @JsonProperty("html4excel")
             private Boolean html4excel;
 
-            @Schema(description = "自动extractkeywordcount (0 representsnot extract)")
+            @Schema(description = "automaticextractkeywordcount (0 representsnot extract)")
             @JsonProperty("auto_keywords")
             private Integer autoKeywords;
 
-            @Schema(description = "自动generatequestioncount (0 representsnot generate)")
+            @Schema(description = "automaticgeneratequestioncount (0 representsnot generate)")
             @JsonProperty("auto_questions")
             private Integer autoQuestions;
 
-            @Schema(description = "自动generateTagcount")
+            @Schema(description = "automaticgenerateTagcount")
             @JsonProperty("topn_tags")
             private Integer topnTags;
 
@@ -394,7 +394,7 @@ public class DocumentDTO {
             @Builder
             @NoArgsConstructor
             @AllArgsConstructor
-            @Schema(description = "GraphRAG (图增强retrieve) configuration")
+            @Schema(description = "GraphRAG (图增strongretrieve) configuration")
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class GraphRagConfig implements Serializable {
                 private static final long serialVersionUID = 1L;

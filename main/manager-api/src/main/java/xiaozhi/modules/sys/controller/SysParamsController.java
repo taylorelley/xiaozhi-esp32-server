@@ -59,7 +59,7 @@ public class SysParamsController {
             @Parameter(name = Constant.PAGE, description = "currentpage number，from1start", in = ParameterIn.QUERY, required = true, ref = "int"),
             @Parameter(name = Constant.LIMIT, description = "per pagerecordnumber", in = ParameterIn.QUERY, required = true, ref = "int"),
             @Parameter(name = Constant.ORDER_FIELD, description = "Sort orderfield", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "Sort order方式，可选value(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.ORDER, description = "Sort orderway，可selectvalue(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
             @Parameter(name = "paramCode", description = "Parameter codeorparameterRemark", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:role:superAdmin")
@@ -111,7 +111,7 @@ public class SysParamsController {
         // verificationvoiceprintAddress
         validateVoicePrint(dto.getParamCode(), dto.getParamValue());
 
-        // validatemqttkey长度
+        // validatemqttkeylength
         validateMqttSecretLength(dto.getParamCode(), dto.getParamValue());
 
         sysParamsService.update(dto);
@@ -122,7 +122,7 @@ public class SysParamsController {
     /**
      * verificationWebSocketAddresslist
      *
-     * @param urls WebSocketAddresslist，以分number分隔
+     * @param urls WebSocketAddresslist，to分number分隔
      * @return verificationresult
      */
     private void validateWebSocketUrls(String paramCode, String urls) {
@@ -135,7 +135,7 @@ public class SysParamsController {
         }
         for (String url : wsUrls) {
             if (StringUtils.isNotBlank(url)) {
-                // 检查YesNocontainlocalhostor127.0.0.1
+                // checkYesNocontainlocalhostor127.0.0.1
                 if (url.contains("localhost") || url.contains("127.0.0.1")) {
                     throw new RenException(ErrorCode.WEBSOCKET_URL_LOCALHOST);
                 }
@@ -177,7 +177,7 @@ public class SysParamsController {
             return;
         }
 
-        // 检查YesNocontainlocalhostor127.0.0.1
+        // checkYesNocontainlocalhostor127.0.0.1
         if (url.contains("localhost") || url.contains("127.0.0.1")) {
             throw new RenException(ErrorCode.OTA_URL_LOCALHOST);
         }
@@ -196,7 +196,7 @@ public class SysParamsController {
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_ACCESS_FAILED);
             }
-            // 检查responsecontentYesNocontainOTArelatedinformation
+            // checkresponsecontentYesNocontainOTArelatedinformation
             String body = response.getBody();
             if (body == null || !body.contains("OTA")) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_FORMAT_ERROR);
@@ -226,7 +226,7 @@ public class SysParamsController {
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_ACCESS_FAILED);
             }
-            // 检查responsecontentYesNocontainmcprelatedinformation
+            // checkresponsecontentYesNocontainmcprelatedinformation
             String body = response.getBody();
             if (body == null || !body.contains("success")) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_FORMAT_ERROR);
@@ -260,7 +260,7 @@ public class SysParamsController {
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_ACCESS_FAILED);
             }
-            // 检查responsecontent
+            // checkresponsecontent
             String body = response.getBody();
             if (body == null || !body.contains("healthy")) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_FORMAT_ERROR);
@@ -270,7 +270,7 @@ public class SysParamsController {
         }
     }
 
-    // validatemqttkey长度and复杂度
+    // validatemqttkeylengthand复杂度
     private void validateMqttSecretLength(String paramCode, String secret) {
         if (!paramCode.equals(Constant.SERVER_MQTT_SECRET)) {
             return;
@@ -281,7 +281,7 @@ public class SysParamsController {
         if (secret.length() < 8) {
             throw new RenException(ErrorCode.MQTT_SECRET_LENGTH_INSECURE);
         }
-        // 检查YesNo同时containlarge小write字母
+        // checkYesNosimultaneouslycontainlargesmallwrite字母
         if (!secret.matches(".*[a-z].*") || !secret.matches(".*[A-Z].*")) {
             throw new RenException(ErrorCode.MQTT_SECRET_CHARACTER_INSECURE);
         }

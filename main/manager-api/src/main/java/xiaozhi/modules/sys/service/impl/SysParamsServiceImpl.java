@@ -131,12 +131,12 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                 break;
             case "json":
                 try {
-                    // 首first检查YesNo以 { 开header，以 } 结尾
+                    // 首firstcheckYesNoto { 开header，to } 结尾
                     String trimmedValue = paramValue.trim();
                     if (!trimmedValue.startsWith("{") || !trimmedValue.endsWith("}")) {
                         throw new RenException(ErrorCode.PARAM_JSON_INVALID);
                     }
-                    // 然后尝试parseJSON
+                    // 然after尝试parseJSON
                     JsonUtils.parseObject(paramValue, Object.class);
                 } catch (Exception e) {
                     throw new RenException(ErrorCode.PARAM_JSON_INVALID);
@@ -242,11 +242,11 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
      * @return YesNovia
      */
     private boolean detectingSMSParameters(String paramCode, String paramValue) {
-        // determineYesNoYesenableMobile registration Parameter code，ifnot YesParameter code，not needdetect其他SMSparameter，directlyreturntrue
+        // determineYesNoYesenableMobile registration Parameter code，ifnot YesParameter code，not needdetectotherSMSparameter，directlyreturntrue
         if (!Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue().equals(paramCode)) {
             return true;
         }
-        // determineYesNoasclose，ifYescloseSMSregister，not needdetect其他SMSparameter，directlyreturntrue
+        // determineYesNoasclose，ifYescloseSMSregister，not needdetectotherSMSparameter，directlyreturntrue
         if ("false".equalsIgnoreCase(paramValue)) {
             return true;
         }
@@ -264,7 +264,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             }
         });
         if (!str.isEmpty()) {
-            String promptStr = "%stheseparameternot 可以asempty";
+            String promptStr = "%stheseparameternot 可toasempty";
             String substring = str.substring(1, str.length());
             throw new RenException(promptStr.formatted(substring));
         }

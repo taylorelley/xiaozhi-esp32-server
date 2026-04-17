@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * agentuser个人chatdata VO
+ * agentuser人chatdata VO
  */
 @Data
 public class AgentChatHistoryUserVO {

@@ -23,7 +23,7 @@ public class DocumentEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "this地唯一ID")
+    @Schema(description = "this唯oneID")
     private String id;
 
     @Schema(description = "Knowledge baseID (associated ai_rag_dataset.dataset_id)")
@@ -41,7 +41,7 @@ public class DocumentEntity implements Serializable {
     @Schema(description = "File type(pdf/doc/txtetc.)")
     private String type;
 
-    @Schema(description = "chunk方法")
+    @Schema(description = "chunkmethod")
     private String chunkMethod;
 
     @Schema(description = "parseconfiguration(JSON String)")
@@ -53,13 +53,13 @@ public class DocumentEntity implements Serializable {
     @Schema(description = "runstatus (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
     private String run;
 
-    @Schema(description = "parse进度 (0.0 ~ 1.0)")
+    @Schema(description = "parseprogress (0.0 ~ 1.0)")
     private Double progress;
 
     @Schema(description = "缩略图 (Base64 or URL)")
     private String thumbnail;
 
-    @Schema(description = "parse耗时 (unit: seconds)")
+    @Schema(description = "parse耗when (unit: seconds)")
     private Double processDuration;
 
     @Schema(description = "custom metadata (JSON format)")
@@ -92,6 +92,6 @@ public class DocumentEntity implements Serializable {
     @TableField(fill = FieldFill.UPDATE)
     private Date updatedAt;
 
-    @Schema(description = "最newsynchronoustime")
+    @Schema(description = "mostnewsynchronoustime")
     private Date lastSyncAt;
 }

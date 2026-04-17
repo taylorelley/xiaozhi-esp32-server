@@ -15,12 +15,12 @@ public class AESUtils {
      * AESencrypt
      * 
      * @param key       key（16bit、24bitor32bit）
-     * @param plainText 待encryptstring
-     * @return encrypt后 Base64string
+     * @param plainText pendingencryptstring
+     * @return encryptafter Base64string
      */
     public static String encrypt(String key, String plainText) {
         try {
-            // ensurekey长度as16、24or32bit
+            // ensurekeylengthas16、24or32bit
             byte[] keyBytes = padKey(key.getBytes(StandardCharsets.UTF_8));
             SecretKeySpec secretKey = new SecretKeySpec(keyBytes, ALGORITHM);
 
@@ -38,12 +38,12 @@ public class AESUtils {
      * AESdecrypt
      * 
      * @param key           key（16bit、24bitor32bit）
-     * @param encryptedText 待decrypt Base64string
-     * @return decrypt后 string
+     * @param encryptedText pendingdecrypt Base64string
+     * @return decryptafter string
      */
     public static String decrypt(String key, String encryptedText) {
         try {
-            // ensurekey长度as16、24or32bit
+            // ensurekeylengthas16、24or32bit
             byte[] keyBytes = padKey(key.getBytes(StandardCharsets.UTF_8));
             SecretKeySpec secretKey = new SecretKeySpec(keyBytes, ALGORITHM);
 
@@ -59,10 +59,10 @@ public class AESUtils {
     }
 
     /**
-     * 填充keytospecified长度（16、24or32bit）
+     * 填充keytospecifiedlength（16、24or32bit）
      * 
-     * @param keyBytes 原始keybytearray
-     * @return 填充后 keybytearray
+     * @param keyBytes originalkeybytearray
+     * @return 填充after keybytearray
      */
     private static byte[] padKey(byte[] keyBytes) {
         int keyLength = keyBytes.length;
@@ -70,7 +70,7 @@ public class AESUtils {
             return keyBytes;
         }
 
-        // ifkey长度not 足，用0填充；if超，截取前32bit
+        // ifkeylengthnot 足，用0填充；if超，截取before32bit
         byte[] paddedKey = new byte[32];
         System.arraycopy(keyBytes, 0, paddedKey, 0, Math.min(keyLength, 32));
         return paddedKey;

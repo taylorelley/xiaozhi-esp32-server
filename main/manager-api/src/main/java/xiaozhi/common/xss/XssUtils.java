@@ -5,7 +5,7 @@ import org.jsoup.safety.Safelist;
 
 /**
  * XSSfiltertoolclass
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class XssUtils extends Safelist {
@@ -18,7 +18,7 @@ public class XssUtils extends Safelist {
     }
 
     /**
-     * XSSfilter白名单
+     * XSSfilter白名
      */
     private static Safelist xssWhitelist() {
         return new Safelist()
@@ -30,7 +30,7 @@ public class XssUtils extends Safelist {
                         "ul",
                         "embed", "object", "param", "span")
 
-                // support Tag属
+                // support Tag
                 .addAttributes("a", "href", "class", "style", "target", "rel", "nofollow")
                 .addAttributes("blockquote", "cite")
                 .addAttributes("code", "class", "style")
@@ -55,7 +55,7 @@ public class XssUtils extends Safelist {
                 .addAttributes("param", "name", "value")
                 .addAttributes("span", "class", "style")
 
-                // Tag属corresponding 协议
+                // Tagcorresponding 协议
                 .addProtocols("a", "href", "ftp", "http", "https", "mailto")
                 .addProtocols("img", "src", "http", "https")
                 .addProtocols("blockquote", "cite", "http", "https")

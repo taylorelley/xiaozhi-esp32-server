@@ -37,13 +37,13 @@ public class KnowledgeFilesDTO implements Serializable {
     @Schema(description = "filepath")
     private String filePath;
 
-    @Schema(description = "parse进度 (0.0 ~ 1.0)")
+    @Schema(description = "parseprogress (0.0 ~ 1.0)")
     private Double progress;
 
     @Schema(description = "缩略图 (Base64 or URL)")
     private String thumbnail;
 
-    @Schema(description = "parse耗时 (unit: seconds)")
+    @Schema(description = "parse耗when (unit: seconds)")
     private Double processDuration;
 
     @Schema(description = "sourcetype (local, s3, url etc.)")
@@ -52,7 +52,7 @@ public class KnowledgeFilesDTO implements Serializable {
     @Schema(description = "datafield (Map format)")
     private Map<String, Object> metaFields;
 
-    @Schema(description = "chunk方法")
+    @Schema(description = "chunkmethod")
     private String chunkMethod;
 
     @Schema(description = "parserconfiguration")

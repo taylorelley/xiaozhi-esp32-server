@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-// 支持的语言类型
+// Supported language types
 export type Language = 'zh_CN' | 'en' | 'zh_TW' | 'de' | 'vi' | 'pt_BR'
 
 export interface LangStore {
@@ -12,14 +12,14 @@ export interface LangStore {
 export const useLangStore = defineStore(
   'lang',
   (): LangStore => {
-    // 从本地存储获取语言设置，如果没有则使用默认值
+    // Get the language setting from local storage. If missing, use the default value.
     const savedLang = uni.getStorageSync('app_language') as Language | null
-    const currentLang = ref<Language>(savedLang || 'zh_CN')
+    const currentLang = ref<Language>(savedLang || 'en')
 
-    // 切换语言
+    // Switch language
     const changeLang = (lang: Language) => {
       currentLang.value = lang
-      // 将语言设置保存到本地存储
+      // Save the language setting to local storage
       uni.setStorageSync('app_language', lang)
     }
 

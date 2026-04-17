@@ -20,7 +20,7 @@ import xiaozhi.modules.agent.entity.AgentChatHistoryEntity;
 public interface AiAgentChatHistoryDao extends BaseMapper<AgentChatHistoryEntity> {
 
     /**
-     * according toAgent IDdeletechat历史record
+     * according toAgent IDdeletechathistoryrecord
      *
      * @param agentId Agent ID
      */

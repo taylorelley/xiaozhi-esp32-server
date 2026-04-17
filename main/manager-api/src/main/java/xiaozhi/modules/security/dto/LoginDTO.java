@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * logintable单
+ * logintable
  */
 @Data
-@Schema(description = "logintable单")
+@Schema(description = "logintable")
 public class LoginDTO implements Serializable {
 
     @Schema(description = "Mobile phone number")

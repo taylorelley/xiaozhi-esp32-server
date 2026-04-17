@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * 资sourceprocesstool
+ * resourcesourceprocesstool
  */
 @AllArgsConstructor
 @Slf4j
@@ -23,8 +23,8 @@ public class ResourcesUtils {
     private ResourceLoader resourceLoader;
 
     /**
-     * read取资source，returnstring
-     * @param fileName 资sourcepath：resources下start
+     * read取resourcesource，returnstring
+     * @param fileName resourcesourcepath：resources下start
      * @return string
      */
     public String loadString(String fileName)  {
@@ -37,7 +37,7 @@ public class ResourcesUtils {
                 luaScriptBuilder.append(line).append("\n");
             }
         }  catch (IOException e){
-            log.error("方法：loadString()read取资sourcefailed--{}",e.getMessage());
+            log.error("method：loadString()read取resourcesourcefailed--{}",e.getMessage());
             throw new RenException(ErrorCode.RESOURCE_READ_ERROR);
         }
         return luaScriptBuilder.toString();

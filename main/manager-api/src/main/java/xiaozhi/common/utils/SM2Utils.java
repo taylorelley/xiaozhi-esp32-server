@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SM2encrypttoolclass（采用十六进制format，andchancheng-archive-serviceitem目保持一致）
+ * SM2encrypttoolclass（采用十六进制format，andchancheng-archive-serviceitem目保持consistent）
  */
 public class SM2Utils {
 
@@ -47,13 +47,13 @@ public class SM2Utils {
      */
     public static String encrypt(String publicKey, String data) {
         try {
-            // get一itemsSM2曲线parameter
+            // getoneitemsSM2曲线parameter
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
             // constructECC算法parameter，曲线方程、椭圆曲线G点、large整numberN
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
             //extractpublic key点
             ECPoint pukPoint = sm2ECParameters.getCurve().decodePoint(Hex.decode(publicKey));
-            // public key前面 02or03representsYes压缩public key，04representsnot压缩public key, 04 时候，可以去掉前面 04
+            // public keybefore面 02or03representsYes压缩public key，04representsnot压缩public key, 04 when候，可to去掉before面 04
             ECPublicKeyParameters publicKeyParameters = new ECPublicKeyParameters(pukPoint, domainParameters);
 
             SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C3C2);
@@ -77,13 +77,13 @@ public class SM2Utils {
      */
     public static String decrypt(String privateKey, String cipherData) {
         try {
-            // useBClibrary加decrypt时ciphertext以04开header，传入 ciphertext前面no04then补上
+            // useBClibrary加decryptwhenciphertextto04开header，传入 ciphertextbefore面no04then补上
             if (!cipherData.startsWith("04")) {
                 cipherData = "04" + cipherData;
             }
             byte[] cipherDataByte = Hex.decode(cipherData);
             BigInteger privateKeyD = new BigInteger(privateKey, 16);
-            //get一itemsSM2曲线parameter
+            //getoneitemsSM2曲线parameter
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
             //constructdomainparameter
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
@@ -106,7 +106,7 @@ public class SM2Utils {
     public static Map<String, String> createKey() {
         try {
             ECGenParameterSpec sm2Spec = new ECGenParameterSpec("sm2p256v1");
-            // get一个椭圆曲线type keyforgenerate
+            // getone椭圆曲线type keyforgenerate
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC", new BouncyCastleProvider());
             // useSM2parameterinitializegenerate
             kpg.initialize(sm2Spec);

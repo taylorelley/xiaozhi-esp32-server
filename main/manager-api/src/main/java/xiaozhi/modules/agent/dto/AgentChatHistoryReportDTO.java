@@ -28,6 +28,6 @@ public class AgentChatHistoryReportDTO {
     private String content;
     @Schema(description = "base64code opusaudio data", example = "")
     private String audioBase64;
-    @Schema(description = "上报time，十bittimestamp，empty时defaultusecurrenttime", example = "1745657732")
+    @Schema(description = "上报time，十bittimestamp，emptywhendefaultusecurrenttime", example = "1745657732")
     private Long reportTime;
 }

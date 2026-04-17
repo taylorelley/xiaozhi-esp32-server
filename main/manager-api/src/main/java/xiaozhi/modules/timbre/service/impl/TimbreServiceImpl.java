@@ -32,7 +32,7 @@ import xiaozhi.modules.voiceclone.dao.VoiceCloneDao;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 
 /**
- * voice business层 implement
+ * voice businesslayer implement
  * 
  * @author zjy
  * @since 2025-3-21
@@ -52,11 +52,11 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<TimbreEntity> page = baseDao.selectPage(
                 getPage(params, null, true),
-                // definequeryitems件
+                // definequeryitemsitem
                 new QueryWrapper<TimbreEntity>()
-                        // 必须by照ttsIDfind
+                        // mustbyaccording tottsIDfind
                         .eq("tts_model_id", dto.getTtsModelId())
-                        // if有voice名字，by照voice名模糊find
+                        // ifhasvoice名字，byaccording tovoice名模糊find
                         .like(StringUtils.isNotBlank(dto.getName()), "name", dto.getName()));
 
         return getPageData(page, TimbreDetailsVO.class);
@@ -138,17 +138,17 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUser().getId();
         if (currentUserId != null) {
-            // queryuser all克隆voicerecord
+            // queryuser allclonevoicerecord
             List<VoiceDTO> cloneEntities = voiceCloneDao.getTrainSuccess(ttsModelId, currentUserId);
             for (VoiceDTO entity : cloneEntities) {
-                // onlyaddtrainingsuccess 克隆voice，andModel ID匹配
+                // onlyaddtrainingsuccess clonevoice，andModel ID匹配
                 VoiceDTO voiceDTO = new VoiceDTO();
                 voiceDTO.setId(entity.getId());
                 voiceDTO.setName(MessageUtils.getMessage(ErrorCode.VOICE_CLONE_PREFIX) + entity.getName());
                 // 保留fromdatalibraryqueryto voiceDemofield
                 voiceDTO.setVoiceDemo(entity.getVoiceDemo());
                 voiceDTO.setLanguages(entity.getLanguages());
-                voiceDTO.setIsClone(true); // setas克隆voice
+                voiceDTO.setIsClone(true); // setasclonevoice
                 redisUtils.set(RedisKeys.getTimbreNameById(voiceDTO.getId()), voiceDTO.getName(),
                         RedisUtils.NOT_EXPIRE);
                 voiceDTOs.add(0, voiceDTO);
@@ -162,7 +162,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
      * processYesnot Yesttsmodel id
      */
     private void isTtsModelId(String ttsModelId) {
-        // etc.Model configurationthat边write好call方法determine
+        // etc.Model configurationthat边write好callmethoddetermine
     }
 
     @Override

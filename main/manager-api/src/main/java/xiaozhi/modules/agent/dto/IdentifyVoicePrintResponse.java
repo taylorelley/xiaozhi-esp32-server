@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class IdentifyVoicePrintResponse {
     /**
-     * 最匹配 voiceprintid
+     * most匹配 voiceprintid
      */
     @JsonProperty("speaker_id")
     private String speakerId;

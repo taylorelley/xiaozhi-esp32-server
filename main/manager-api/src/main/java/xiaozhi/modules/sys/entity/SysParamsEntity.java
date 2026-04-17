@@ -30,7 +30,7 @@ public class SysParamsEntity extends BaseEntity {
      */
     private String valueType;
     /**
-     * type 0：systemparameter 1：非systemparameter
+     * type 0：systemparameter 1：non-systemparameter
      */
     private Integer paramType;
     /**

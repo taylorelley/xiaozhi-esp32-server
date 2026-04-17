@@ -13,15 +13,15 @@ import java.util.List;
 @Schema(description = "devicefirmwareinformation上报求request")
 public class DeviceReportReqDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    // region entity属
+    // region entity
     @Schema(description = "boardfirmwareversionnumber")
     private Integer version;
 
-    @Schema(description = "闪存large小（unit：byte）")
+    @Schema(description = "闪storelargesmall（unit：byte）")
     @JsonProperty("flash_size")
     private Integer flashSize;
 
-    @Schema(description = "minimumempty闲堆内存（byte）")
+    @Schema(description = "minimumempty闲堆内store（byte）")
     @JsonProperty("minimum_free_heap_size")
     private Integer minimumFreeHeapSize;
 
@@ -40,7 +40,7 @@ public class DeviceReportReqDTO implements Serializable {
     @JsonProperty("chip_info")
     private ChipInfo chipInfo;
 
-    @Schema(description = "应用程序information")
+    @Schema(description = "应用程orderinformation")
     private Application application;
 
     @Schema(description = "partitiontablelist")
@@ -65,7 +65,7 @@ public class DeviceReportReqDTO implements Serializable {
         @Schema(description = "核心number")
         private Integer cores;
 
-        @Schema(description = "硬件修订version")
+        @Schema(description = "硬item修订version")
         private Integer revision;
 
         @Schema(description = "chipfunction标志bit")
@@ -105,13 +105,13 @@ public class DeviceReportReqDTO implements Serializable {
         @Schema(description = "partitiontype")
         private Integer type;
 
-        @Schema(description = "子type")
+        @Schema(description = "childtype")
         private Integer subtype;
 
         @Schema(description = "起始Address")
         private Integer address;
 
-        @Schema(description = "partitionlarge小")
+        @Schema(description = "partitionlargesmall")
         private Integer size;
     }
 
@@ -133,7 +133,7 @@ public class DeviceReportReqDTO implements Serializable {
         @Schema(description = "connection  Wi-Fi SSID")
         private String ssid;
 
-        @Schema(description = "Wi-Fi 信number强度（RSSI）")
+        @Schema(description = "Wi-Fi 信numberstrong度（RSSI）")
         private Integer rssi;
 
         @Schema(description = "Wi-Fi 信道")

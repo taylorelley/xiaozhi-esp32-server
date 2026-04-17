@@ -47,10 +47,10 @@ public interface AgentChatHistoryService extends IService<AgentChatHistoryEntity
     void deleteByAgentId(String agentId, Boolean deleteAudio, Boolean deleteText);
 
     /**
-     * according toAgent IDget最近50itemsuser Chat historydata（withaudio data）
+     * according toAgent IDgetmost近50itemsuser Chat historydata（withaudio data）
      *
      * @param agentId agentid
-     * @return Chat historylist（only有user）
+     * @return Chat historylist（onlyhasuser）
      */
     List<AgentChatHistoryUserVO> getRecentlyFiftyByAgentId(String agentId);
 
@@ -64,11 +64,11 @@ public interface AgentChatHistoryService extends IService<AgentChatHistoryEntity
 
 
     /**
-     * querythisaudioidYesNo属于thisagent
+     * querythisaudioidYesNobelongs tothisagent
      *
      * @param audioId audioid
      * @param agentId audioid
-     * @return T：属于 F：not 属于
+     * @return T：belongs to F：not belongs to
      */
     boolean isAudioOwnedByAgent(String audioId,String agentId);
 }

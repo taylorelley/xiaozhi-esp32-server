@@ -20,7 +20,7 @@ public interface DeviceService extends BaseService<DeviceEntity> {
     String getDeviceOnlineData(String agentId);
 
     /**
-     * 检查deviceYesNoactivation
+     * checkdeviceYesNoactivation
      */
     DeviceReportRespDTO checkDeviceActive(String macAddress, String clientId,
             DeviceReportReqDTO deviceReport);
@@ -87,15 +87,15 @@ public interface DeviceService extends BaseService<DeviceEntity> {
     String geCodeByDeviceId(String deviceId);
 
     /**
-     * getthis个Agent device理 最近 lastconnectiontime
+     * getthisAgent device理 most近 lastconnectiontime
      * 
      * @param agentId agentid
-     * @return returndevice最近 lastconnectiontime
+     * @return returndevicemost近 lastconnectiontime
      */
     Date getLatestLastConnectionTime(String agentId);
 
     /**
-     * 手动adddevice
+     * manualadddevice
      */
     void manualAddDevice(Long userId, DeviceManualAddDTO dto);
 
@@ -110,7 +110,7 @@ public interface DeviceService extends BaseService<DeviceEntity> {
      * @param clientId clientID
      * @param username Username(usually deviceId)
      * @return authenticationtokenstring
-     * @throws Exception generatetoken时 exception
+     * @throws Exception generatetokenwhen exception
      */
     String generateWebSocketToken(String clientId, String username) throws Exception;
 

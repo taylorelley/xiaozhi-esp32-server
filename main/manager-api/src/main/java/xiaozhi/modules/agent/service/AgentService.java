@@ -72,16 +72,16 @@ public interface AgentService extends BaseService<AgentEntity> {
      * according todeviceMACAddressquerycorrespondingdevice defaultAgent information
      *
      * @param macAddress deviceMACAddress
-     * @return defaultAgent information，does not exist时returnnull
+     * @return defaultAgent information，does not existwhenreturnnull
      */
     AgentEntity getDefaultAgentByMacAddress(String macAddress);
 
     /**
-     * 检查userYesNo有Permission访问agent
+     * checkuserYesNohasPermission访问agent
      *
      * @param agentId Agent ID
      * @param userId  User ID
-     * @return YesNo有Permission
+     * @return YesNohasPermission
      */
     boolean checkAgentPermission(String agentId, Long userId);
 

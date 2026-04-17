@@ -1,7 +1,7 @@
 package xiaozhi.modules.sms.service;
 
 /**
- * SMSservice 方法defineinterface
+ * SMSservice methoddefineinterface
  *
  * @author zjy
  * @since 2025-05-12

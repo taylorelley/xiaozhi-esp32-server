@@ -43,10 +43,10 @@ public interface LLMService {
     String generateSummary(String conversation, String promptTemplate, String modelId);
 
     /**
-     * generateChat historysummary（contain历史memory合并）
+     * generateChat historysummary（containhistorymemory合and）
      * 
      * @param conversation   conversationcontent
-     * @param historyMemory  历史memory
+     * @param historyMemory  historymemory
      * @param promptTemplate prompttemplate
      * @param modelId        Model ID
      * @return summaryresult
@@ -54,14 +54,14 @@ public interface LLMService {
     String generateSummaryWithHistory(String conversation, String historyMemory, String promptTemplate, String modelId);
 
     /**
-     * 检查serviceYesNoavailable
+     * checkserviceYesNoavailable
      * 
      * @return YesNoavailable
      */
     boolean isAvailable();
 
     /**
-     * 检查specifiedmodel serviceYesNoavailable
+     * checkspecifiedmodel serviceYesNoavailable
      * 
      * @param modelId Model ID
      * @return YesNoavailable

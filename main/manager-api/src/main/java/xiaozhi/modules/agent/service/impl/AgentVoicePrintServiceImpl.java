@@ -52,7 +52,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     private final RestTemplate restTemplate;
     private final SysParamsService sysParamsService;
     private final AgentChatHistoryService agentChatHistoryService;
-    // Springboot提供 编程事务class
+    // Springboot提供 编程transactionclass
     private final TransactionTemplate transactionTemplate;
     // 识别度
     private final Double RECOGNITION = 0.5;
@@ -73,7 +73,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     public boolean insert(AgentVoicePrintSaveDTO dto) {
         // getaudio data
         ByteArrayResource resource = getVoicePrintAudioWAV(dto.getAgentId(), dto.getAudioId());
-        // 识别一下thisvoiceYesNoregister
+        // 识别one下thisvoiceYesNoregister
         IdentifyVoicePrintResponse response = identifyVoicePrint(dto.getAgentId(), resource);
         if (response != null && response.getScore() > RECOGNITION) {
             // according to识别出 Voiceprint IDquerycorresponding User information
@@ -87,7 +87,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
             try {
                 // saveVoiceprint information
                 int row = baseMapper.insert(entity);
-                // insert一itemsdata，影响 datanot etc.于1Description出现了，savequestion回滚
+                // insertoneitemsdata，影响 datanot etc.于1Description出现，savequestion回滚
                 if (row != 1) {
                     status.setRollbackOnly(); // mark transaction rollback
                     return false;
@@ -111,7 +111,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
         // start transaction
         boolean b = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
             try {
-                // deletevoiceprint,by照specifiedcurrently logged-inuserandagent
+                // deletevoiceprint,byaccording tospecifiedcurrently logged-inuserandagent
                 int row = baseMapper.delete(new LambdaQueryWrapper<AgentVoicePrintEntity>()
                         .eq(AgentVoicePrintEntity::getId, voicePrintId)
                         .eq(AgentVoicePrintEntity::getCreator, userId));
@@ -123,17 +123,17 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                 return true;
             } catch (Exception e) {
                 status.setRollbackOnly(); // mark transaction rollback
-                log.error("deletevoiceprint存inerrorreason：{}", e.getMessage());
+                log.error("deletevoiceprintstoreinerrorreason：{}", e.getMessage());
                 throw new RenException(ErrorCode.VOICEPRINT_DELETE_ERROR);
             }
         }));
-        // datalibraryvoiceprintdatadeletesuccess才继续executedeletevoiceprintservice data
+        // datalibraryvoiceprintdatadeletesuccessonly继续executedeletevoiceprintservice data
         if(b){
             taskExecutor.execute(()-> {
                 try {
                     cancelVoicePrint(voicePrintId);
                 }catch (RuntimeException e) {
-                    log.error("deletevoiceprint存inrun时errorreason：{}，id：{}", e.getMessage(),voicePrintId);
+                    log.error("deletevoiceprintstoreinrunwhenerrorreason：{}，id：{}", e.getMessage(),voicePrintId);
                 }
             });
         }
@@ -142,7 +142,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
 
     @Override
     public List<AgentVoicePrintVO> list(Long userId, String agentId) {
-        // by照specifiedcurrently logged-inuserandagentfinddata
+        // byaccording tospecifiedcurrently logged-inuserandagentfinddata
         List<AgentVoicePrintEntity> list = baseMapper.selectList(new LambdaQueryWrapper<AgentVoicePrintEntity>()
                 .eq(AgentVoicePrintEntity::getAgentId, agentId)
                 .eq(AgentVoicePrintEntity::getCreator, userId));
@@ -167,15 +167,15 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
         // getagentid
         String agentId = agentVoicePrintEntity.getAgentId();
         ByteArrayResource resource;
-        // audioIdnot etc.于empty，andaudioIdand之前 save audioidnot 一样，thenneed重newgetaudio datageneratevoiceprint
+        // audioIdnot etc.于empty，andaudioIdand之before save audioidnot one样，thenneedre-newgetaudio datageneratevoiceprint
         if (!StringUtils.isEmpty(audioId) && !audioId.equals(agentVoicePrintEntity.getAudioId())) {
             resource = getVoicePrintAudioWAV(agentId, audioId);
 
-            // 识别一下thisvoiceYesNoregister
+            // 识别one下thisvoiceYesNoregister
             IdentifyVoicePrintResponse response = identifyVoicePrint(agentId, resource);
-            // return分number高于RECOGNITIONDescriptionthis个voiceprintalready经有了
+            // return分number高于RECOGNITIONDescriptionthisvoiceprintalready经has
             if (response != null && response.getScore() > RECOGNITION) {
-                // determinereturn idifnot Yesneed toupdate voiceprintid，Descriptionthis个voiceprintid，现inneed toregister voicealready经存inandnot Yes原来 voiceprint，not allowupdate
+                // determinereturn idifnot Yesneed toupdate voiceprintid，Descriptionthisvoiceprintid，现inneed toregister voicealready经storeinandnot Yes原来 voiceprint，not allowupdate
                 if (!response.getSpeakerId().equals(dto.getId())) {
                     // according to识别出 Voiceprint IDquerycorresponding User information
                     AgentVoicePrintEntity existingVoicePrint = baseMapper.selectById(response.getSpeakerId());
@@ -197,7 +197,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
                 }
                 if (resource != null) {
                     String id = entity.getId();
-                    // first注销之前this个voiceprintid上 voiceprintvector
+                    // first注销之beforethisvoiceprintid上 voiceprintvector
                     cancelVoicePrint(id);
                     // sendregistervoiceprintrequest
                     registerVoicePrint(id, resource);
@@ -262,13 +262,13 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
     }
 
     /**
-     * getvoiceprintaudio资sourcedata
+     * getvoiceprintaudioresourcesourcedata
      *
      * @param audioId audioId
-     * @return voiceprintaudio资sourcedata
+     * @return voiceprintaudioresourcesourcedata
      */
     private ByteArrayResource getVoicePrintAudioWAV(String agentId, String audioId) {
-        // determinethis个audioYesNo属于currentagent
+        // determinethisaudioYesNobelongs tocurrentagent
         boolean b = agentChatHistoryService.isAudioOwnedByAgent(audioId, agentId);
         if (!b) {
             throw new RenException(ErrorCode.VOICEPRINT_AUDIO_NOT_BELONG_AGENT);
@@ -279,7 +279,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
         if (audio == null || audio.length == 0) {
             throw new RenException(ErrorCode.VOICEPRINT_AUDIO_EMPTY);
         }
-        // willbytearray包装as资source，return
+        // willbytearray包装asresourcesource，return
         return new ByteArrayResource(audio) {
             @Override
             public String getFilename() {
@@ -292,10 +292,10 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
      * sendregistervoiceprinthttprequest
      * 
      * @param id       voiceprintid
-     * @param resource voiceprintaudio资source
+     * @param resource voiceprintaudioresourcesource
      */
     private void registerVoicePrint(String id, ByteArrayResource resource) {
-        // processVoiceprint interface address，get前缀
+        // processVoiceprint interface address，getbefore缀
         URI uri = getVoicePrintURI();
         String baseUrl = getBaseUrl(uri);
         String requestUrl = baseUrl + "/voiceprint/register";
@@ -317,7 +317,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
             log.error("Voiceprint registrationfailed,requestpath：{}", requestUrl);
             throw new RenException(ErrorCode.VOICEPRINT_REGISTER_REQUEST_ERROR);
         }
-        // 检查responsecontent
+        // checkresponsecontent
         String responseBody = response.getBody();
         if (responseBody == null || !responseBody.contains("true")) {
             log.error("Voiceprint registrationfailed,requestprocessfailedcontent：{}", responseBody == null ? "emptycontent" : responseBody);
@@ -347,7 +347,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
             log.error("Voiceprint cancellationfailed,requestpath：{}", requestUrl);
             throw new RenException(ErrorCode.VOICEPRINT_UNREGISTER_REQUEST_ERROR);
         }
-        // 检查responsecontent
+        // checkresponsecontent
         String responseBody = response.getBody();
         if (responseBody == null || !responseBody.contains("true")) {
             log.error("Voiceprint cancellationfailed,requestprocessfailedcontent：{}", responseBody == null ? "emptycontent" : responseBody);
@@ -359,22 +359,22 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
      * send识别voiceprinthttprequest
      * 
      * @param agentId  agentid
-     * @param resource voiceprintaudio资source
+     * @param resource voiceprintaudioresourcesource
      * @return return识别data
      */
     private IdentifyVoicePrintResponse identifyVoicePrint(String agentId, ByteArrayResource resource) {
 
-        // get该agentallregister voiceprint
+        // getthisagentallregister voiceprint
         List<AgentVoicePrintEntity> agentVoicePrintList = baseMapper
                 .selectList(new LambdaQueryWrapper<AgentVoicePrintEntity>()
                         .select(AgentVoicePrintEntity::getId)
                         .eq(AgentVoicePrintEntity::getAgentId, agentId));
 
-        // voiceprintcountas0，Description还没registervoiceprintnot need发生识别request
+        // voiceprintcountas0，Descriptionstill没registervoiceprintnot need发生识别request
         if (agentVoicePrintList.isEmpty()) {
             return null;
         }
-        // processVoiceprint interface address，get前缀
+        // processVoiceprint interface address，getbefore缀
         URI uri = getVoicePrintURI();
         String baseUrl = getBaseUrl(uri);
         String requestUrl = baseUrl + "/voiceprint/identify";
@@ -401,7 +401,7 @@ public class AgentVoicePrintServiceImpl extends ServiceImpl<AgentVoicePrintDao, 
             log.error("Voiceprint identification request failed,requestpath：{}", requestUrl);
             throw new RenException(ErrorCode.VOICEPRINT_IDENTIFY_REQUEST_ERROR);
         }
-        // 检查responsecontent
+        // checkresponsecontent
         String responseBody = response.getBody();
         if (responseBody != null) {
             return JsonUtils.parseObject(responseBody, IdentifyVoicePrintResponse.class);

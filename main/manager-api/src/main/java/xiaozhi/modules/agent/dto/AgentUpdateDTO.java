@@ -11,7 +11,7 @@ import lombok.Data;
 /**
  * agentupdateDTO
  * 专used forupdateagent，idfieldYes必需 ，used foridentifierneed toupdate agent
- * 其他field均as非必填，onlyupdate提供 field
+ * otherfield均asnon-必填，onlyupdate提供 field
  */
 @Data
 @Schema(description = "agentupdateobject")
@@ -33,7 +33,7 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "largeLanguagemodelidentifier", example = "llm_model_02", nullable = true)
     private String llmModelId;
 
-    @Schema(description = "小modelidentifier", example = "slm_model_02", nullable = true)
+    @Schema(description = "smallmodelidentifier", example = "slm_model_02", nullable = true)
     private String slmModelId;
 
     @Schema(description = "VLLMmodelidentifier", example = "vllm_model_02", required = false)
@@ -66,11 +66,11 @@ public class AgentUpdateDTO implements Serializable {
     @Schema(description = "pluginfunctioninformation", nullable = true)
     private List<FunctionInfo> functions;
 
-    @Schema(description = "Rolesetparameter", example = "youYes一个专业 customer serviceassistant，负责回答userquestion并提供帮助", nullable = true)
+    @Schema(description = "Rolesetparameter", example = "youYesone专业 customer serviceassistant，负责回答userquestionand提供帮助", nullable = true)
     private String systemPrompt;
 
-    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation 同时，Intelligently maintaininformationevolution trajectory\n"
-            + "according toconversationrecord，summaryuser 重need toinformation，so that in futureconversation to provide more personalized service", nullable = true)
+    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation simultaneously，Intelligently maintaininformationevolution trajectory\n"
+            + "according toconversationrecord，summaryuser re-need toinformation，so that in futureconversation to provide more personalized service", nullable = true)
     private String summaryMemory;
 
     @Schema(description = "Chat historyconfiguration（0not record 1onlyrecordtext 2recordtext and voice）", example = "3", nullable = true)

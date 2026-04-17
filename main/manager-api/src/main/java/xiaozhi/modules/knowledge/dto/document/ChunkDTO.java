@@ -31,7 +31,7 @@ public class ChunkDTO {
         @NotBlank(message = "slicecontentcannot be empty")
         private String content;
 
-        @Schema(description = "重need tokeywordlist")
+        @Schema(description = "re-need tokeywordlist")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
@@ -54,7 +54,7 @@ public class ChunkDTO {
         @Schema(description = "new slicecontent")
         private String content;
 
-        @Schema(description = "updatekeywordlist (覆盖原有list)")
+        @Schema(description = "updatekeywordlist (覆盖原haslist)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
@@ -132,11 +132,11 @@ public class ChunkDTO {
         @JsonProperty("docnm_kwd")
         private String docnmKwd;
 
-        @Schema(description = "重need tokeywordlist (used forkeyword增强retrieve)")
+        @Schema(description = "re-need tokeywordlist (used forkeyword增strongretrieve)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设questionlist (used for Q&A mode增强)")
+        @Schema(description = "预设questionlist (used for Q&A mode增strong)")
         private List<String> questions;
 
         @Schema(description = "associated 图片 ID")

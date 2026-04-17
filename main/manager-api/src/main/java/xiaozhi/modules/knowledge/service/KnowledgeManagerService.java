@@ -9,7 +9,7 @@ import java.util.List;
 public interface KnowledgeManagerService {
 
     /**
-     * cascadedeleteKnowledge base及其下属alldocument (包括this地 DB and RAGFlow remotedata)
+     * cascadedeleteKnowledge base及其下alldocument (包括this DB and RAGFlow remotedata)
      * 
      * @param datasetId Knowledge base ID
      */

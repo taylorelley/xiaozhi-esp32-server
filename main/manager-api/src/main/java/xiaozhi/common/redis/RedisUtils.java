@@ -17,7 +17,7 @@ import xiaozhi.common.utils.ResourcesUtils;
 
 /**
  * Redistoolclass
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Component
@@ -29,19 +29,19 @@ public class RedisUtils {
     private ResourcesUtils resourceUtils;
 
     /**
-     * default期时长as24小时，unit：seconds
+     * default期when长as24smallwhen，unit：seconds
      */
     public final static long DEFAULT_EXPIRE = 60 * 60 * 24L;
     /**
-     * 期时长as1小时，unit：seconds
+     * 期when长as1smallwhen，unit：seconds
      */
     public final static long HOUR_ONE_EXPIRE = (long) 60 * 60;
     /**
-     * 期时长as6小时，unit：seconds
+     * 期when长as6smallwhen，unit：seconds
      */
     public final static long HOUR_SIX_EXPIRE = 60 * 60 * 6L;
     /**
-     * not set期时长
+     * not set期when长
      */
     public final static long NOT_EXPIRE = -1L;
 
@@ -153,10 +153,10 @@ public class RedisUtils {
 
 
     /**
-     * 清emptyall Redis datalibrary all键
+     * 清emptyall Redis datalibrary allkey
      */
     public void emptyAll() {
-        // Lua script FLUSHALLYesredis清emptyalllibrary 命令
+        // Lua script FLUSHALLYesredis清emptyalllibrary command
         String luaScript =resourceUtils.loadString("lua/emptyAll.lua");
 
         // create DefaultRedisScript object
@@ -165,7 +165,7 @@ public class RedisUtils {
         redisScript.setResultType(Void.class); // setreturnvaluetype
 
         // execute Lua script
-        List<String> keys = Collections.emptyList(); // ifscriptnot 依赖 key，可以传入emptylist
+        List<String> keys = Collections.emptyList(); // ifscriptnot 依赖 key，可to传入emptylist
         redisTemplate.execute(redisScript, keys);
 
     }

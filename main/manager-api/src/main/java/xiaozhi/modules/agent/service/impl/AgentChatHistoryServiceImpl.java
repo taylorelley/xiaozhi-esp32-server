@@ -50,7 +50,7 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
         int page = Integer.parseInt(params.get(Constant.PAGE).toString());
         int limit = Integer.parseInt(params.get(Constant.LIMIT).toString());
 
-        // buildqueryitems件
+        // buildqueryitemsitem
         QueryWrapper<AgentChatHistoryEntity> wrapper = new QueryWrapper<>();
         wrapper.select("session_id", "MAX(created_at) as created_at", "COUNT(*) as chat_count")
                 .eq("agent_id", agentId)
@@ -75,7 +75,7 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     @Override
     public List<AgentChatHistoryDTO> getChatHistoryBySessionId(String agentId, String sessionId) {
-        // buildqueryitems件
+        // buildqueryitemsitem
         QueryWrapper<AgentChatHistoryEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("agent_id", agentId)
                 .eq("session_id", sessionId)
@@ -113,19 +113,19 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     @Override
     public List<AgentChatHistoryUserVO> getRecentlyFiftyByAgentId(String agentId) {
-        // buildqueryitems件(not addby照Create timeSort order，datathis来就YesPrimary key越largeCreate time越large
-        // not addthis样可以减少Sort orderAlldatainpagination 全盘扫描消耗)
+        // buildqueryitemsitem(not addbyaccording toCreate timeSort order，datathis来thenYesPrimary key越largeCreate time越large
+        // not addthis样可to减少Sort orderAlldatainpagination 全盘扫描消耗)
         LambdaQueryWrapper<AgentChatHistoryEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(AgentChatHistoryEntity::getContent, AgentChatHistoryEntity::getAudioId)
                 .eq(AgentChatHistoryEntity::getAgentId, agentId)
                 .eq(AgentChatHistoryEntity::getChatType, AgentChatHistoryType.USER.getValue())
                 .isNotNull(AgentChatHistoryEntity::getAudioId)
-                // addthis行，ensurequeryresultby照Create timedescending排列
-                // useid reason：data形式，id越large Create time就越晚，所以useid resultandCreate timedescending排列result一样
-                // idasdescending排列 优势，能高，有Primary keyindex，not 用inSort order 时候重newperform排除扫描比较
+                // addthisrow，ensurequeryresultbyaccording toCreate timedescending排column
+                // useid reason：data形式，id越large Create timethen越晚，所touseid resultandCreate timedescending排columnresultone样
+                // idasdescending排column priority势，can高，hasPrimary keyindex，not 用inSort order when候re-newperform排除扫描比较
                 .orderByDesc(AgentChatHistoryEntity::getId);
 
-        // buildpaginationquery，query前50页data
+        // buildpaginationquery，querybefore50页data
         Page<AgentChatHistoryEntity> pageParam = new Page<>(0, 50);
         IPage<AgentChatHistoryEntity> result = this.baseMapper.selectPage(pageParam, wrapper);
         return result.getRecords().stream().map(item -> {
@@ -140,11 +140,11 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     /**
      * from content fieldextractchatcontent
-     * if content Yes JSON format（e.g. {"speaker": "Unknown说话人", "content": "现in几点了。"}），thenextract content
+     * if content Yes JSON format（e.g. {"speaker": "Unknown说话人", "content": "现in几点。"}），thenextract content
      * field
      * if content Yes普通string，thendirectlyreturn
      * 
-     * @param content 原始content
+     * @param content originalcontent
      * @return extract chatcontent
      */
     private String extractContentFromString(String content) {
@@ -178,7 +178,7 @@ public class AgentChatHistoryServiceImpl extends ServiceImpl<AiAgentChatHistoryD
 
     @Override
     public boolean isAudioOwnedByAgent(String audioId, String agentId) {
-        // queryYesNo有specifiedaudioidandagentid data，if有andonly有一itemsDescriptionthisdata属thisagent
+        // queryYesNohasspecifiedaudioidandagentid data，ifhasandonlyhasoneitemsDescriptionthisdatathisagent
         Long row = baseMapper.selectCount(new LambdaQueryWrapper<AgentChatHistoryEntity>()
                 .eq(AgentChatHistoryEntity::getAudioId, audioId)
                 .eq(AgentChatHistoryEntity::getAgentId, agentId));

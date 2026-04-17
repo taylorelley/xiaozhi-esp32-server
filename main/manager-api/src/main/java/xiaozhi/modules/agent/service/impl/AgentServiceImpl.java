@@ -104,18 +104,18 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             agent.setContextProviders(contextProviderEntity.getContextProviders());
         }
 
-        // 无需额外querypluginlist，alreadyviaSQLquery出来
+        // no需额外querypluginlist，alreadyviaSQLquery出来
         return agent;
     }
 
     @Override
     public boolean insert(AgentEntity entity) {
-        // ifIDasempty，自动generate一个UUIDasID
+        // ifIDasempty，automaticgenerateoneUUIDasID
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {
             entity.setId(UUID.randomUUID().toString().replace("-", ""));
         }
 
-        // ifAgent codeasempty，自动generate一个with前缀 code
+        // ifAgent codeasempty，automaticgenerateonewithbefore缀 code
         if (entity.getAgentCode() == null || entity.getAgentCode().trim().isEmpty()) {
             entity.setAgentCode("AGT_" + System.currentTimeMillis());
         }
@@ -140,10 +140,10 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         QueryWrapper<AgentEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId).orderByDesc("created_at");
 
-        // if有searchkeyword，according tosearchtypeadd相应 queryitems件
+        // ifhassearchkeyword，according tosearchtypeadd相应 queryitemsitem
         if (StringUtils.isNotBlank(keyword)) {
             if ("mac".equals(searchType)) {
-                // byMACAddresssearch：firstsearchdevice，再getcorresponding agent
+                // byMACAddresssearch：firstsearchdevice，againgetcorresponding agent
                 List<DeviceEntity> devices = Optional
                         .ofNullable(deviceService.searchDevicesByMacAddress(keyword, userId)).orElseGet(ArrayList::new);
                 // getdevicecorresponding Agent IDlist
@@ -157,7 +157,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                     return new ArrayList<>();
                 }
             } else {
-                // bynamesearch（default）：同时searchAgent nameandTag名
+                // bynamesearch（default）：simultaneouslysearchAgent nameandTag名
                 List<String> tagAgentIds = agentTagService.getAgentIdsByTagName(keyword);
                 if (ToolUtil.isNotEmpty(tagAgentIds)) {
                     queryWrapper.and(wrapper -> wrapper
@@ -173,7 +173,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         // executequery
         List<AgentEntity> agentEntities = baseDao.selectList(queryWrapper);
 
-        // convert toDTO并setall必need tofield
+        // convert toDTOandsetall必need tofield
         return agentEntities.stream().map(this::buildAgentDTO).collect(Collectors.toList());
     }
 
@@ -201,7 +201,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         // get TTS voicename
         dto.setTtsVoiceName(timbreModelService.getTimbreNameById(agent.getTtsVoiceId()));
 
-        // getagent最近 lastconnection时长
+        // getagentmost近 lastconnectionwhen长
         dto.setLastConnectedAt(deviceService.getLatestLastConnectionTime(agent.getId()));
 
         // getDevice count
@@ -270,7 +270,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             return true;
         }
 
-        // 检查YesNoYesagent all
+        // checkYesNoYesagent all
         return userId.equals(agent.getUserId());
     }
 
@@ -278,13 +278,13 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAgentById(String agentId, AgentUpdateDTO dto) {
-        // firstquery现有entity
+        // firstquery现hasentity
         AgentEntity existingEntity = this.getAgentById(agentId);
         if (existingEntity == null) {
             throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
 
-        // onlyupdate提供 非emptyfield
+        // onlyupdate提供 non-emptyfield
         if (dto.getAgentName() != null) {
             existingEntity.setAgentName(dto.getAgentName());
         }
@@ -352,12 +352,12 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         // updatefunctionplugininformation
         List<AgentUpdateDTO.FunctionInfo> functions = dto.getFunctions();
         if (functions != null) {
-            // 1. 收集thistimes提交  pluginId
+            // 1. 收collectionthistimessubmit  pluginId
             List<String> newPluginIds = functions.stream()
                     .map(AgentUpdateDTO.FunctionInfo::getPluginId)
                     .toList();
 
-            // 2. querycurrentagent现有 allmapping
+            // 2. querycurrentagent现has allmapping
             List<AgentPluginMapping> existing = agentPluginMappingService.list(
                     new QueryWrapper<AgentPluginMapping>()
                             .eq("agent_id", agentId));
@@ -378,7 +378,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                 return m;
             }).toList();
 
-            // 4. 拆分：already有ID 走update，无ID 走insert
+            // 4. 拆分：alreadyhasID 走update，noID 走insert
             List<AgentPluginMapping> toUpdate = allToPersist.stream()
                     .filter(m -> m.getId() != null)
                     .toList();
@@ -393,7 +393,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                 agentPluginMappingService.saveBatch(toInsert);
             }
 
-            // 5. deletethistimesnot in提交list里 pluginmapping
+            // 5. deletethistimesnot insubmitlistin pluginmapping
             List<Long> toDelete = existing.stream()
                     .filter(old -> !newPluginIds.contains(old.getPluginId()))
                     .map(AgentPluginMapping::getId)
@@ -447,11 +447,11 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         }
         ModelConfigEntity llmModelData = modelConfigService.selectById(llmModelId);
         String type = llmModelData.getConfigJson().get("type").toString();
-        // ifquerylargeLanguagemodelYesopenaiorollama，Intent recognition选parameter都可以
+        // ifquerylargeLanguagemodelYesopenaiorollama，Intent recognitionselectparameterall可to
         if ("openai".equals(type) || "ollama".equals(type)) {
             return true;
         }
-        // 除了openaiandollama type，not 可以选择idasIntent_function_call（functioncall） Intent recognition
+        // 除openaiandollama type，not 可toselectidasIntent_function_call（functioncall） Intent recognition
         return !"Intent_function_call".equals(intentModelId);
     }
 
@@ -495,10 +495,10 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             // according tomemoryModel typesetdefault chatHistoryConfvalue
             if (template.getMemModelId() != null) {
                 if (template.getMemModelId().equals("Memory_nomem")) {
-                    // 无memoryfunction model，defaultnot recordChat history
+                    // nomemoryfunction model，defaultnot recordChat history
                     entity.setChatHistoryConf(0);
                 } else {
-                    // 有memoryfunction model，defaultrecordtext and voice
+                    // hasmemoryfunction model，defaultrecordtext and voice
                     entity.setChatHistoryConf(2);
                 }
             } else {

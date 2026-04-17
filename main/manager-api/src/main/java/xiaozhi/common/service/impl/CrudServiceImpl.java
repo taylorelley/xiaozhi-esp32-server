@@ -18,7 +18,7 @@ import xiaozhi.common.utils.ConvertUtils;
 
 /**
  * CRUDbaseserviceclass
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public abstract class CrudServiceImpl<M extends BaseMapper<T>, T, D> extends BaseServiceImpl<M, T>

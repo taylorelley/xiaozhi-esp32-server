@@ -37,7 +37,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * RAGFlow HTTP Client
- * 统一processHTTP通信、鉴权、timeoutanderrorparse
+ * 统oneprocessHTTP通信、鉴权、timeoutanderrorparse
  */
 @Slf4j
 public class RAGFlowClient {
@@ -58,24 +58,24 @@ public class RAGFlowClient {
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.apiKey = apiKey;
         this.objectMapper = new ObjectMapper();
-        // [Reinforce] 兼容 RAGFlow return  RFC 1123 dateformat (e.g.: Tue, 10 Feb 2026 10:27:35 GMT)
+        // [Reinforce] compatible RAGFlow return  RFC 1123 dateformat (e.g.: Tue, 10 Feb 2026 10:27:35 GMT)
         this.objectMapper
                 .setDateFormat(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US));
         this.objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        // 优firstfrom Spring contextget池化  RestTemplate Bean (Issue 3: connection池化)
+        // priorityfirstfrom Spring contextget池化  RestTemplate Bean (Issue 3: connection池化)
         RestTemplate pooledTemplate = null;
         try {
             pooledTemplate = xiaozhi.common.utils.SpringContextUtils.getBean(RestTemplate.class);
         } catch (Exception e) {
-            log.warn("无法from SpringContext get池化 RestTemplate，will退化as简单connectionmode: {}", e.getMessage());
+            log.warn("unable tofrom SpringContext get池化 RestTemplate，will退化as简connectionmode: {}", e.getMessage());
         }
 
         if (false) { // Force new RestTemplate for debugging
             this.restTemplate = pooledTemplate;
             log.debug("RAGFlowClient alreadysuccess挂载全局池化 RestTemplate");
         } else {
-            // 兜底方案：configurationtimeout并create简单 RestTemplate
+            // 兜底方案：configurationtimeoutandcreate简 RestTemplate
             log.info("RAGFlowClient initialize: use独立 RestTemplate (Debug Mode)");
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
             factory.setConnectTimeout(timeoutSeconds * 1000);
@@ -136,7 +136,7 @@ public class RAGFlowClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setBearerAuth(apiKey);
-        // as了preventChineseFile name乱code，某些环境可能needset Charset，但in Multipart 通常由 Part header control
+        // aspreventChineseFile name乱code，某些环境可canneedset Charset，butin Multipart 通常by Part header control
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(parts, headers);
 
@@ -147,7 +147,7 @@ public class RAGFlowClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
-        // 强制 UTF-8
+        // strong制 UTF-8
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(body, headers);
@@ -178,12 +178,12 @@ public class RAGFlowClient {
                 throw new RenException(ErrorCode.RAG_API_ERROR, msg != null ? msg : "Unknown RAGFlow Error");
             }
 
-            // return data field，if data does not existthenreturn整个 map (视具情况，通常 RAGFlow return code=0, data=...)
-            // 兼容process：if external caller need check code，this里already经 check 了。
-            // 统一return wrap 了 code   map 还Yesonlyreturn data?
-            // according to分析报告，旧逻辑 check code==0 后取 data.
-            // this里I们return整个 Map，let Adapter 决定怎么取，orI们directlyinthis里剥离？
-            // 建议：as了灵活，return全量 Map，但in Client 层做 code!=0  抛错。
+            // return data field，if data does not existthenreturn整 map (视具情况，通常 RAGFlow return code=0, data=...)
+            // compatibleprocess：if external caller need check code，thisinalready经 check 。
+            // 统onereturn wrap  code   map stillYesonlyreturn data?
+            // according to分析报告，旧逻辑 check code==0 after取 data.
+            // thisinIsreturn整 Map，let Adapter 决定怎么取，orIsdirectlyinthisin剥离？
+            // suggestion：as灵活，return全量 Map，butin Client layer做 code!=0  抛错。
             return map;
 
         } catch (RenException re) {
@@ -218,7 +218,7 @@ public class RAGFlowClient {
                     }
                 }
             });
-            // 移除last一个 &
+            // 移除lastone &
             sb.setLength(sb.length() - 1);
         }
         return sb.toString();
@@ -230,7 +230,7 @@ public class RAGFlowClient {
      *
      * @param endpoint APIend点
      * @param body     request
-     * @param onData   datacallback（每收to一行datacall一times）
+     * @param onData   datacallback（每收toonerowdatacallonetimes）
      */
     public void postStream(String endpoint, Object body, Consumer<String> onData) {
         try {
@@ -250,7 +250,7 @@ public class RAGFlowClient {
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
                     .build();
 
-            // sendrequest并processstreamingresponse
+            // sendrequestandprocessstreamingresponse
             httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream())
                     .body()
                     .transferTo(new OutputStream() {

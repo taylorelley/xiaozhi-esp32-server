@@ -40,12 +40,12 @@ public interface VoiceCloneService extends BaseService<VoiceCloneEntity> {
     List<VoiceCloneEntity> getByUserId(Long userId);
 
     /**
-     * paginationquerywithModel nameandUsername称 Voice clonelist
+     * paginationquerywithModel nameandUsernamename Voice clonelist
      */
     PageData<VoiceCloneResponseDTO> pageWithNames(Map<String, Object> params);
 
     /**
-     * according toIDquerywithModel nameandUsername称 Voice cloneinformation
+     * according toIDquerywithModel nameandUsernamename Voice cloneinformation
      */
     VoiceCloneResponseDTO getByIdWithNames(String id);
 
@@ -70,9 +70,9 @@ public interface VoiceCloneService extends BaseService<VoiceCloneEntity> {
     byte[] getVoiceData(String id);
 
     /**
-     * 克隆audio，call火山引擎performvoice复刻training
+     * cloneaudio，call火山引擎performvoice复刻training
      * 
-     * @param cloneId voice克隆recordID
+     * @param cloneId voiceclonerecordID
      */
     void cloneAudio(String cloneId);
 }

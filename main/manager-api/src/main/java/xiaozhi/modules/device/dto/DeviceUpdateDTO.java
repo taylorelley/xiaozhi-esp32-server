@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 public class DeviceUpdateDTO implements Serializable {
     /**
-    * 自动updatestatus
+    * automaticupdatestatus
     */
     @Max(1)
     @Min(0)

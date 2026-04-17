@@ -66,7 +66,7 @@ public class WebSocketClientManager implements Closeable {
 
     private final int queueCapacity;
 
-    // 私有construct，only由 Builder call
+    // 私hasconstruct，onlyby Builder call
     private WebSocketClientManager(Builder b) {
         this.maxSessionDuration = b.maxSessionDuration;
         this.maxSessionDurationUnit = b.maxSessionDurationUnit;
@@ -184,7 +184,7 @@ public class WebSocketClientManager implements Closeable {
 
     /**
      * synchronousreceive多itemsmessage，直to predicate as true ortimeout抛exception；
-     * not 自动closeconnection，适used forneedin同一connection上send多个message 场景
+     * not automaticcloseconnection，适used forneedin同oneconnection上send多message 场景
      * 
      * @return return监听期间 allmessagelist
      */
@@ -223,7 +223,7 @@ public class WebSocketClientManager implements Closeable {
     }
 
     /**
-     * closesession，try-with-resources / finally 自动call
+     * closesession，try-with-resources / finally automaticcall
      */
     @Override
     public void close() {
@@ -248,7 +248,7 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * connection建立时callback
+         * connection建立whencallback
          */
         @Override
         public void afterConnectionEstablished(WebSocketSession session) {
@@ -290,12 +290,12 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * 传输error时callback
+         * 传输errorwhencallback
          */
         @Override
         public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
             super.handleTransportError(session, exception);
-            // 保持原有逻辑：complete errorFuture、callback onError、closesession、asynchronous通知connectionfailed
+            // 保持原has逻辑：complete errorFuture、callback onError、closesession、asynchronous通知connectionfailed
             errorFuture.completeExceptionally(exception);
             if (onError != null) {
                 CALLBACK_EXECUTOR.submit(() -> onError.accept(exception));
@@ -304,7 +304,7 @@ public class WebSocketClientManager implements Closeable {
         }
 
         /**
-         * connectionclose时callback
+         * connectionclosewhencallback
          */
         @Override
         public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -312,7 +312,7 @@ public class WebSocketClientManager implements Closeable {
             if (stopWatch.isRunning()) {
                 stopWatch.stop();
             }
-            log.info("wsconnectionclose, targetURI: {}, closetime: {}, connectiontotal时长: {}s,断开reason：{}",
+            log.info("wsconnectionclose, targetURI: {}, closetime: {}, connectiontotalwhen长: {}s,断开reason：{}",
                     targetUri, DateUtils.getDateTimeNow(DateUtils.DATE_TIME_MILLIS_PATTERN),
                     DateUtils.millsToSecond(stopWatch.getTotalTimeMillis()),status);
         }
@@ -323,9 +323,9 @@ public class WebSocketClientManager implements Closeable {
         private String uri; // target WS URI
         private long connectTimeout = 3; // requestconnectionwaittime
         private TimeUnit connectUnit = TimeUnit.SECONDS; // requestconnectionwaittimeunit
-        private long maxSessionDuration = 5; // 最large连线time，default5seconds
-        private TimeUnit maxSessionDurationUnit = TimeUnit.SECONDS; // 最large连线timeunit
-        private int queueCapacity = 100; // message队列容量
+        private long maxSessionDuration = 5; // mostlarge连线time，default5seconds
+        private TimeUnit maxSessionDurationUnit = TimeUnit.SECONDS; // mostlarge连线timeunit
+        private int queueCapacity = 100; // message队column容量
         private int bufferSize = 8 * 1024; //default 8kb
         private WebSocketHttpHeaders headers; // requestheader
 

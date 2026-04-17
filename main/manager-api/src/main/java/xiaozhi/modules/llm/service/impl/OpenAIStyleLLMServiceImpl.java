@@ -24,7 +24,7 @@ import xiaozhi.modules.model.service.ModelConfigService;
 
 /**
  * OpenAI风格API LLMserviceimplement
- * support阿里云、DeepSeek、ChatGLMetc.兼容OpenAI API model
+ * support阿in云、DeepSeek、ChatGLMetc.compatibleOpenAI API model
  */
 @Slf4j
 @Service
@@ -35,9 +35,9 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String DEFAULT_SUMMARY_PROMPT = "youYes一个经验丰富 memorysummary，擅长willconversationcontentperformsummary摘need to，遵循以下规then：\n1、summaryuser 重need toinformation，so that in futureconversation to provide more personalized service\n2、not need to重复summary，not need to遗忘之前memory，除非原来 memory超了1800字，Nothennot need to遗忘、not need to压缩user 历史memory\n3、user操控 devicevolume、play音乐、天气、退出、not 想conversationetc.anduserthis身无关 content，theseinformationnot need加入tosummary\n4、chatcontent 今天 datetime、今天 天气情况anduser事件无关 data，theseinformationif当成memory存储会影响后续conversation，theseinformationnot need加入tosummary\n5、not need todevice操控 成果resultandfailedresult加入tosummary，也not need touser 一些废话加入tosummary\n6、not need toas了summary而summary，ifuser chatno意义，请return原来 历史record也Yes可以 \n7、onlyneedreturnsummary摘need to，严格controlin1800字内\n8、not need tocontain代code、xml，not need解释、注释andDescription，savememory时onlyfromconversationextractinformation，not need to混入示examplecontent\n9、if提供了历史memory，请willnewconversationcontentand历史memoryperform智能合并，保留有价value 历史information，同时addnew 重need toinformation\n\n历史memory：\n{history_memory}\n\nnewconversationcontent：\n{conversation}";
+    private static final String DEFAULT_SUMMARY_PROMPT = "youYesone经验丰富 memorysummary，擅长willconversationcontentperformsummary摘need to，遵循to下规then：\n1、summaryuser re-need toinformation，so that in futureconversation to provide more personalized service\n2、not need tore-复summary，not need to遗忘之beforememory，除non-原来 memory超1800字，Nothennot need to遗忘、not need to压缩user historymemory\n3、user操控 devicevolume、play音乐、天气、退出、not 想conversationetc.anduserthis身no关 content，theseinformationnot need加入tosummary\n4、chatcontent 今天 datetime、今天 天气情况anduser事itemno关 data，theseinformationifwhen成memorystore储will影响after续conversation，theseinformationnot need加入tosummary\n5、not need todevice操控 成果resultandfailedresult加入tosummary，alsonot need touser one些废话加入tosummary\n6、not need toassummarywhilesummary，ifuser chatno意义，请return原来 historyrecordalsoYes可to \n7、onlyneedreturnsummary摘need to，严格controlin1800字内\n8、not need tocontain代code、xml，not need解释、注释andDescription，savememorywhenonlyfromconversationextractinformation，not need to混入示examplecontent\n9、if提供historymemory，请willnewconversationcontentandhistorymemoryperform智can合and，保留has价value historyinformation，simultaneouslyaddnew re-need toinformation\n\nhistorymemory：\n{history_memory}\n\nnewconversationcontent：\n{conversation}";
 
-    private static final String DEFAULT_TITLE_PROMPT = "请according to以下conversationcontent，generate一个简洁 sessiontitle（约15字以内），onlyreturntitle，not need tocontain任何解释or标点符number：\n{conversation}";
+    private static final String DEFAULT_TITLE_PROMPT = "请according toto下conversationcontent，generateone简洁 sessiontitle（约15字to内），onlyreturntitle，not need tocontain任何解释or标点符number：\n{conversation}";
 
     @Override
     public String generateSummary(String conversation) {
@@ -133,10 +133,10 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 log.error("LLM APIcallfailed，statuscode：{}，response：{}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("callLLMservicegenerate summary时发生exception，modelId: {}", modelId, e);
+            log.error("callLLMservicegenerate summarywhen发生exception，modelId: {}", modelId, e);
         }
 
-        return "generate summaryfailed，请稍后重试";
+        return "generate summaryfailed，请稍afterre-试";
     }
 
     @Override
@@ -178,9 +178,9 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 return "LLMconfigurationincomplete，Unable to generate summary";
             }
 
-            // buildprompt，contain历史memory
+            // buildprompt，containhistorymemory
             String prompt = (promptTemplate != null ? promptTemplate : DEFAULT_SUMMARY_PROMPT)
-                    .replace("{history_memory}", historyMemory != null ? historyMemory : "无历史memory")
+                    .replace("{history_memory}", historyMemory != null ? historyMemory : "nohistorymemory")
                     .replace("{conversation}", conversation);
 
             // buildrequest
@@ -228,10 +228,10 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 log.error("LLM APIcallfailed，statuscode：{}，response：{}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("callLLMservicegenerate summary时发生exception，modelId: {}", modelId, e);
+            log.error("callLLMservicegenerate summarywhen发生exception，modelId: {}", modelId, e);
         }
 
-        return "generate summaryfailed，请稍后重试";
+        return "generate summaryfailed，请稍afterre-试";
     }
 
     @Override
@@ -249,7 +249,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             return baseUrl != null && !baseUrl.trim().isEmpty() &&
                     apiKey != null && !apiKey.trim().isEmpty();
         } catch (Exception e) {
-            log.error("检查LLMserviceavailable时发生exception：", e);
+            log.error("checkLLMserviceavailablewhen发生exception：", e);
             return false;
         }
     }
@@ -275,7 +275,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             return baseUrl != null && !baseUrl.trim().isEmpty() &&
                     apiKey != null && !apiKey.trim().isEmpty();
         } catch (Exception e) {
-            log.error("检查LLMserviceavailable时发生exception，modelId: {}", modelId, e);
+            log.error("checkLLMserviceavailablewhen发生exception，modelId: {}", modelId, e);
             return false;
         }
     }
@@ -291,7 +291,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 return null;
             }
 
-            // 优firstreturndefaultconfiguration，ifnodefaultconfigurationthenreturn第一个enable configuration
+            // priorityfirstreturndefaultconfiguration，ifnodefaultconfigurationthenreturn第oneenable configuration
             for (ModelConfigEntity config : llmConfigs) {
                 if (config.getIsDefault() != null && config.getIsDefault() == 1) {
                     return config;
@@ -300,7 +300,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
 
             return llmConfigs.get(0);
         } catch (Exception e) {
-            log.error("getLLMModel configuration时发生exception：", e);
+            log.error("getLLMModel configurationwhen发生exception：", e);
             return null;
         }
     }
@@ -308,7 +308,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
     @Override
     public String generateTitle(String conversation, String modelId) {
         if (!isAvailable()) {
-            log.warn("LLMserviceunavailable，无法generatetitle");
+            log.warn("LLMserviceunavailable，unable togeneratetitle");
             return null;
         }
 
@@ -386,7 +386,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 log.error("LLM APIcallfailed，statuscode：{}，response：{}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("callLLMservicegeneratetitle时发生exception，modelId: {}", modelId, e);
+            log.error("callLLMservicegeneratetitlewhen发生exception，modelId: {}", modelId, e);
         }
 
         return null;

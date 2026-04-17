@@ -44,7 +44,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 import xiaozhi.modules.sys.vo.SysDictDataItem;
 
 /**
- * logincontrol层
+ * logincontrollayer
  */
 @Slf4j
 @AllArgsConstructor
@@ -91,19 +91,19 @@ public class LoginController {
     public Result<TokenDTO> login(@RequestBody LoginDTO login) {
         String password = login.getPassword();
 
-        // usetoolclassdecrypt并verificationVerification code
+        // usetoolclassdecryptandverificationVerification code
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, login.getCaptchaId(), captchaService, sysParamsService);
 
         login.setPassword(actualPassword);
 
-        // by照Usernamegetuser
+        // byaccording toUsernamegetuser
         SysUserDTO userDTO = sysUserService.getByUsername(login.getUsername());
-        // determineuserYesNo存in
+        // determineuserYesNostorein
         if (userDTO == null) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
-        // determinePasswordYesNo正确，not 一样then进入if
+        // determinePasswordYesNo确，not one样then进入if
         if (!PasswordUtils.matches(login.getPassword(), userDTO.getPassword())) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
@@ -119,7 +119,7 @@ public class LoginController {
 
         String password = login.getPassword();
 
-        // usetoolclassdecrypt并verificationVerification code
+        // usetoolclassdecryptandverificationVerification code
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, login.getCaptchaId(), captchaService, sysParamsService);
 
@@ -142,7 +142,7 @@ public class LoginController {
             }
         }
 
-        // by照Usernamegetuser
+        // byaccording toUsernamegetuser
         SysUserDTO userDTO = sysUserService.getByUsername(login.getUsername());
         if (userDTO != null) {
             throw new RenException(ErrorCode.PHONE_ALREADY_REGISTERED);
@@ -166,7 +166,7 @@ public class LoginController {
     @PutMapping("/change-password")
     @Operation(summary = "updateuserPassword")
     public Result<?> changePassword(@RequestBody PasswordDTO passwordDTO) {
-        // determine非empty
+        // determinenon-empty
         ValidatorUtils.validateEntity(passwordDTO);
         Long userId = SecurityUser.getUserId();
         sysUserTokenService.changePassword(userId, passwordDTO);
@@ -174,7 +174,7 @@ public class LoginController {
     }
 
     @PutMapping("/retrieve-password")
-    @Operation(summary = "找回Password")
+    @Operation(summary = "find回Password")
     public Result<?> retrievePassword(@RequestBody RetrievePasswordDTO dto) {
         // YesNoenableMobile registration
         Boolean isMobileRegister = sysParamsService
@@ -182,7 +182,7 @@ public class LoginController {
         if (!isMobileRegister) {
             throw new RenException(ErrorCode.RETRIEVE_PASSWORD_DISABLED);
         }
-        // determine非empty
+        // determinenon-empty
         ValidatorUtils.validateEntity(dto);
         // verificationuserYesNoYesMobile phone number
         boolean validPhone = ValidatorUtils.isValidPhone(dto.getPhone());
@@ -190,7 +190,7 @@ public class LoginController {
             throw new RenException(ErrorCode.PHONE_FORMAT_ERROR);
         }
 
-        // by照Usernamegetuser
+        // byaccording toUsernamegetuser
         SysUserDTO userDTO = sysUserService.getByUsername(dto.getPhone());
         if (userDTO == null) {
             throw new RenException(ErrorCode.PHONE_NOT_REGISTERED);
@@ -204,7 +204,7 @@ public class LoginController {
 
         String password = dto.getPassword();
 
-        // usetoolclassdecrypt并verificationVerification code
+        // usetoolclassdecryptandverificationVerification code
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, dto.getCaptchaId(), captchaService, sysParamsService);
 

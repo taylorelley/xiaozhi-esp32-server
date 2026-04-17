@@ -129,7 +129,7 @@ public class ModelController {
         if (entity == null) {
             return new Result<Void>().error("Model configurationdoes not exist");
         }
-        // not 能closedefaultmodel
+        // not canclosedefaultmodel
         if (status == 0 && entity.getIsDefault() > 0) {
             return new Result<Void>().error("defaultModel configurationnot allowclose");
         }
@@ -148,7 +148,7 @@ public class ModelController {
         if (entity == null) {
             return new Result<Void>().error("Model configurationdoes not exist");
         }
-        // will其他modelsetas非default
+        // willothermodelsetasnon-default
         modelConfigService.setDefaultModel(entity.getModelType(), 0);
         entity.setIsEnabled(1);
         entity.setIsDefault(1);

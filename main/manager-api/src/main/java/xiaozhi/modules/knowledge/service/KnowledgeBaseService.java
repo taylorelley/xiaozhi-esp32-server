@@ -17,7 +17,7 @@ public interface KnowledgeBaseService extends BaseService<KnowledgeBaseEntity> {
     /**
      * paginationqueryKnowledge baselist
      * 
-     * @param knowledgeBaseDTO queryitems件
+     * @param knowledgeBaseDTO queryitemsitem
      * @param page             page number
      * @param limit            per pagecount
      * @return paginationdata

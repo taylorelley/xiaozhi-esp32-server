@@ -64,7 +64,7 @@ public class ToolUtil {
     }
 
     /**
-     * objectgroupYesNo存inemptyobject
+     * objectgroupYesNostoreinemptyobject
      */
     public static boolean isOneEmpty(Object... os) {
         for (Object o : os) {

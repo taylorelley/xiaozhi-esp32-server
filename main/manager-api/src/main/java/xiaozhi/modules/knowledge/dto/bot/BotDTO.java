@@ -93,7 +93,7 @@ public class BotDTO {
     @AllArgsConstructor
     @Schema(description = "AgentBot 输入parameterdefineresponse")
     public static class AgentInputsVO implements Serializable {
-        @Schema(description = "table单变量definelist")
+        @Schema(description = "table变量definelist")
         @JsonProperty("variables")
         private List<Map<String, Object>> variables;
     }

@@ -27,7 +27,7 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
 
     private final SysUserService sysUserService;
     /**
-     * 12小时后期
+     * 12smallwhenafter期
      */
     private final static int EXPIRE = 3600 * 12;
 
@@ -44,7 +44,7 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
         // determineYesNogeneratetoken
         SysUserTokenEntity tokenEntity = baseDao.getByUserId(userId);
         if (tokenEntity == null) {
-            // generate一个token
+            // generateonetoken
             token = TokenGenerator.generateValue();
 
             tokenEntity = new SysUserTokenEntity();
@@ -58,7 +58,7 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
         } else {
             // determinetokenYesNo期
             if (tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) {
-                // token期，重newgeneratetoken
+                // token期，re-newgeneratetoken
                 token = TokenGenerator.generateValue();
             } else {
                 token = tokenEntity.getToken();
@@ -109,7 +109,7 @@ public class SysUserTokenServiceImpl extends BaseServiceImpl<SysUserTokenDao, Sy
         // updatePassword
         sysUserService.changePassword(userId, passwordDTO);
 
-        // make token invalid，后need重newlogin
+        // make token invalid，afterneedre-newlogin
         Date expireDate = DateUtil.offsetMinute(new Date(), -1);
         baseDao.logout(userId, expireDate);
     }

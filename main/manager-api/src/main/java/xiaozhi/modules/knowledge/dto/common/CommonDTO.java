@@ -49,7 +49,7 @@ public class CommonDTO {
 
         @Schema(description = "图片 ID list")
         @JsonProperty("img_id")
-        private String imageId; // Note：RAGFlow 有时return String 有时return List，需according to实际情况确认，暂定 String used for ID
+        private String imageId; // Note：RAGFlow haswhenreturn String haswhenreturn List，需according to际情况confirm，暂定 String used for ID
 
         @Schema(description = "document ID")
         @JsonProperty("doc_id")
@@ -69,11 +69,11 @@ public class CommonDTO {
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "data集 ID list", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotEmpty(message = "data集listcannot be empty")
+        @Schema(description = "datacollection ID list", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotEmpty(message = "datacollectionlistcannot be empty")
         @JsonProperty("dataset_ids")
         private List<String> datasetIds;
     }
 
-    // response通常复用 String or简单  Map 结构，视具implement而定，暂not define专用 VO
+    // response通常复用 String or简  Map 结构，视具implementwhile定，暂not define专用 VO
 }

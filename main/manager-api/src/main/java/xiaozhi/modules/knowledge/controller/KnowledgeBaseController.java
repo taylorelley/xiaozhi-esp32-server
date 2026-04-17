@@ -66,7 +66,7 @@ public class KnowledgeBaseController {
 
         KnowledgeBaseDTO knowledgeBaseDTO = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查Permission：useronly能查看自己create Knowledge base
+        // checkPermission：useronlycan查看自己create Knowledge base
         if (knowledgeBaseDTO.getCreator() == null || !knowledgeBaseDTO.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
@@ -90,15 +90,15 @@ public class KnowledgeBaseController {
         // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // firstget现有Knowledge baseinformation以检查Permission
+        // firstget现hasKnowledge baseinformationtocheckPermission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查Permission：useronly能update自己create Knowledge base
+        // checkPermission：useronlycanupdate自己create Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [FIX] 注入 ID，prevent Service 层找not torecord
+        // [FIX] 注入 ID，prevent Service layerfindnot torecord
         knowledgeBaseDTO.setId(existingKnowledgeBase.getId());
         knowledgeBaseDTO.setDatasetId(datasetId);
         KnowledgeBaseDTO resp = knowledgeBaseService.update(knowledgeBaseDTO);
@@ -106,22 +106,22 @@ public class KnowledgeBaseController {
     }
 
     @DeleteMapping("/{dataset_id}")
-    @Operation(summary = "delete单个Knowledge base")
+    @Operation(summary = "deleteKnowledge base")
     @Parameter(name = "dataset_id", description = "Knowledge baseID", required = true)
     @RequiresPermissions("sys:role:normal")
     public Result<Void> delete(@PathVariable("dataset_id") String datasetId) {
         // getcurrently logged-inUser ID
         Long currentUserId = SecurityUser.getUserId();
 
-        // firstget现有Knowledge baseinformation以检查Permission
+        // firstget现hasKnowledge baseinformationtocheckPermission
         KnowledgeBaseDTO existingKnowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查Permission：useronly能delete自己create Knowledge base
+        // checkPermission：useronlycandelete自己create Knowledge base
         if (existingKnowledgeBase.getCreator() == null || !existingKnowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
 
-        // [Architecture Fix] via编排层cascadedelete，prevent孤儿data并解决循环依赖
+        // [Architecture Fix] via编排layercascadedelete，prevent孤儿dataand解决循环依赖
         knowledgeManagerService.deleteDatasetWithFiles(datasetId);
         return new Result<>();
     }
@@ -142,11 +142,11 @@ public class KnowledgeBaseController {
                 .orElseGet(ArrayList::new);
         if (ToolUtil.isNotEmpty(knowledgeBaseDTOs)) {
             knowledgeBaseDTOs.forEach(item -> {
-                // 检查Permission：useronly能delete自己create Knowledge base
+                // checkPermission：useronlycandelete自己create Knowledge base
                 if (item.getCreator() == null || !item.getCreator().equals(currentUserId)) {
                     throw new RenException(ErrorCode.NO_PERMISSION);
                 }
-                // [Architecture Fix] via编排层cascadedelete
+                // [Architecture Fix] via编排layercascadedelete
                 knowledgeManagerService.deleteDatasetWithFiles(item.getDatasetId());
             });
         }

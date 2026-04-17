@@ -12,7 +12,7 @@ import java.util.Map;
 public class ServerActionPayloadDTO
 {
     /**
-    * type（智控台发往serviceend 都Yesserver）
+    * type（智控台发往serviceend allYesserver）
     */
     private String type;
     /**
@@ -31,6 +31,6 @@ public class ServerActionPayloadDTO
         serverActionPayloadDTO.setType("server");
         return serverActionPayloadDTO;
     }
-    // 私有化
+    // 私has化
     private ServerActionPayloadDTO() {}
 }

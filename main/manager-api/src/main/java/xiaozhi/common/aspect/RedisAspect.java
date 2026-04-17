@@ -12,7 +12,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * Redis切面processclass
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Slf4j

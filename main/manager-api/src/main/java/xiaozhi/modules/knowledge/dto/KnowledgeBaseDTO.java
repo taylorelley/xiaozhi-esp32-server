@@ -38,7 +38,7 @@ public class KnowledgeBaseDTO implements Serializable {
     @Schema(description = "Permissionset: me/team")
     private String permission;
 
-    @Schema(description = "chunk方法")
+    @Schema(description = "chunkmethod")
     private String chunkMethod;
 
     @Schema(description = "parserconfiguration(JSON String)")

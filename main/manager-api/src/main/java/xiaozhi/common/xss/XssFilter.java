@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * XSSfilter
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class XssFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        // 放行
+        // 放row
         if (shouldNotFilter(httpServletRequest)) {
             chain.doFilter(request, response);
 
@@ -43,7 +43,7 @@ public class XssFilter implements Filter {
     }
 
     private boolean shouldNotFilter(HttpServletRequest request) {
-        // 放行not filter URL
+        // 放rownot filter URL
         return properties.getExcludeUrls().stream()
                 .anyMatch(excludeUrl -> pathMatcher.match(excludeUrl, request.getServletPath()));
     }

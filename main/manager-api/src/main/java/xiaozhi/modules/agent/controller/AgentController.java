@@ -82,7 +82,7 @@ public class AgentController {
             @RequestParam(value = "searchType", defaultValue = "name") String searchType) {
         UserDetail user = SecurityUser.getUser();
 
-        // directlycall整合后 getUserAgents方法，无需再区分searchand普通query
+        // directlycall整合after getUserAgentsmethod，no需again区分searchand普通query
         List<AgentDTO> agents = agentService.getUserAgents(user.getId(), keyword, searchType);
         return new Result<List<AgentDTO>>().ok(agents);
     }
@@ -130,7 +130,7 @@ public class AgentController {
     }
 
     @PostMapping("/chat-summary/{sessionId}/save")
-    @Operation(summary = "according toSession IDgenerateChat historysummary并save（asynchronousexecute）")
+    @Operation(summary = "according toSession IDgenerateChat historysummaryandsave（asynchronousexecute）")
     public Result<Void> generateAndSaveChatSummary(@PathVariable String sessionId) {
         try {
             // asynchronousexecutesummarygeneratetask，immediatelyreturnsuccessresponse
@@ -177,7 +177,7 @@ public class AgentController {
         agentPluginMappingService.deleteByAgentId(id);
         // deleteassociated contextsourceconfiguration
         agentContextProviderService.deleteByAgentId(id);
-        // 再deleteagent
+        // againdeleteagent
         agentService.deleteById(id);
         return new Result<>();
     }
@@ -215,9 +215,9 @@ public class AgentController {
         // get currentuser
         UserDetail user = SecurityUser.getUser();
 
-        // 检查Permission
+        // checkPermission
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryDTO>>().error("noPermission查看该agent Chat history");
+            return new Result<List<AgentChatHistoryDTO>>().error("noPermission查看thisagent Chat history");
         }
 
         // queryChat history
@@ -233,9 +233,9 @@ public class AgentController {
         // get currentuser
         UserDetail user = SecurityUser.getUser();
 
-        // 检查Permission
+        // checkPermission
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryUserVO>>().error("noPermission查看该agent Chat history");
+            return new Result<List<AgentChatHistoryUserVO>>().error("noPermission查看thisagent Chat history");
         }
 
         // queryChat history

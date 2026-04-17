@@ -57,7 +57,7 @@ public class AgentTemplateController {
         int limit = Integer.parseInt(params.getOrDefault(Constant.LIMIT, "10").toString());
         Page<AgentTemplateEntity> pageInfo = new Page<>(page, limit);
         
-        // createqueryitems件
+        // createqueryitemsitem
         QueryWrapper<AgentTemplateEntity> wrapper = new QueryWrapper<>();
         String agentName = (String) params.get("agentName");
         if (agentName != null && !agentName.isEmpty()) {
@@ -71,7 +71,7 @@ public class AgentTemplateController {
         // useConvertUtilsconvert toVOlist
         List<AgentTemplateVO> voList = ConvertUtils.sourceToTarget(pageResult.getRecords(), AgentTemplateVO.class);
 
-        // 修复：useconstructfunctioncreatePageDataobject，而not Yes无参construct+setter
+        // 修复：useconstructfunctioncreatePageDataobject，whilenot Yesno参construct+setter
         PageData<AgentTemplateVO> pageData = new PageData<>(voList, pageResult.getTotal());
 
         return new Result<PageData<AgentTemplateVO>>().ok(pageData);
@@ -96,7 +96,7 @@ public class AgentTemplateController {
     @Operation(summary = "createtemplate")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<AgentTemplateEntity> createAgentTemplate(@Valid @RequestBody AgentTemplateEntity template) {
-        // setSort ordervalueas下一个available 序number
+        // setSort ordervalueas下oneavailable ordernumber
         template.setSort(agentTemplateService.getNextAvailableSort());
         
         boolean saved = agentTemplateService.save(template);
@@ -134,7 +134,7 @@ public class AgentTemplateController {
         // executedeleteoperation
         boolean deleted = agentTemplateService.removeById(id);
         if (deleted) {
-            // deletesuccess后，重newSort order剩余template
+            // deletesuccessafter，re-newSort order剩余template
             agentTemplateService.reorderTemplatesAfterDelete(deletedSort);
             return ResultUtils.success("deletetemplatesuccess");
         } else {
@@ -143,7 +143,7 @@ public class AgentTemplateController {
     }
     
     
-    // addnew batchdelete方法，usenot 同 URL
+    // addnew batchdeletemethod，usenot 同 URL
     @PostMapping("/batch-remove")
     @Operation(summary = "batchdeletetemplate")
     @RequiresPermissions("sys:role:superAdmin")

@@ -18,7 +18,7 @@ import xiaozhi.common.utils.Result;
 
 /**
  * exceptionprocess
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Slf4j

@@ -42,7 +42,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        // forOPTIONSrequest放行
+        // forOPTIONSrequest放row
         if (((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())) {
             return true;
         }
@@ -51,7 +51,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        // gettoken并validate
+        // gettokenandvalidate
         String token = getRequestToken((HttpServletRequest) servletRequest);
         if (StringUtils.isBlank(token)) {
             // tokenasempty，return401
@@ -62,8 +62,8 @@ public class ServerSecretFilter extends AuthenticatingFilter {
         // verificationtokenYesNo匹配
         String serverSecret = getServerSecret();
         if (StringUtils.isBlank(serverSecret) || !serverSecret.equals(token)) {
-            // token无效，return401
-            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "无效 servicekey");
+            // tokenno效，return401
+            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "no效 servicekey");
             return false;
         }
 

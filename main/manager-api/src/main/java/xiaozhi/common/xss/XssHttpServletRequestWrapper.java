@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 
 /**
  * XSSfilterprocess
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
@@ -29,7 +29,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        // 非jsontype，directlyreturn
+        // non-jsontype，directlyreturn
         if (!MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(super.getHeader(HttpHeaders.CONTENT_TYPE))) {
             return super.getInputStream();
         }

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 展示agentvoiceprintlistVO
+ * displayagentvoiceprintlistVO
  */
 @Data
 public class AgentVoicePrintVO {

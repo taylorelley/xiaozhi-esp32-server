@@ -22,12 +22,12 @@ public class AsyncConfig {
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("AsyncThread-");
-        // set拒绝策略：由call线程execute
+        // set拒绝策略：bycall线程execute
         executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                 try {
-                    // if线程池already满，then由call线程execute
+                    // if线程池already满，thenbycall线程execute
                     r.run();
                 } catch (Exception e) {
                     throw new RuntimeException("executeasynchronoustaskfailed", e);

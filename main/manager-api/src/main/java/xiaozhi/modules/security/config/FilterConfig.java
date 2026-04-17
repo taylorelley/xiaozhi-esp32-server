@@ -7,7 +7,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Filterconfiguration
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Configuration
@@ -17,7 +17,7 @@ public class FilterConfig {
     public FilterRegistrationBean<DelegatingFilterProxy> shiroFilterRegistration() {
         FilterRegistrationBean<DelegatingFilterProxy> registration = new FilterRegistrationBean<>();
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
-        // 该value缺省asfalse，represents生命周期由SpringApplicationContextmanagement，setastruethenrepresents由ServletContainermanagement
+        // thisvalue缺省asfalse，represents生命周期bySpringApplicationContextmanagement，setastruethenrepresentsbyServletContainermanagement
         registration.addInitParameter("targetFilterLifecycle", "true");
         registration.setEnabled(true);
         registration.setOrder(Integer.MAX_VALUE - 1);

@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 /**
  * Knowledge baseAPIadapter抽象基class
- * define通用 Knowledge baseoperationinterface，support多种后endAPIimplement
+ * define通用 Knowledge baseoperationinterface，support多种afterendAPIimplement
  */
 public abstract class KnowledgeBaseAdapter {
 
@@ -57,7 +57,7 @@ public abstract class KnowledgeBaseAdapter {
          * 
          * @param datasetId  Knowledge baseID
          * @param documentId documentID
-         * @return documentdetails (强type InfoVO)
+         * @return documentdetails (strongtype InfoVO)
          */
         public abstract DocumentDTO.InfoVO getDocumentById(String datasetId, String documentId);
 
@@ -101,7 +101,7 @@ public abstract class KnowledgeBaseAdapter {
         public abstract boolean parseDocuments(String datasetId, List<String> documentIds);
 
         /**
-         * 列出specifieddocument slice
+         * listspecifieddocument slice
          * 
          * @param datasetId  Knowledge baseID
          * @param documentId documentID
@@ -150,24 +150,24 @@ public abstract class KnowledgeBaseAdapter {
         public abstract Map<String, Object> getDefaultConfig();
 
         /**
-         * createdata集
+         * createdatacollection
          * 
          * @param req createparameter
-         * @return data集details
+         * @return datacollectiondetails
          */
         public abstract DatasetDTO.InfoVO createDataset(DatasetDTO.CreateReq req);
 
         /**
-         * updatedata集
+         * updatedatacollection
          * 
-         * @param datasetId data集ID
+         * @param datasetId datacollectionID
          * @param req       updateparameter
-         * @return data集details
+         * @return datacollectiondetails
          */
         public abstract DatasetDTO.InfoVO updateDataset(String datasetId, DatasetDTO.UpdateReq req);
 
         /**
-         * Delete data集
+         * Delete datacollection
          * 
          * @param req deleterequestparameter（containIDlist）
          * @return batchoperationresult
@@ -175,9 +175,9 @@ public abstract class KnowledgeBaseAdapter {
         public abstract DatasetDTO.BatchOperationVO deleteDataset(DatasetDTO.BatchIdReq req);
 
         /**
-         * getdata集 documentcount
+         * getdatacollection documentcount
          * 
-         * @param datasetId data集ID
+         * @param datasetId datacollectionID
          * @return documentcount
          */
         public abstract Integer getDocumentCount(String datasetId);

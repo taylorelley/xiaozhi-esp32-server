@@ -39,7 +39,7 @@ public class OTAController {
     private final DeviceService deviceService;
     private final SysParamsService sysParamsService;
 
-    @Operation(summary = "OTAversionanddeviceactivationstatus检查")
+    @Operation(summary = "OTAversionanddeviceactivationstatuscheck")
     @PostMapping
     public ResponseEntity<String> checkOTAVersion(
             @RequestBody DeviceReportReqDTO deviceReportReqDTO,
@@ -52,14 +52,14 @@ public class OTAController {
             clientId = deviceId;
         }
         boolean macAddressValid = isMacAddressValid(deviceId);
-        // deviceIdandMacAddress应Yes一致 , 并and必须needapplicationfield
+        // deviceIdandMacAddress应Yesconsistent , andandmustneedapplicationfield
         if (!macAddressValid) {
             return createResponse(DeviceReportRespDTO.createError("Invalid device ID"));
         }
         return createResponse(deviceService.checkDeviceActive(deviceId, clientId, deviceReportReqDTO));
     }
 
-    @Operation(summary = "device快速检查activationstatus")
+    @Operation(summary = "device快速checkactivationstatus")
     @PostMapping("activate")
     public ResponseEntity<String> activateDevice(
             @Parameter(name = "Device-Id", description = "deviceunique identifier", required = true, in = ParameterIn.HEADER) @RequestHeader("Device-Id") String deviceId,
@@ -79,17 +79,17 @@ public class OTAController {
     public ResponseEntity<String> getOTA() {
         String mqttUdpConfig = sysParamsService.getValue(Constant.SERVER_MQTT_GATEWAY, false);
         if (StringUtils.isBlank(mqttUdpConfig)) {
-            return ResponseEntity.ok("OTAinterfacenot normal，missingmqtt_gatewayAddress，Please log in to the control console，inParameter management找to【server.mqtt_gateway】configuration");
+            return ResponseEntity.ok("OTAinterfacenot normal，missingmqtt_gatewayAddress，Please log in to the control console，inParameter managementfindto【server.mqtt_gateway】configuration");
         }
         String wsUrl = sysParamsService.getValue(Constant.SERVER_WEBSOCKET, true);
         if (StringUtils.isBlank(wsUrl) || wsUrl.equals("null")) {
-            return ResponseEntity.ok("OTAinterfacenot normal，missingwebsocketAddress，Please log in to the control console，inParameter management找to【server.websocket】configuration");
+            return ResponseEntity.ok("OTAinterfacenot normal，missingwebsocketAddress，Please log in to the control console，inParameter managementfindto【server.websocket】configuration");
         }
         String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
         if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
-            return ResponseEntity.ok("OTAinterfacenot normal，missingotaAddress，Please log in to the control console，inParameter management找to【server.ota】configuration");
+            return ResponseEntity.ok("OTAinterfacenot normal，missingotaAddress，Please log in to the control console，inParameter managementfindto【server.ota】configuration");
         }
-        return ResponseEntity.ok("OTAinterfacerunnormal，websocket集群count：" + wsUrl.split(";").length);
+        return ResponseEntity.ok("OTAinterfacerunnormal，websocketcollection群count：" + wsUrl.split(";").length);
     }
 
     @SneakyThrows
@@ -106,7 +106,7 @@ public class OTAController {
     }
 
     /**
-     * 简单determinemacAddressYesNovalid（非严格）
+     * 简determinemacAddressYesNovalid（non-严格）
      * 
      * @param macAddress
      * @return
@@ -115,7 +115,7 @@ public class OTAController {
         if (StringUtils.isBlank(macAddress)) {
             return false;
         }
-        // MACAddressusually 12bit十六进制number，可以contain冒numberor连字符分隔符
+        // MACAddressusually 12bit十六进制number，可tocontain冒numberor连字符分隔符
         String macPattern = "^([0-9A-Za-z]{2}[:-]){5}([0-9A-Za-z]{2})$";
         return macAddress.matches(macPattern);
     }

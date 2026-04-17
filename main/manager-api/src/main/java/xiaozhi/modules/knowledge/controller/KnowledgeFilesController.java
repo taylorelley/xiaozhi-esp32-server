@@ -37,7 +37,7 @@ public class KnowledgeFilesController {
     private final KnowledgeBaseService knowledgeBaseService;
 
     /**
-     * verificationcurrentuserYesNo有PermissionoperationspecifiedKnowledge base
+     * verificationcurrentuserYesNohasPermissionoperationspecifiedKnowledge base
      * 
      * @param datasetId Knowledge baseID
      */
@@ -48,7 +48,7 @@ public class KnowledgeFilesController {
         // getKnowledge baseinformation
         KnowledgeBaseDTO knowledgeBase = knowledgeBaseService.getByDatasetId(datasetId);
 
-        // 检查Permission：useronly能operation自己create Knowledge base
+        // checkPermission：useronlycanoperation自己create Knowledge base
         if (knowledgeBase.getCreator() == null || !knowledgeBase.getCreator().equals(currentUserId)) {
             throw new RenException(ErrorCode.NO_PERMISSION);
         }
@@ -127,7 +127,7 @@ public class KnowledgeFilesController {
     }
 
     @DeleteMapping("/documents/{document_id}")
-    @Operation(summary = "delete单个document")
+    @Operation(summary = "deletedocument")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> deleteSingle(@PathVariable("dataset_id") String datasetId,
             @PathVariable("document_id") String documentId) {
@@ -157,19 +157,19 @@ public class KnowledgeFilesController {
         if (success) {
             return new Result<Void>();
         } else {
-            return new Result<Void>().error("Document parsingfailed，document可能正inprocess");
+            return new Result<Void>().error("Document parsingfailed，document可caninprocess");
         }
     }
 
     @GetMapping("/documents/{document_id}/chunks")
-    @Operation(summary = "列出specifieddocument slice")
+    @Operation(summary = "listspecifieddocument slice")
     @RequiresPermissions("sys:role:normal")
     public Result<ChunkDTO.ListVO> listChunks(
             @PathVariable("dataset_id") String datasetId,
             @PathVariable("document_id") String documentId,
             @ParameterObject ChunkDTO.ListReq req) {
 
-        // verificationPermission (内部alreadycontainKnowledge base存invalidateand归属权validate)
+        // verificationPermission (内部alreadycontainKnowledge basestoreinvalidateand归权validate)
         validateKnowledgeBasePermission(datasetId);
 
         // setdefaultvalue
@@ -178,7 +178,7 @@ public class KnowledgeFilesController {
         if (req.getPageSize() == null)
             req.setPageSize(50);
 
-        // callservice层get强typeslicelist
+        // callservicelayergetstrongtypeslicelist
         ChunkDTO.ListVO result = knowledgeFilesService.listChunks(datasetId, documentId, req);
         return new Result<ChunkDTO.ListVO>().ok(result);
     }
@@ -198,7 +198,7 @@ public class KnowledgeFilesController {
             req.setDatasetIds(java.util.Arrays.asList(datasetId));
         }
 
-        // [Reinforce] 强管控paginationparameter，prevent RAGFlow end出现 Negative Slicing 报错
+        // [Reinforce] strong管控paginationparameter，prevent RAGFlow end出现 Negative Slicing 报错
         if (req.getPage() == null || req.getPage() < 1) {
             req.setPage(1);
         }
@@ -206,7 +206,7 @@ public class KnowledgeFilesController {
             req.setPageSize(100);
         }
 
-        // callretrieveservice，return强typeaggregationobject
+        // callretrieveservice，returnstrongtypeaggregationobject
         RetrievalDTO.ResultVO result = knowledgeFilesService.retrievalTest(req);
         return new Result<RetrievalDTO.ResultVO>().ok(result);
     }

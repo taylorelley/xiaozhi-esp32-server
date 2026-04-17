@@ -48,7 +48,7 @@ public class ServerSideManageController {
     private static final ObjectMapper objectMapper;
     static {
         objectMapper = new ObjectMapper();
-        // 忽略jsonstring存in，但pojodoes not existcorrespondingfield 情况
+        // 忽略jsonstringstorein，butpojodoes not existcorrespondingfield 情况
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
@@ -77,7 +77,7 @@ public class ServerSideManageController {
         }
         String targetWs = emitSeverActionDTO.getTargetWs();
         String[] wsList = wsText.split(";");
-        // 找toneed发起 
+        // findtoneed发起 
         if (StringUtils.isBlank(targetWs) || !Arrays.asList(wsList).contains(targetWs)) {
             throw new RenException(ErrorCode.TARGET_WEBSOCKET_NOT_EXIST);
         }
@@ -112,12 +112,12 @@ public class ServerSideManageController {
                 .uri(targetWsUri)
                 .headers(headers)
                 .build()) {
-            // ifconnectionsuccessthensend一个jsondata包并waitserviceendresponse
+            // ifconnectionsuccessthensendonejsondata包andwaitserviceendresponse
             client.sendJson(
                     ServerActionPayloadDTO.build(
                             actionEnum,
                             Map.of("secret", serverSK)));
-            // waitserviceendresponse并持续监听information
+            // waitserviceendresponseand持续监听information
             client.listener((jsonText) -> {
                 if (StringUtils.isBlank(jsonText)) {
                     return false;
@@ -131,7 +131,7 @@ public class ServerSideManageController {
                 }
             });
         } catch (Exception e) {
-            // 捕获Allerror，由全局exceptionprocessreturn
+            // 捕获Allerror，by全局exceptionprocessreturn
             throw new RenException(ErrorCode.WEB_SOCKET_CONNECT_FAILED);
         }
         return true;

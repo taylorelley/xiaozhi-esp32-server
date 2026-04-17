@@ -19,16 +19,16 @@ public class KnowledgeBaseAdapterFactory {
     // register adaptertypemapping
     private static final Map<String, Class<? extends KnowledgeBaseAdapter>> adapterRegistry = new HashMap<>();
 
-    // adapter实examplecache
+    // adapterexamplecache
     private static final Map<String, KnowledgeBaseAdapter> adapterCache = new ConcurrentHashMap<>();
 
-    // 最largecache实examplenumber，prevent内存泄露 (Issue 9)
+    // mostlargecacheexamplenumber，prevent内store泄露 (Issue 9)
     private static final int MAX_CACHE_SIZE = 50;
 
     static {
         // register内置adaptertype
         registerAdapter("ragflow", xiaozhi.modules.knowledge.rag.impl.RAGFlowAdapter.class);
-        // 可以inthis里register更多adaptertype
+        // 可tointhisinregister更多adaptertype
     }
 
     /**
@@ -46,42 +46,42 @@ public class KnowledgeBaseAdapterFactory {
     }
 
     /**
-     * getadapter实example
+     * getadapterexample
      * 
      * @param adapterType adaptertype
      * @param config      configurationparameter
-     * @return adapter实example
+     * @return adapterexample
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType, Map<String, Object> config) {
         String cacheKey = buildCacheKey(adapterType, config);
 
-        // 检查cacheYesNoalready exists实example
+        // checkcacheYesNoalready existsexample
         if (adapterCache.containsKey(cacheKey)) {
-            log.debug("fromcachegetadapter实example: {}", cacheKey);
+            log.debug("fromcachegetadapterexample: {}", cacheKey);
             return adapterCache.get(cacheKey);
         }
 
-        // createnew adapter实example
+        // createnew adapterexample
         KnowledgeBaseAdapter adapter = createAdapter(adapterType, config);
 
-        // cacheadapter实example (with容量限制检查)
+        // cacheadapterexample (with容量限制check)
         if (adapterCache.size() >= MAX_CACHE_SIZE) {
-            log.warn("adaptercachealready达上限 ({})，execute内存保护clear", MAX_CACHE_SIZE);
-            // 简单process：directly清empty，production环境下建议use LRU
+            log.warn("adaptercachealready达上限 ({})，execute内store保护clear", MAX_CACHE_SIZE);
+            // 简process：directly清empty，production环境下suggestionuse LRU
             adapterCache.clear();
         }
 
         adapterCache.put(cacheKey, adapter);
-        log.info("create并cacheadapter实example: {}", cacheKey);
+        log.info("createandcacheadapterexample: {}", cacheKey);
 
         return adapter;
     }
 
     /**
-     * getadapter实example（无configuration）
+     * getadapterexample（noconfiguration）
      * 
      * @param adapterType adaptertype
-     * @return adapter实example
+     * @return adapterexample
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType) {
         return getAdapter(adapterType, null);
@@ -97,7 +97,7 @@ public class KnowledgeBaseAdapterFactory {
     }
 
     /**
-     * 检查adaptertypeYesNoalreadyregister
+     * checkadaptertypeYesNoalreadyregister
      * 
      * @param adapterType adaptertype
      * @return YesNoalreadyregister
@@ -112,7 +112,7 @@ public class KnowledgeBaseAdapterFactory {
     public static void clearCache() {
         int cacheSize = adapterCache.size();
         adapterCache.clear();
-        log.info("clearadaptercache，共clear {} 个实example", cacheSize);
+        log.info("clearadaptercache，共clear {} example", cacheSize);
     }
 
     /**
@@ -128,7 +128,7 @@ public class KnowledgeBaseAdapterFactory {
                 removedCount++;
             }
         }
-        log.info("移除adaptertype '{}'  cache，共移除 {} 个实example", adapterType, removedCount);
+        log.info("移除adaptertype '{}'  cache，共移除 {} example", adapterType, removedCount);
     }
 
     /**
@@ -145,11 +145,11 @@ public class KnowledgeBaseAdapterFactory {
     }
 
     /**
-     * createadapter实example
+     * createadapterexample
      * 
      * @param adapterType adaptertype
      * @param config      configurationparameter
-     * @return adapter实example
+     * @return adapterexample
      */
     private static KnowledgeBaseAdapter createAdapter(String adapterType, Map<String, Object> config) {
         if (!adapterRegistry.containsKey(adapterType)) {
@@ -172,32 +172,32 @@ public class KnowledgeBaseAdapterFactory {
                 }
             }
 
-            log.info("successcreateadapter实example: {}", adapterType);
+            log.info("successcreateadapterexample: {}", adapterType);
             return adapter;
 
         } catch (Exception e) {
-            log.error("createadapter实examplefailed: {}", adapterType, e);
+            log.error("createadapterexamplefailed: {}", adapterType, e);
             throw new RenException(ErrorCode.RAG_ADAPTER_CREATION_FAILED,
                     "createadapterfailed: " + adapterType + ", error: " + e.getMessage());
         }
     }
 
     /**
-     * buildcache键
+     * buildcachekey
      * 
      * @param adapterType adaptertype
      * @param config      configurationparameter
-     * @return cache键
+     * @return cachekey
      */
     private static String buildCacheKey(String adapterType, Map<String, Object> config) {
         if (config == null || config.isEmpty()) {
             return adapterType + "@default";
         }
 
-        // 基于configurationparametergeneratecache键
+        // 基于configurationparametergeneratecachekey
         StringBuilder keyBuilder = new StringBuilder(adapterType + "@");
 
-        // useconfiguration 哈希valueascache键 一部分
+        // useconfiguration 哈希valueascachekey one部分
         int configHash = config.hashCode();
         keyBuilder.append(configHash);
 

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * voicedetails展示VO
+ * voicedetailsdisplayVO
  * 
  * @author zjy
  * @since 2025-3-21

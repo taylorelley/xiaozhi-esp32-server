@@ -18,7 +18,7 @@ public interface SysDictDataService extends BaseService<SysDictDataEntity> {
     /**
      * paginationQuery dataDictionaryinformation
      *
-     * @param params queryparameter，containpaginationinformationandqueryitems件
+     * @param params queryparameter，containpaginationinformationandqueryitemsitem
      * @return returndataDictionary paginationqueryresult
      */
     PageData<SysDictDataVO> page(Map<String, Object> params);

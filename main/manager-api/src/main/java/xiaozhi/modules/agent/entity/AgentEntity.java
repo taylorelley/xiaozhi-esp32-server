@@ -37,7 +37,7 @@ public class AgentEntity {
     @Schema(description = "largeLanguagemodelidentifier")
     private String llmModelId;
 
-    @Schema(description = "小modelidentifier")
+    @Schema(description = "smallmodelidentifier")
     private String slmModelId;
 
     @Schema(description = "VLLMmodelidentifier")
@@ -73,8 +73,8 @@ public class AgentEntity {
     @Schema(description = "Rolesetparameter")
     private String systemPrompt;
 
-    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation 同时，Intelligently maintaininformationevolution trajectory\n" +
-            "according toconversationrecord，summaryuser 重need toinformation，so that in futureconversation to provide more personalized service", required = false)
+    @Schema(description = "summary memory", example = "Build a dynamic memory network that can grow，Retain key information in limited spaceinformation simultaneously，Intelligently maintaininformationevolution trajectory\n" +
+            "according toconversationrecord，summaryuser re-need toinformation，so that in futureconversation to provide more personalized service", required = false)
     private String summaryMemory;
 
     @Schema(description = "Languagecode")

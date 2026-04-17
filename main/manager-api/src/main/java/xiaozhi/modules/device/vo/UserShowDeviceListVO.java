@@ -10,7 +10,7 @@ public class UserShowDeviceListVO {
     @Schema(description = "appversion")
     private String appVersion;
 
-    @Schema(description = "bindUsername称")
+    @Schema(description = "bindUsernamename")
     private String bindUserName;
 
     @Schema(description = "device型number")
@@ -25,7 +25,7 @@ public class UserShowDeviceListVO {
     @Schema(description = "enableOTA")
     private Integer otaUpgrade;
 
-    @Schema(description = "最近conversationtime")
+    @Schema(description = "most近conversationtime")
     private String recentChatTime;
 
 }

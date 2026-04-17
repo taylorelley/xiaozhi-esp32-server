@@ -31,7 +31,7 @@ import xiaozhi.modules.sys.enums.SuperAdminEnum;
 
 /**
  * authentication
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Component
@@ -48,7 +48,7 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 授权(verificationPermission时call)
+     * 授权(verificationPermissionwhencall)
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -70,7 +70,7 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * authentication(login时call)
+     * authentication(loginwhencall)
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {

@@ -27,7 +27,7 @@ public class HashEncryptionUtil {
      * @return 哈希value
      */
    public static String hexDigest(String context,String algorithm ){
-       // getMD5算法实example
+       // getMD5算法example
        MessageDigest md = null;
        try {
            md = MessageDigest.getInstance(algorithm);

@@ -26,7 +26,7 @@ public class VoiceDTO implements Serializable {
     @Schema(description = "Languagetype")
     private String languages;
     
-    @Schema(description = "YesNoas克隆voice")
+    @Schema(description = "YesNoasclonevoice")
     private Boolean isClone;
 
     // add双parameterconstructfunction，maintain backward compatibility
@@ -35,7 +35,7 @@ public class VoiceDTO implements Serializable {
         this.name = name;
         this.voiceDemo = null;
         this.languages = null;
-        this.isClone = false; // defaultnot Yes克隆voice
+        this.isClone = false; // defaultnot Yesclonevoice
     }
     
     // add三parameterconstructfunction，used for普通voice

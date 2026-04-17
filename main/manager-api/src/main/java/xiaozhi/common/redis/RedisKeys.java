@@ -2,7 +2,7 @@ package xiaozhi.common.redis;
 
 /**
  * Redis Key 常量class
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class RedisKeys {
@@ -161,7 +161,7 @@ public class RedisKeys {
     }
 
     /**
-     * get临时registerdevice标记key
+     * get临whenregisterdevice标记key
      */
     public static String getTmpRegisterMacKey(String deviceId) {
         return "tmp_register_mac:" + deviceId;

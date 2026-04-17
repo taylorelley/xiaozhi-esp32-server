@@ -8,7 +8,7 @@ import lombok.Data;
 
 /**
  * agentcreateDTO
- * 专used foraddagent，not containid、agentCodeandsortfield，thesefield由system自动generate/setdefaultvalue
+ * 专used foraddagent，not containid、agentCodeandsortfield，thesefieldbysystemautomaticgenerate/setdefaultvalue
  */
 @Data
 @Schema(description = "agentcreateobject")

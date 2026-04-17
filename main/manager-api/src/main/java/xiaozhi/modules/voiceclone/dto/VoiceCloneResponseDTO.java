@@ -7,7 +7,7 @@ import lombok.Data;
 
 /**
  * Voice cloneresponseDTO
- * used for向前end展示Voice cloneinformation，containModel nameandUsername称
+ * used for向beforeenddisplayVoice cloneinformation，containModel nameandUsernamename
  */
 @Data
 @Schema(description = "Voice cloneresponseDTO")
@@ -34,10 +34,10 @@ public class VoiceCloneResponseDTO {
     @Schema(description = "User ID（associatedusertable）")
     private Long userId;
 
-    @Schema(description = "Username称")
+    @Schema(description = "Usernamename")
     private String userName;
 
-    @Schema(description = "trainingstatus：0待training 1training 2trainingsuccess 3trainingfailed")
+    @Schema(description = "trainingstatus：0pendingtraining 1training 2trainingsuccess 3trainingfailed")
     private Integer trainStatus;
 
     @Schema(description = "trainingerrorreason")
@@ -46,6 +46,6 @@ public class VoiceCloneResponseDTO {
     @Schema(description = "Create time")
     private Date createDate;
 
-    @Schema(description = "YesNo有audio data")
+    @Schema(description = "YesNohasaudio data")
     private Boolean hasVoice;
 }

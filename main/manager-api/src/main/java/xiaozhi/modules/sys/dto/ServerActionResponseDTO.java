@@ -14,7 +14,7 @@ public class ServerActionResponseDTO
     private ServerActionResponseEnum status;
     private String message;
     private String type;
-    private Map<String, Object> content; // 后续this个field可以移除，并this个classas基class，针forbusinesswrite自己 contenttype
+    private Map<String, Object> content; // after续thisfield可to移除，andthisclassas基class，针forbusinesswrite自己 contenttype
     public static final String DEFAULT_TYPE_FORM_SERVER = "server";
 
     public static Boolean isSuccess(ServerActionResponseDTO actionResponseDTO) {

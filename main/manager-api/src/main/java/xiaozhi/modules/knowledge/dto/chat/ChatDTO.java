@@ -29,29 +29,29 @@ public class ChatDTO {
     @Schema(description = "promptconfiguration")
     public static class PromptConfig implements Serializable {
 
-        @Schema(description = "systemprompt", example = "youYes一个专业 customer serviceassistant...")
+        @Schema(description = "systemprompt", example = "youYesone专业 customer serviceassistant...")
         @JsonProperty("prompt")
         private String systemPrompt;
 
-        @Schema(description = "开场白", example = "您好，IYes您 intelligent assistant，请问有什么可以帮您？")
+        @Schema(description = "开场白", example = "您好，IYes您 intelligent assistant，请问has什么可to帮您？")
         private String opener;
 
-        @Schema(description = "emptyresult回复", example = "抱歉，Ino找torelatedinformation。")
+        @Schema(description = "emptyresult回复", example = "抱歉，Inofindtorelatedinformation。")
         @JsonProperty("empty_response")
         private String emptyResponse;
 
-        @Schema(description = "YesNo展示reference", example = "true")
+        @Schema(description = "YesNodisplayreference", example = "true")
         @JsonProperty("show_quote")
         private Boolean quote;
 
         @Schema(description = "YesNoenable TTS", example = "false")
         private Boolean tts;
 
-        @Schema(description = "相似度阈value (0.0 - 1.0)", example = "0.2")
+        @Schema(description = "similar度阈value (0.0 - 1.0)", example = "0.2")
         @JsonProperty("similarity_threshold")
         private Float similarityThreshold;
 
-        @Schema(description = "keyword相似度权重 (0.0 - 1.0)", example = "0.7")
+        @Schema(description = "keywordsimilar度权re- (0.0 - 1.0)", example = "0.7")
         @JsonProperty("keywords_similarity_weight")
         private Float vectorSimilarityWeight;
 
@@ -63,7 +63,7 @@ public class ChatDTO {
         @JsonProperty("rerank_model")
         private String rerankId;
 
-        @Schema(description = "YesNoenable多轮conversation优化", example = "false")
+        @Schema(description = "YesNoenable多轮conversationpriority化", example = "false")
         @JsonProperty("refine_multiturn")
         private Boolean refineMultigraph;
 
@@ -93,11 +93,11 @@ public class ChatDTO {
         @JsonProperty("top_p")
         private Float topP;
 
-        @Schema(description = "最large Token number", example = "4096")
+        @Schema(description = "mostlarge Token number", example = "4096")
         @JsonProperty("max_tokens")
         private Integer maxTokens;
 
-        @Schema(description = "存in惩罚", example = "0.0")
+        @Schema(description = "storein惩罚", example = "0.0")
         @JsonProperty("presence_penalty")
         private Float presencePenalty;
 
@@ -117,7 +117,7 @@ public class ChatDTO {
     public static class AssistantCreateReq implements Serializable {
 
         @NotBlank(message = "assistantnamecannot be empty")
-        @Schema(description = "assistantname", requiredMode = Schema.RequiredMode.REQUIRED, example = "智能customer serviceassistant")
+        @Schema(description = "assistantname", requiredMode = Schema.RequiredMode.REQUIRED, example = "智cancustomer serviceassistant")
         private String name;
 
         @Schema(description = "assistantavatar (Base64 code)", example = "")
@@ -127,7 +127,7 @@ public class ChatDTO {
         @JsonProperty("dataset_ids")
         private List<String> datasetIds;
 
-        @Schema(description = "assistantDescription", example = "thisYes一个智能customer serviceassistant")
+        @Schema(description = "assistantDescription", example = "thisYesone智cancustomer serviceassistant")
         private String description;
 
         @Schema(description = "LLM Model configuration")
@@ -149,7 +149,7 @@ public class ChatDTO {
     @Schema(description = "updateassistantrequest")
     public static class AssistantUpdateReq implements Serializable {
 
-        @Schema(description = "assistantname", example = "智能customer serviceassistant V2")
+        @Schema(description = "assistantname", example = "智cancustomer serviceassistant V2")
         private String name;
 
         @Schema(description = "assistantavatar (Base64 code)", example = "")
@@ -159,7 +159,7 @@ public class ChatDTO {
         @JsonProperty("dataset_ids")
         private List<String> datasetIds;
 
-        @Schema(description = "assistantDescription", example = "thisYes一个智能customer serviceassistant")
+        @Schema(description = "assistantDescription", example = "thisYesone智cancustomer serviceassistant")
         private String description;
 
         @Schema(description = "LLM Model configuration")
@@ -218,7 +218,7 @@ public class ChatDTO {
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "assistantname", example = "智能customer serviceassistant")
+        @Schema(description = "assistantname", example = "智cancustomer serviceassistant")
         private String name;
 
         @Schema(description = "assistantavatar", example = "")
@@ -354,7 +354,7 @@ public class ChatDTO {
         @JsonProperty("chat_id")
         private String chatId;
 
-        @Schema(description = "assistant ID (兼容旧版)", example = "assistant_001")
+        @Schema(description = "assistant ID (compatible旧版)", example = "assistant_001")
         @JsonProperty("assistant_id")
         private String assistantId;
 
@@ -381,7 +381,7 @@ public class ChatDTO {
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "conversation历史messagelist")
+        @Schema(description = "conversationhistorymessagelist")
         private List<Map<String, Object>> messages;
     }
 
@@ -412,7 +412,7 @@ public class ChatDTO {
     public static class CompletionReq implements Serializable {
 
         @NotBlank(message = "questioncontentcannot be empty")
-        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "请介绍一下you们 产品")
+        @Schema(description = "userquestion", requiredMode = Schema.RequiredMode.REQUIRED, example = "请介绍one下yous 产品")
         private String question;
 
         @Schema(description = "YesNousestreamingresponse (SSE)", example = "true")
@@ -420,18 +420,18 @@ public class ChatDTO {
         private Boolean stream = true;
 
         @NotBlank(message = "session ID cannot be empty")
-        @Schema(description = "session ID (可选，not 传thencreatenewsession)", example = "session_001")
+        @Schema(description = "session ID (可select，not 传thencreatenewsession)", example = "session_001")
         @JsonProperty("session_id")
         private String sessionId;
 
-        @Schema(description = "YesNo展示reference", example = "true")
+        @Schema(description = "YesNodisplayreference", example = "true")
         private Boolean quote;
 
         @Schema(description = "specifiedretrieve document ID list (逗number分隔)", example = "doc_001,doc_002")
         @JsonProperty("doc_ids")
         private String docIds;
 
-        @Schema(description = "datafilteritems件")
+        @Schema(description = "datafilteritemsitem")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
     }

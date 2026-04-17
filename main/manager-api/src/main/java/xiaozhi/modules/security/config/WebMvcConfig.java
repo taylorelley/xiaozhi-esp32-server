@@ -65,10 +65,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper mapper = new ObjectMapper();
 
-        // 忽略Unknown属
+        // 忽略Unknown
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // set时区
+        // setwhen区
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         // configurationJava8datetimeserialize
@@ -114,14 +114,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     return Locale.getDefault();
                 }
 
-                // parseAccept-Languagerequestheader 首选Language
+                // parseAccept-Languagerequestheader 首selectLanguage
                 String[] languages = acceptLanguage.split(",");
                 if (languages.length > 0) {
-                    // extract第一个Language代code，去除可能 质量value(q=...)
+                    // extract第oneLanguage代code，去除可can 质量value(q=...)
                     String[] parts = languages[0].split(";" + "\\s*");
                     String primaryLanguage = parts[0].trim();
 
-                    // according to前endsend Language代codedirectlycreateLocaleobject
+                    // according tobeforeendsend Language代codedirectlycreateLocaleobject
                     if (primaryLanguage.equals("zh-CN")) {
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.equals("zh-TW")) {
@@ -133,16 +133,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     } else if (primaryLanguage.equals("vi-VN")) {
                         return Locale.forLanguageTag("vi-VN");
                     } else if (primaryLanguage.startsWith("zh")) {
-                        // for于其他Chinese变，defaultuse简Chinese
+                        // for于otherChinese变，defaultuse简Chinese
                         return Locale.SIMPLIFIED_CHINESE;
                     } else if (primaryLanguage.startsWith("en")) {
-                        // for于其他English变，defaultuse美式英语
+                        // for于otherEnglish变，defaultuse美式英语
                         return Locale.US;
                     } else if (primaryLanguage.startsWith("de")) {
-                        // for于其他德语变，defaultuse德语
+                        // for于other德语变，defaultuse德语
                         return Locale.GERMANY;
                     } else if (primaryLanguage.startsWith("vi")) {
-                        // for于其他越南语变，defaultuse越南语
+                        // for于other越南语变，defaultuse越南语
                         return Locale.forLanguageTag("vi-VN");
                     }
                 }

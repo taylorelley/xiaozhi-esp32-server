@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * IPAddress
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Slf4j
@@ -15,8 +15,8 @@ public class IpUtils {
     /**
      * getIPAddress
      * <p>
-     * useNginxetc.反向代理软件， thennot 能viarequest.getRemoteAddr()getIPAddress
-     * ifuse了多级反向代理 话，X-Forwarded-For value并not 止一个，而Yes一串IPAddress，X-Forwarded-For第一个非unknown validIPstring，thenas真实IPAddress
+     * useNginxetc.反向代理软item， thennot canviarequest.getRemoteAddr()getIPAddress
+     * ifuse多级反向代理 话，X-Forwarded-For valueandnot 止one，whileYesone串IPAddress，X-Forwarded-For第onenon-unknown validIPstring，thenas真IPAddress
      */
     public static String getIpAddr(HttpServletRequest request) {
         String unknown = "unknown";

@@ -46,7 +46,7 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
         List<ModelProviderEntity> providerEntities = modelProviderDao.selectList(queryWrapper);
         List<ModelProviderDTO> resultList = ConvertUtils.sourceToTarget(providerEntities, ModelProviderDTO.class);
 
-        // 2. get currentuser Knowledge baselist并追加toresult
+        // 2. get currentuser Knowledge baselistand追加toresult
         UserDetail userDetail = SecurityUser.getUser();
         if (userDetail != null && userDetail.getId() != null) {
             // querycurrentuser Knowledge base
@@ -55,13 +55,13 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
             kbQueryWrapper.eq(KnowledgeBaseEntity::getStatus, 1); // onlygetenablestatus Knowledge base
             List<KnowledgeBaseEntity> knowledgeBases = knowledgeBaseDao.selectList(kbQueryWrapper);
 
-            // willKnowledge baseconvert toModelProviderDTOformat并addtoresultlist
+            // willKnowledge baseconvert toModelProviderDTOformatandaddtoresultlist
             for (KnowledgeBaseEntity kb : knowledgeBases) {
                 ModelProviderDTO dto = new ModelProviderDTO();
                 dto.setId(kb.getId());
                 dto.setModelType("Rag");
                 dto.setName("[Knowledge base]" + kb.getName());
-                dto.setProviderCode("ragflow"); // 假设allRAG都useragflow
+                dto.setProviderCode("ragflow"); // 假设allRAGalluseragflow
                 dto.setFields("[]");
                 dto.setSort(0);
                 dto.setCreateDate(kb.getCreatedAt());

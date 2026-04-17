@@ -50,7 +50,7 @@ public interface ModelConfigService extends BaseService<ModelConfigEntity> {
     void setDefaultModel(String modelType, int isDefault);
 
     /**
-     * getmatchingitems件 TTSplatformlist
+     * getmatchingitemsitem TTSplatformlist
      *
      * @return TTSplatformlist(idandmodelName)
      */

@@ -36,7 +36,7 @@ public class WebSocketTestHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
-        // connectionclose时not 做任何process
+        // connectionclosewhennot 做任何process
     }
 
     @Override

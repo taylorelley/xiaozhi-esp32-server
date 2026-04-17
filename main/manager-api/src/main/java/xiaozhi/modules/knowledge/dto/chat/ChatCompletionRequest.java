@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * chatconversationrequest DTO (OpenAI 兼容format)
+ * chatconversationrequest DTO (OpenAI compatibleformat)
  */
 @Data
 @Schema(description = "chatconversationrequest")
@@ -32,11 +32,11 @@ public class ChatCompletionRequest implements Serializable {
     @JsonProperty("temperature")
     private Double temperature;
 
-    @Schema(description = "Session ID (可选，used for延续session)")
+    @Schema(description = "Session ID (可select，used for延续session)")
     @JsonProperty("session_id")
     private String sessionId;
 
-    @Schema(description = "其他RAGFlow特定parameter (可选)")
+    @Schema(description = "otherRAGFlow特定parameter (可select)")
     private Map<String, Object> extra;
 
     @Data

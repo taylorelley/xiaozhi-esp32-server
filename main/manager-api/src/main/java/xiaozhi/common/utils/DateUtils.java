@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * dateprocess
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class DateUtils {
@@ -79,7 +79,7 @@ public class DateUtils {
     }
 
     /**
-     * get简短 timestring：10seconds前return刚刚，多少seconds前，几小时前，超一周return年月日时分seconds
+     * get简短 timestring：10secondsbeforereturn刚刚，多少secondsbefore，几smallwhenbefore，超one周return年月日when分seconds
      * @param date
      * @return
      */
@@ -89,7 +89,7 @@ public class DateUtils {
         }
         // will Date convert to Instant
         LocalDateTime localDateTime = date.toInstant()
-                // getsystemdefault时区
+                // getsystemdefaultwhen区
                 .atZone(ZoneId.systemDefault())
                 // convert to LocalDateTime
                 .toLocalDateTime();
@@ -101,15 +101,15 @@ public class DateUtils {
         if (secondsBetween <= 10) {
             return "刚刚";
         } else if (secondsBetween < 60) {
-            return secondsBetween + "seconds前";
+            return secondsBetween + "secondsbefore";
         } else if (secondsBetween < 60 * 60) {
-            return secondsBetween / 60 + "分钟前";
+            return secondsBetween / 60 + "分钟before";
         } else if (secondsBetween < 86400) {
-            return secondsBetween / 3600 + "小时前";
+            return secondsBetween / 3600 + "smallwhenbefore";
         } else if (secondsBetween < 604800) {
-            return secondsBetween / 86400 + "天前";
+            return secondsBetween / 86400 + "天before";
         } else {
-            // 超一周，显示completedatetime
+            // 超one周，显示completedatetime
             return format(date,DATE_TIME_PATTERN);
         }
     }

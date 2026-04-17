@@ -20,14 +20,14 @@ public interface SysUserService extends BaseService<SysUserEntity> {
     void save(SysUserDTO dto);
 
     /**
-     * deletespecifieduser，and有associated datadeviceandagent
+     * deletespecifieduser，andhasassociated datadeviceandagent
      * 
      * @param ids
      */
     void deleteById(Long ids);
 
     /**
-     * verificationYesNoallowupdatePassword更改
+     * verificationYesNoallowupdatePasswordchange
      * 
      * @param userId      userid
      * @param passwordDTO verificationPassword parameter
@@ -43,7 +43,7 @@ public interface SysUserService extends BaseService<SysUserEntity> {
     void changePasswordDirectly(Long userId, String password);
 
     /**
-     * 重置Password
+     * re-置Password
      * 
      * @param userId userid
      * @return 随机generatematching规范 Password

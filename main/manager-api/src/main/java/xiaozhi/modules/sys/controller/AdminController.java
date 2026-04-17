@@ -29,7 +29,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 import xiaozhi.modules.sys.vo.AdminPageUserVO;
 
 /**
- * administratorcontrol层
+ * administratorcontrollayer
  *
  * @author zjy
  * @since 2025-3-25
@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    @Operation(summary = "重置Password")
+    @Operation(summary = "re-置Password")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> update(
             @PathVariable Long id) {

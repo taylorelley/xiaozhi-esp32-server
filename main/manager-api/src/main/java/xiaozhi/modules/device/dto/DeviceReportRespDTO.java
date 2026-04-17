@@ -60,10 +60,10 @@ public class DeviceReportRespDTO {
         @Schema(description = "timestamp")
         private Long timestamp;
 
-        @Schema(description = "时区")
+        @Schema(description = "when区")
         private String timeZone;
 
-        @Schema(description = "时区偏移量，unitas分钟")
+        @Schema(description = "when区偏移量，unitas分钟")
         private Integer timezone_offset;
     }
 

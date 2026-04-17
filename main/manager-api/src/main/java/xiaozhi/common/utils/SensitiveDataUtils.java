@@ -21,7 +21,7 @@ public class SensitiveDataUtils {
             "secret", "access_key_secret", "secret_key"));
 
     /**
-     * 检查fieldYesNoassensitivefield
+     * checkfieldYesNoassensitivefield
      */
     public static boolean isSensitiveField(String fieldName) {
         return StringUtils.isNotBlank(fieldName) && SENSITIVE_FIELDS.contains(fieldName.toLowerCase());
@@ -37,10 +37,10 @@ public class SensitiveDataUtils {
 
         int length = value.length();
         if (length <= 8) {
-            // 短string保留前2后2
+            // 短string保留before2after2
             return value.substring(0, 2) + "****" + value.substring(length - 2);
         } else {
-            // 长string保留前4后4
+            // 长string保留before4after4
             int maskLength = length - 8;
             StringBuilder maskBuilder = new StringBuilder();
             for (int i = 0; i < maskLength; i++) {
@@ -57,7 +57,7 @@ public class SensitiveDataUtils {
         if (StringUtils.isBlank(value)) {
             return false;
         }
-        // 掩codevalue至少contain4个连续 *
+        // 掩codevalue至少contain4连续 *
         return value.contains("****");
     }
 
@@ -88,7 +88,7 @@ public class SensitiveDataUtils {
 
     /**
      * compare twoJSONObject sensitivefieldYesNosame
-     * 特别针forapi_keyetc.sensitivefieldperform单独比较
+     * 特别针forapi_keyetc.sensitivefieldperform独比较
      */
     public static boolean isSensitiveDataEqual(JSONObject original, JSONObject updated) {
         if (original == null && updated == null) {
@@ -98,7 +98,7 @@ public class SensitiveDataUtils {
             return false;
         }
 
-        // extract并比较特定sensitivefield
+        // extractand比较特定sensitivefield
         return compareSpecificSensitiveFields(original, updated, "api_key") &&
                 compareSpecificSensitiveFields(original, updated, "personal_access_token") &&
                 compareSpecificSensitiveFields(original, updated, "access_token") &&
@@ -110,10 +110,10 @@ public class SensitiveDataUtils {
 
     /**
      * compare twoJSONobject特定sensitivefieldYesNosame
-     * 遍历整个JSONobject树，find并比较specifiedsensitivefield
+     * 遍历整JSONobject树，findand比较specifiedsensitivefield
      */
     private static boolean compareSpecificSensitiveFields(JSONObject original, JSONObject updated, String fieldName) {
-        // extract原始object specifiedsensitivefield
+        // extractoriginalobject specifiedsensitivefield
         Map<String, String> originalFields = new HashMap<>();
         extractSpecificSensitiveField(original, originalFields, fieldName, "");
 
@@ -121,12 +121,12 @@ public class SensitiveDataUtils {
         Map<String, String> updatedFields = new HashMap<>();
         extractSpecificSensitiveField(updated, updatedFields, fieldName, "");
 
-        // iffieldcountnot 同，Description有增删
+        // iffieldcountnot 同，Descriptionhas增删
         if (originalFields.size() != updatedFields.size()) {
             return false;
         }
 
-        // 比较每个field value
+        // 比较每field value
         for (Map.Entry<String, String> entry : originalFields.entrySet()) {
             String key = entry.getKey();
             String originalValue = entry.getValue();
@@ -157,7 +157,7 @@ public class SensitiveDataUtils {
                 // 递归process嵌套JSONobject
                 extractSpecificSensitiveField((JSONObject) value, fieldsMap, targetFieldName, fullPath);
             } else if (value instanceof String && key.equalsIgnoreCase(targetFieldName)) {
-                // 找totargetsensitivefield，save其pathandvalue
+                // findtotargetsensitivefield，save其pathandvalue
                 fieldsMap.put(fullPath, (String) value);
             }
         }

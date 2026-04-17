@@ -33,7 +33,7 @@ public class FileDTO {
         @Schema(description = "upload file", requiredMode = Schema.RequiredMode.REQUIRED)
         private MultipartFile file;
 
-        @Schema(description = "父file ID (asemptythenuploadto根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythenuploadto根目录)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
     }
@@ -52,7 +52,7 @@ public class FileDTO {
         @Schema(description = "filename", requiredMode = Schema.RequiredMode.REQUIRED, example = "new建file")
         private String name;
 
-        @Schema(description = "父file ID (asemptythencreatein根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythencreatein根目录)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
@@ -78,7 +78,7 @@ public class FileDTO {
         private String fileId;
 
         @NotBlank(message = "newnamecannot be empty")
-        @Schema(description = "newname", requiredMode = Schema.RequiredMode.REQUIRED, example = "rename后 file")
+        @Schema(description = "newname", requiredMode = Schema.RequiredMode.REQUIRED, example = "renameafter file")
         private String name;
     }
 
@@ -150,7 +150,7 @@ public class FileDTO {
     @Schema(description = "listqueryrequest")
     public static class ListReq implements Serializable {
 
-        @Schema(description = "父file ID (asemptythenquery根目录)", example = "folder_001")
+        @Schema(description = "parentfile ID (asemptythenquery根目录)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
@@ -186,7 +186,7 @@ public class FileDTO {
         @Schema(description = "file/file ID", example = "file_001")
         private String id;
 
-        @Schema(description = "父file ID", example = "folder_001")
+        @Schema(description = "parentfile ID", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
@@ -247,7 +247,7 @@ public class FileDTO {
         @Schema(description = "totalrecordnumber", example = "100")
         private Long total;
 
-        @Schema(description = "current父fileinformation")
+        @Schema(description = "currentparentfileinformation")
         @JsonProperty("parent_folder")
         private InfoVO parentFolder;
 
@@ -309,7 +309,7 @@ public class FileDTO {
         @Schema(description = "convertstatus: pending / processing / completed / failed", example = "completed")
         private String status;
 
-        @Schema(description = "convert进度 (0.0 - 1.0)", example = "1.0")
+        @Schema(description = "convertprogress (0.0 - 1.0)", example = "1.0")
         private Float progress;
 
         @Schema(description = "statusmessage", example = "convertcomplete")
@@ -323,10 +323,10 @@ public class FileDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "面包屑导航 (all父file)")
+    @Schema(description = "面包屑导航 (allparentfile)")
     public static class BreadcrumbVO implements Serializable {
 
-        @Schema(description = "父filelist (from根tocurrent path)")
+        @Schema(description = "parentfilelist (from根tocurrent path)")
         @JsonProperty("parent_folders")
         private List<InfoVO> parentFolders;
     }
@@ -347,16 +347,16 @@ public class FileDTO {
     }
 
     /**
-     * 父目录information VO (correspondinginterface 11: get_parent_folder)
+     * parent目录information VO (correspondinginterface 11: get_parent_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "父目录information")
+    @Schema(description = "parent目录information")
     public static class ParentFolderVO implements Serializable {
 
-        @Schema(description = "父fileinformation")
+        @Schema(description = "parentfileinformation")
         @JsonProperty("parent_folder")
         private InfoVO parentFolder;
     }

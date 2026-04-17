@@ -17,7 +17,7 @@ public interface SysDictTypeService extends BaseService<SysDictTypeEntity> {
     /**
      * paginationqueryDictionary typeinformation
      *
-     * @param params queryparameter，containpaginationinformationandqueryitems件
+     * @param params queryparameter，containpaginationinformationandqueryitemsitem
      * @return returnpagination Dictionary typedata
      */
     PageData<SysDictTypeVO> page(Map<String, Object> params);
@@ -52,7 +52,7 @@ public interface SysDictTypeService extends BaseService<SysDictTypeEntity> {
     void delete(Long[] ids);
 
     /**
-     * 列出allDictionary typeinformation
+     * listallDictionary typeinformation
      *
      * @return returnDictionary typelist
      */

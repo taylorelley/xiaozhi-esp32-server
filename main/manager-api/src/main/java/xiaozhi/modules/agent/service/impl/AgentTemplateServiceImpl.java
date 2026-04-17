@@ -96,7 +96,7 @@ public class AgentTemplateServiceImpl extends ServiceImpl<AgentTemplateDao, Agen
 
     @Override
     public Integer getNextAvailableSort() {
-        // queryallalready exists Sort ordervalue并byascendingSort order
+        // queryallalready exists Sort ordervalueandbyascendingSort order
         List<Integer> sortValues = baseMapper.selectList(new QueryWrapper<AgentTemplateEntity>())
                 .stream()
                 .map(AgentTemplateEntity::getSort)
@@ -109,17 +109,17 @@ public class AgentTemplateServiceImpl extends ServiceImpl<AgentTemplateDao, Agen
             return 1;
         }
         
-        // 寻找minimum notuse序number
+        // 寻findminimum notuseordernumber
         int expectedSort = 1;
         for (Integer sort : sortValues) {
             if (sort > expectedSort) {
-                // 找toempty缺 序number
+                // findtoempty缺 ordernumber
                 return expectedSort;
             }
             expectedSort = sort + 1;
         }
         
-        // ifnoempty缺，return最large序number+1
+        // ifnoempty缺，returnmostlargeordernumber+1
         return expectedSort;
     }
 }

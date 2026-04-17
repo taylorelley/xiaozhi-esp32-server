@@ -39,7 +39,7 @@ public class AgentMcpAccessPointController {
         // get currentuser
         UserDetail user = SecurityUser.getUser();
 
-        // 检查Permission
+        // checkPermission
         if (!agentService.checkAgentPermission(agentId, user.getId())) {
             return new Result<String>().error(ErrorCode.MCP_ACCESS_POINT_ADDRESS_NO_PERMISSION);
         }
@@ -57,7 +57,7 @@ public class AgentMcpAccessPointController {
         // get currentuser
         UserDetail user = SecurityUser.getUser();
 
-        // 检查Permission
+        // checkPermission
         if (!agentService.checkAgentPermission(agentId, user.getId())) {
             return new Result<List<String>>().error(ErrorCode.MCP_ACCESS_POINT_TOOLS_LIST_NO_PERMISSION);
         }

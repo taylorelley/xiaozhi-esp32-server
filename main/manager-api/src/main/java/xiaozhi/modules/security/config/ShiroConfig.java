@@ -23,7 +23,7 @@ import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
  * Shiro configurationfile
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Configuration
@@ -65,11 +65,11 @@ public class ShiroConfig {
 
         // addShiro 内置filter
         /*
-         * anon：无需authentication就可以访问
-         * authc：必须authentication了才能let问
-         * user：必须拥有，记住Ifunction，才能访问
-         * perms：拥有for某个资source Permission才能访问
-         * role：拥有某个RolePermission才能访问
+         * anon：no需authenticationthen可to访问
+         * authc：mustauthenticationonlycanlet问
+         * user：must拥has，记住Ifunction，onlycan访问
+         * perms：拥hasfor某resourcesource Permissiononlycan访问
+         * role：拥has某RolePermissiononlycan访问
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/ota/**", "anon");

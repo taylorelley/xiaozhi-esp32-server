@@ -80,7 +80,7 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
         if (device != null) {
             deviceService.updateDeviceConnectionInfo(agentId, device.getId(), null);
         } else {
-            log.warn("Chat history上报时，not foundmacAddressas {}  device", macAddress);
+            log.warn("Chat history上报when，not foundmacAddressas {}  device", macAddress);
         }
 
         return Boolean.TRUE;
@@ -119,7 +119,7 @@ public class AgentChatHistoryBizServiceImpl implements AgentChatHistoryBizServic
                 .content(report.getContent())
                 .audioId(audioId)
                 .createdAt(new Date(reportTime))
-                // NOTE(haotian): 2025/5/26 updateAt可以not set，重点YescreateAt，而andthis样可以看to上报延迟
+                // NOTE(haotian): 2025/5/26 updateAt可tonot set，re-点YescreateAt，whileandthis样可to看to上报延迟
                 .build();
 
         // Save data

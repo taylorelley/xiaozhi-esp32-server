@@ -72,7 +72,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     public void save(SysUserDTO dto) {
         SysUserEntity entity = ConvertUtils.sourceToTarget(dto, SysUserEntity.class);
 
-        // Password强度
+        // Passwordstrong度
         if (!isStrongPassword(entity.getPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -113,12 +113,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new RenException(ErrorCode.TOKEN_INVALID);
         }
 
-        // determine旧PasswordYesNo正确
+        // determine旧PasswordYesNo确
         if (!PasswordUtils.matches(passwordDTO.getPassword(), sysUserEntity.getPassword())) {
             throw new RenException(ErrorCode.OLD_PASSWORD_ERROR);
         }
 
-        // newPassword强度
+        // newPasswordstrong度
         if (!isStrongPassword(passwordDTO.getNewPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -133,7 +133,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void changePasswordDirectly(Long userId, String password) {
-        // newPassword强度
+        // newPasswordstrong度
         if (!isStrongPassword(password)) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -180,7 +180,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     }
 
     private boolean isStrongPassword(String password) {
-        // 弱Password 正thentable达式
+        // 弱Password thentable达式
         String weakPasswordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).+$";
         Pattern pattern = Pattern.compile(weakPasswordRegex);
         Matcher matcher = pattern.matcher(password);
@@ -198,21 +198,21 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     private String generatePassword() {
         StringBuilder password = new StringBuilder();
 
-        // ensurecontain至少一个number
+        // ensurecontain至少onenumber
         password.append("0123456789".charAt(random.nextInt(10)));
-        // ensurecontain至少一个小write字母
+        // ensurecontain至少onesmallwrite字母
         password.append("abcdefghijklmnopqrstuvwxyz".charAt(random.nextInt(26)));
-        // ensurecontain至少一个largewrite字母
+        // ensurecontain至少onelargewrite字母
         password.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(random.nextInt(26)));
-        // ensurecontain至少一个特殊符number
+        // ensurecontain至少one特殊符number
         password.append("!@#$%^&*()".charAt(random.nextInt(10)));
 
-        // generate剩余 8个字符
+        // generate剩余 8字符
         for (int i = 4; i < 12; i++) {
             password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
-        // 打乱Password字符 顺序
+        // 打乱Password字符 顺order
         char[] passwordChars = password.toString().toCharArray();
         for (int i = 0; i < passwordChars.length; i++) {
             int randomIndex = random.nextInt(passwordChars.length);

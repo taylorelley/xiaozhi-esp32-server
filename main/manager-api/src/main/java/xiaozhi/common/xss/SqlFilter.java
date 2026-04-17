@@ -7,7 +7,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * SQLfilter
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class SqlFilter {
@@ -15,7 +15,7 @@ public class SqlFilter {
     /**
      * SQL注入filter
      *
-     * @param str 待verification string
+     * @param str pendingverification string
      */
     public static String sqlInject(String str) {
         if (StringUtils.isBlank(str)) {
@@ -27,14 +27,14 @@ public class SqlFilter {
         str = StringUtils.replace(str, ";", "");
         str = StringUtils.replace(str, "\\", "");
 
-        // convert成小write
+        // convert成smallwrite
         str = str.toLowerCase();
 
-        // 非法字符
+        // non-法字符
         String[] keywords = { "master", "truncate", "insert", "select", "delete", "update", "declare", "alter",
                 "drop" };
 
-        // determineYesNocontain非法字符
+        // determineYesNocontainnon-法字符
         for (String keyword : keywords) {
             if (str.contains(keyword)) {
                 throw new RenException(ErrorCode.INVALID_SYMBOL);

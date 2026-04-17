@@ -120,7 +120,7 @@ public class AgentTemplateEntity implements Serializable {
     private String language;
 
     /**
-     * Sort order权重
+     * Sort order权re-
      */
     private Integer sort;
 

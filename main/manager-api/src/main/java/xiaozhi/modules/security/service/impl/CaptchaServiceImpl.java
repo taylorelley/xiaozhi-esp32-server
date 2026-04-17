@@ -78,7 +78,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
     @Override
     public void sendSMSValidateCode(String phone) {
-        // 检查send间隔
+        // checksend间隔
         String lastSendTimeKey = RedisKeys.getSMSLastSendTimeKey(phone);
         // getYesNosend，ifnosetlastsendtime（60seconds）
         String lastSendTime = redisUtils
@@ -93,14 +93,14 @@ public class CaptchaServiceImpl implements CaptchaService {
             }
         }
 
-        // 检查今日sendtimes
+        // check今日sendtimes
         String todayCountKey = RedisKeys.getSMSTodayCountKey(phone);
         Integer todayCount = (Integer) redisUtils.get(todayCountKey);
         if (todayCount == null) {
             todayCount = 0;
         }
 
-        // get最largesendtimes限制
+        // getmostlargesendtimes限制
         Integer maxSendCount = sysParamsService.getValueObject(
                 Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue(),
                 Integer.class);
@@ -142,7 +142,7 @@ public class CaptchaServiceImpl implements CaptchaService {
      * @return 随机code
      */
     private String generateValidateCode(Integer length) {
-        String chars = "0123456789"; // 字符范围可以自define：number
+        String chars = "0123456789"; // 字符范围可to自define：number
         Random random = new Random();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < length; i++) {

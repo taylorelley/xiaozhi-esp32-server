@@ -32,8 +32,8 @@ import xiaozhi.common.service.BaseService;
 import xiaozhi.common.utils.ConvertUtils;
 
 /**
- * baseserviceclass，allService都need to继承
- * Copyright (c) 人人开source All rights reserved.
+ * baseserviceclass，allServiceallneed to继承
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements BaseService<T> {
@@ -46,12 +46,12 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
      *
      * @param params            paginationqueryparameter
      * @param defaultOrderField defaultSort orderfield
-     * @param isAsc             Sort order方式
+     * @param isAsc             Sort orderway
      * @see xiaozhi.common.constant.Constant
      *      params.put(Constant.PAGE, "1");
      *      params.put(Constant.LIMIT, "10");
-     *      params.put(Constant.ORDER_FIELD, "field"); // 单个field
-     *      params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // 多个field
+     *      params.put(Constant.ORDER_FIELD, "field"); // field
+     *      params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // 多field
      *      params.put(Constant.ORDER, "asc");
      */
     protected IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
@@ -85,7 +85,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
             orderFields.addAll((List<String>) orderField);
         }
 
-        // 有Sort orderfieldthenSort order
+        // hasSort orderfieldthenSort order
         if (CollectionUtils.isNotEmpty(orderFields)) {
             if (StringUtils.isNotBlank(order) && Constant.ASC.equalsIgnoreCase(order)) {
                 return page.addOrder(OrderItem.ascs(orderFields.toArray(new String[0])));
@@ -132,7 +132,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
      * determinedatalibraryoperationYesNosuccess
      * </p>
      * <p>
-     * Note！！ 该方法as Integer determine，not 可传入 int 基thistype
+     * Note！！ thismethodas Integer determine，not 可传入 int 基thistype
      * </p>
      *
      * @param result datalibraryoperationreturn影响itemsnumber

@@ -6,8 +6,8 @@ import java.util.Collection;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 
 /**
- * baseserviceinterface，allServiceinterface都need to继承
- * Copyright (c) 人人开source All rights reserved.
+ * baseserviceinterface，allServiceinterfaceallneed to继承
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public interface BaseService<T> {
@@ -15,7 +15,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * insert一itemsrecord（选择field，策略insert）
+     * insertoneitemsrecord（selectfield，策略insert）
      * </p>
      *
      * @param entity entity object
@@ -24,7 +24,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * insert（batch），该方法not support Oracle、SQL Server
+     * insert（batch），thismethodnot support Oracle、SQL Server
      * </p>
      *
      * @param entityList entity object collection
@@ -33,7 +33,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * insert（batch），该方法not support Oracle、SQL Server
+     * insert（batch），thismethodnot support Oracle、SQL Server
      * </p>
      *
      * @param entityList entity object collection
@@ -43,7 +43,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * according to ID 选择update
+     * according to ID selectupdate
      * </p>
      *
      * @param entity entity object
@@ -52,7 +52,7 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * according to whereEntity items件，updaterecord
+     * according to whereEntity itemsitem，updaterecord
      * </p>
      *
      * @param entity        entity object

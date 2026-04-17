@@ -40,7 +40,7 @@ public class VoiceCloneEntity {
     @Schema(description = "voice")
     private byte[] voice;
 
-    @Schema(description = "trainingstatus：0待training 1training 2trainingsuccess 3trainingfailed")
+    @Schema(description = "trainingstatus：0pendingtraining 1training 2trainingsuccess 3trainingfailed")
     private Integer trainStatus;
 
     @Schema(description = "trainingerrorreason")

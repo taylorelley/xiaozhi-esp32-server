@@ -17,7 +17,7 @@ public interface AgentMcpAccessPointService {
    String getAgentMcpAccessAddress(String id);
 
     /**
-     * getagent mcpendpointalready有 tool list
+     * getagent mcpendpointalreadyhas tool list
      * @param id agentid
      * @return tool list
      */

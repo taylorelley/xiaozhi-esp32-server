@@ -15,7 +15,7 @@ import lombok.Data;
 public class DocumentDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "this地ID")
+    @Schema(description = "thisID")
     private String id;
 
     @Schema(description = "Knowledge baseID")
@@ -33,7 +33,7 @@ public class DocumentDTO implements Serializable {
     @Schema(description = "File type")
     private String type;
 
-    @Schema(description = "chunk方法")
+    @Schema(description = "chunkmethod")
     private String chunkMethod;
 
     @Schema(description = "parseconfiguration")
@@ -60,7 +60,7 @@ public class DocumentDTO implements Serializable {
     @Schema(description = "updatetime")
     private Date updatedAt;
 
-    @Schema(description = "upload进度 (虚拟field)")
+    @Schema(description = "uploadprogress (虚拟field)")
     private Double progress;
 
     @Schema(description = "缩略图/预览图 (虚拟field)")

@@ -9,7 +9,7 @@ import xiaozhi.common.validator.AssertUtils;
 
 /**
  * 树形结构toolclass，For example: Menu、departmentetc.
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class TreeUtils {
@@ -32,7 +32,7 @@ public class TreeUtils {
     }
 
     /**
-     * find子节点
+     * findchild节点
      */
     private static <T extends TreeNode<T>> T findChildren(List<T> treeNodes, T rootNode) {
         for (T treeNode : treeNodes) {

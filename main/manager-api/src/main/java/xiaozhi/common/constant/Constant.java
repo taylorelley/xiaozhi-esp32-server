@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * 常量
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public interface Constant {
@@ -72,7 +72,7 @@ public interface Constant {
      */
     String ORDER_FIELD = "orderField";
     /**
-     * Sort order方式
+     * Sort orderway
      */
     String ORDER = "order";
 
@@ -117,7 +117,7 @@ public interface Constant {
     String SERVER_ALLOW_USER_REGISTER = "server.allow_user_register";
 
     /**
-     * 下发六bitVerification code时显示 control面板Address
+     * 下发六bitVerification codewhen显示 control面板Address
      */
     String SERVER_FRONTED_URL = "server.fronted_url";
 
@@ -147,7 +147,7 @@ public interface Constant {
     String SERVER_AUTH_ENABLED = "server.auth.enabled";
 
     /**
-     * 无memory
+     * nomemory
      */
     String MEMORY_NO_MEM = "Memory_nomem";
 
@@ -167,7 +167,7 @@ public interface Constant {
     String MEMORY_POWERMEM = "Memory_powermem";
 
     /**
-     * 火山引擎双声道voice克隆
+     * 火山引擎双声道voiceclone
      */
     String VOICE_CLONE_HUOSHAN_DOUBLE_STREAM = "huoshan_double_stream";
 
@@ -238,23 +238,23 @@ public interface Constant {
      */
     enum SysMSMParam {
         /**
-         * 阿里云授权keyID
+         * 阿in云授权keyID
          */
         ALIYUN_SMS_ACCESS_KEY_ID("aliyun.sms.access_key_id"),
         /**
-         * 阿里云授权key
+         * 阿in云授权key
          */
         ALIYUN_SMS_ACCESS_KEY_SECRET("aliyun.sms.access_key_secret"),
         /**
-         * 阿里云SMSsignature
+         * 阿in云SMSsignature
          */
         ALIYUN_SMS_SIGN_NAME("aliyun.sms.sign_name"),
         /**
-         * 阿里云SMStemplate
+         * 阿in云SMStemplate
          */
         ALIYUN_SMS_SMS_CODE_TEMPLATE_CODE("aliyun.sms.sms_code_template_code"),
         /**
-         * 单numbercode最largeSMSsenditemsnumber
+         * numbercodemostlargeSMSsenditemsnumber
          */
         SERVER_SMS_MAX_SEND_COUNT("server.sms_max_send_count"),
         /**
@@ -305,7 +305,7 @@ public interface Constant {
     enum ChatHistoryConfEnum {
         IGNORE(0, "not record"),
         RECORD_TEXT(1, "recordtext"),
-        RECORD_TEXT_AUDIO(2, "textaudio都record");
+        RECORD_TEXT_AUDIO(2, "textaudioallrecord");
 
         private final int code;
         private final String name;
@@ -322,7 +322,7 @@ public interface Constant {
     public static final String VERSION = "0.9.2";
 
     /**
-     * 无效firmwareURL
+     * no效firmwareURL
      */
     String INVALID_FIRMWARE_URL = "http://xiaozhi.server.com:8002/xiaozhi/otaMag/download/NOT_ACTIVATED_FIRMWARE_THIS_IS_A_INVALID_URL";
 

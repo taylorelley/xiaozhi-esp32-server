@@ -2,7 +2,7 @@ package xiaozhi.modules.security.password;
 
 /**
  * Passwordtoolclass
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class PasswordUtils {
@@ -22,7 +22,7 @@ public class PasswordUtils {
      * 比较PasswordYesNo相etc.
      *
      * @param str      明文Password
-     * @param password encrypt后Password
+     * @param password encryptafterPassword
      * @return true：success false：failed
      */
     public static boolean matches(String str, String password) {

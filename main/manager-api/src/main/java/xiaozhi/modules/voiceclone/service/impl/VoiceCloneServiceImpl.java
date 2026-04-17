@@ -84,7 +84,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             throw new RenException(ErrorCode.VOICE_CLONE_MODEL_TYPE_NOT_FOUND);
         }
 
-        // 检查Voice IDYesNoalready经isuse
+        // checkVoice IDYesNoalready经isuse
         for (String voiceId : dto.getVoiceIds()) {
             if (StringUtils.isBlank(voiceId)) {
                 continue;
@@ -106,7 +106,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
 
         // batchsave
         List<VoiceCloneEntity> batchInsertList = new ArrayList<>();
-        // 遍历选择 Voice ID，as每个Voice IDcreate一itemsrecord
+        // 遍历select Voice ID，as每Voice IDcreateoneitemsrecord
         int index = 0;
         String namePrefix = DateUtils.format(new Date(), "MMddHHmm");
         for (String voiceId : dto.getVoiceIds()) {
@@ -165,12 +165,12 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             dto.setModelName(modelConfigService.getModelNameById(entity.getModelId()));
         }
 
-        // setUsername称
+        // setUsernamename
         if (entity.getUserId() != null) {
             dto.setUserName(sysUserService.getByUserId(entity.getUserId()).getUsername());
         }
         
-        // ensuretrainStatusfieldis正确set，前endneedthis个field来determineYesNoas克隆audio
+        // ensuretrainStatusfieldis确set，beforeendneedthisfield来determineYesNoascloneaudio
         dto.setTrainStatus(entity.getTrainStatus());
 
         return dto;
@@ -192,12 +192,12 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
 
         List<VoiceCloneResponseDTO> dtoList = new ArrayList<>(entityList.size());
 
-        // getUsername称IDcollection
+        // getUsernamenameIDcollection
         Set<Long> userIdList = entityList.stream().map(VoiceCloneEntity::getUserId).collect(Collectors.toSet());
         List<SysUserEntity> userList = sysUserDao.selectList(new QueryWrapper<SysUserEntity>().in("id", userIdList));
         Map<Long, String> userMap = userList.stream().collect(Collectors.toMap(SysUserEntity::getId, SysUserEntity::getUsername));
 
-        // convert每个entityasDTO
+        // convert每entityasDTO
         for (VoiceCloneEntity entity : entityList) {
             VoiceCloneResponseDTO dto = ConvertUtils.sourceToTarget(entity, VoiceCloneResponseDTO.class);
 
@@ -206,15 +206,15 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
                 dto.setModelName(modelConfigService.getModelNameById(entity.getModelId()));
             }
 
-            // setUsername称
+            // setUsernamename
             if (entity.getUserId() != null) {
                 dto.setUserName(userMap.get(entity.getUserId()));
             }
             
-            // ensuretrainStatusfieldis正确set，前endneedthis个field来determineYesNoas克隆audio
+            // ensuretrainStatusfieldis确set，beforeendneedthisfield来determineYesNoascloneaudio
             dto.setTrainStatus(entity.getTrainStatus());
 
-            // setYesNo有audio data
+            // setYesNohasaudio data
             dto.setHasVoice(entity.getVoice() != null);
 
             dtoList.add(dto);
@@ -232,12 +232,12 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
             throw new RenException(ErrorCode.VOICE_CLONE_RECORD_NOT_EXIST);
         }
 
-        // read取audio file并转asbytearray
+        // read取audio fileand转asbytearray
         byte[] voiceData = voiceFile.getBytes();
 
         // updatevoicefield
         entity.setVoice(voiceData);
-        // updatetrainingstatusas待training
+        // updatetrainingstatusaspendingtraining
         entity.setTrainStatus(0);
 
         // savetodatalibrary
@@ -310,7 +310,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
      * call火山引擎performvoice复刻training
      * 
      * @param config Model configuration
-     * @param entity voice克隆recordentity
+     * @param entity voiceclonerecordentity
      * @throws Exception
      */
     private void huoshanClone(Map<String, Object> config, VoiceCloneEntity entity) throws Exception {
@@ -373,7 +373,7 @@ public class VoiceCloneServiceImpl extends BaseServiceImpl<VoiceCloneDao, VoiceC
                 entity.setTrainError("");
                 baseDao.updateById(entity);
             } else {
-                // failed时useStatusMessageaserrorinformation
+                // failedwhenuseStatusMessageaserrorinformation
                 String errorMsg = StringUtils.isNotBlank(statusMessage) ? statusMessage : "trainingfailed";
                 throw new RenException(errorMsg);
             }

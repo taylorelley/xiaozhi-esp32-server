@@ -28,7 +28,7 @@ public class AgentDTO {
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "Description", example = "thisYes一个test Agent")
+        @Schema(description = "Description", example = "thisYesonetest Agent")
         @JsonProperty("description")
         private String description;
 
@@ -71,7 +71,7 @@ public class AgentDTO {
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "per pagelarge小", defaultValue = "10")
+        @Schema(description = "per pagelargesmall", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
@@ -184,11 +184,11 @@ public class AgentDTO {
         @JsonProperty("finished")
         private Boolean finished;
 
-        @Schema(description = "下一timesquery timestamp游标")
+        @Schema(description = "下onetimesquery timestamp游标")
         @JsonProperty("next_since_ts")
         private Double nextSinceTs;
 
-        @Schema(description = "事件list")
+        @Schema(description = "事itemlist")
         @JsonProperty("events")
         private List<TraceEvent> events;
 
@@ -196,17 +196,17 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "trace事件item")
+        @Schema(description = "trace事itemitem")
         public static class TraceEvent implements Serializable {
             @Schema(description = "timestamp")
             @JsonProperty("ts")
             private Double ts;
 
-            @Schema(description = "事件type")
+            @Schema(description = "事itemtype")
             @JsonProperty("event")
             private String event;
 
-            @Schema(description = "事件data")
+            @Schema(description = "事itemdata")
             @JsonProperty("data")
             private Object data;
         }
@@ -235,7 +235,7 @@ public class AgentDTO {
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "per pagelarge小", defaultValue = "10")
+        @Schema(description = "per pagelargesmall", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
@@ -357,12 +357,12 @@ public class AgentDTO {
         private List<Object> trace;
     }
 
-    // ========== 5. Dify 兼容retrieve - corresponding RAGFlow_Agent_Difyinterfacedetails ==========
+    // ========== 5. Dify compatibleretrieve - corresponding RAGFlow_Agent_Difyinterfacedetails ==========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容retrieverequest")
+    @Schema(description = "Dify compatibleretrieverequest")
     public static class DifyRetrievalReq implements Serializable {
         @Schema(description = "Knowledge base ID")
         @JsonProperty("knowledge_id")
@@ -376,7 +376,7 @@ public class AgentDTO {
         @JsonProperty("retrieval_setting")
         private Map<String, Object> retrievalSetting;
 
-        @Schema(description = "datafilteritems件")
+        @Schema(description = "datafilteritemsitem")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
 
@@ -389,7 +389,7 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容retrieveresponse")
+    @Schema(description = "Dify compatibleretrieveresponse")
     public static class DifyRetrievalVO implements Serializable {
         @Schema(description = "retrieveresultlist")
         @JsonProperty("records")
@@ -405,7 +405,7 @@ public class AgentDTO {
             @JsonProperty("content")
             private String content;
 
-            @Schema(description = "相似度分number")
+            @Schema(description = "similar度分number")
             @JsonProperty("score")
             private Double score;
 

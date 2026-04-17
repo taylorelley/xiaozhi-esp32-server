@@ -7,8 +7,8 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * 树节点，allneedimplement树节点 ，都need继承该class
- * Copyright (c) 人人开source All rights reserved.
+ * 树节点，allneedimplement树节点 ，allneed继承thisclass
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Data
@@ -23,7 +23,7 @@ public class TreeNode<T> implements Serializable {
      */
     private Long pid;
     /**
-     * 子节点list
+     * child节点list
      */
     private List<T> children = new ArrayList<>();
 

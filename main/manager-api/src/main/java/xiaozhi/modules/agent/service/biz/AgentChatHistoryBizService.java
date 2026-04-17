@@ -3,7 +3,7 @@ package xiaozhi.modules.agent.service.biz;
 import xiaozhi.modules.agent.dto.AgentChatHistoryReportDTO;
 
 /**
- * Agent chat historybusiness逻辑层
+ * Agent chat historybusiness逻辑layer
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -12,7 +12,7 @@ import xiaozhi.modules.agent.dto.AgentChatHistoryReportDTO;
 public interface AgentChatHistoryBizService {
 
     /**
-     * chat reporting方法
+     * chat reportingmethod
      *
      * @param agentChatHistoryReportDTO containchat reporting所需information 输入object
      *                                  For example：deviceMACAddress、File type、contentetc.

@@ -22,7 +22,7 @@ import net.sf.jsqlparser.statement.select.Select;
 
 /**
  * datafilter
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class DataFilterInterceptor implements InnerInterceptor {
@@ -40,7 +40,7 @@ public class DataFilterInterceptor implements InnerInterceptor {
         // 拼接newSQL
         String buildSql = getSelect(boundSql.getSql(), scope);
 
-        // 重writeSQL
+        // re-writeSQL
         PluginUtils.mpBoundSql(boundSql).sql(buildSql);
     }
 
@@ -49,7 +49,7 @@ public class DataFilterInterceptor implements InnerInterceptor {
             return null;
         }
 
-        // determineparameter里YesNo有DataScopeobject
+        // determineparameterinYesNohasDataScopeobject
         if (parameter instanceof Map) {
             Map<?, ?> parameterMap = (Map<?, ?>) parameter;
             for (Map.Entry<?, ?> entry : parameterMap.entrySet()) {

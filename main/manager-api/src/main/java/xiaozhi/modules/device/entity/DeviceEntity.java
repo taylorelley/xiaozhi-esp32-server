@@ -31,10 +31,10 @@ public class DeviceEntity {
     @Schema(description = "lastconnectiontime")
     private Date lastConnectedAt;
 
-    @Schema(description = "自动update开关(0close/1enable)")
+    @Schema(description = "automaticupdate开关(0close/1enable)")
     private Integer autoUpdate;
 
-    @Schema(description = "device硬件型number")
+    @Schema(description = "device硬item型number")
     private String board;
 
     @Schema(description = "device别名")

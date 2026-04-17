@@ -18,7 +18,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * Http
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 public class HttpContextUtils {

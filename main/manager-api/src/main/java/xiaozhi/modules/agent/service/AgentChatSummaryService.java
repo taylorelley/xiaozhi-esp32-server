@@ -6,7 +6,7 @@ package xiaozhi.modules.agent.service;
 public interface AgentChatSummaryService {
 
     /**
-     * according toSession IDgenerateChat historysummary并savetoAgent memory
+     * according toSession IDgenerateChat historysummaryandsavetoAgent memory
      * 
      * @param sessionId Session ID
      * @return saveresult
@@ -14,7 +14,7 @@ public interface AgentChatSummaryService {
     boolean generateAndSaveChatSummary(String sessionId);
 
     /**
-     * according toSession IDgeneratechattitle并save
+     * according toSession IDgeneratechattitleandsave
      *
      * @param sessionId Session ID
      * @return YesNosuccess

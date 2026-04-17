@@ -7,10 +7,10 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 找回PasswordDTO
+ * find回PasswordDTO
  */
 @Data
-@Schema(description = "找回Password")
+@Schema(description = "find回Password")
 public class RetrievePasswordDTO implements Serializable {
 
     @Schema(description = "Mobile phone number")

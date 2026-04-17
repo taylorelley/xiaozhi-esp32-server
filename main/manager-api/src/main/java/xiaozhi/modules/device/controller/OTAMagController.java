@@ -150,7 +150,7 @@ public class OTAMagController {
             return ResponseEntity.notFound().build();
         }
 
-        // 检查downloadtimes
+        // checkdownloadtimes
         String downloadCountKey = RedisKeys.getOtaDownloadCountKey(uuid);
         Integer downloadCount = (Integer) Optional.ofNullable(redisUtils.get(downloadCountKey)).orElse(0);
 
@@ -181,12 +181,12 @@ public class OTAMagController {
                 return ResponseEntity.notFound().build();
             }
 
-            // getfilepath - ensurepathYes绝forpathor正确 相forpath
+            // getfilepath - ensurepathYes绝forpathor确 相forpath
             String firmwarePath = otaEntity.getFirmwarePath();
             String originalFilename = otaEntity.getType() + "_" + otaEntity.getVersion();
             Path path;
 
-            // 检查YesNoYes绝forpath
+            // checkYesNoYes绝forpath
             if (Paths.get(firmwarePath).isAbsolute()) {
                 path = Paths.get(firmwarePath);
             } else {
@@ -223,7 +223,7 @@ public class OTAMagController {
                 originalFilename += extension;
             }
 
-            // 清理File name，移除not 安全字符
+            // clean upFile name，移除not 安全字符
             String safeFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
 
             logger.info("Providing download for firmware ID: {}, filename: {}, size: {} bytes",
@@ -250,7 +250,7 @@ public class OTAMagController {
             return new Result<String>().error("uploadfilecannot be empty");
         }
 
-        // 检查fileextension
+        // checkfileextension
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
             return new Result<String>().error("File namecannot be empty");
@@ -265,7 +265,7 @@ public class OTAMagController {
             // 计算file MD5value
             String md5 = calculateMD5(file);
 
-            // set存储path
+            // setstore储path
             String uploadDir = "uploadfile";
             Path uploadPath = Paths.get(uploadDir);
 
@@ -278,7 +278,7 @@ public class OTAMagController {
             String uniqueFileName = md5 + extension;
             Path filePath = uploadPath.resolve(uniqueFileName);
 
-            // 检查fileYesNoalready exists
+            // checkfileYesNoalready exists
             if (Files.exists(filePath)) {
                 return new Result<String>().ok(filePath.toString());
             }
@@ -294,7 +294,7 @@ public class OTAMagController {
     }
 
     @PostMapping("/uploadAssetsBin")
-    @Operation(summary = "upload资sourcefirmwarefile")
+    @Operation(summary = "uploadresourcesourcefirmwarefile")
     @RequiresPermissions("sys:role:normal")
     public Result<String> uploadAssetsBin(@RequestParam("file") MultipartFile file) {
         String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
@@ -302,11 +302,11 @@ public class OTAMagController {
             return new Result<String>().error(ErrorCode.OTA_URL_EMPTY);
         }
         logger.info("username:{},uploadAssetsBin size: {}", SecurityUser.getUser().getUsername(), file.getSize());
-        // verificationFile size (资sourcefirmware最large20MB)
+        // verificationFile size (resourcesourcefirmwaremostlarge20MB)
         if (file.getSize() > 20 * 1024 * 1024) {
             return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
         }
-        // Normal useronly能每天upload50times
+        // Normal useronlycan每天upload50times
         if (SecurityUser.getUser().getSuperAdmin() == SuperAdminEnum.NO.value()) {
             String uploadCountKey = RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId());
             Integer uploadCount = (Integer) Optional.ofNullable(redisUtils.get(uploadCountKey)).orElse(0);
@@ -319,7 +319,7 @@ public class OTAMagController {
         }
         Result<String> result = uploadFirmware(file);
 
-        // generate资sourcefilepath
+        // generateresourcesourcefilepath
         if (StringUtils.isNotBlank(result.getData())) {
             String uuid = UUID.randomUUID().toString();
             redisUtils.set(RedisKeys.getOtaIdKey(uuid), "file:" + result.getData());

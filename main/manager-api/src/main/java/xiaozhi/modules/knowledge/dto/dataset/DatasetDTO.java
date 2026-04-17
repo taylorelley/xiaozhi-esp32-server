@@ -46,11 +46,11 @@ public class DatasetDTO {
         @Schema(description = "YesNowill Excel 转as HTML", example = "false")
         private Boolean html4excel;
 
-        @Schema(description = "自动generatekeywordcount (0 representsclose)", example = "0")
+        @Schema(description = "automaticgeneratekeywordcount (0 representsclose)", example = "0")
         @JsonProperty("auto_keywords")
         private Integer autoKeywords;
 
-        @Schema(description = "自动generatequestioncount (0 representsclose)", example = "0")
+        @Schema(description = "automaticgeneratequestioncount (0 representsclose)", example = "0")
         @JsonProperty("auto_questions")
         private Integer autoQuestions;
     }
@@ -75,7 +75,7 @@ public class DatasetDTO {
         @Schema(description = "Knowledge baseavatar (Base64 code)", example = "")
         private String avatar;
 
-        @Schema(description = "Knowledge baseDescription", example = "used for存储产品document")
+        @Schema(description = "Knowledge baseDescription", example = "used forstore储产品document")
         private String description;
 
         @Schema(description = "embeddingModel name", example = "BAAI/bge-large-zh-v1.5")
@@ -85,7 +85,7 @@ public class DatasetDTO {
         @Schema(description = "Permissionset: me / team", example = "me")
         private String permission;
 
-        @Schema(description = "chunk方法: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
+        @Schema(description = "chunkmethod: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
@@ -111,7 +111,7 @@ public class DatasetDTO {
         @Schema(description = "Knowledge baseavatar (Base64 code)", example = "")
         private String avatar;
 
-        @Schema(description = "Knowledge baseDescription", example = "update后 Description")
+        @Schema(description = "Knowledge baseDescription", example = "updateafter Description")
         private String description;
 
         @Schema(description = "Permissionset: me / team", example = "team")
@@ -121,7 +121,7 @@ public class DatasetDTO {
         @JsonProperty("embedding_model")
         private String embeddingModel;
 
-        @Schema(description = "chunk方法: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
+        @Schema(description = "chunkmethod: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
@@ -129,7 +129,7 @@ public class DatasetDTO {
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
-        @Schema(description = "PageRank 权重 (0-100)", example = "50")
+        @Schema(description = "PageRank 权re- (0-100)", example = "50")
         private Integer pagerank;
     }
 
@@ -175,7 +175,7 @@ public class DatasetDTO {
     public static class BatchIdReq implements Serializable {
 
         @NotNull(message = "Knowledge base ID listcannot be empty")
-        @Size(min = 1, message = "至少need一个Knowledge base ID")
+        @Size(min = 1, message = "至少needoneKnowledge base ID")
         @Schema(description = "Knowledge base ID list", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"id1\", \"id2\"]")
         private List<String> ids;
     }
@@ -194,7 +194,7 @@ public class DatasetDTO {
         @JsonProperty("entity_types")
         private List<String> entityTypes;
 
-        @Schema(description = "build方法: light / fast / full", example = "light")
+        @Schema(description = "buildmethod: light / fast / full", example = "light")
         private String method;
     }
 
@@ -208,11 +208,11 @@ public class DatasetDTO {
     @Schema(description = "run RAPTOR request")
     public static class RunRaptorReq implements Serializable {
 
-        @Schema(description = "最large聚classnumber", example = "64")
+        @Schema(description = "mostlarge聚classnumber", example = "64")
         @JsonProperty("max_cluster")
         private Integer maxCluster;
 
-        @Schema(description = "自defineprompt", example = "请summary以下content...")
+        @Schema(description = "自defineprompt", example = "请summaryto下content...")
         private String prompt;
     }
 
@@ -262,7 +262,7 @@ public class DatasetDTO {
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "Knowledge baseDescription", example = "used for存储产品document")
+        @Schema(description = "Knowledge baseDescription", example = "used forstore储产品document")
         private String description;
 
         @Schema(description = "embeddingModel name", example = "BAAI/bge-large-zh-v1.5")
@@ -272,7 +272,7 @@ public class DatasetDTO {
         @Schema(description = "Permissionset: me / team", example = "me")
         private String permission;
 
-        @Schema(description = "chunk方法", example = "naive")
+        @Schema(description = "chunkmethod", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
@@ -393,10 +393,10 @@ public class DatasetDTO {
             @Schema(description = "target节点 ID", example = "node_002")
             private String target;
 
-            @Schema(description = "边权重", example = "0.75")
+            @Schema(description = "边权re-", example = "0.75")
             private Double weight;
 
-            @Schema(description = "边Tag (关系Description)", example = "属于")
+            @Schema(description = "边Tag (关系Description)", example = "belongs to")
             private String label;
         }
     }
@@ -404,7 +404,7 @@ public class DatasetDTO {
     // ========== asynchronoustasktrace (GraphRAG/RAPTOR) ==========
 
     /**
-     * asynchronoustasktrace VO (mappinginterface 9/10: task进度return)
+     * asynchronoustasktrace VO (mappinginterface 9/10: taskprogressreturn)
      */
     @Data
     @NoArgsConstructor
@@ -429,10 +429,10 @@ public class DatasetDTO {
         @JsonProperty("to_page")
         private Integer toPage;
 
-        @Schema(description = "进度百分比 (0.0 - 1.0)", example = "0.75")
+        @Schema(description = "progress百分比 (0.0 - 1.0)", example = "0.75")
         private Double progress;
 
-        @Schema(description = "进度message", example = "正inprocess第 5 页...")
+        @Schema(description = "progressmessage", example = "inprocess第 5 页...")
         @JsonProperty("progress_msg")
         private String progressMsg;
 

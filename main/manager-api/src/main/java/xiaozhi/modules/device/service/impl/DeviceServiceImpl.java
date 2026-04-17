@@ -120,7 +120,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         if (!activationCode.equals(cachedCode)) {
             throw new RenException(ErrorCode.ACTIVATION_CODE_ERROR);
         }
-        // 检查device有noisactivation
+        // checkdevicehasnoisactivation
         if (selectById(deviceId) != null) {
             throw new RenException(ErrorCode.DEVICE_ALREADY_ACTIVATED);
         }
@@ -149,7 +149,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         deviceEntity.setLastConnectedAt(currentTime);
         deviceDao.insert(deviceEntity);
 
-        // 清理rediscache、clearAgent devicecountcache
+        // clean uprediscache、clearAgent devicecountcache
         redisUtils.delete(List.of(cacheDeviceKey, deviceKey, RedisKeys.getAgentDeviceCountById(agentId)));
         return true;
     }
@@ -204,14 +204,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         DeviceEntity deviceById = getDeviceByMacAddress(macAddress);
 
-        // devicenotbind，thenreturncurrentupload firmwareinformation（not update）以this兼容旧firmwareversion
+        // devicenotbind，thenreturncurrentupload firmwareinformation（not update）tothiscompatible旧firmwareversion
         if (deviceById == null) {
             DeviceReportRespDTO.Firmware firmware = new DeviceReportRespDTO.Firmware();
             firmware.setVersion(deviceReport.getApplication().getVersion());
             firmware.setUrl(Constant.INVALID_FIRMWARE_URL);
             response.setFirmware(firmware);
         } else {
-            // only有indevicealreadybindandautoUpdatenot as0 情况下才returnfirmwareupgradeinformation
+            // onlyhasindevicealreadybindandautoUpdatenot as0 情况下onlyreturnfirmwareupgradeinformation
             if (deviceById.getAutoUpdate() != 0) {
                 String type = deviceReport.getBoard() == null ? null : deviceReport.getBoard().getType();
                 DeviceReportRespDTO.Firmware firmware = buildFirmwareInfo(type,
@@ -225,7 +225,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         // fromsystemparametergetWebSocket URL，ifnotconfigurationthenusedefaultvalue
         String wsUrl = sysParamsService.getValue(Constant.SERVER_WEBSOCKET, true);
 
-        // 检查YesNoenableauthentication并generatetoken
+        // checkYesNoenableauthenticationandgeneratetoken
         String authEnabled = sysParamsService.getValue(Constant.SERVER_AUTH_ENABLED, true);
         if ("true".equalsIgnoreCase(authEnabled)) {
             try {
@@ -241,16 +241,16 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         }
 
         if (StringUtils.isBlank(wsUrl) || wsUrl.equals("null")) {
-            log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.websocket】configuration");
+            log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter managementfindto【server.websocket】configuration");
             wsUrl = "ws://xiaozhi.server.com:8000/xiaozhi/v1/";
             websocket.setUrl(wsUrl);
         } else {
             String[] wsUrls = wsUrl.split("\\;");
             if (wsUrls.length > 0) {
-                // 随机选择一个WebSocket URL
+                // 随机selectoneWebSocket URL
                 websocket.setUrl(wsUrls[RandomUtil.randomInt(0, wsUrls.length)]);
             } else {
-                log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.websocket】configuration");
+                log.error("WebSocketAddressnotconfiguration，Please log in to the control console，inParameter managementfindto【server.websocket】configuration");
                 websocket.setUrl("ws://xiaozhi.server.com:8000/xiaozhi/v1/");
             }
         }
@@ -258,7 +258,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         response.setWebsocket(websocket);
 
         // addMQTT UDPconfiguration
-        // fromsystemparametergetMQTT GatewayAddress，onlyinconfigurationvalid时use
+        // fromsystemparametergetMQTT GatewayAddress，onlyinconfigurationvalidwhenuse
         String mqttUdpConfig = sysParamsService.getValue(Constant.SERVER_MQTT_GATEWAY, true);
         if (mqttUdpConfig != null && !mqttUdpConfig.equals("null") && !mqttUdpConfig.isEmpty()) {
             try {
@@ -275,10 +275,10 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         }
 
         if (deviceById != null) {
-            // ifdevice存in，thenasynchronousupdate上timesconnectiontimeandversioninformation
+            // ifdevicestorein，thenasynchronousupdate上timesconnectiontimeandversioninformation
             String appVersion = deviceReport.getApplication() != null ? deviceReport.getApplication().getVersion()
                     : null;
-            // viaSpring代理callasynchronous方法
+            // viaSpring代理callasynchronousmethod
             ((DeviceServiceImpl) AopContext.currentProxy()).updateDeviceConnectionInfo(deviceById.getAgentId(),
                     deviceById.getId(), appVersion);
         } else {
@@ -344,9 +344,9 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<DeviceEntity> page = baseDao.selectPage(
                 getPage(params, "mac_address", true),
-                // definequeryitems件
+                // definequeryitemsitem
                 new QueryWrapper<DeviceEntity>()
-                        // 必须devicekeywordfind
+                        // mustdevicekeywordfind
                         .like(StringUtils.isNotBlank(dto.getKeywords()), "alias", dto.getKeywords()));
         // 循环processpageget回来 data，returnneed field
         List<UserShowDeviceListVO> list = page.getRecords().stream().map(device -> {
@@ -395,7 +395,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Date getLatestLastConnectionTime(String agentId) {
-        // queryYesNo有cachetime，有thenreturn
+        // queryYesNohascachetime，hasthenreturn
         Date cachedDate = (Date) redisUtils.get(RedisKeys.getAgentDeviceLastConnectedAtById(agentId));
         if (cachedDate != null) {
             return cachedDate;
@@ -471,7 +471,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             if (compareVersions(ota.getVersion(), currentVersion) > 0) {
                 String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
                 if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
-                    log.error("OTAAddressnotconfiguration，Please log in to the control console，inParameter management找to【server.ota】configuration");
+                    log.error("OTAAddressnotconfiguration，Please log in to the control console，inParameter managementfindto【server.ota】configuration");
                     // 尝试fromrequestget
                     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                             .getRequestAttributes())
@@ -521,7 +521,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public void manualAddDevice(Long userId, DeviceManualAddDTO dto) {
-        // 检查macYesNoalready exists
+        // checkmacYesNoalready exists
         QueryWrapper<DeviceEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("mac_address", dto.getMacAddress());
         DeviceEntity exist = baseDao.selectOne(wrapper);
@@ -617,7 +617,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         // from环境变量orsystemparametergetsignaturekey
         String signatureKey = sysParamsService.getValue("server.mqtt_signature_key", true);
         if (StringUtils.isBlank(signatureKey)) {
-            log.warn("missingMQTT_SIGNATURE_KEY，跳MQTTconfigurationgenerate");
+            log.warn("missingMQTT_SIGNATURE_KEY，skipMQTTconfigurationgenerate");
             return null;
         }
 
@@ -689,7 +689,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             return null;
         }
 
-        // 检查deviceYesNo属于currentuser
+        // checkdeviceYesNobelongs tocurrentuser
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;
@@ -703,7 +703,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         // buildcomplete URL
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // 存储alltool list
+        // store储alltool list
         List<Object> allTools = new ArrayList<>();
         String cursor = null;
 
@@ -713,7 +713,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             Map<String, Object> paramsMap = MapUtil.builder(new HashMap<String, Object>())
                     .put("withUserTools", true)
                     .build();
-            // if有cursor，addtorequestparameter
+            // ifhascursor，addtorequestparameter
             if (StringUtils.isNotBlank(cursor)) {
                 paramsMap.put("cursor", cursor);
             }
@@ -762,10 +762,10 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 allTools.addAll(tools);
             }
 
-            // get下一页 cursor
+            // get下one页 cursor
             String nextCursor = data.getStr("nextCursor");
             if (StringUtils.isBlank(nextCursor)) {
-                // no下一页了
+                // no下one页
                 break;
             }
             cursor = nextCursor;
@@ -795,7 +795,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             return null;
         }
 
-        // 检查deviceYesNo属于currentuser
+        // checkdeviceYesNobelongs tocurrentuser
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;

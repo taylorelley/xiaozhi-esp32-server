@@ -8,7 +8,7 @@ import xiaozhi.common.exception.ErrorCode;
 
 /**
  * responsedata
- * Copyright (c) 人人开source All rights reserved.
+ * Copyright (c) Renren Opensource All rights reserved.
  * Website: https://www.renren.io
  */
 @Data
@@ -16,9 +16,9 @@ import xiaozhi.common.exception.ErrorCode;
 public class Result<T> implements Serializable {
 
     /**
-     * code：0representssuccess，其他valuerepresentsfailed
+     * code：0representssuccess，othervaluerepresentsfailed
      */
-    @Schema(description = "code：0representssuccess，其他valuerepresentsfailed")
+    @Schema(description = "code：0representssuccess，othervaluerepresentsfailed")
     private int code = 0;
     /**
      * messagecontent

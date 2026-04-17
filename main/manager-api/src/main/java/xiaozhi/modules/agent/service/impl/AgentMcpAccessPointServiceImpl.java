@@ -37,7 +37,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
             return null;
         }
         URI uri = getURI(url);
-        // getagentmcp url前缀
+        // getagentmcp urlbefore缀
         String agentMcpUrl = getAgentMcpUrl(uri);
         // get key
         String key = getSecretKey(uri);
@@ -69,7 +69,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
                             .connectTimeout(8, TimeUnit.SECONDS)
                             .maxSessionDuration(10, TimeUnit.SECONDS))) {
 
-                // 步骤1: sendinitializemessage并waitresponse
+                // 步骤1: sendinitializemessageandwaitresponse
                 log.info("sendMCPinitializemessage，Agent ID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getInitializeJson());
 
@@ -78,7 +78,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         if (jsonMap != null && Integer.valueOf(1).equals(jsonMap.get("id"))) {
-                            // 检查YesNo有resultfield，representsinitializesuccess
+                            // checkYesNohasresultfield，representsinitializesuccess
                             return jsonMap.containsKey("result") && !jsonMap.containsKey("error");
                         }
                         return false;
@@ -113,10 +113,10 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
                     return List.of();
                 }
 
-                // 步骤2: sendinitializecomplete通知 - only有in收toinitializeresponse后才send
+                // 步骤2: sendinitializecomplete通知 - onlyhasin收toinitializeresponseafteronlysend
                 log.info("sendMCPinitializecomplete通知，Agent ID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getNotificationsInitializedJson());
-                // 步骤3: sendtool listrequest - immediatelysend，无需额外延迟
+                // 步骤3: sendtool listrequest - immediatelysend，no需额外延迟
                 log.info("sendMCP tool listrequest，Agent ID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getToolsListJson());
 
@@ -136,7 +136,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         if (jsonMap != null && Integer.valueOf(2).equals(jsonMap.get("id"))) {
-                            // 检查YesNo有resultfield
+                            // checkYesNohasresultfield
                             Object resultObj = jsonMap.get("result");
                             if (resultObj instanceof Map) {
                                 Map<String, Object> resultMap = (Map<String, Object>) resultObj;
@@ -183,7 +183,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
             return new URI(url);
         } catch (URISyntaxException e) {
             log.error("pathformat is incorrectpath：{}，\nerrorinformation:{}", url, e.getMessage());
-            throw new RuntimeException("mcp Address存inerror，请进入Parameter managementupdatemcpendpointAddress");
+            throw new RuntimeException("mcp Addressstoreinerror，请进入Parameter managementupdatemcpendpointAddress");
         }
     }
 
@@ -212,7 +212,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
         String wsScheme = (uri.getScheme().equals("https")) ? "wss" : "ws";
         // get主机，end口，path
         String path = uri.getSchemeSpecificPart();
-        // gettolast一个/前 path
+        // gettolastone/before path
         path = path.substring(0, path.lastIndexOf("/"));
         return wsScheme + ":" + path;
     }
@@ -222,14 +222,14 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
      *
      * @param agentId agentid
      * @param key     encryption key
-     * @return encrypt后token
+     * @return encryptaftertoken
      */
     private static String encryptToken(String agentId, String key) {
         // usemd5foragentidperformencrypt
         String md5 = HashEncryptionUtil.Md5hexDigest(agentId);
         // aesneed加ciphertextthis
         String json = "{\"agentId\": \"%s\"}".formatted(md5);
-        // encrypt后成tokenvalue
+        // encryptafter成tokenvalue
         return AESUtils.encrypt(key, json);
     }
 }

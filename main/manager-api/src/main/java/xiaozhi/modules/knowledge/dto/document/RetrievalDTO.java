@@ -59,7 +59,7 @@ public class RetrievalDTO {
         @NotEmpty(message = "Knowledge baseIDlistcannot be empty")
         private List<String> datasetIds;
 
-        @Schema(description = "document ID list (可选，used for限定retrieve范围)")
+        @Schema(description = "document ID list (可select，used for限定retrieve范围)")
         @JsonProperty("document_ids")
         private List<String> documentIds;
 
@@ -74,11 +74,11 @@ public class RetrievalDTO {
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "相似度阈value (default 0.2)")
+        @Schema(description = "similar度阈value (default 0.2)")
         @JsonProperty("similarity_threshold")
         private Float similarityThreshold;
 
-        @Schema(description = "vector相似度权重 (default 0.3)")
+        @Schema(description = "vectorsimilar度权re- (default 0.3)")
         @JsonProperty("vector_similarity_weight")
         private Float vectorSimilarityWeight;
 
@@ -86,7 +86,7 @@ public class RetrievalDTO {
         @JsonProperty("top_k")
         private Integer topK;
 
-        @Schema(description = "重Sort ordermodel ID")
+        @Schema(description = "re-Sort ordermodel ID")
         @JsonProperty("rerank_id")
         private String rerankId;
 
@@ -96,11 +96,11 @@ public class RetrievalDTO {
         @Schema(description = "YesNoenablekeywordretrieve")
         private Boolean keyword;
 
-        @Schema(description = "跨Language翻译list (可选)")
+        @Schema(description = "跨Language翻译list (可select)")
         @JsonProperty("cross_languages")
         private List<String> crossLanguages;
 
-        @Schema(description = "datafilteritems件 (JSON object)")
+        @Schema(description = "datafilteritemsitem (JSON object)")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
     }
@@ -139,14 +139,14 @@ public class RetrievalDTO {
         @JsonProperty("document_keyword")
         private String documentKeyword;
 
-        @Schema(description = "综合相似度", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "综合similar度", requiredMode = Schema.RequiredMode.REQUIRED)
         private Float similarity;
 
-        @Schema(description = "vector相似度")
+        @Schema(description = "vectorsimilar度")
         @JsonProperty("vector_similarity")
         private Float vectorSimilarity;
 
-        @Schema(description = "keyword相似度")
+        @Schema(description = "keywordsimilar度")
         @JsonProperty("term_similarity")
         private Float termSimilarity;
 
@@ -156,7 +156,7 @@ public class RetrievalDTO {
         @Schema(description = "高亮content")
         private String highlight;
 
-        @Schema(description = "重need tokeywordlist")
+        @Schema(description = "re-need tokeywordlist")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
@@ -191,7 +191,7 @@ public class RetrievalDTO {
         @JsonProperty("total_token_count")
         private Long totalTokenCount;
 
-        @Schema(description = "File type分布 (key: file后缀, value: count)")
+        @Schema(description = "File type分布 (key: fileafter缀, value: count)")
         @JsonProperty("file_type_distribution")
         private Map<String, Long> fileTypeDistribution;
 
@@ -222,7 +222,7 @@ public class RetrievalDTO {
         @Schema(description = "addorupdate datalist")
         private List<UpdateItem> updates;
 
-        @Schema(description = "needdelete data键list")
+        @Schema(description = "needdelete datakeylist")
         private List<DeleteItem> deletes;
 
         /**
@@ -241,7 +241,7 @@ public class RetrievalDTO {
             @JsonProperty("document_ids")
             private List<String> documentIds;
 
-            @Schema(description = "dataitems件匹配 (key: field name, value: 匹配value)")
+            @Schema(description = "dataitemsitem匹配 (key: field name, value: 匹配value)")
             @JsonProperty("metadata_condition")
             private Map<String, Object> metadataCondition;
         }
@@ -258,7 +258,7 @@ public class RetrievalDTO {
         public static class UpdateItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "data键名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "datakey名", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
 
             @Schema(description = "datavalue", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -277,7 +277,7 @@ public class RetrievalDTO {
         public static class DeleteItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "需delete data键名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "需delete datakey名", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
         }
     }

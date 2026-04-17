@@ -74,7 +74,7 @@ public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(SysDictDataDTO dto) {
-        // sameDictionary type Tagnot 能same
+        // sameDictionary type Tagnot cansame
         checkDictValueUnique(dto.getDictTypeId(), dto.getDictValue(), null);
 
         SysDictDataEntity entity = ConvertUtils.sourceToTarget(dto, SysDictDataEntity.class);
@@ -88,7 +88,7 @@ public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SysDictDataDTO dto) {
-        // sameDictionary type Tagnot 能same
+        // sameDictionary type Tagnot cansame
         checkDictValueUnique(dto.getDictTypeId(), dto.getDictValue(), String.valueOf(dto.getId()));
 
         SysDictDataEntity entity = ConvertUtils.sourceToTarget(dto, SysDictDataEntity.class);
@@ -132,7 +132,7 @@ public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysD
      * @param sysDictDataList Dictionary typecollection
      */
     private void setUserName(List<SysDictDataVO> sysDictDataList) {
-        // 收集alluser ID
+        // 收collectionalluser ID
         Set<Long> userIds = sysDictDataList.stream().flatMap(vo -> Stream.of(vo.getCreator(), vo.getUpdater()))
                 .filter(Objects::nonNull).collect(Collectors.toSet());
 

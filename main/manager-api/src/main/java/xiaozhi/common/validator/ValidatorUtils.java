@@ -30,8 +30,8 @@ public class ValidatorUtils {
     /**
      * validateobject
      *
-     * @param object 待validateobject
-     * @param groups 待validate group
+     * @param object pendingvalidateobject
+     * @param groups pendingvalidate group
      */
     public static void validateEntity(Object object, Class<?>... groups)
             throws RenException {
@@ -48,8 +48,8 @@ public class ValidatorUtils {
     }
 
     /**
-     * 国际Mobile phone number正thentable达式
-     * need to求必须with国际区number，format：+[国家代code][Mobile phone number]
+     * 国际Mobile phone numberthentable达式
+     * need to求mustwith国际区number，format：+[国家代code][Mobile phone number]
      * For example：
      * - +8613800138000
      * - +12345678900
@@ -59,7 +59,7 @@ public class ValidatorUtils {
 
     /**
      * validateMobile phone numberYesNovalid
-     * need to求必须with国际区number，format：+[国家代code][Mobile phone number]
+     * need to求mustwith国际区number，format：+[国家代code][Mobile phone number]
      * For example：+8613800138000
      * 
      * @param phone Mobile phone number
@@ -70,7 +70,7 @@ public class ValidatorUtils {
             return false;
         }
 
-        // verification必须with国际区number Mobile phone numberformat
+        // verificationmustwith国际区number Mobile phone numberformat
         Pattern pattern = Pattern.compile(INTERNATIONAL_PHONE_REGEX);
         return pattern.matcher(phone).matches();
     }

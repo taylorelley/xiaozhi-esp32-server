@@ -6,7 +6,7 @@ export default {
   'login.requiredMobile': 'Please enter a valid mobile phone number',
   'login.loginSuccess': 'Login successful!',
 
-  // HeaderBar组件文本
+  // HeaderBar component text
   'header.smartManagement': 'Agents',
   'header.modelConfig': 'Models',
   'header.knowledgeBase': 'Knowledge',
@@ -17,7 +17,7 @@ export default {
   'header.paramDictionary': 'More',
   'header.paramManagement': 'Params Management',
   'header.dictManagement': 'Dict Management',
-  'header.agentTemplate': 'Default Role Templates', // 添加这一行
+  'header.agentTemplate': 'Default Role Templates', // added this line
   'header.searchHistory': 'Search History',
   'header.clearHistory': 'Clear History',
   'header.providerManagement': 'Provider Management',
@@ -297,7 +297,7 @@ export default {
 
   // Register page related
   'register.title': 'Create Account',
-  'register.welcome': 'Welcome to XiaoZhi AI',
+  'register.welcome': 'Welcome to LittleWise AI',
   'register.usernamePlaceholder': 'Please enter username',
   'register.mobilePlaceholder': 'Please enter mobile phone number',
   'register.captchaPlaceholder': 'Please enter captcha',
@@ -533,7 +533,7 @@ export default {
   'button.close': 'Close',
 
   // System information
-  'system.name': 'XiaoZhi Service',
+  'system.name': 'LittleWise Service',
 
   // Voiceprint related
   'voiceprint.management': 'Voiceprint Management',
@@ -666,7 +666,7 @@ export default {
 
   // Home page text
   'home.addAgent': 'Add Agent',
-  'home.greeting': 'Hi XiaoZhi',
+  'home.greeting': 'Hi LittleWise',
   'home.wish': "Let's have a wonderful day!",
   'home.languageModel': 'LLM',
   'home.voiceModel': 'TTS',
@@ -806,7 +806,7 @@ export default {
   // Form field Tooltip descriptions
   'roleConfig.tooltip.agentName': 'Set the name of your AI agent for identification and recognition',
   'roleConfig.tooltip.roleTemplate': 'Choose from preset role templates to quickly configure your agent\'s basic settings',
-  'roleConfig.tooltip.contextProvider': 'When XiaoZhi is awakened, fetch external system data and dynamically inject it into the LLM system prompt',
+  'roleConfig.tooltip.contextProvider': 'When LittleWise is awakened, fetch external system data and dynamically inject it into the LLM system prompt',
   'roleConfig.tooltip.roleIntroduction': 'Define the AI agent\'s role positioning, personality traits, behavioral norms, and professional knowledge background',
   'roleConfig.tooltip.memoryHis': 'Summarize chat record content',
   'roleConfig.tooltip.languageCode': 'Set language code such as zh-CN, en-US, etc., used for specific feature recognition',

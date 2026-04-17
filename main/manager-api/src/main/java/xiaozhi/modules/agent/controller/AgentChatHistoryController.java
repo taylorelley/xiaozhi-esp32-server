@@ -80,14 +80,14 @@ public class AgentChatHistoryController {
             @PathVariable("sessionId") String sessionId) {
         // get currentuser
         UserDetail user = SecurityUser.getUser();
-        // 检查Permission
+        // checkPermission
         if (!agentService.checkAgentPermission(agentId, user.getId())) {
             throw new RenException(ErrorCode.CHAT_HISTORY_NO_PERMISSION);
         }
 
         // generateUUID
         String uuid = UUID.randomUUID().toString();
-        // 存储agentIdandsessionIdtoRedis，formatasagentId:sessionId
+        // store储agentIdandsessionIdtoRedis，formatasagentId:sessionId
         redisUtils.set(RedisKeys.getChatHistoryKey(uuid), agentId + ":" + sessionId);
 
         return new Result<String>().ok(uuid);
@@ -121,18 +121,18 @@ public class AgentChatHistoryController {
             // executedownload
             downloadChatHistory(agentId, List.of(sessionId), response);
         } finally {
-            // downloadcomplete后deleteUUID，prevent盗刷
+            // downloadcompleteafterdeleteUUID，prevent盗刷
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
 
     /**
-     * downloadthissession及前20itemssessionChat history
+     * downloadthissession及before20itemssessionChat history
      * 
      * @param uuid     downloadidentifier
      * @param response HTTPresponse
      */
-    @Operation(summary = "downloadthissession及前20itemssessionChat history")
+    @Operation(summary = "downloadthissession及before20itemssessionChat history")
     @GetMapping("/download/{uuid}/previous")
     public void downloadCurrentSessionWithPrevious(@PathVariable("uuid") String uuid,
             HttpServletResponse response) {
@@ -169,23 +169,23 @@ public class AgentChatHistoryController {
                 }
             }
 
-            // if找to了currentsession，收集currentsession及前20itemsSession ID
+            // iffindtocurrentsession，收collectioncurrentsession及before20itemsSession ID
             List<String> sessionIdsToDownload = new ArrayList<>();
             if (currentIndex != -1) {
-                // fromcurrentsessionstart，向后（array后面）取最多20itemssession（包括currentsession）
+                // fromcurrentsessionstart，向after（arrayafter面）取most多20itemssession（包括currentsession）
                 int endIndex = Math.min(allSessions.size() - 1, currentIndex + 20); // ensurenot 越界
                 for (int i = currentIndex; i <= endIndex; i++) {
                     sessionIdsToDownload.add(allSessions.get(i).getSessionId());
                 }
             }
 
-            // ifno找tocurrentsession，至少downloadcurrentsession
+            // ifnofindtocurrentsession，至少downloadcurrentsession
             if (sessionIdsToDownload.isEmpty()) {
                 sessionIdsToDownload.add(sessionId);
             }
             downloadChatHistory(agentId, sessionIdsToDownload, response);
         } finally {
-            // downloadcomplete后deleteUUID，prevent盗刷
+            // downloadcompleteafterdeleteUUID，prevent盗刷
             redisUtils.delete(RedisKeys.getChatHistoryKey(uuid));
         }
     }
@@ -204,15 +204,15 @@ public class AgentChatHistoryController {
             String fileName = URLEncoder.encode("history.txt", StandardCharsets.UTF_8.toString());
             response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 
-            // getChat history并write入response流
+            // getChat historyandwrite入response流
             try (OutputStream out = response.getOutputStream()) {
-                // as每个sessiongenerateChat history
+                // as每sessiongenerateChat history
                 for (String sessionId : sessionIds) {
-                    // get该session allChat history
+                    // getthissession allChat history
                     List<AgentChatHistoryDTO> chatHistoryList = agentChatHistoryService
                             .getChatHistoryBySessionId(agentId, sessionId);
 
-                    // fromChat historyget第一itemsmessage Create timeassessiontime
+                    // fromChat historyget第oneitemsmessage Create timeassessiontime
                     if (!chatHistoryList.isEmpty()) {
                         Date firstMessageTime = chatHistoryList.get(0).getCreatedAt();
                         String sessionTimeStr = DateUtils.format(firstMessageTime, DateUtils.DATE_TIME_PATTERN);
@@ -231,7 +231,7 @@ public class AgentChatHistoryController {
                         out.write(line.getBytes(StandardCharsets.UTF_8));
                     }
 
-                    // session之间addempty行分隔
+                    // session之间addemptyrow分隔
                     if (sessionIds.indexOf(sessionId) < sessionIds.size() - 1) {
                         out.write("\n".getBytes(StandardCharsets.UTF_8));
                     }
