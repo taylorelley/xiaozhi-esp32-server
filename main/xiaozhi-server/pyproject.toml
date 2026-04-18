@@ -1,0 +1,58 @@
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
+markers = [
+    "integration: marks tests that spin up real servers or touch the network",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [
+    "performance_tester",
+    "models",
+    "music",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",   # line too long - we set line-length to 120 already
+    "B008",   # function calls in argument defaults are common here
+    "UP007",  # keep Optional/Union for readability in public signatures
+    "UP035",  # keep legacy typing imports where already used
+    "UP038",  # keep tuple isinstance form
+    "B904",   # existing raise-from style
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F401", "F811", "E402"]
+
+[tool.coverage.run]
+source = ["config", "core"]
+omit = [
+    "core/providers/**",
+    "core/connection.py",
+    "core/websocket_server.py",
+    "core/http_server.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

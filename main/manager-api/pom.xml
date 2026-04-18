@@ -32,6 +32,8 @@
         <liquibase-core.version>4.20.0</liquibase-core.version>
         <aliyun-sms-version>4.1.0</aliyun-sms-version>
         <okio-version>3.4.0</okio-version>
+        <checkstyle-plugin.version>3.3.1</checkstyle-plugin.version>
+        <checkstyle.version>10.18.2</checkstyle.version>
     </properties>
 
     <dependencies>
@@ -271,11 +273,51 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!--
+                 Surefire: tests are now enabled by default. Individual developers can still skip
+                 locally via `-DskipTests` on the command line.
+
+                 The <excludes> block below skips two pre-existing test classes that use
+                 @SpringBootTest(activeProfiles="dev") and therefore try to boot the whole
+                 Spring context including MySQL + Redis + Liquibase. These were effectively
+                 disabled before because the surefire config previously had skipTests=true.
+                 We keep them disabled in CI (where those services don't exist) rather than
+                 delete them; developers can still run them locally with:
+                   mvn test -Dtest='DeviceTest,loginControllerTest'
+                 against a real dev stack.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
+                    <excludes>
+                        <exclude>**/modules/device/DeviceTest.java</exclude>
+                        <exclude>**/modules/sys/loginControllerTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!--
+                 Checkstyle: declared but NOT bound to any build phase. CI invokes it explicitly
+                 via `mvn checkstyle:check` with continue-on-error so violations surface as
+                 warnings without blocking the build today.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>false</failOnViolation>
+                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>
