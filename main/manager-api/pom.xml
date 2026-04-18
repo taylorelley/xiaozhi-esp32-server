@@ -276,12 +276,25 @@
             <!--
                  Surefire: tests are now enabled by default. Individual developers can still skip
                  locally via `-DskipTests` on the command line.
+
+                 The <excludes> block below skips two pre-existing test classes that use
+                 @SpringBootTest(activeProfiles="dev") and therefore try to boot the whole
+                 Spring context including MySQL + Redis + Liquibase. These were effectively
+                 disabled before because the surefire config previously had skipTests=true.
+                 We keep them disabled in CI (where those services don't exist) rather than
+                 delete them; developers can still run them locally with:
+                   mvn test -Dtest='DeviceTest,loginControllerTest'
+                 against a real dev stack.
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>false</skipTests>
+                    <excludes>
+                        <exclude>**/modules/device/DeviceTest.java</exclude>
+                        <exclude>**/modules/sys/loginControllerTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!--
