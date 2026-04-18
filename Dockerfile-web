@@ -2,13 +2,15 @@
 FROM node:18 AS web-builder
 WORKDIR /app
 COPY main/manager-web/package*.json ./
-RUN npm install
+RUN sed -i 's|"resolved": "https://registry\.npmmirror\.com[^"]*"|"resolved": ""|g' package-lock.json && \
+    npm ci --registry=https://registry.npmjs.org/
 COPY main/manager-web .
 RUN npm run build
 
 # 第二阶段：构建Java后端
 FROM maven:3.9.4-eclipse-temurin-21 AS api-builder
 WORKDIR /app
+COPY docs/docker/maven-settings.xml /root/.m2/settings.xml
 COPY main/manager-api/pom.xml .
 COPY main/manager-api/src ./src
 RUN mvn clean package -Dmaven.test.skip=true
