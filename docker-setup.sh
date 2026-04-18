@@ -22,6 +22,12 @@ CONFIG_PATH_REL="main/xiaozhi-server/config_from_api.yaml"
 
 MODEL_URL="https://huggingface.co/FunAudioLLM/SenseVoiceSmall/resolve/main/model.pt"
 
+# Source tree used to build the server and web images locally instead of pulling them.
+SRC_DIR="${INSTALL_DIR}/src"
+SRC_TARBALL_URL="https://github.com/taylorelley/xiaozhi-esp32-server/archive/refs/heads/main.tar.gz"
+LOCAL_SERVER_IMAGE="xiaozhi-esp32-server-local:latest"
+LOCAL_WEB_IMAGE="xiaozhi-esp32-server-web-local:latest"
+
 COMPOSE=""            # resolved later to "docker compose" or "docker-compose"
 UPGRADE_COMPLETED=""
 
@@ -163,6 +169,76 @@ ensure_python_yaml() {
     fi
 }
 
+# Fetch the repo source tarball into $SRC_DIR so the server and web images
+# can be built locally via docker compose. Refreshes on every call.
+download_source_tree() {
+    mkdir -p "$SRC_DIR"
+    local tmp
+    tmp=$(mktemp -d)
+    echo "Downloading source tarball from ${SRC_TARBALL_URL}"
+    if ! curl -fL --connect-timeout 15 --retry 3 --retry-delay 2 \
+            "$SRC_TARBALL_URL" -o "${tmp}/src.tar.gz"; then
+        rm -rf "$tmp"
+        whiptail --title "Error" --msgbox "Failed to download source tarball from ${SRC_TARBALL_URL}" 10 60
+        exit 1
+    fi
+    # Purge stale files so upgrades don't keep deleted paths around.
+    find "$SRC_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+    if ! tar -xzf "${tmp}/src.tar.gz" -C "$SRC_DIR" --strip-components=1; then
+        rm -rf "$tmp"
+        whiptail --title "Error" --msgbox "Failed to extract source tarball" 10 60
+        exit 1
+    fi
+    rm -rf "$tmp"
+    for path in Dockerfile-server Dockerfile-web main/xiaozhi-server main/manager-api main/manager-web; do
+        if [ ! -e "${SRC_DIR}/${path}" ]; then
+            whiptail --title "Error" --msgbox "Extracted source is missing ${path}" 10 60
+            exit 1
+        fi
+    done
+}
+
+# Rewrite the downloaded compose file so the xiaozhi-esp32-server and
+# xiaozhi-esp32-server-web services build from ${SRC_DIR} instead of
+# pulling prebuilt images. Idempotent.
+rewrite_compose_for_build() {
+    ensure_python_yaml
+    COMPOSE_FILE="$COMPOSE_FILE" \
+    LOCAL_SERVER_IMAGE="$LOCAL_SERVER_IMAGE" \
+    LOCAL_WEB_IMAGE="$LOCAL_WEB_IMAGE" \
+    python3 - <<'PY'
+import os
+import yaml
+
+path = os.environ["COMPOSE_FILE"]
+with open(path) as f:
+    compose = yaml.safe_load(f) or {}
+
+services = compose.get("services", {})
+targets = {
+    "xiaozhi-esp32-server": {
+        "dockerfile": "Dockerfile-server",
+        "image": os.environ["LOCAL_SERVER_IMAGE"],
+    },
+    "xiaozhi-esp32-server-web": {
+        "dockerfile": "Dockerfile-web",
+        "image": os.environ["LOCAL_WEB_IMAGE"],
+    },
+}
+
+for name, cfg in targets.items():
+    svc = services.get(name)
+    if svc is None:
+        raise SystemExit(f"{name} service missing from compose file")
+    svc.pop("image", None)
+    svc["build"] = {"context": "./src", "dockerfile": cfg["dockerfile"]}
+    svc["image"] = cfg["image"]
+
+with open(path, "w") as f:
+    yaml.dump(compose, f, sort_keys=False)
+PY
+}
+
 # ---------------------------------------------------------------------------
 # Detect whether an existing install is present
 # ---------------------------------------------------------------------------
@@ -211,10 +287,14 @@ if check_installed; then
             fi
         done
 
-        # Delete known images if they exist
+        # Delete known images if they exist. The ghcr.io entries cover users
+        # upgrading from the pull-path era; the *-local entries force a fresh
+        # rebuild of the images produced by this script.
         images=(
             "ghcr.io/taylorelley/xiaozhi-esp32-server:server_latest"
             "ghcr.io/taylorelley/xiaozhi-esp32-server:web_latest"
+            "$LOCAL_SERVER_IMAGE"
+            "$LOCAL_WEB_IMAGE"
         )
         for image in "${images[@]}"; do
             if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${image}$"; then
@@ -238,9 +318,13 @@ if check_installed; then
         check_and_download "$COMPOSE_FILE" "$COMPOSE_PATH_REL"
         check_and_download "$CONFIG_FILE"  "$CONFIG_PATH_REL"
 
+        # Refresh source tree and switch the compose file to build locally.
+        download_source_tree
+        rewrite_compose_for_build
+
         echo "Starting the latest version of the services..."
         UPGRADE_COMPLETED=1
-        $COMPOSE -f "$COMPOSE_FILE" up -d
+        $COMPOSE -f "$COMPOSE_FILE" up -d --build
     else
         whiptail --title "Skip upgrade" --msgbox "Upgrade cancelled. The current version will continue to be used." 10 50
         # Fall through to the installation flow
@@ -339,15 +423,19 @@ if [ -z "$UPGRADE_COMPLETED" ]; then
 
     check_and_download "$COMPOSE_FILE" "$COMPOSE_PATH_REL"
     check_and_download "$CONFIG_FILE"  "$CONFIG_PATH_REL"
+
+    # Fetch source tree and switch compose to build the server and web images locally.
+    download_source_tree
+    rewrite_compose_for_build
 fi
 
 # ---------------------------------------------------------------------------
 # Start the services
 # ---------------------------------------------------------------------------
 echo "------------------------------------------------------------"
-echo "Pulling Docker images..."
+echo "Building xiaozhi-esp32-server and xiaozhi-esp32-server-web from source and starting services..."
 echo "This may take a few minutes, please be patient"
-if ! $COMPOSE -f "$COMPOSE_FILE" up -d; then
+if ! $COMPOSE -f "$COMPOSE_FILE" up -d --build; then
     whiptail --title "Error" --msgbox "Docker service failed to start. Please try switching the mirror source and rerun this script" 10 60
     exit 1
 fi
