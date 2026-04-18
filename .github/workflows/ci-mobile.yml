@@ -1,0 +1,52 @@
+name: ci-mobile
+
+on:
+  pull_request:
+    paths:
+      - 'main/manager-mobile/**'
+      - '.github/workflows/ci-mobile.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'main/manager-mobile/**'
+      - '.github/workflows/ci-mobile.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mobile:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: main/manager-mobile
+    env:
+      # Silence the `preinstall` guard that rejects non-pnpm clients; pnpm
+      # corepack will satisfy it anyway.
+      ONLY_ALLOW_SKIP: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable Corepack (pnpm)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: main/manager-mobile/pnpm-lock.yaml
+
+      - name: Install dependencies
+        # Intentionally NOT --frozen-lockfile because this PR adds vitest/
+        # jsdom devDeps that haven't been recorded in pnpm-lock.yaml yet.
+        # The next PR that touches the lockfile can switch back to frozen.
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: Lint (non-blocking)
+        run: pnpm lint
+        continue-on-error: true
+
+      - name: Unit tests
+        run: pnpm test:ci
