@@ -1,6 +1,7 @@
 from config.logger import setup_logging
 from openai import OpenAI
 import json
+from urllib.parse import urlparse
 from core.providers.llm.base import LLMProviderBase
 
 TAG = __name__
@@ -11,14 +12,18 @@ class LLMProvider(LLMProviderBase):
     def __init__(self, config):
         self.model_name = config.get("model_name")
         self.base_url = config.get("base_url", "http://localhost:11434")
-        # Initialize OpenAI client with Ollama base URL
-        # If there is no v1, append v1
-        if not self.base_url.endswith("/v1"):
-            self.base_url = f"{self.base_url}/v1"
+        # Auto-append /v1 only when the URL has no path component yet.
+        # This keeps local Ollama (http://localhost:11434 -> .../v1) working
+        # while letting Ollama Cloud callers supply the full endpoint
+        # (https://ollama.com/v1 or https://ollama.com/api) without mangling.
+        if not urlparse(self.base_url).path.strip("/"):
+            self.base_url = self.base_url.rstrip("/") + "/v1"
 
         self.client = OpenAI(
             base_url=self.base_url,
-            api_key="ollama",  # Ollama doesn't need an API key but OpenAI client requires one
+            # Local Ollama ignores the key but the OpenAI client requires
+            # a non-empty value; Ollama Cloud needs a real bearer token.
+            api_key=config.get("api_key") or "ollama",
         )
 
         # Check if it is a qwen3 model
