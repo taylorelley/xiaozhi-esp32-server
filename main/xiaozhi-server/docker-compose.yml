@@ -11,8 +11,8 @@ services:
     environment:
       - TZ=Asia/Shanghai
     ports:
-      # ws服务端
-      - "8000:8000"
+      # ws服务端（host端口默认改为18000，避免与常用的8000端口冲突）
+      - "18000:8000"
       # http服务的端口，用于简单OTA接口(单服务部署)，以及视觉分析接口
       - "8003:8003"
     volumes:
