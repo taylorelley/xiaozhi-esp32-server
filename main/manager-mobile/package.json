@@ -72,7 +72,9 @@
     "openapi-ts-request": "openapi-ts",
     "prepare": "git init && husky",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "test": "vitest",
+    "test:ci": "vitest --run"
   },
   "dependencies": {
     "@alova/adapter-uniapp": "^2.0.14",
@@ -133,12 +135,14 @@
     "@uni-ku/bundle-optimizer": "^1.3.3",
     "@unocss/eslint-plugin": "^66.2.3",
     "@unocss/preset-legacy-compat": "^0.59.4",
+    "@vitest/coverage-v8": "^1.6.0",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.1.3",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.29.0",
     "eslint-plugin-format": "^1.0.1",
     "husky": "^9.1.7",
+    "jsdom": "^24.0.0",
     "lint-staged": "^15.2.10",
     "openapi-ts-request": "^1.1.2",
     "postcss": "^8.4.49",
@@ -151,6 +155,7 @@
     "unplugin-auto-import": "^0.17.8",
     "vite": "5.2.8",
     "vite-plugin-restart": "^0.4.2",
+    "vitest": "^1.6.0",
     "vue-tsc": "^2.2.10"
   },
   "resolutions": {
