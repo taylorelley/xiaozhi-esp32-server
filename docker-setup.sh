@@ -15,6 +15,13 @@ COMPOSE_FILE="${INSTALL_DIR}/docker-compose_all.yml"
 CONFIG_FILE="${DATA_DIR}/.config.yaml"
 MODEL_FILE="${MODEL_DIR}/model.pt"
 
+# Default host-side port for the device WebSocket service. Port 8000 is
+# commonly used by other dev tools (Django runserver, python -m http.server,
+# etc.), so we default to 18000 and let the user override interactively.
+# The container still listens on 8000 internally.
+DEFAULT_WS_HOST_PORT=18000
+WS_HOST_PORT="$DEFAULT_WS_HOST_PORT"
+
 RAW_BASE="https://raw.githubusercontent.com/taylorelley/xiaozhi-esp32-server/refs/heads/main"
 
 COMPOSE_PATH_REL="main/xiaozhi-server/docker-compose_all.yml"
@@ -158,6 +165,41 @@ resolve_compose_cmd() {
     fi
 }
 
+# Ask the user which host port to publish the device WebSocket on. Loops
+# on invalid input (non-numeric, out of range) and warn-confirms privileged
+# ports (<1024). Blank input keeps the default. Result stored in WS_HOST_PORT.
+prompt_ws_port() {
+    local prompt_msg="The device WebSocket service is published on a host port.\n\nPort 8000 is commonly used by other web services and often collides. The new default is ${DEFAULT_WS_HOST_PORT}.\n\nPress Enter to keep the default, or type a different port (1-65535):"
+    local input
+    while true; do
+        input=$(whiptail --title "WebSocket host port" \
+            --inputbox "$prompt_msg" 15 70 "$DEFAULT_WS_HOST_PORT" \
+            3>&1 1>&2 2>&3) || exit 1
+        if [ -z "$input" ]; then
+            input="$DEFAULT_WS_HOST_PORT"
+        fi
+        if ! [[ "$input" =~ ^[0-9]+$ ]]; then
+            whiptail --title "Invalid port" \
+                --msgbox "Port must be numeric. Please try again." 10 50
+            continue
+        fi
+        if [ "$input" -lt 1 ] || [ "$input" -gt 65535 ]; then
+            whiptail --title "Invalid port" \
+                --msgbox "Port must be between 1 and 65535. Please try again." 10 60
+            continue
+        fi
+        if [ "$input" -lt 1024 ]; then
+            if ! whiptail --title "Privileged port" \
+                --yesno "Port ${input} is in the privileged range (<1024). Use it anyway?" 10 60; then
+                continue
+            fi
+        fi
+        WS_HOST_PORT="$input"
+        break
+    done
+    echo "Using WebSocket host port: ${WS_HOST_PORT}"
+}
+
 # Ensure python3 + PyYAML (used to edit .config.yaml for the secret key).
 ensure_python_yaml() {
     if ! command -v python3 >/dev/null 2>&1; then
@@ -206,6 +248,7 @@ rewrite_compose_for_build() {
     COMPOSE_FILE="$COMPOSE_FILE" \
     LOCAL_SERVER_IMAGE="$LOCAL_SERVER_IMAGE" \
     LOCAL_WEB_IMAGE="$LOCAL_WEB_IMAGE" \
+    WS_HOST_PORT="$WS_HOST_PORT" \
     python3 - <<'PY'
 import os
 import yaml
@@ -234,10 +277,30 @@ for name, cfg in targets.items():
     svc["build"] = {"context": "./src", "dockerfile": cfg["dockerfile"]}
     svc["image"] = cfg["image"]
 
+ws_host_port = os.environ["WS_HOST_PORT"]
+server_svc = services["xiaozhi-esp32-server"]
+ports = server_svc.get("ports", [])
+for idx, entry in enumerate(ports):
+    if isinstance(entry, str):
+        host, sep, container = entry.partition(":")
+        if sep and container == "8000":
+            ports[idx] = f"{ws_host_port}:8000"
+    elif isinstance(entry, dict):
+        if str(entry.get("target")) == "8000":
+            entry["published"] = int(ws_host_port)
+server_svc["ports"] = ports
+
 with open(path, "w") as f:
     yaml.dump(compose, f, sort_keys=False)
 PY
 }
+
+# ---------------------------------------------------------------------------
+# Ask the user which host port to publish the WebSocket service on. Runs
+# once, before either the upgrade or fresh-install path, so both paths can
+# feed the value into rewrite_compose_for_build.
+# ---------------------------------------------------------------------------
+prompt_ws_port
 
 # ---------------------------------------------------------------------------
 # Detect whether an existing install is present
@@ -485,7 +548,7 @@ get_primary_ip() {
 }
 
 PUBLIC_IP=$(get_primary_ip)
-whiptail --title "Configure server secret" --msgbox "Please use a browser to access the link below, open the control console and register an account: \n\nInternal address: http://127.0.0.1:8002/\nPublic address: http://${PUBLIC_IP}:8002/ (if this is a cloud server, please open ports 8000 8001 8002 in the server's security group).\n\nThe first registered user is the super administrator; subsequently registered users are ordinary users. Ordinary users can only bind devices and configure agents; the super administrator can manage models, users, parameter configuration, and more.\n\nAfter registration, press Enter to continue" 18 70
+whiptail --title "Configure server secret" --msgbox "Please use a browser to access the link below, open the control console and register an account: \n\nInternal address: http://127.0.0.1:8002/\nPublic address: http://${PUBLIC_IP}:8002/ (if this is a cloud server, please open ports ${WS_HOST_PORT} 8002 8003 in the server's security group).\n\nThe first registered user is the super administrator; subsequently registered users are ordinary users. Ordinary users can only bind devices and configure agents; the super administrator can manage models, users, parameter configuration, and more.\n\nAfter registration, press Enter to continue" 18 70
 
 SECRET_KEY=$(whiptail --title "Configure server secret" --inputbox "Please log in to the control console with a super-admin account\nInternal address: http://127.0.0.1:8002/\nPublic address: http://${PUBLIC_IP}:8002/\nFrom the top menu Parameter Dictionary -> Parameter Management, find the parameter code: server.secret (server secret) \nCopy that parameter value and enter it in the box below\n\nPlease enter the secret (leave blank to skip configuration):" 15 60 3>&1 1>&2 2>&3)
 
@@ -521,5 +584,5 @@ Server addresses are as follows:\n\
 Admin console address: http://${LOCAL_IP}:8002\n\
 OTA address: http://${LOCAL_IP}:8002/xiaozhi/ota/\n\
 Vision analysis API address: http://${LOCAL_IP}:8003/mcp/vision/explain\n\
-WebSocket address: ws://${LOCAL_IP}:8000/xiaozhi/v1/\n\
+WebSocket address: ws://${LOCAL_IP}:${WS_HOST_PORT}/xiaozhi/v1/\n\
 \nInstallation complete! Thank you for using!\nPress Enter to exit..." 16 70
