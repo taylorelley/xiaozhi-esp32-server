@@ -15,13 +15,12 @@ COMPOSE_FILE="${INSTALL_DIR}/docker-compose_all.yml"
 CONFIG_FILE="${DATA_DIR}/.config.yaml"
 MODEL_FILE="${MODEL_DIR}/model.pt"
 
-RAW_BASE_PRIMARY="https://ghfast.top/https://raw.githubusercontent.com/xinnan-tech/xiaozhi-esp32-server/refs/heads/main"
-RAW_BASE_FALLBACK="https://raw.githubusercontent.com/xinnan-tech/xiaozhi-esp32-server/refs/heads/main"
+RAW_BASE="https://raw.githubusercontent.com/taylorelley/xiaozhi-esp32-server/refs/heads/main"
 
 COMPOSE_PATH_REL="main/xiaozhi-server/docker-compose_all.yml"
 CONFIG_PATH_REL="main/xiaozhi-server/config_from_api.yaml"
 
-MODEL_URL="https://modelscope.cn/models/iic/SenseVoiceSmall/resolve/master/model.pt"
+MODEL_URL="https://huggingface.co/FunAudioLLM/SenseVoiceSmall/resolve/main/model.pt"
 
 COMPOSE=""            # resolved later to "docker compose" or "docker-compose"
 UPGRADE_COMPLETED=""
@@ -105,8 +104,7 @@ mkdir -p "$DATA_DIR" "$MODEL_DIR"
 # Helpers
 # ---------------------------------------------------------------------------
 
-# Download a file from the upstream repo, trying the ghfast.top proxy first
-# and falling back to raw.githubusercontent.com on failure.
+# Download a file from the upstream repo on raw.githubusercontent.com.
 # Usage: check_and_download <abs-local-path> <repo-relative-path>
 check_and_download() {
     local filepath="$1"
@@ -119,17 +117,14 @@ check_and_download() {
 
     mkdir -p "$(dirname "$filepath")"
 
-    local url
-    for url in "${RAW_BASE_PRIMARY}/${relpath}" "${RAW_BASE_FALLBACK}/${relpath}"; do
-        echo "Downloading ${filepath} from ${url}"
-        if curl -fL --connect-timeout 10 --retry 3 --retry-delay 2 --progress-bar "$url" -o "$filepath"; then
-            return 0
-        fi
-        echo "Download via ${url} failed, trying next source..."
-        rm -f "$filepath"
-    done
+    local url="${RAW_BASE}/${relpath}"
+    echo "Downloading ${filepath} from ${url}"
+    if curl -fL --connect-timeout 10 --retry 3 --retry-delay 2 --progress-bar "$url" -o "$filepath"; then
+        return 0
+    fi
+    rm -f "$filepath"
 
-    whiptail --title "Error" --msgbox "${filepath} file download failed (both primary and fallback URLs)" 10 60
+    whiptail --title "Error" --msgbox "${filepath} file download failed from ${url}" 10 60
     exit 1
 }
 
@@ -218,8 +213,8 @@ if check_installed; then
 
         # Delete known images if they exist
         images=(
-            "ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest"
-            "ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:web_latest"
+            "ghcr.io/taylorelley/xiaozhi-esp32-server:server_latest"
+            "ghcr.io/taylorelley/xiaozhi-esp32-server:web_latest"
         )
         for image in "${images[@]}"; do
             if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${image}$"; then
@@ -283,12 +278,12 @@ if ! command -v docker >/dev/null 2>&1; then
         DISTRO="$(lsb_release -cs)"
     fi
 
-    # Use a domestic mirror source instead of the official source
+    # Use the official Docker apt repository
     case "$ID" in
-        debian) MIRROR_URL="https://mirrors.aliyun.com/docker-ce/linux/debian"
-                GPG_URL="https://mirrors.aliyun.com/docker-ce/linux/debian/gpg" ;;
-        *)      MIRROR_URL="https://mirrors.aliyun.com/docker-ce/linux/ubuntu"
-                GPG_URL="https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg" ;;
+        debian) MIRROR_URL="https://download.docker.com/linux/debian"
+                GPG_URL="https://download.docker.com/linux/debian/gpg" ;;
+        *)      MIRROR_URL="https://download.docker.com/linux/ubuntu"
+                GPG_URL="https://download.docker.com/linux/ubuntu/gpg" ;;
     esac
 
     # Install base dependencies
@@ -324,71 +319,6 @@ fi
 
 # Resolve which compose command to use from this point on
 resolve_compose_cmd
-
-# ---------------------------------------------------------------------------
-# Docker mirror configuration
-# ---------------------------------------------------------------------------
-MIRROR_OPTIONS=(
-    "1" "Xuanyuan mirror (recommended)"
-    "2" "Tencent Cloud mirror"
-    "3" "USTC mirror"
-    "4" "NetEase 163 mirror"
-    "5" "Huawei Cloud mirror"
-    "6" "Alibaba Cloud personal mirror"
-    "7" "Custom mirror"
-    "8" "Skip configuration"
-)
-
-MIRROR_CHOICE=$(whiptail --title "Select Docker mirror source" --menu "Please select the Docker mirror source to use" 20 60 10 \
-"${MIRROR_OPTIONS[@]}" 3>&1 1>&2 2>&3) || {
-    echo "User cancelled selection, exiting script"
-    exit 1
-}
-
-MIRROR_URL=""
-case $MIRROR_CHOICE in
-    1) MIRROR_URL="https://docker.xuanyuan.me" ;;
-    2) MIRROR_URL="https://mirror.ccs.tencentyun.com" ;;
-    3) MIRROR_URL="https://docker.mirrors.ustc.edu.cn" ;;
-    4) MIRROR_URL="https://hub-mirror.c.163.com" ;;
-    5) MIRROR_URL="https://05f073ad3c0010ea0f4bc00b7105ec20.mirror.swr.myhuaweicloud.com" ;;
-    6)
-        MIRROR_URL=$(whiptail --title "Alibaba Cloud personal mirror" \
-            --inputbox "Alibaba Cloud requires a personal mirror URL.\nLog in to https://cr.console.aliyun.com/, open 'Image Accelerator', and copy the accelerator URL (looks like https://<id>.mirror.aliyuncs.com).\n\nEnter your personal accelerator URL:" \
-            15 70 3>&1 1>&2 2>&3) || MIRROR_URL=""
-        ;;
-    7)
-        MIRROR_URL=$(whiptail --title "Custom mirror source" --inputbox "Please enter the full mirror source URL (must start with https://):" 10 60 3>&1 1>&2 2>&3) || MIRROR_URL=""
-        ;;
-    8) MIRROR_URL="" ;;
-esac
-
-if [ -n "$MIRROR_URL" ]; then
-    case "$MIRROR_URL" in
-        https://*) ;;
-        *)
-            whiptail --title "Invalid mirror URL" --msgbox "The mirror URL must start with https://. Skipping mirror configuration." 10 60
-            MIRROR_URL=""
-            ;;
-    esac
-fi
-
-if [ -n "$MIRROR_URL" ]; then
-    mkdir -p /etc/docker
-    if [ -f /etc/docker/daemon.json ]; then
-        cp /etc/docker/daemon.json /etc/docker/daemon.json.bak
-    fi
-    cat > /etc/docker/daemon.json <<EOF
-{
-    "dns": ["8.8.8.8", "114.114.114.114"],
-    "registry-mirrors": ["$MIRROR_URL"]
-}
-EOF
-    whiptail --title "Configuration successful" --msgbox "Mirror source added successfully: $MIRROR_URL\nPress Enter to restart the Docker service and continue..." 12 60
-    echo "------------------------------------------------------------"
-    echo "Restarting the Docker service..."
-    systemctl restart docker.service
-fi
 
 # ---------------------------------------------------------------------------
 # Fresh-install download path (skipped when the upgrade path already ran)
