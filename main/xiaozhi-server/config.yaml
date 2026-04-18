@@ -226,13 +226,16 @@ end_prompt:
 selected_module:
   # Voice Activity Detection module; defaults to the SileroVAD model
   VAD: SileroVAD
-  # Speech recognition module; defaults to the local FunASR model
-  ASR: FunASR
-  # The actual LLM adapter is loaded according to the `type` of the named configuration
-  LLM: ChatGLMLLM
-  # Vision language large model
-  VLLM: ChatGLMVLLM
-  # The actual TTS adapter is loaded according to the `type` of the named TTS configuration
+  # Speech recognition module; defaults to OpenAI Whisper for out-of-the-box English support.
+  # Swap to FunASR (local, no API key) or a provider from the ASR: section below.
+  ASR: OpenaiASR
+  # The actual LLM adapter is loaded according to the `type` of the named configuration.
+  # Defaults to GeminiLLM because Google AI Studio offers a generous free tier for English users.
+  LLM: GeminiLLM
+  # Vision language large model; GeminiVLLM pairs with the default LLM choice.
+  VLLM: GeminiVLLM
+  # The actual TTS adapter is loaded according to the `type` of the named TTS configuration.
+  # EdgeTTS is free and ships with the `en-US-AriaNeural` English voice by default.
   TTS: EdgeTTS
   # Memory module; memory is disabled by default. For very long-term memory, mem0ai is recommended; for privacy, use the local `mem_local_short`.
   Memory: nomem
@@ -240,7 +243,7 @@ selected_module:
   # To disable intent recognition, set this to: nointent
   # You can use `intent_llm` for intent recognition. Pros: general-purpose. Cons: adds a sequential pre-intent-recognition step that increases processing time; supports IoT operations like volume control.
   # You can use `function_call`. Cons: the selected LLM must support function calling. Pros: calls tools on demand, is fast, and can in theory drive all IoT commands.
-  # The default free ChatGLMLLM already supports function calling. For more stability, switch the LLM to DoubaoLLM with model_name `doubao-1-5-pro-32k-250115`.
+  # GeminiLLM, OpenAILLM, AnthropicLLM, GroqLLM, and ChatGLMLLM all support function calling.
   Intent: function_call
 
 # Intent recognition: the module that understands user intent, e.g. "play music"
@@ -632,8 +635,17 @@ LLM:
   OllamaLLM:
     # Defines the LLM API type
     type: ollama
-    model_name: qwen2.5 #  Model name to use; it must be pulled in advance with `ollama pull`
+    model_name: llama3.2 #  Model name to use; it must be pulled in advance with `ollama pull`
     base_url: http://localhost:11434  # Ollama service address
+    # api_key is optional for local Ollama (leave blank). For Ollama Cloud use OllamaCloudLLM below.
+  OllamaCloudLLM:
+    # Ollama Cloud — https://ollama.com/cloud
+    # Uses the same OpenAI-compatible adapter as local Ollama but with a bearer token.
+    type: ollama
+    # Get your API key at https://ollama.com/settings/keys
+    model_name: gpt-oss:120b   # Examples: gpt-oss:120b, qwen3-coder:480b, deepseek-v3.1:671b
+    base_url: https://ollama.com/v1
+    api_key: your ollama cloud api key
   DifyLLM:
     # Defines the LLM API type
     type: dify
@@ -710,6 +722,39 @@ LLM:
     # Xinference service address and model name
     model_name: qwen2.5:3b-AWQ  # Small-model name to use, for intent recognition
     base_url: http://localhost:9997  # Xinference service address
+  OpenAILLM:
+    # OpenAI ChatGPT — https://platform.openai.com/
+    type: openai
+    base_url: https://api.openai.com/v1
+    model_name: gpt-4o-mini
+    api_key: your openai api key
+    temperature: 0.7
+    max_tokens: 500
+  AnthropicLLM:
+    # Anthropic Claude — https://console.anthropic.com/
+    # Uses the native `anthropic` SDK (see core/providers/llm/anthropic/anthropic.py).
+    type: anthropic
+    base_url: https://api.anthropic.com
+    model_name: claude-sonnet-4-5
+    api_key: your anthropic api key
+    max_tokens: 1024
+    temperature: 0.7
+  GroqLLM:
+    # Groq — https://console.groq.com/ (OpenAI-compatible, very fast inference)
+    type: openai
+    base_url: https://api.groq.com/openai/v1
+    model_name: llama-3.3-70b-versatile
+    api_key: your groq api key
+    temperature: 0.7
+    max_tokens: 500
+  OpenRouterLLM:
+    # OpenRouter — https://openrouter.ai/ (OpenAI-compatible aggregator for 100+ models)
+    type: openai
+    base_url: https://openrouter.ai/api/v1
+    model_name: openai/gpt-4o-mini
+    api_key: your openrouter api key
+    temperature: 0.7
+    max_tokens: 500
 # VLLM configuration (vision-language large model)
 VLLM:
   ChatGLMVLLM:
@@ -735,14 +780,35 @@ VLLM:
     base_url: https://ark.cn-beijing.volces.com/api/v3
     model_name: lite
     api_key: your api_password
+  OpenAIVLLM:
+    # OpenAI GPT-4o vision — https://platform.openai.com/
+    type: openai
+    url: https://api.openai.com/v1
+    model_name: gpt-4o-mini
+    api_key: your openai api key
+  GeminiVLLM:
+    # Google Gemini via its OpenAI-compatible endpoint — https://aistudio.google.com/apikey
+    type: openai
+    url: https://generativelanguage.googleapis.com/v1beta/openai/
+    model_name: gemini-2.0-flash
+    api_key: your gemini api key
+  AnthropicVLLM:
+    # Anthropic Claude vision — https://console.anthropic.com/
+    # Uses the native `anthropic` SDK (see core/providers/vllm/anthropic.py).
+    type: anthropic
+    model_name: claude-sonnet-4-5
+    api_key: your anthropic api key
 TTS:
   # Currently supported types: edge, doubao; you can adapt others
   EdgeTTS:
     # Defines the TTS API type
     type: edge
-    voice: zh-CN-XiaoxiaoNeural
+    # Default is en-US-AriaNeural (neural female US English). Other common English voices:
+    #   en-US-JennyNeural, en-US-GuyNeural, en-GB-SoniaNeural, en-AU-NatashaNeural.
+    # For Chinese voices use e.g. zh-CN-XiaoxiaoNeural.
+    voice: en-US-AriaNeural
     output_dir: tmp/
-    # language: "Chinese"  # Output language, e.g. Chinese, English, Japanese, Korean; set according to the language supported by the chosen voice; defaults to Chinese when left blank
+    # language: "English"  # Output language, e.g. English, Chinese, Japanese, Korean; set according to the language supported by the chosen voice; defaults to Chinese when left blank
   DoubaoTTS:
     # Defines the TTS API type
     type: doubao
@@ -1156,3 +1222,36 @@ TTS:
     # speed: 50  # Speech rate: 0-100
     # pitch: 50  # Pitch: 0-100
     # language: "Chinese"  # Output language, e.g. Chinese, English, Japanese, Korean; set according to the language supported by the chosen voice; defaults to Chinese when left blank
+  ElevenLabsTTS:
+    # ElevenLabs — https://elevenlabs.io/
+    # Sign in and grab an API key at https://elevenlabs.io/app/settings/api-keys
+    type: elevenlabs
+    api_key: your elevenlabs api key
+    # Default voice_id is "Rachel" (English female). Browse voices at https://elevenlabs.io/app/voice-library
+    voice_id: 21m00Tcm4TlvDq8ikWAM
+    model_id: eleven_turbo_v2_5
+    # stability: 0.5           # 0.0 - 1.0
+    # similarity_boost: 0.75   # 0.0 - 1.0
+    # format: mp3              # Output audio format
+    output_dir: tmp/
+  AzureTTS:
+    # Azure AI Speech — https://portal.azure.com/
+    # Create a "Speech" resource, then grab a key and the region from the portal.
+    type: azure
+    api_key: your azure speech api key
+    region: eastus
+    voice: en-US-AriaNeural   # Browse voices at https://speech.microsoft.com/portal/voicegallery
+    # language: en-US         # Auto-derived from the voice prefix; override if needed
+    # format: mp3             # mp3, wav, ogg
+    output_dir: tmp/
+  GoogleCloudTTS:
+    # Google Cloud Text-to-Speech — https://console.cloud.google.com/
+    # Enable "Cloud Text-to-Speech API" on your project, then create an API key under APIs & Services > Credentials.
+    type: gcloud
+    api_key: your google cloud api key
+    voice: en-US-Neural2-F
+    language_code: en-US
+    # speaking_rate: 1.0      # 0.25 - 4.0
+    # pitch: 0.0              # -20.0 - 20.0
+    # format: mp3             # mp3, wav, ogg
+    output_dir: tmp/
