@@ -1,6 +1,7 @@
 // Import request modules
 import admin from './module/admin.js'
 import agent from './module/agent.js'
+import config from './module/config.js'
 import device from './module/device.js'
 import dict from './module/dict.js'
 import model from './module/model.js'
@@ -34,6 +35,7 @@ export default {
     user,
     admin,
     agent,
+    config,
     device,
     model,
     timbre,
