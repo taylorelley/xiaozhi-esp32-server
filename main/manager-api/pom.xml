@@ -228,6 +228,11 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <!-- YAML parsing for POST /config/upload (wizard config import) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
         <!-- Alibaba Cloud SMS SDK -->
         <dependency>
             <groupId>com.aliyun</groupId>
