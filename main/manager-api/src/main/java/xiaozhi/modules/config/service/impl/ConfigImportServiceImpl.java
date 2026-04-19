@@ -10,7 +10,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -293,14 +292,7 @@ public class ConfigImportServiceImpl implements ConfigImportService {
     }
 
     private ModelConfigEntity findModel(String modelType, String modelCode) {
-        if (StringUtils.isBlank(modelType) || StringUtils.isBlank(modelCode)) {
-            return null;
-        }
-        LambdaQueryWrapper<ModelConfigEntity> q = new LambdaQueryWrapper<>();
-        q.eq(ModelConfigEntity::getModelType, modelType)
-                .eq(ModelConfigEntity::getModelCode, modelCode)
-                .last("limit 1");
-        return modelConfigService.getOne(q);
+        return modelConfigService.getByTypeAndCode(modelType, modelCode);
     }
 
     // Reserved for future extensions (e.g. dict lookups). Kept as an explicit
