@@ -521,4 +521,15 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
 
         return entities;
     }
+
+    @Override
+    public ModelConfigEntity getByTypeAndCode(String modelType, String modelCode) {
+        if (StringUtils.isBlank(modelType) || StringUtils.isBlank(modelCode)) {
+            return null;
+        }
+        return modelConfigDao.selectOne(new LambdaQueryWrapper<ModelConfigEntity>()
+                .eq(ModelConfigEntity::getModelType, modelType)
+                .eq(ModelConfigEntity::getModelCode, modelCode)
+                .last("limit 1"));
+    }
 }

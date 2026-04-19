@@ -63,4 +63,9 @@ public interface ModelConfigService extends BaseService<ModelConfigEntity> {
      * @return enable Model configurationlist
      */
     List<ModelConfigEntity> getEnabledModelsByType(String modelType);
+
+    /**
+     * Find a model by its modelType and modelCode (returns null if not found).
+     */
+    ModelConfigEntity getByTypeAndCode(String modelType, String modelCode);
 }
