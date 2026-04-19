@@ -355,6 +355,9 @@ export default {
     goParamManagement() {
       this.$router.push("/params-management");
     },
+    goConfigImport() {
+      this.$router.push("/config-import");
+    },
     goOtaManagement() {
       this.$router.push("/ota-management");
     },
