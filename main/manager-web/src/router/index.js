@@ -88,6 +88,17 @@ const routes = [
     }
   },
   {
+    path: '/config-import',
+    name: 'ConfigImport',
+    component: function () {
+      return import('../views/ConfigImport.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: 'Config Import'
+    }
+  },
+  {
     path: '/knowledge-base-management',
     name: 'KnowledgeBaseManagement',
     component: function () {
@@ -217,7 +228,7 @@ VueRouter.prototype.push = function push(location) {
 }
 
 // Routes that require login to access
-const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManagement', 'ModelConfig', 'KnowledgeBaseManagement', 'KnowledgeFileUpload']
+const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManagement', 'ModelConfig', 'KnowledgeBaseManagement', 'KnowledgeFileUpload', 'ConfigImport']
 
 // Route guard
 router.beforeEach((to, from, next) => {
