@@ -85,6 +85,7 @@
           'active-tab':
             $route.path === '/dict-management' ||
             $route.path === '/params-management' ||
+            $route.path === '/config-import' ||
             $route.path === '/provider-management' ||
             $route.path === '/server-side-management' ||
             $route.path === '/agent-template-management' ||
@@ -97,6 +98,7 @@
               filter:
                 $route.path === '/dict-management' ||
                   $route.path === '/params-management' ||
+                  $route.path === '/config-import' ||
                   $route.path === '/provider-management' ||
                   $route.path === '/server-side-management' ||
                   $route.path === '/agent-template-management' ||
@@ -112,6 +114,9 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="goParamManagement">
               {{ $t("header.paramManagement") }}
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="goConfigImport">
+              Config Import
             </el-dropdown-item>
             <el-dropdown-item @click.native="goUserManagement">
               {{ $t("header.userManagement") }}
@@ -349,6 +354,9 @@ export default {
     },
     goParamManagement() {
       this.$router.push("/params-management");
+    },
+    goConfigImport() {
+      this.$router.push("/config-import");
     },
     goOtaManagement() {
       this.$router.push("/ota-management");
