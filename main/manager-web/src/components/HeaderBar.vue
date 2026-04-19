@@ -115,6 +115,9 @@
             <el-dropdown-item @click.native="goParamManagement">
               {{ $t("header.paramManagement") }}
             </el-dropdown-item>
+            <el-dropdown-item @click.native="goConfigImport">
+              Config Import
+            </el-dropdown-item>
             <el-dropdown-item @click.native="goUserManagement">
               {{ $t("header.userManagement") }}
             </el-dropdown-item>
