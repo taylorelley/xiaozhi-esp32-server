@@ -98,6 +98,7 @@
               filter:
                 $route.path === '/dict-management' ||
                   $route.path === '/params-management' ||
+                  $route.path === '/config-import' ||
                   $route.path === '/provider-management' ||
                   $route.path === '/server-side-management' ||
                   $route.path === '/agent-template-management' ||
